@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premier Battle Royale</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950 px-6 py-4 flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <span class="text-2xl font-black tracking-wider text-amber-500">PBR</span>
+      <h1 class="text-lg font-bold text-slate-200">PREMIER BATTLE ROYALE</h1>
+    </div>
+    <div class="flex items-center space-x-2">
+      <label for="quarter-select" class="text-sm font-medium text-slate-400">Quarter:</label>
+      <select id="quarter-select" onchange="changeQuarter(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-amber-500 outline-none">
+        <option value="1">Quarter 1 (W1-W4)</option>
+        <option value="2">Quarter 2 (W5-W8)</option>
+        <option value="3">Quarter 3 (W9-W12)</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto p-4 grid grid-cols-12 gap-4">
+
+    <!-- Weeks Selector Column -->
+    <aside id="weeks-list" class="col-span-12 md:col-span-1 flex md:flex-col gap-2">
+      <!-- Generated dynamically -->
+    </aside>
+
+    <!-- Center Feed: Matchups & Battle Royale -->
+    <main class="col-span-12 md:col-span-11 space-y-4">
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
+        <h2 id="matchup-header" class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">Head-to-Head Matchups</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="matchups-grid">
+          <!-- Dynamic Matchup Cards -->
+        </div>
+      </div>
+
+      <!-- In-Division Battle Royale -->
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
+        <h2 class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">In-Division Battle Royale</h2>
+        <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <!-- Dynamic Division Cards -->
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    let leagueData = null;
+    let currentQuarter = "1";
+    let currentWeek = "1";
+
+    async function loadData() {
+      try {
+        const res = await fetch('data.json');
+        leagueData = await res.json();
+        renderWeeks();
+        renderWeekData(currentWeek);
+      } catch (e) {
+        console.error("Error loading data.json:", e);
+      }
+    }
+
+    function changeQuarter(q) {
+      currentQuarter = q;
+      const weeks = leagueData.quarters[q].weeks;
+      currentWeek = weeks[0].toString();
+      renderWeeks();
+      renderWeekData(currentWeek);
+    }
+
+    function renderWeeks() {
+      const container = document.getElementById('weeks-list');
+      const weeks = leagueData.quarters[currentQuarter].weeks;
+      container.innerHTML = weeks.map(w => {
+        const active = w.toString() === currentWeek;
+        const cls = active 
+          ? "bg-amber-500 text-slate-950 font-bold" 
+          : "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold";
+        return `<button onclick="selectWeek('${w}')" class="w-full ${cls} py-2 px-3 rounded-lg text-center shadow">W${w}</button>`;
+      }).join('');
+    }
+
+    function selectWeek(w) {
+      currentWeek = w.toString();
+      renderWeeks();
+      renderWeekData(currentWeek);
+    }
+
+    function renderWeekData(w) {
+      const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
+      if (!weekObj) return;
+
+      document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
+
+      // Render Matchups
+      const mGrid = document.getElementById('matchups-grid');
+      mGrid.innerHTML = weekObj.matchups.map(m => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
+          <div class="flex justify-between items-center font-semibold">
+            <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team1.name}</span>
+            <span class="text-slate-200 font-bold">${m.team1.score.toFixed(2)} ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded ml-1">+1 VP</span>' : ''}</span>
+          </div>
+          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
+            <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team2.name}</span>
+            <span class="text-slate-200 font-bold">${m.team2.score.toFixed(2)} ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded ml-1">+1 VP</span>' : ''}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Battle Royale
+      const brGrid = document.getElementById('battle-royale-grid');
+      brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
+          <div class="space-y-1">
+            ${weekObj.battle_royale[div].map((t, i) => `
+              <div class="flex justify-between ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
+                <span>${i + 1}. ${t.name}</span>
+                <span>${t.score.toFixed(1)} ${t.battle_vp ? '<span class="text-amber-400 font-bold">+1VP</span>' : ''}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
