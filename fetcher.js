@@ -5,6 +5,29 @@ const API_KEY = "ahVo3smQvuWpx0WmPlrDYDEeFLox";
 const SEASON_YEAR = "2025"; // Test bed season
 const BASE_URL = `https://www.myfantasyleague.com/${SEASON_YEAR}/export`;
 
+// Hardcoded historical division alignments for 2025
+// Hardcoded historical division alignments for 2025 (1 up, 1 down per quarter)
+const quarterlyDivisions = {
+  // Quarter 1: Weeks 1-4
+  "1": {
+    "0002": "00", "0003": "00", "0011": "00", "0005": "00", // Upper: BattleBots, Shankly's Ghost, The Wild Cards, Peaky Fookin Blinders
+    "0001": "01", "0004": "01", "0009": "01", "0012": "01", // Middle: Orcan Terror, Hamsterdam, Springfield Isotopes, 2 Roops 1 Silva
+    "0007": "02", "0010": "02", "0008": "02", "0006": "02"  // Lower: Norsemen, The Meaty Ogres, The Two Tones, Ted Lasso
+  },
+  // Quarter 2: Weeks 5-8 (Orcan Terror & Ted Lasso up; PFB & Springfield Isotopes down)
+  "2": {
+    "0002": "00", "0003": "00", "0011": "00", "0001": "00", // Upper: BattleBots, Shankly's Ghost, The Wild Cards, Orcan Terror
+    "0005": "01", "0004": "01", "0012": "01", "0006": "01", // Middle: Peaky Fookin Blinders, Hamsterdam, 2 Roops 1 Silva, Ted Lasso
+    "0009": "02", "0007": "02", "0010": "02", "0008": "02"  // Lower: Springfield Isotopes, Norsemen, The Meaty Ogres, The Two Tones
+  },
+  // Quarter 3: Weeks 9-12 (Ted Lasso & Meaty Ogres up; Wild Cards & Hamsterdam down)
+  "3": {
+    "0001": "00", "0003": "00", "0002": "00", "0006": "00", // Upper: Orcan Terror, Shankly's Ghost, BattleBots, Ted Lasso
+    "0011": "01", "0005": "01", "0012": "01", "0010": "01", // Middle: The Wild Cards, Peaky Fookin Blinders, 2 Roops 1 Silva, The Meaty Ogres
+    "0004": "02", "0007": "02", "0009": "02", "0008": "02"  // Lower: Hamsterdam, Norsemen, Springfield Isotopes, The Two Tones
+  }
+};
+
 async function fetchMFLData(exportType, week = null) {
   // let url = `${BASE_URL}?TYPE=${exportType}&L=${LEAGUE_ID}&JSON=1&APIKEY=${API_KEY}`;
   let url = `${BASE_URL}?TYPE=${exportType}&L=${LEAGUE_ID}&JSON=1`;
@@ -83,6 +106,7 @@ async function main() {
   // 2. Fetch Weeks 1-12 Matchups & Calculate VPs
   for (let week = 1; week <= 12; week++) {
     const quarter = Math.ceil(week / 4).toString();
+    const activeDivisions = quarterlyDivisions[quarter] || {};
     const resultsData = await fetchMFLData("weeklyResults", week);
     
     if (!resultsData || !resultsData.weeklyResults || !resultsData.weeklyResults.matchup) {
@@ -105,6 +129,9 @@ async function main() {
 
       const score1 = parseFloat(f1.score || 0);
       const score2 = parseFloat(f2.score || 0);
+      const pp1 = parseFloat(f1.opt_pts || score1 || 0);
+      const pp2 = parseFloat(f2.opt_pts || score2 || 0);
+
       let vp1 = 0, vp2 = 0;
       
       if (score1 > score2) vp1 = 1;
@@ -123,7 +150,8 @@ async function main() {
           id: f1.id, 
           name: franchises[f1.id]?.name || f1.id, 
           score: score1, 
-          division: franchises[f1.id]?.division, 
+          pp: pp1,
+          division: activeDivisions[f1.id] || franchises[f1.id]?.division, 
           h2h_vp: vp1 
         };
       } else {
@@ -136,7 +164,8 @@ async function main() {
           id: f2.id, 
           name: franchises[f2.id]?.name || f2.id, 
           score: score2, 
-          division: franchises[f2.id]?.division, 
+          pp: pp2,
+          division: activeDivisions[f2.id] || franchises[f2.id]?.division, 
           h2h_vp: vp2 
         };
       } else {

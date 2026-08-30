@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premier Battle Royale</title>
+  <title>Premier Battle Royale (PBR)</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
-
   <!-- Header -->
   <header class="border-b border-slate-800 bg-slate-950 px-6 py-4 flex justify-between items-center">
     <div class="flex items-center space-x-3">
@@ -26,18 +25,18 @@
 
   <!-- Main Container -->
   <div class="max-w-7xl mx-auto p-4 grid grid-cols-12 gap-4">
-
-    <!-- Weeks Selector Column -->
+    <!-- Week Navigation Buttons (Col 1) -->
     <aside id="weeks-list" class="col-span-12 md:col-span-1 flex md:flex-col gap-2">
-      <!-- Generated dynamically -->
+      <!-- Injected dynamically -->
     </aside>
 
-    <!-- Center Feed: Matchups & Battle Royale -->
-    <main class="col-span-12 md:col-span-11 space-y-4">
+    <!-- Center Content: Matchups & Battle Royale (Cols 2-8) -->
+    <main class="col-span-12 md:col-span-7 space-y-4">
+      <!-- Head-to-Head Matchups -->
       <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
         <h2 id="matchup-header" class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">Head-to-Head Matchups</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="matchups-grid">
-          <!-- Dynamic Matchup Cards -->
+          <!-- Injected dynamically -->
         </div>
       </div>
 
@@ -45,17 +44,52 @@
       <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
         <h2 class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">In-Division Battle Royale</h2>
         <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <!-- Dynamic Division Cards -->
+          <!-- Injected dynamically -->
         </div>
       </div>
     </main>
 
+    <!-- Standings Snapshot Sidebar (Cols 9-12) -->
+    <aside class="col-span-12 md:col-span-4 space-y-4">
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-sm font-bold tracking-wider text-amber-400 uppercase">Standings Snapshot</h2>
+          <span id="standings-subhead" class="text-[10px] text-slate-400 font-mono">Thru W1</span>
+        </div>
+        <div id="standings-snapshot" class="space-y-4 text-xs">
+          <!-- Injected dynamically -->
+        </div>
+        <!-- Promotion / Relegation Legend -->
+        <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-3 mt-2 px-1">
+          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Leading (Promoted)</span>
+          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Lowest PP (Relegated)</span>
+        </div>
+      </div>
+    </aside>
   </div>
 
   <script>
     let leagueData = null;
     let currentQuarter = "1";
     let currentWeek = "1";
+
+    const quarterlyDivisions = {
+      "1": {
+        "0002": "00", "0003": "00", "0011": "00", "0005": "00",
+        "0001": "01", "0004": "01", "0009": "01", "0012": "01",
+        "0007": "02", "0010": "02", "0008": "02", "0006": "02"
+      },
+      "2": {
+        "0002": "00", "0003": "00", "0011": "00", "0001": "00",
+        "0005": "01", "0004": "01", "0012": "01", "0006": "01",
+        "0009": "02", "0007": "02", "0010": "02", "0008": "02"
+      },
+      "3": {
+        "0001": "00", "0003": "00", "0002": "00", "0006": "00",
+        "0011": "01", "0005": "01", "0012": "01", "0010": "01",
+        "0004": "02", "0007": "02", "0009": "02", "0008": "02"
+      }
+    };
 
     async function loadData() {
       try {
@@ -71,7 +105,7 @@
     function changeQuarter(q) {
       currentQuarter = q;
       const weeks = leagueData.quarters[q].weeks;
-      currentWeek = weeks[0].toString();
+      currentWeek = weeks.toString();
       renderWeeks();
       renderWeekData(currentWeek);
     }
@@ -81,10 +115,8 @@
       const weeks = leagueData.quarters[currentQuarter].weeks;
       container.innerHTML = weeks.map(w => {
         const active = w.toString() === currentWeek;
-        const cls = active 
-          ? "bg-amber-500 text-slate-950 font-bold" 
-          : "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold";
-        return `<button onclick="selectWeek('${w}')" class="w-full ${cls} py-2 px-3 rounded-lg text-center shadow">W${w}</button>`;
+        const cls = active ? "bg-amber-500 text-slate-950 font-bold" : "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold";
+        return `<button onclick="selectWeek('${w}')" class="w-full ${cls} py-2 px-3 rounded-lg text-center shadow transition-colors">W${w}</button>`;
       }).join('');
     }
 
@@ -94,53 +126,167 @@
       renderWeekData(currentWeek);
     }
 
-function renderWeekData(w) {
-  const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
-  if (!weekObj) return;
-  document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
+    function calculateStandings(upToWeek) {
+      const teams = {};
+      const activeDivisions = quarterlyDivisions[currentQuarter] || {};
+      const targetWeekNum = parseInt(upToWeek);
 
-  // Render Matchups
-  const mGrid = document.getElementById('matchups-grid');
-  mGrid.innerHTML = weekObj.matchups.map(m => `
-    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
-      <!-- Team 1 Row -->
-      <div class="flex justify-between items-center font-semibold">
-        <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team1.name}</span>
-        <div class="flex items-center justify-end space-x-2">
-          ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded shrink-0">1 VP</span>' : ''}
-          <span class="text-slate-200 font-bold font-mono text-right w-16">${m.team1.score.toFixed(2)}</span>
-        </div>
-      </div>
-      <!-- Team 2 Row -->
-      <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
-        <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team2.name}</span>
-        <div class="flex items-center justify-end space-x-2">
-          ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded shrink-0">1 VP</span>' : ''}
-          <span class="text-slate-200 font-bold font-mono text-right w-16">${m.team2.score.toFixed(2)}</span>
-        </div>
-      </div>
-    </div>
-  `).join('');
+      // Default divisions container
+      const divisions = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
+      const divisionNameMap = { "00": "Upper Division", "01": "Middle Division", "02": "Lower Division" };
 
-  // Render Battle Royale
-  const brGrid = document.getElementById('battle-royale-grid');
-  brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
-    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
-      <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
-      <div class="space-y-1">
-        ${weekObj.battle_royale[div].map((t, i) => `
-          <div class="flex justify-between items-center ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
-            <span>${i + 1}. ${t.name}</span>
-            <div class="flex items-center justify-end space-x-2">
-              ${t.battle_vp ? '<span class="text-amber-400 font-bold shrink-0 mr-1">1 VP</span>' : ''}
-              <span class="font-mono text-right w-10">${t.score.toFixed(1)}</span>
+      // Initialize all 12 teams from the active quarter dictionary
+      Object.keys(activeDivisions).forEach(teamId => {
+        teams[teamId] = {
+          id: teamId,
+          name: teamId, // Will be replaced by team name if available
+          division: activeDivisions[teamId],
+          vp: 0,
+          pp: 0,
+          pf: 0
+        };
+      });
+
+      // Accumulate VP, PF, and PP up to the selected week
+      const quarterWeeks = leagueData.quarters[currentQuarter]?.weeks || [];
+      quarterWeeks.forEach(wNum => {
+        if (wNum > targetWeekNum) return;
+        const weekObj = leagueData.quarters[currentQuarter]?.weekly_data?.[wNum.toString()];
+        if (!weekObj || !weekObj.battle_royale) return;
+
+        Object.keys(weekObj.battle_royale).forEach(divName => {
+          weekObj.battle_royale[divName].forEach(tEntry => {
+            if (!teams[tEntry.id]) {
+              teams[tEntry.id] = {
+                id: tEntry.id,
+                name: tEntry.name,
+                division: activeDivisions[tEntry.id] || "02",
+                vp: 0,
+                pp: 0,
+                pf: 0
+              };
+            }
+            teams[tEntry.id].name = tEntry.name; // Keep formatted name
+            teams[tEntry.id].vp += (tEntry.total_weekly_vp || 0);
+            teams[tEntry.id].pf += (tEntry.score || 0);
+            teams[tEntry.id].pp += (tEntry.pp || tEntry.score || 0);
+          });
+        });
+      });
+
+      // Group teams by division
+      Object.values(teams).forEach(t => {
+        const dName = divisionNameMap[t.division] || "Lower Division";
+        divisions[dName].push(t);
+      });
+
+      // Sort: VP descending, tiebreaker PF descending
+      Object.keys(divisions).forEach(d => {
+        divisions[d].sort((a, b) => {
+          if (b.vp !== a.vp) return b.vp - a.vp;
+          return b.pf - a.pf;
+        });
+      });
+
+      return divisions;
+    }
+
+    function renderWeekData(w) {
+      const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
+      if (!weekObj) return;
+
+      document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
+      document.getElementById('standings-subhead').innerText = `Thru Week ${w}`;
+
+      // Render Matchups
+      const mGrid = document.getElementById('matchups-grid');
+      mGrid.innerHTML = weekObj.matchups.map(m => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
+          <div class="flex justify-between items-center font-semibold">
+            <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team1.name}</span>
+            <div class="flex items-center justify-end space-x-2 shrink-0">
+              ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">1 VP</span>' : ''}
+              <span class="text-slate-200 font-bold font-mono text-right w-14">${m.team1.score.toFixed(2)}</span>
             </div>
           </div>
-        `).join('')}
-      </div>
-    </div>
-  `).join('');
-  }
+          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
+            <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team2.name}</span>
+            <div class="flex items-center justify-end space-x-2 shrink-0">
+              ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">1 VP</span>' : ''}
+              <span class="text-slate-200 font-bold font-mono text-right w-14">${m.team2.score.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Render Battle Royale
+      const brGrid = document.getElementById('battle-royale-grid');
+      brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
+          <div class="space-y-1">
+            ${weekObj.battle_royale[div].map((t, i) => `
+              <div class="flex justify-between items-center ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
+                <span class="truncate mr-2">${i + 1}. ${t.name}</span>
+                <div class="flex items-center justify-end space-x-2 shrink-0">
+                  ${t.battle_vp ? '<span class="text-amber-400 font-bold text-[10px] mr-1">1 VP</span>' : ''}
+                  <span class="font-mono text-right w-10">${t.score.toFixed(1)}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Render Standings Sidebar
+      const standingsDivs = calculateStandings(w);
+      const standingsContainer = document.getElementById('standings-snapshot');
+
+      // Safely identify lowest PP in Upper Division
+      const upperTeams = standingsDivs["Upper Division"] || [];
+      let upperRelegatedId = null;
+      if (upperTeams.length > 0) {
+        upperRelegatedId = upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min), upperTeams[0])?.id;
+      }
+
+      // Safely identify lowest PP in Middle Division (among non-#1 teams)
+      const middleTeams = standingsDivs["Middle Division"] || [];
+      let middleRelegatedId = null;
+      if (middleTeams.length > 1) {
+        const eligibleMiddle = middleTeams.slice(1);
+        middleRelegatedId = eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min), eligibleMiddle[0])?.id;
+      }
+
+      standingsContainer.innerHTML = Object.keys(standingsDivs).map(div => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
+          <div class="space-y-1.5">
+            <div class="grid grid-cols-12 gap-1 text-[10px] text-slate-400 font-semibold uppercase border-b border-slate-800/40 pb-1">
+              <span class="col-span-6">Team</span>
+              <span class="col-span-3 text-center">VP</span>
+              <span class="col-span-3 text-right">PP</span>
+            </div>
+            ${standingsDivs[div].map((t, idx) => {
+              const isPromoted = (div === "Middle Division" || div === "Lower Division") && idx === 0;
+              const isRelegated = (div === "Upper Division" && t.id === upperRelegatedId) || 
+                                  (div === "Middle Division" && t.id === middleRelegatedId);
+
+              let textStyle = "text-slate-400 font-normal";
+              if (isPromoted) textStyle = "text-white font-semibold";
+              else if (isRelegated) textStyle = "text-rose-400 font-semibold";
+
+              return `
+                <div class="grid grid-cols-12 gap-1 items-center ${textStyle}">
+                  <span class="col-span-6 truncate">${idx + 1}. ${t.name}</span>
+                  <span class="col-span-3 text-center font-mono font-bold ${isPromoted ? 'text-amber-400' : ''}">${t.vp}</span>
+                  <span class="col-span-3 text-right font-mono text-[11px]">${t.pp.toFixed(1)}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
 
     loadData();
   </script>
