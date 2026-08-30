@@ -94,43 +94,53 @@
       renderWeekData(currentWeek);
     }
 
-    function renderWeekData(w) {
-      const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
-      if (!weekObj) return;
+function renderWeekData(w) {
+  const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
+  if (!weekObj) return;
+  document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
 
-      document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
-
-      // Render Matchups
-      const mGrid = document.getElementById('matchups-grid');
-      mGrid.innerHTML = weekObj.matchups.map(m => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
-          <div class="flex justify-between items-center font-semibold">
-            <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team1.name}</span>
-            <span class="text-slate-200 font-bold">${m.team1.score.toFixed(2)} ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded ml-1">+1 VP</span>' : ''}</span>
-          </div>
-          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
-            <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team2.name}</span>
-            <span class="text-slate-200 font-bold">${m.team2.score.toFixed(2)} ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded ml-1">+1 VP</span>' : ''}</span>
-          </div>
+  // Render Matchups
+  const mGrid = document.getElementById('matchups-grid');
+  mGrid.innerHTML = weekObj.matchups.map(m => `
+    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
+      <!-- Team 1 Row -->
+      <div class="flex justify-between items-center font-semibold">
+        <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team1.name}</span>
+        <div class="flex items-center justify-end space-x-2">
+          ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded shrink-0">1 VP</span>' : ''}
+          <span class="text-slate-200 font-bold font-mono text-right w-16">${m.team1.score.toFixed(2)}</span>
         </div>
-      `).join('');
-
-      // Render Battle Royale
-      const brGrid = document.getElementById('battle-royale-grid');
-      brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
-          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
-          <div class="space-y-1">
-            ${weekObj.battle_royale[div].map((t, i) => `
-              <div class="flex justify-between ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
-                <span>${i + 1}. ${t.name}</span>
-                <span>${t.score.toFixed(1)} ${t.battle_vp ? '<span class="text-amber-400 font-bold">+1VP</span>' : ''}</span>
-              </div>
-            `).join('')}
-          </div>
+      </div>
+      <!-- Team 2 Row -->
+      <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
+        <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'}">${m.team2.name}</span>
+        <div class="flex items-center justify-end space-x-2">
+          ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded shrink-0">1 VP</span>' : ''}
+          <span class="text-slate-200 font-bold font-mono text-right w-16">${m.team2.score.toFixed(2)}</span>
         </div>
-      `).join('');
-    }
+      </div>
+    </div>
+  `).join('');
+
+  // Render Battle Royale
+  const brGrid = document.getElementById('battle-royale-grid');
+  brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
+    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
+      <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
+      <div class="space-y-1">
+        ${weekObj.battle_royale[div].map((t, i) => `
+          <div class="flex justify-between items-center ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
+            <span>${i + 1}. ${t.name}</span>
+            <div class="flex items-center justify-end space-x-2">
+              ${t.battle_vp ? '<span class="text-amber-400 font-bold shrink-0 mr-1">1 VP</span>' : ''}
+              <span class="font-mono text-right w-10">${t.score.toFixed(1)}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+  }
 
     loadData();
   </script>

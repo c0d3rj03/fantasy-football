@@ -89,37 +89,72 @@ async function main() {
       continue;
     }
 
-    const rawMatchups = resultsData.weeklyResults.matchup;
+    const rawMatchups = Array.isArray(resultsData.weeklyResults.matchup)
+      ? resultsData.weeklyResults.matchup
+      : [resultsData.weeklyResults.matchup];
+
     const matchups = [];
-    const weeklyScores = [];
+    const weeklyScoresMap = {};
 
     // Parse Head-to-Head Matchups
     rawMatchups.forEach(m => {
-      const f1 = m.franchise[0];
-      const f2 = m.franchise[1];
+      const f1 = Array.isArray(m.franchise) ? m.franchise[0] : m.franchise;
+      const f2 = Array.isArray(m.franchise) ? m.franchise[1] : null;
+
+      if (!f1 || !f2) return;
 
       const score1 = parseFloat(f1.score || 0);
       const score2 = parseFloat(f2.score || 0);
-
       let vp1 = 0, vp2 = 0;
+      
       if (score1 > score2) vp1 = 1;
       else if (score2 > score1) vp2 = 1;
       else { vp1 = 0.5; vp2 = 0.5; }
 
+      // Keep individual matchups for the H2H display
       matchups.push({
         team1: { id: f1.id, name: franchises[f1.id]?.name || f1.id, score: score1, vp_earned: vp1 },
         team2: { id: f2.id, name: franchises[f2.id]?.name || f2.id, score: score2, vp_earned: vp2 }
       });
 
-      weeklyScores.push({ id: f1.id, name: franchises[f1.id]?.name || f1.id, score: score1, division: franchises[f1.id]?.division, h2h_vp: vp1 });
-      weeklyScores.push({ id: f2.id, name: franchises[f2.id]?.name || f2.id, score: score2, division: franchises[f2.id]?.division, h2h_vp: vp2 });
+      // Deduplicate and accumulate Team 1
+      if (!weeklyScoresMap[f1.id]) {
+        weeklyScoresMap[f1.id] = { 
+          id: f1.id, 
+          name: franchises[f1.id]?.name || f1.id, 
+          score: score1, 
+          division: franchises[f1.id]?.division, 
+          h2h_vp: vp1 
+        };
+      } else {
+        weeklyScoresMap[f1.id].h2h_vp += vp1;
+      }
+
+      // Deduplicate and accumulate Team 2
+      if (!weeklyScoresMap[f2.id]) {
+        weeklyScoresMap[f2.id] = { 
+          id: f2.id, 
+          name: franchises[f2.id]?.name || f2.id, 
+          score: score2, 
+          division: franchises[f2.id]?.division, 
+          h2h_vp: vp2 
+        };
+      } else {
+        weeklyScoresMap[f2.id].h2h_vp += vp2;
+      }
     });
+
+    // 12 unique teams mapped cleanly
+    const weeklyScores = Object.values(weeklyScoresMap);
 
     // Parse In-Division Battle Royale (Top 2 scores per division earn 1 VP)
     const battleRoyale = {};
     Object.keys(divisionNames).forEach(divId => {
       const divName = divisionNames[divId];
-      const divTeams = weeklyScores.filter(t => t.division === divId).sort((a, b) => b.score - a.score);
+      const divTeams = weeklyScores
+        .filter(t => t.division === divId)
+        .map(t => ({ ...t })) // Clone to avoid mutation across divisions
+        .sort((a, b) => b.score - a.score);
 
       divTeams.forEach((t, idx) => {
         t.battle_vp = (idx < 2) ? 1 : 0;
