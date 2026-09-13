@@ -8,59 +8,67 @@
 </head>
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
   <!-- Header -->
-  <header class="border-b border-slate-800 bg-slate-950 px-6 py-4 flex justify-between items-center">
+  <header class="border-b border-slate-800 bg-slate-950 px-4 md:px-6 py-3.5 flex justify-between items-center">
     <div class="flex items-center space-x-3">
-      <span class="text-2xl font-black tracking-wider text-amber-500">PBR</span>
-      <h1 class="text-lg font-bold text-slate-200">PREMIER BATTLE ROYALE</h1>
+      <span class="text-xl md:text-2xl font-black tracking-wider text-amber-500">PBR</span>
+      <h1 class="text-sm md:text-lg font-bold text-slate-200">PREMIER BATTLE ROYALE</h1>
     </div>
     <div class="flex items-center space-x-2">
-      <label for="quarter-select" class="text-sm font-medium text-slate-400">Quarter:</label>
-      <select id="quarter-select" onchange="changeQuarter(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-amber-500 outline-none">
-        <option value="1">Quarter 1 (W1-W4)</option>
-        <option value="2">Quarter 2 (W5-W8)</option>
-        <option value="3">Quarter 3 (W9-W12)</option>
+      <label for="quarter-select" class="text-xs md:text-sm font-medium text-slate-400">Quarter:</label>
+      <select id="quarter-select" onchange="changeQuarter(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs md:text-sm rounded-lg px-2.5 py-1 focus:ring-2 focus:ring-amber-500 outline-none">
+        <option value="1">Q1 (W1-W4)</option>
+        <option value="2">Q2 (W5-W8)</option>
+        <option value="3">Q3 (W9-W12)</option>
       </select>
     </div>
   </header>
 
   <!-- Main Container -->
-  <div class="max-w-7xl mx-auto p-4 grid grid-cols-12 gap-4">
-    <!-- Week Navigation Buttons (Col 1) -->
-    <aside id="weeks-list" class="col-span-12 md:col-span-1 flex md:flex-col gap-2">
-      <!-- Injected dynamically -->
+  <div class="max-w-7xl mx-auto p-3 md:p-4 grid grid-cols-12 gap-3 md:gap-4">
+    <!-- Left Navigation: Week Selector (Col 1) -->
+    <aside class="col-span-12 md:col-span-1">
+    <div id="quarter-label" class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5 text-center">
+      Q1
+    </div>
+      <div id="weeks-list" class="flex md:flex-col gap-1.5">
+        <!-- Injected dynamically -->
+      </div>
     </aside>
 
-    <!-- Center Content: Matchups & Battle Royale (Cols 2-8) -->
-    <main class="col-span-12 md:col-span-7 space-y-4">
+    <!-- Center Content: Matchups & Battle Royale (Cols 2-7) -->
+    <main id="main-content" class="col-span-12 md:col-span-6 space-y-3 md:space-y-4">
       <!-- Head-to-Head Matchups -->
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
-        <h2 id="matchup-header" class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">Head-to-Head Matchups</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="matchups-grid">
-          <!-- Injected dynamically -->
-        </div>
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+        <h2 id="matchup-header" class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">Head-to-Head Matchups</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="matchups-grid"></div>
       </div>
 
       <!-- In-Division Battle Royale -->
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
-        <h2 class="text-sm font-bold tracking-wider text-amber-400 uppercase mb-3">In-Division Battle Royale</h2>
-        <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <!-- Injected dynamically -->
-        </div>
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+        <h2 class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">In-Division Battle Royale</h2>
+        <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs"></div>
       </div>
     </main>
 
-    <!-- Standings Snapshot Sidebar (Cols 9-12) -->
-    <aside class="col-span-12 md:col-span-4 space-y-4">
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-4">
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-sm font-bold tracking-wider text-amber-400 uppercase">Standings Snapshot</h2>
+    <!-- Right Sidebar: Standings View (Cols 8-12) -->
+    <aside id="sidebar-content" class="col-span-12 md:col-span-5 space-y-3 md:space-y-4">
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+        <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase">Standings</span>
+            <span class="text-xs text-slate-400 font-semibold">(</span>
+            <button id="btn-current" onclick="setStandingsMode('current')" class="text-xs font-bold transition-all">Current</button>
+            <span class="text-xs text-slate-500">/</span>
+            <button id="btn-season" onclick="setStandingsMode('season')" class="text-xs font-bold transition-all">Season</button>
+            <span class="text-xs text-slate-400 font-semibold">)</span>
+          </div>
           <span id="standings-subhead" class="text-[10px] text-slate-400 font-mono">Thru W1</span>
         </div>
-        <div id="standings-snapshot" class="space-y-4 text-xs">
-          <!-- Injected dynamically -->
-        </div>
-        <!-- Promotion / Relegation Legend -->
-        <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-3 mt-2 px-1">
+
+        <div id="standings-snapshot" class="space-y-3 text-xs"></div>
+
+        <!-- Legend -->
+        <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2.5 mt-2.5 px-1">
           <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Leading (Promoted)</span>
           <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Lowest PP (Relegated)</span>
         </div>
@@ -72,30 +80,19 @@
     let leagueData = null;
     let currentQuarter = "1";
     let currentWeek = "1";
+    let standingsMode = "current"; // "current" or "season"
 
-    const quarterlyDivisions = {
-      "1": {
-        "0002": "00", "0003": "00", "0011": "00", "0005": "00",
-        "0001": "01", "0004": "01", "0009": "01", "0012": "01",
-        "0007": "02", "0010": "02", "0008": "02", "0006": "02"
-      },
-      "2": {
-        "0002": "00", "0003": "00", "0011": "00", "0001": "00",
-        "0005": "01", "0004": "01", "0012": "01", "0006": "01",
-        "0009": "02", "0007": "02", "0010": "02", "0008": "02"
-      },
-      "3": {
-        "0001": "00", "0003": "00", "0002": "00", "0006": "00",
-        "0011": "01", "0005": "01", "0012": "01", "0010": "01",
-        "0004": "02", "0007": "02", "0009": "02", "0008": "02"
-      }
+    const quarterWeeksMap = {
+      "1": ["1", "2", "3", "4"],
+      "2": ["5", "6", "7", "8"],
+      "3": ["9", "10", "11", "12"]
     };
 
     async function loadData() {
       try {
         const res = await fetch('data.json');
         leagueData = await res.json();
-        renderWeeks();
+        renderWeeksNav();
         renderWeekData(currentWeek);
       } catch (e) {
         console.error("Error loading data.json:", e);
@@ -103,133 +100,92 @@
     }
 
     function changeQuarter(q) {
-      currentQuarter = q;
-      const weeks = leagueData.quarters[q].weeks;
-      currentWeek = weeks.toString();
-      renderWeeks();
+      currentQuarter = q.toString();
+      const weeksInQ = quarterWeeksMap[currentQuarter] || ["1"];
+      currentWeek = weeksInQ[0];
+      renderWeeksNav();
       renderWeekData(currentWeek);
     }
 
-    function renderWeeks() {
+    function setStandingsMode(mode) {
+      standingsMode = mode;
+      updateToggleUI();
+      renderWeekData(currentWeek);
+    }
+
+    function updateToggleUI() {
+      const btnCurrent = document.getElementById('btn-current');
+      const btnSeason = document.getElementById('btn-season');
+
+      if (standingsMode === 'current') {
+        btnCurrent.className = "text-xs font-bold text-amber-400 underline underline-offset-4";
+        btnSeason.className = "text-xs font-medium text-slate-400 hover:text-slate-200";
+      } else {
+        btnCurrent.className = "text-xs font-medium text-slate-400 hover:text-slate-200";
+        btnSeason.className = "text-xs font-bold text-amber-400 underline underline-offset-4";
+      }
+    }
+
+    function renderWeeksNav() {
+      document.getElementById('quarter-label').innerText = `Q${currentQuarter}`;
+      document.getElementById('quarter-select').value = currentQuarter;
+
       const container = document.getElementById('weeks-list');
-      const weeks = leagueData.quarters[currentQuarter].weeks;
+      const weeks = quarterWeeksMap[currentQuarter] || ["1", "2", "3", "4"];
+
       container.innerHTML = weeks.map(w => {
         const active = w.toString() === currentWeek;
         const cls = active ? "bg-amber-500 text-slate-950 font-bold" : "bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold";
-        return `<button onclick="selectWeek('${w}')" class="w-full ${cls} py-2 px-3 rounded-lg text-center shadow transition-colors">W${w}</button>`;
+        return `<button onclick="selectWeek('${w}')" class="flex-1 md:w-full ${cls} py-1.5 px-2 rounded-lg text-center text-xs shadow transition-colors">W${w}</button>`;
       }).join('');
     }
 
     function selectWeek(w) {
       currentWeek = w.toString();
-      renderWeeks();
+      renderWeeksNav();
       renderWeekData(currentWeek);
     }
 
-    function calculateStandings(upToWeek) {
-      const teams = {};
-      const activeDivisions = quarterlyDivisions[currentQuarter] || {};
-      const targetWeekNum = parseInt(upToWeek);
-
-      // Default divisions container
-      const divisions = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
-      const divisionNameMap = { "00": "Upper Division", "01": "Middle Division", "02": "Lower Division" };
-
-      // Initialize all 12 teams from the active quarter dictionary
-      Object.keys(activeDivisions).forEach(teamId => {
-        teams[teamId] = {
-          id: teamId,
-          name: teamId, // Will be replaced by team name if available
-          division: activeDivisions[teamId],
-          vp: 0,
-          pp: 0,
-          pf: 0
-        };
-      });
-
-      // Accumulate VP, PF, and PP up to the selected week
-      const quarterWeeks = leagueData.quarters[currentQuarter]?.weeks || [];
-      quarterWeeks.forEach(wNum => {
-        if (wNum > targetWeekNum) return;
-        const weekObj = leagueData.quarters[currentQuarter]?.weekly_data?.[wNum.toString()];
-        if (!weekObj || !weekObj.battle_royale) return;
-
-        Object.keys(weekObj.battle_royale).forEach(divName => {
-          weekObj.battle_royale[divName].forEach(tEntry => {
-            if (!teams[tEntry.id]) {
-              teams[tEntry.id] = {
-                id: tEntry.id,
-                name: tEntry.name,
-                division: activeDivisions[tEntry.id] || "02",
-                vp: 0,
-                pp: 0,
-                pf: 0
-              };
-            }
-            teams[tEntry.id].name = tEntry.name; // Keep formatted name
-            teams[tEntry.id].vp += (tEntry.total_weekly_vp || 0);
-            teams[tEntry.id].pf += (tEntry.score || 0);
-            teams[tEntry.id].pp += (tEntry.pp || tEntry.score || 0);
-          });
-        });
-      });
-
-      // Group teams by division
-      Object.values(teams).forEach(t => {
-        const dName = divisionNameMap[t.division] || "Lower Division";
-        divisions[dName].push(t);
-      });
-
-      // Sort: VP descending, tiebreaker PF descending
-      Object.keys(divisions).forEach(d => {
-        divisions[d].sort((a, b) => {
-          if (b.vp !== a.vp) return b.vp - a.vp;
-          return b.pf - a.pf;
-        });
-      });
-
-      return divisions;
-    }
-
     function renderWeekData(w) {
-      const weekObj = leagueData.quarters[currentQuarter].weekly_data[w];
+      const weekObj = leagueData.weekly_data?.[w];
       if (!weekObj) return;
 
-      document.getElementById('matchup-header').innerText = `Week ${w}: Final Scores & Matchups`;
+      document.getElementById('matchup-header').innerText = `Week ${w} (Quarter ${weekObj.quarter}): Matchups`;
       document.getElementById('standings-subhead').innerText = `Thru Week ${w}`;
+      updateToggleUI();
 
-      // Render Matchups
+      // 1. Render Matchups
       const mGrid = document.getElementById('matchups-grid');
       mGrid.innerHTML = weekObj.matchups.map(m => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs space-y-2">
-          <div class="flex justify-between items-center font-semibold">
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs space-y-1">
+          <div class="flex justify-between items-center font-semibold py-0.5">
             <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team1.name}</span>
-            <div class="flex items-center justify-end space-x-2 shrink-0">
-              ${m.team1.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">1 VP</span>' : ''}
-              <span class="text-slate-200 font-bold font-mono text-right w-14">${m.team1.score.toFixed(2)}</span>
+            <div class="flex items-center justify-end space-x-1.5 shrink-0">
+              ${m.team1.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
+              <span class="text-slate-200 font-bold font-mono text-right w-12">${m.team1.score.toFixed(2)}</span>
             </div>
           </div>
-          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1">
+          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1 py-0.5">
             <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team2.name}</span>
-            <div class="flex items-center justify-end space-x-2 shrink-0">
-              ${m.team2.vp_earned ? '<span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">1 VP</span>' : ''}
-              <span class="text-slate-200 font-bold font-mono text-right w-14">${m.team2.score.toFixed(2)}</span>
+            <div class="flex items-center justify-end space-x-1.5 shrink-0">
+              ${m.team2.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
+              <span class="text-slate-200 font-bold font-mono text-right w-12">${m.team2.score.toFixed(2)}</span>
             </div>
           </div>
         </div>
       `).join('');
 
-      // Render Battle Royale
+      // 2. Render Battle Royale
       const brGrid = document.getElementById('battle-royale-grid');
       brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
-          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5">
+          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-1.5">${div}</h3>
           <div class="space-y-1">
             ${weekObj.battle_royale[div].map((t, i) => `
-              <div class="flex justify-between items-center ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
+              <div class="flex justify-between items-center py-0.5 ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
                 <span class="truncate mr-2">${i + 1}. ${t.name}</span>
-                <div class="flex items-center justify-end space-x-2 shrink-0">
-                  ${t.battle_vp ? '<span class="text-amber-400 font-bold text-[10px] mr-1">1 VP</span>' : ''}
+                <div class="flex items-center justify-end space-x-1.5 shrink-0">
+                  ${t.battle_vp ? '<span class="text-amber-400 font-bold text-[9px] mr-0.5">1 VP</span>' : ''}
                   <span class="font-mono text-right w-10">${t.score.toFixed(1)}</span>
                 </div>
               </div>
@@ -238,55 +194,105 @@
         </div>
       `).join('');
 
-      // Render Standings Sidebar
-      const standingsDivs = calculateStandings(w);
-      const standingsContainer = document.getElementById('standings-snapshot');
+      // 3. Render Standings Sidebar
+      const targetStandings = standingsMode === 'season' ? weekObj.season_standings : weekObj.quarter_standings;
+      const qStandings = weekObj.quarter_standings || {};
 
-      // Safely identify lowest PP in Upper Division
-      const upperTeams = standingsDivs["Upper Division"] || [];
-      let upperRelegatedId = null;
-      if (upperTeams.length > 0) {
-        upperRelegatedId = upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min), upperTeams[0])?.id;
-      }
+      // Determine Promotion & Relegation Teams
+      const upperTeams = qStandings["Upper Division"] || [];
+      const upperRelegatedTeam = upperTeams.length > 0 
+        ? upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min)) 
+        : null;
 
-      // Safely identify lowest PP in Middle Division (among non-#1 teams)
-      const middleTeams = standingsDivs["Middle Division"] || [];
-      let middleRelegatedId = null;
+      const middleTeams = qStandings["Middle Division"] || [];
+      const middlePromotedTeam = middleTeams[0] || null; // #1 VP in Middle
+      
+      let middleRelegatedTeam = null;
       if (middleTeams.length > 1) {
-        const eligibleMiddle = middleTeams.slice(1);
-        middleRelegatedId = eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min), eligibleMiddle[0])?.id;
+        const eligibleMiddle = middleTeams.slice(1); // Exclude #1 team
+        middleRelegatedTeam = eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min));
       }
 
-      standingsContainer.innerHTML = Object.keys(standingsDivs).map(div => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-3">
-          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-2">${div}</h3>
-          <div class="space-y-1.5">
-            <div class="grid grid-cols-12 gap-1 text-[10px] text-slate-400 font-semibold uppercase border-b border-slate-800/40 pb-1">
-              <span class="col-span-6">Team</span>
-              <span class="col-span-3 text-center">VP</span>
-              <span class="col-span-3 text-right">PP</span>
+      const lowerTeams = qStandings["Lower Division"] || [];
+      const lowerPromotedTeam = lowerTeams[0] || null; // #1 VP in Lower
+
+      const upperRelegatedId = upperRelegatedTeam?.id;
+      const middleRelegatedId = middleRelegatedTeam?.id;
+
+      // Promotion & Relegation Summary Banner (Displayed on Week 4, 8, 12)
+      let summaryBannerHtml = '';
+      if (w === "4" || w === "8" || w === "12") {
+        summaryBannerHtml = `
+          <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs mb-3 space-y-2">
+            <div class="flex justify-between items-center border-b border-amber-500/20 pb-1.5">
+              <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px]">Q${weekObj.quarter} Promotion & Relegation Summary</span>
+              <span class="text-[9px] bg-amber-500/20 text-amber-300 font-mono px-1.5 py-0.5 rounded">Quarter End</span>
             </div>
-            ${standingsDivs[div].map((t, idx) => {
-              const isPromoted = (div === "Middle Division" || div === "Lower Division") && idx === 0;
-              const isRelegated = (div === "Upper Division" && t.id === upperRelegatedId) || 
-                                  (div === "Middle Division" && t.id === middleRelegatedId);
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+              <!-- Upper <-> Middle Swap -->
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800 space-y-1">
+                <div class="text-[10px] font-bold text-slate-400 uppercase">Upper / Middle Move</div>
+                <div class="text-white font-medium flex items-center">
+                  <span class="text-emerald-400 font-bold mr-1.5">⬆️</span> ${middlePromotedTeam?.name || 'N/A'} <span class="text-[9px] text-slate-400 ml-1">(to Upper)</span>
+                </div>
+                <div class="text-rose-400 font-medium flex items-center">
+                  <span class="text-rose-400 font-bold mr-1.5">⬇️</span> ${upperRelegatedTeam?.name || 'N/A'} <span class="text-[9px] text-slate-400 ml-1">(to Middle)</span>
+                </div>
+              </div>
+
+              <!-- Middle <-> Lower Swap -->
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800 space-y-1">
+                <div class="text-[10px] font-bold text-slate-400 uppercase">Middle / Lower Move</div>
+                <div class="text-white font-medium flex items-center">
+                  <span class="text-emerald-400 font-bold mr-1.5">⬆️</span> ${lowerPromotedTeam?.name || 'N/A'} <span class="text-[9px] text-slate-400 ml-1">(to Middle)</span>
+                </div>
+                <div class="text-rose-400 font-medium flex items-center">
+                  <span class="text-rose-400 font-bold mr-1.5">⬇️</span> ${middleRelegatedTeam?.name || 'N/A'} <span class="text-[9px] text-slate-400 ml-1">(to Lower)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const snapshotContainer = document.getElementById('standings-snapshot');
+
+      snapshotContainer.innerHTML = summaryBannerHtml + Object.keys(targetStandings).map(div => `
+        <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5">
+          <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-1.5">${div}</h3>
+          <div class="space-y-1">
+            <div class="grid grid-cols-12 gap-1 text-[10px] text-slate-400 font-semibold uppercase border-b border-slate-800/40 pb-1">
+              <span class="col-span-4">Team</span>
+              <span class="col-span-2 text-center">VP</span>
+              <span class="col-span-2 text-center">WLT</span>
+              <span class="col-span-2 text-right">PF</span>
+              <span class="col-span-2 text-right">PP</span>
+            </div>
+            ${targetStandings[div].map((t, idx) => {
+              // Only highlight promotion/relegation in Current (Quarterly) mode
+              const isCurrentMode = standingsMode === 'current';
+              const isPromoted = isCurrentMode && (div === "Middle Division" || div === "Lower Division") && idx === 0;
+              const isRelegated = isCurrentMode && ((div === "Upper Division" && t.id === upperRelegatedId) || 
+                                  (div === "Middle Division" && t.id === middleRelegatedId));
 
               let textStyle = "text-slate-400 font-normal";
               if (isPromoted) textStyle = "text-white font-semibold";
               else if (isRelegated) textStyle = "text-rose-400 font-semibold";
 
               return `
-                <div class="grid grid-cols-12 gap-1 items-center ${textStyle}">
-                  <span class="col-span-6 truncate">${idx + 1}. ${t.name}</span>
-                  <span class="col-span-3 text-center font-mono font-bold ${isPromoted ? 'text-amber-400' : ''}">${t.vp}</span>
-                  <span class="col-span-3 text-right font-mono text-[11px]">${t.pp.toFixed(1)}</span>
+                <div class="grid grid-cols-12 gap-1 items-center py-0.5 ${textStyle}">
+                  <span class="col-span-4 truncate">${idx + 1}. ${t.name}</span>
+                  <span class="col-span-2 text-center font-mono font-bold ${isPromoted ? 'text-amber-400' : ''}">${t.vp}</span>
+                  <span class="col-span-2 text-center font-mono text-[9px] text-slate-400">${t.wins}-${t.losses}-${t.ties}</span>
+                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pf.toFixed(1)}</span>
+                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pp.toFixed(1)}</span>
                 </div>
               `;
             }).join('')}
           </div>
         </div>
       `).join('');
-    }
+      }
 
     loadData();
   </script>
