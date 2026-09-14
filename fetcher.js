@@ -52,11 +52,11 @@ function evaluatePromotionRelegation(quarterStandings) {
   const middleTeams = quarterStandings["Middle Division"] || [];
   const lowerTeams = quarterStandings["Lower Division"] || [];
 
-  // 1. Promoted Teams (1st place VP in Middle and Lower)
+  // Promoted Teams (#1 VP in Middle and Lower)
   const promotedFromMiddle = middleTeams[0]?.id;
   const promotedFromLower = lowerTeams[0]?.id;
 
-  // 2. Relegated Teams (Lowest PP in Upper, Lowest PP in Middle among non-promoted)
+  // Relegated Teams (Lowest PP in Upper, Lowest PP in Middle among non-promoted)
   const upperRelegated = upperTeams.length > 0 
     ? upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min))?.id 
     : null;
@@ -66,7 +66,6 @@ function evaluatePromotionRelegation(quarterStandings) {
     ? eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min))?.id 
     : null;
 
-  // Apply Swaps
   if (promotedFromMiddle && upperRelegated) {
     nextDivisions[promotedFromMiddle] = "00"; // Middle #1 -> Upper
     nextDivisions[upperRelegated] = "01";     // Upper lowest PP -> Middle
@@ -80,16 +79,52 @@ function evaluatePromotionRelegation(quarterStandings) {
   return nextDivisions;
 }
 
+// Calculate Postseason Head Start Bonuses
+function calculatePostseasonBonuses(seasonAccumulators, postseasonDivisions) {
+  const bonuses = {};
+  const divTeamsMap = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
+
+  Object.keys(postseasonDivisions).forEach(tId => {
+    const dCode = postseasonDivisions[tId];
+    const dName = divisionNames[dCode];
+    const stats = seasonAccumulators[tId] || { pf: 0, pp: 0 };
+    divTeamsMap[dName].push({
+      id: tId,
+      pf_per_game: stats.pf / 12,
+      pp_per_game: stats.pp / 12
+    });
+  });
+
+  // Upper Division Bonus
+  const upper = divTeamsMap["Upper Division"];
+  const upperAvgPF = upper.reduce((sum, t) => sum + t.pf_per_game, 0) / (upper.length || 1);
+  upper.forEach(t => {
+    const diff = t.pf_per_game - upperAvgPF;
+    bonuses[t.id] = diff > 0 ? parseFloat((diff * 5).toFixed(2)) : 0.00;
+  });
+
+  // Middle Division Bonus
+  const middle = divTeamsMap["Middle Division"];
+  const middleMaxPP = Math.max(...middle.map(t => t.pp_per_game), 0);
+  middle.forEach(t => {
+    const diff = middleMaxPP - t.pp_per_game;
+    bonuses[t.id] = parseFloat((diff * 5).toFixed(2));
+  });
+
+  // Lower Division Bonus
+  const lower = divTeamsMap["Lower Division"];
+  const lowerMaxPP = Math.max(...lower.map(t => t.pp_per_game), 0);
+  lower.forEach(t => {
+    const diff = lowerMaxPP - t.pp_per_game;
+    bonuses[t.id] = parseFloat((diff * 5).toFixed(2));
+  });
+
+  return bonuses;
+}
+
 async function main() {
   const franchises = await fetchFranchises();
-  const leagueData = {
-    quarters: {
-      "1": { weeks: [1, 2, 3, 4] },
-      "2": { weeks: [5, 6, 7, 8] },
-      "3": { weeks: [9, 10, 11, 12] }
-    },
-    weekly_data: {}
-  };
+  const leagueData = { weekly_data: {}, postseason_matrix: {} };
 
   let quarterAccumulators = {};
   const seasonAccumulators = {};
@@ -99,23 +134,16 @@ async function main() {
       acc[id] = {
         id: id,
         name: franchises[id]?.name || id,
-        h2h_vp: 0,
-        battle_vp: 0,
-        vp: 0,
-        pf: 0,
-        pp: 0,
-        wins: 0,
-        losses: 0,
-        ties: 0
+        h2h_vp: 0, battle_vp: 0, vp: 0, pf: 0, pp: 0, wins: 0, losses: 0, ties: 0
       };
     }
   };
 
+  // WEEKS 1 - 12 (Regular Season)
   for (let week = 1; week <= 12; week++) {
     const quarter = Math.ceil(week / 4);
     console.log(`Fetching Week ${week} (Quarter ${quarter})...`);
 
-    // Reset quarter accumulators at boundaries (W1, W5, W9)
     if (week === 1 || week === 5 || week === 9) {
       quarterAccumulators = {};
     }
@@ -193,7 +221,6 @@ async function main() {
       });
     });
 
-    // Battle Royale Calculation
     const battleRoyale = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
     const divScoresMap = { "00": [], "01": [], "02": [] };
 
@@ -230,7 +257,6 @@ async function main() {
       });
     });
 
-    // Generate Quarter-to-Date Standings Snapshot
     const quarterStandings = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
     Object.keys(activeDivisions).forEach(tId => {
       const dCode = activeDivisions[tId];
@@ -247,7 +273,6 @@ async function main() {
       });
     });
 
-    // Generate Season-to-Date (Year-to-Date) Standings Snapshot
     const seasonStandings = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
     Object.keys(activeDivisions).forEach(tId => {
       const dCode = activeDivisions[tId];
@@ -264,7 +289,6 @@ async function main() {
       });
     });
 
-    // Store complete weekly snapshot
     leagueData.weekly_data[week.toString()] = {
       week: week,
       quarter: quarter,
@@ -275,15 +299,121 @@ async function main() {
       season_standings: seasonStandings
     };
 
-    // QUARTER BOUNDARY: Evaluate Promotion / Relegation after W4 and W8
-    if (week === 4 || week === 8) {
+    if (week === 4 || week === 8 || week === 12) {
       console.log(`Evaluating Promotion/Relegation after Week ${week}...`);
       activeDivisions = evaluatePromotionRelegation(quarterStandings);
     }
   }
 
+  // WEEKS 13 - 17 (Postseason Guillotine Matrix)
+  const postseasonDivisions = { ...activeDivisions };
+  const bonuses = calculatePostseasonBonuses(seasonAccumulators, postseasonDivisions);
+
+  const draftSlotMap = {
+    "Upper Division": { 1: "1.12", 2: "1.11", 3: "1.10", 4: "1.09" },
+    "Middle Division": { 1: "1.05", 2: "1.06", 3: "1.07", 4: "1.08" },
+    "Lower Division": { 1: "1.01", 2: "1.02", 3: "1.03", 4: "1.04" }
+  };
+
+  const postseasonScores = {};
+  Object.keys(postseasonDivisions).forEach(tId => {
+    postseasonScores[tId] = {
+      id: tId,
+      name: franchises[tId]?.name || tId,
+      division: divisionNames[postseasonDivisions[tId]],
+      head_start: bonuses[tId] || 0,
+      scores: { "13": 0, "14": 0, "15": 0, "16": 0, "17": 0 },
+      cumulative_after: { "13": bonuses[tId] || 0, "14": bonuses[tId] || 0, "15": bonuses[tId] || 0, "16": bonuses[tId] || 0, "17": bonuses[tId] || 0 },
+      eliminated_week: null,
+      finish_place: null,
+      draft_slot: null
+    };
+  });
+
+  for (let week = 13; week <= 17; week++) {
+    console.log(`Fetching Postseason Week ${week}...`);
+    let resultsData;
+    try {
+      resultsData = await fetchAPI('weeklyResults', { W: week.toString() });
+    } catch (e) {
+      console.error(`Failed to fetch Week ${week}:`, e);
+      continue;
+    }
+
+    if (resultsData && resultsData.weeklyResults && resultsData.weeklyResults.matchup) {
+      const rawMatchups = Array.isArray(resultsData.weeklyResults.matchup)
+        ? resultsData.weeklyResults.matchup
+        : [resultsData.weeklyResults.matchup];
+
+      rawMatchups.forEach(m => {
+        const franchisesList = Array.isArray(m.franchise) ? m.franchise : [m.franchise];
+        franchisesList.forEach(f => {
+          const score = parseFloat(f.score || 0);
+          if (postseasonScores[f.id]) {
+            postseasonScores[f.id].scores[week.toString()] = score;
+          }
+        });
+      });
+    }
+
+    Object.keys(postseasonScores).forEach(tId => {
+      let sum = postseasonScores[tId].head_start;
+      for (let w = 13; w <= week; w++) {
+        sum += (postseasonScores[tId].scores[w.toString()] || 0);
+      }
+      postseasonScores[tId].cumulative_after[week.toString()] = parseFloat(sum.toFixed(2));
+    });
+
+    ["Upper Division", "Middle Division", "Lower Division"].forEach(dName => {
+      const divTeams = Object.values(postseasonScores).filter(t => t.division === dName);
+
+      if (week === 14) {
+        const active = divTeams.filter(t => !t.eliminated_week);
+        if (active.length > 0) {
+          const eliminated = active.reduce((min, t) => t.cumulative_after["14"] < min.cumulative_after["14"] ? t : min);
+          eliminated.eliminated_week = 14;
+          eliminated.finish_place = 4;
+          eliminated.draft_slot = draftSlotMap[dName][4];
+        }
+      } else if (week === 15) {
+        const active = divTeams.filter(t => !t.eliminated_week);
+        if (active.length > 0) {
+          const eliminated = active.reduce((min, t) => t.cumulative_after["15"] < min.cumulative_after["15"] ? t : min);
+          eliminated.eliminated_week = 15;
+          eliminated.finish_place = 3;
+          eliminated.draft_slot = draftSlotMap[dName][3];
+        }
+      } else if (week === 17) {
+        const active = divTeams.filter(t => !t.eliminated_week);
+        if (active.length >= 2) {
+          active.sort((a, b) => b.cumulative_after["17"] - a.cumulative_after["17"]);
+          const winner = active[0];
+          const second = active[1];
+
+          second.eliminated_week = 17;
+          second.finish_place = 2;
+          second.draft_slot = draftSlotMap[dName][2];
+
+          winner.finish_place = 1;
+          winner.draft_slot = draftSlotMap[dName][1];
+        }
+      }
+    });
+  }
+
+  const postseasonSummary = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };
+  Object.values(postseasonScores).forEach(t => {
+    postseasonSummary[t.division].push(t);
+  });
+
+  Object.keys(postseasonSummary).forEach(d => {
+    postseasonSummary[d].sort((a, b) => b.cumulative_after["17"] - a.cumulative_after["17"]);
+  });
+
+  leagueData.postseason_matrix = postseasonSummary;
+
   fs.writeFileSync('data.json', JSON.stringify(leagueData, null, 2));
-  console.log("Successfully generated dynamic data.json!");
+  console.log("Successfully generated complete data.json with Postseason Matrix!");
 }
 
 main().catch(console.error);

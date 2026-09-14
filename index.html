@@ -14,73 +14,89 @@
       <h1 class="text-sm md:text-lg font-bold text-slate-200">PREMIER BATTLE ROYALE</h1>
     </div>
     <div class="flex items-center space-x-2">
-      <label for="quarter-select" class="text-xs md:text-sm font-medium text-slate-400">Quarter:</label>
+      <label for="quarter-select" class="text-xs md:text-sm font-medium text-slate-400">Phase:</label>
       <select id="quarter-select" onchange="changeQuarter(this.value)" class="bg-slate-800 border border-slate-700 text-slate-200 text-xs md:text-sm rounded-lg px-2.5 py-1 focus:ring-2 focus:ring-amber-500 outline-none">
         <option value="1">Q1 (W1-W4)</option>
         <option value="2">Q2 (W5-W8)</option>
         <option value="3">Q3 (W9-W12)</option>
+        <option value="postseason">Postseason (W13-W17)</option>
       </select>
     </div>
   </header>
 
   <!-- Main Container -->
-  <div class="max-w-7xl mx-auto p-3 md:p-4 grid grid-cols-12 gap-3 md:gap-4">
+  <div id="app-container" class="max-w-7xl mx-auto p-3 md:p-4 grid grid-cols-12 gap-3 md:gap-4">
     <!-- Left Navigation: Week Selector (Col 1) -->
-    <aside class="col-span-12 md:col-span-1">
-    <div id="quarter-label" class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5 text-center">
-      Q1
-    </div>
+    <aside id="left-nav" class="col-span-12 md:col-span-1">
+      <div id="quarter-label" class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5 text-center">
+        Q1
+      </div>
       <div id="weeks-list" class="flex md:flex-col gap-1.5">
         <!-- Injected dynamically -->
       </div>
     </aside>
 
-    <!-- Center Content: Matchups & Battle Royale (Cols 2-7) -->
-    <main id="main-content" class="col-span-12 md:col-span-6 space-y-3 md:space-y-4">
-      <!-- Head-to-Head Matchups -->
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
-        <h2 id="matchup-header" class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">Head-to-Head Matchups</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="matchups-grid"></div>
-      </div>
+    <!-- Regular Season Grid (Cols 2-12) -->
+    <div id="regular-season-view" class="col-span-12 md:col-span-11 grid grid-cols-11 gap-3 md:gap-4">
+      <!-- Center Content: Matchups & Battle Royale (Cols 1-6) -->
+      <main class="col-span-11 md:col-span-6 space-y-3 md:space-y-4">
+        <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+          <h2 id="matchup-header" class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">Head-to-Head Matchups</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="matchups-grid"></div>
+        </div>
 
-      <!-- In-Division Battle Royale -->
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
-        <h2 class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">In-Division Battle Royale</h2>
-        <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs"></div>
-      </div>
-    </main>
+        <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+          <h2 class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase mb-2.5">In-Division Battle Royale</h2>
+          <div id="battle-royale-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs"></div>
+        </div>
+      </main>
 
-    <!-- Right Sidebar: Standings View (Cols 8-12) -->
-    <aside id="sidebar-content" class="col-span-12 md:col-span-5 space-y-3 md:space-y-4">
-      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
-        <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
-          <div class="flex items-center space-x-1.5">
-            <span class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase">Standings</span>
-            <span class="text-xs text-slate-400 font-semibold">(</span>
-            <button id="btn-current" onclick="setStandingsMode('current')" class="text-xs font-bold transition-all">Current</button>
-            <span class="text-xs text-slate-500">/</span>
-            <button id="btn-season" onclick="setStandingsMode('season')" class="text-xs font-bold transition-all">Season</button>
-            <span class="text-xs text-slate-400 font-semibold">)</span>
+      <!-- Right Sidebar: Standings View (Cols 7-11) -->
+      <aside class="col-span-11 md:col-span-5 space-y-3 md:space-y-4">
+        <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5">
+          <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-xs md:text-sm font-bold tracking-wider text-amber-400 uppercase">Standings</span>
+              <span class="text-xs text-slate-400 font-semibold">(</span>
+              <button id="btn-current" onclick="setStandingsMode('current')" class="text-xs font-bold transition-all">Current</button>
+              <span class="text-xs text-slate-500">/</span>
+              <button id="btn-season" onclick="setStandingsMode('season')" class="text-xs font-bold transition-all">Season</button>
+              <span class="text-xs text-slate-400 font-semibold">)</span>
+            </div>
+            <span id="standings-subhead" class="text-[10px] text-slate-400 font-mono">Thru W1</span>
           </div>
-          <span id="standings-subhead" class="text-[10px] text-slate-400 font-mono">Thru W1</span>
+
+          <div id="standings-snapshot" class="space-y-3 text-xs"></div>
+
+          <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2.5 mt-2.5 px-1">
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Leading (Promoted)</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Lowest PP (Relegated)</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Postseason Matrix Dashboard View (Cols 2-12) -->
+    <div id="postseason-view" class="col-span-12 md:col-span-11 space-y-4 hidden">
+      <div class="bg-slate-800/50 border border-slate-800 rounded-xl p-3.5 md:p-4">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2.5 mb-3.5">
+          <div>
+            <h2 class="text-sm md:text-base font-bold text-amber-400 uppercase tracking-wider">Postseason Guillotine Tournament (W13–W17)</h2>
+            <p class="text-xs text-slate-400">Head Start Bonus + Weekly Scores • Top = Weekly PF, Bottom = Cumulative Total</p>
+          </div>
+          <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono text-xs px-2.5 py-1 rounded-lg shrink-0 ml-2">Final Results</span>
         </div>
 
-        <div id="standings-snapshot" class="space-y-3 text-xs"></div>
-
-        <!-- Legend -->
-        <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2.5 mt-2.5 px-1">
-          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Leading (Promoted)</span>
-          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Lowest PP (Relegated)</span>
-        </div>
+        <div id="postseason-matrix-container" class="space-y-4"></div>
       </div>
-    </aside>
+    </div>
   </div>
 
   <script>
     let leagueData = null;
     let currentQuarter = "1";
     let currentWeek = "1";
-    let standingsMode = "current"; // "current" or "season"
+    let standingsMode = "current";
 
     const quarterWeeksMap = {
       "1": ["1", "2", "3", "4"],
@@ -101,10 +117,14 @@
 
     function changeQuarter(q) {
       currentQuarter = q.toString();
-      const weeksInQ = quarterWeeksMap[currentQuarter] || ["1"];
-      currentWeek = weeksInQ[0];
-      renderWeeksNav();
-      renderWeekData(currentWeek);
+      if (currentQuarter === 'postseason') {
+        renderPostseasonView();
+      } else {
+        const weeksInQ = quarterWeeksMap[currentQuarter] || ["1"];
+        currentWeek = weeksInQ[0]; // FIX: Pick single week string
+        renderWeeksNav();
+        renderWeekData(currentWeek);
+      }
     }
 
     function setStandingsMode(mode) {
@@ -127,7 +147,7 @@
     }
 
     function renderWeeksNav() {
-      document.getElementById('quarter-label').innerText = `Q${currentQuarter}`;
+      document.getElementById('quarter-label').innerText = currentQuarter === 'postseason' ? 'Playoffs' : `Q${currentQuarter}`;
       document.getElementById('quarter-select').value = currentQuarter;
 
       const container = document.getElementById('weeks-list');
@@ -147,6 +167,9 @@
     }
 
     function renderWeekData(w) {
+      document.getElementById('regular-season-view').classList.remove('hidden');
+      document.getElementById('postseason-view').classList.add('hidden');
+
       const weekObj = leagueData.weekly_data?.[w];
       if (!weekObj) return;
 
@@ -154,7 +177,7 @@
       document.getElementById('standings-subhead').innerText = `Thru Week ${w}`;
       updateToggleUI();
 
-      // 1. Render Matchups
+      // Matchups
       const mGrid = document.getElementById('matchups-grid');
       mGrid.innerHTML = weekObj.matchups.map(m => `
         <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs space-y-1">
@@ -175,7 +198,7 @@
         </div>
       `).join('');
 
-      // 2. Render Battle Royale
+      // Battle Royale
       const brGrid = document.getElementById('battle-royale-grid');
       brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
         <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5">
@@ -186,7 +209,7 @@
                 <span class="truncate mr-2">${i + 1}. ${t.name}</span>
                 <div class="flex items-center justify-end space-x-1.5 shrink-0">
                   ${t.battle_vp ? '<span class="text-amber-400 font-bold text-[9px] mr-0.5">1 VP</span>' : ''}
-                  <span class="font-mono text-right w-10">${t.score.toFixed(1)}</span>
+                  <span class="font-mono text-right w-10">${t.score.toFixed(2)}</span>
                 </div>
               </div>
             `).join('')}
@@ -194,42 +217,40 @@
         </div>
       `).join('');
 
-      // 3. Render Standings Sidebar
+      // Sidebar Standings + Promotion/Relegation Banner
       const targetStandings = standingsMode === 'season' ? weekObj.season_standings : weekObj.quarter_standings;
       const qStandings = weekObj.quarter_standings || {};
 
-      // Determine Promotion & Relegation Teams
       const upperTeams = qStandings["Upper Division"] || [];
       const upperRelegatedTeam = upperTeams.length > 0 
         ? upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min)) 
         : null;
 
       const middleTeams = qStandings["Middle Division"] || [];
-      const middlePromotedTeam = middleTeams[0] || null; // #1 VP in Middle
+      const middlePromotedTeam = middleTeams[0] || null;
       
       let middleRelegatedTeam = null;
       if (middleTeams.length > 1) {
-        const eligibleMiddle = middleTeams.slice(1); // Exclude #1 team
+        const eligibleMiddle = middleTeams.slice(1);
         middleRelegatedTeam = eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min));
       }
 
       const lowerTeams = qStandings["Lower Division"] || [];
-      const lowerPromotedTeam = lowerTeams[0] || null; // #1 VP in Lower
+      const lowerPromotedTeam = lowerTeams[0] || null;
 
       const upperRelegatedId = upperRelegatedTeam?.id;
       const middleRelegatedId = middleRelegatedTeam?.id;
 
-      // Promotion & Relegation Summary Banner (Displayed on Week 4, 8, 12)
+      // Promotion / Relegation Banner on W4, W8, W12
       let summaryBannerHtml = '';
       if (w === "4" || w === "8" || w === "12") {
         summaryBannerHtml = `
           <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs mb-3 space-y-2">
             <div class="flex justify-between items-center border-b border-amber-500/20 pb-1.5">
-              <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px]">Q${weekObj.quarter} Promotion & Relegation Summary</span>
+              <span class="font-bold text-amber-400 uppercase tracking-wider text-[11px]">Q${weekObj.quarter} Promotion & Relegation</span>
               <span class="text-[9px] bg-amber-500/20 text-amber-300 font-mono px-1.5 py-0.5 rounded">Quarter End</span>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-              <!-- Upper <-> Middle Swap -->
               <div class="bg-slate-900/80 p-2 rounded border border-slate-800 space-y-1">
                 <div class="text-[10px] font-bold text-slate-400 uppercase">Upper / Middle Move</div>
                 <div class="text-white font-medium flex items-center">
@@ -239,8 +260,6 @@
                   <span class="text-rose-400 font-bold mr-1.5">⬇️</span> ${upperRelegatedTeam?.name || 'N/A'} <span class="text-[9px] text-slate-400 ml-1">(to Middle)</span>
                 </div>
               </div>
-
-              <!-- Middle <-> Lower Swap -->
               <div class="bg-slate-900/80 p-2 rounded border border-slate-800 space-y-1">
                 <div class="text-[10px] font-bold text-slate-400 uppercase">Middle / Lower Move</div>
                 <div class="text-white font-medium flex items-center">
@@ -269,7 +288,6 @@
               <span class="col-span-2 text-right">PP</span>
             </div>
             ${targetStandings[div].map((t, idx) => {
-              // Only highlight promotion/relegation in Current (Quarterly) mode
               const isCurrentMode = standingsMode === 'current';
               const isPromoted = isCurrentMode && (div === "Middle Division" || div === "Lower Division") && idx === 0;
               const isRelegated = isCurrentMode && ((div === "Upper Division" && t.id === upperRelegatedId) || 
@@ -284,15 +302,188 @@
                   <span class="col-span-4 truncate">${idx + 1}. ${t.name}</span>
                   <span class="col-span-2 text-center font-mono font-bold ${isPromoted ? 'text-amber-400' : ''}">${t.vp}</span>
                   <span class="col-span-2 text-center font-mono text-[9px] text-slate-400">${t.wins}-${t.losses}-${t.ties}</span>
-                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pf.toFixed(1)}</span>
-                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pp.toFixed(1)}</span>
+                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pf.toFixed(2)}</span>
+                  <span class="col-span-2 text-right font-mono text-[10px]">${t.pp.toFixed(2)}</span>
                 </div>
               `;
             }).join('')}
           </div>
         </div>
       `).join('');
-      }
+    }
+
+    // RESPONSIVE POSTSEASON MATRIX VIEW
+    function renderPostseasonView() {
+      document.getElementById('regular-season-view').classList.add('hidden');
+      document.getElementById('postseason-view').classList.remove('hidden');
+
+      document.getElementById('quarter-label').innerText = 'Playoffs';
+      document.getElementById('quarter-select').value = 'postseason';
+
+      const weeksNavContainer = document.getElementById('weeks-list');
+      weeksNavContainer.innerHTML = `<button class="w-full bg-amber-500 text-slate-950 font-bold py-1.5 px-2 rounded-lg text-center text-xs shadow">W13-17</button>`;
+
+      const matrixData = leagueData.postseason_matrix || {};
+      const container = document.getElementById('postseason-matrix-container');
+
+      container.innerHTML = Object.keys(matrixData).map(divName => `
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 md:p-3.5 space-y-3">
+          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+            <h3 class="font-bold text-amber-400 text-xs md:text-sm tracking-wider uppercase">${divName}</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Guillotine Matrix</span>
+          </div>
+
+          <!-- 1. MOBILE CARD VIEW (< md) -->
+          <div class="space-y-2 md:hidden">
+            ${matrixData[divName].map((t, idx) => {
+              const isWinner = t.finish_place === 1;
+              const isElimW14 = t.eliminated_week === 14;
+              const isElimW15 = t.eliminated_week === 15;
+              const isElimW17 = t.eliminated_week === 17;
+
+              let resultBadge = `<span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">Active</span>`;
+              if (isWinner) {
+                resultBadge = divName === "Upper Division" 
+                  ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-[9px] px-1.5 py-0.5 rounded">🏆 Champion</span>` 
+                  : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-[9px] px-1.5 py-0.5 rounded">Div Winner</span>`;
+              } else if (isElimW17) {
+                resultBadge = `<span class="bg-rose-500/20 text-rose-300 font-mono text-[9px] px-1.5 py-0.5 rounded">Runner-Up</span>`;
+              } else if (t.eliminated_week) {
+                resultBadge = `<span class="bg-slate-800 text-slate-400 font-mono text-[9px] px-1.5 py-0.5 rounded">Elim W${t.eliminated_week}</span>`;
+              }
+
+              return `
+                <div class="bg-slate-950/70 border border-slate-800 rounded-lg p-2.5 space-y-2">
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="font-bold text-slate-500 text-xs">${idx + 1}.</span>
+                      <span class="font-bold ${isWinner ? 'text-amber-400' : 'text-slate-200'} text-xs truncate max-w-[140px]">${t.name}</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                      ${resultBadge}
+                      <span class="text-[9px] bg-slate-800 text-amber-300 border border-slate-700 px-1.5 py-0.5 rounded font-mono font-bold">Pick ${t.draft_slot || '-'}</span>
+                    </div>
+                  </div>
+
+                  <!-- 2-Level Mobile Grid (Weekly PF on Top-Left, Cumulative Tot on Bottom-Right) -->
+                  <div class="grid grid-cols-6 gap-1 text-[9px] bg-slate-900/90 p-1.5 rounded border border-slate-800/60 font-mono">
+                    <div class="text-center">
+                      <div class="text-[8px] text-slate-500 uppercase">Bonus</div>
+                      <div class="text-slate-400 font-bold mt-1">+${t.head_start.toFixed(2)}</div>
+                    </div>
+                    <div>
+                      <div class="text-[8px] text-slate-500 uppercase text-center">W13</div>
+                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["13"] || 0).toFixed(2)} PF</div>
+                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["13"] || 0).toFixed(2)} Tot</div>
+                    </div>
+                    <div class="${isElimW14 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
+                      <div class="text-[8px] text-slate-500 uppercase text-center">W14</div>
+                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["14"] || 0).toFixed(2)} PF</div>
+                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["14"] || 0).toFixed(2)} Tot</div>
+                    </div>
+                    <div class="${isElimW15 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
+                      <div class="text-[8px] text-slate-500 uppercase text-center">W15</div>
+                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["15"] || 0).toFixed(2)} PF</div>
+                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["15"] || 0).toFixed(2)} Tot</div>
+                    </div>
+                    <div>
+                      <div class="text-[8px] text-slate-500 uppercase text-center">W16</div>
+                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["16"] || 0).toFixed(2)} PF</div>
+                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["16"] || 0).toFixed(2)} Tot</div>
+                    </div>
+                    <div class="border-l border-amber-500/40 pl-0.5 ${isElimW17 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
+                      <div class="text-[8px] text-amber-400 font-bold uppercase text-center">W17★</div>
+                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["17"] || 0).toFixed(2)} PF</div>
+                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["17"] || 0).toFixed(2)} Tot</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- 2. DESKTOP TABLE VIEW (≥ md) with 2-Level Cell View -->
+          <div class="hidden md:block overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead>
+                <tr class="text-[10px] uppercase font-semibold text-slate-400 border-b border-slate-800/80">
+                  <th class="pb-2 pr-2">Team</th>
+                  <th class="pb-2 text-center font-mono">Bonus</th>
+                  <th class="pb-2 text-center font-mono">W13</th>
+                  <th class="pb-2 text-center font-mono">W14</th>
+                  <th class="pb-2 text-center font-mono">W15</th>
+                  <th class="pb-2 text-center font-mono">W16</th>
+                  <th class="pb-2 text-center font-mono bg-amber-500/10 text-amber-300 rounded-t px-1 border-t border-x border-amber-500/30">W17 (Final)</th>
+                  <th class="pb-2 text-center">Result</th>
+                  <th class="pb-2 text-right font-mono">Pick</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/40">
+                ${matrixData[divName].map(t => {
+                  const isWinner = t.finish_place === 1;
+                  const isElimW14 = t.eliminated_week === 14;
+                  const isElimW15 = t.eliminated_week === 15;
+                  const isElimW17 = t.eliminated_week === 17;
+
+                  let resultBadge = `<span class="text-[10px] text-slate-400 font-mono">Active</span>`;
+                  if (isWinner) {
+                    resultBadge = divName === "Upper Division" 
+                      ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-[10px] px-2 py-0.5 rounded">🏆 Champion</span>` 
+                      : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-[10px] px-2 py-0.5 rounded">Div Winner</span>`;
+                  } else if (isElimW17) {
+                    resultBadge = `<span class="bg-rose-500/10 text-rose-300 font-mono text-[10px] px-1.5 py-0.5 rounded">Runner-Up</span>`;
+                  } else if (t.eliminated_week) {
+                    resultBadge = `<span class="bg-slate-800 text-slate-400 font-mono text-[10px] px-1.5 py-0.5 rounded">Elim W${t.eliminated_week}</span>`;
+                  }
+
+                  return `
+                    <tr class="hover:bg-slate-800/30">
+                      <td class="py-2.5 pr-2 font-medium ${isWinner ? 'text-amber-400 font-bold' : 'text-slate-200'}">
+                        ${t.name}
+                      </td>
+                      <td class="py-2.5 text-center font-mono text-slate-400">+${t.head_start.toFixed(2)}</td>
+
+                      <!-- W13 -->
+                      <td class="py-2 text-right font-mono px-1.5">
+                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["13"] || 0).toFixed(2)} PF</div>
+                        <div class="text-[11px] font-bold text-amber-400 text-right">${(t.cumulative_after["13"] || 0).toFixed(2)} Tot</div>
+                      </td>
+
+                      <!-- W14 -->
+                      <td class="py-2 text-right font-mono px-1.5 ${isElimW14 ? 'bg-rose-500/20 rounded border border-rose-500/40' : ''}">
+                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["14"] || 0).toFixed(2)} PF</div>
+                        <div class="text-[11px] font-bold ${isElimW14 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["14"] || 0).toFixed(2)} Tot</div>
+                      </td>
+
+                      <!-- W15 -->
+                      <td class="py-2 text-right font-mono px-1.5 ${isElimW15 ? 'bg-rose-500/20 rounded border border-rose-500/40' : ''}">
+                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["15"] || 0).toFixed(2)} PF</div>
+                        <div class="text-[11px] font-bold ${isElimW15 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["15"] || 0).toFixed(2)} Tot</div>
+                      </td>
+
+                      <!-- W16 -->
+                      <td class="py-2 text-right font-mono px-1.5">
+                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["16"] || 0).toFixed(2)} PF</div>
+                        <div class="text-[11px] font-bold text-amber-400 text-right">${(t.cumulative_after["16"] || 0).toFixed(2)} Tot</div>
+                      </td>
+
+                      <!-- W17 (Most Recent / Finale) -->
+                      <td class="py-2 text-right font-mono px-1.5 bg-amber-500/5 border-x border-amber-500/20 ${isElimW17 ? 'bg-rose-500/20 border border-rose-500/40' : ''}">
+                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["17"] || 0).toFixed(2)} PF</div>
+                        <div class="text-[11px] font-bold ${isElimW17 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["17"] || 0).toFixed(2)} Tot</div>
+                      </td>
+
+                      <td class="py-2.5 text-center">${resultBadge}</td>
+                      <td class="py-2.5 text-right font-mono text-amber-300 font-bold">${t.draft_slot || '-'}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `).join('');
+    }
 
     loadData();
   </script>

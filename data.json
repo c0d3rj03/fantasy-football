@@ -1,30 +1,4 @@
 {
-  "quarters": {
-    "1": {
-      "weeks": [
-        1,
-        2,
-        3,
-        4
-      ]
-    },
-    "2": {
-      "weeks": [
-        5,
-        6,
-        7,
-        8
-      ]
-    },
-    "3": {
-      "weeks": [
-        9,
-        10,
-        11,
-        12
-      ]
-    }
-  },
   "weekly_data": {
     "1": {
       "week": 1,
@@ -7610,5 +7584,289 @@
         ]
       }
     }
+  },
+  "postseason_matrix": {
+    "Upper Division": [
+      {
+        "id": "0002",
+        "name": "BattleBots",
+        "division": "Upper Division",
+        "head_start": 110.9,
+        "scores": {
+          "13": 176,
+          "14": 341.93,
+          "15": 472.85,
+          "16": 622.06,
+          "17": 749.94
+        },
+        "cumulative_after": {
+          "13": 286.9,
+          "14": 628.83,
+          "15": 1101.68,
+          "16": 1723.74,
+          "17": 2473.68
+        },
+        "eliminated_week": null,
+        "finish_place": 1,
+        "draft_slot": "1.12"
+      },
+      {
+        "id": "0003",
+        "name": "Shankly's Ghost",
+        "division": "Upper Division",
+        "head_start": 0,
+        "scores": {
+          "13": 125.2,
+          "14": 232.51,
+          "15": 421.16,
+          "16": 580.1,
+          "17": 753.42
+        },
+        "cumulative_after": {
+          "13": 125.2,
+          "14": 357.71,
+          "15": 778.87,
+          "16": 1358.97,
+          "17": 2112.39
+        },
+        "eliminated_week": 17,
+        "finish_place": 2,
+        "draft_slot": "1.11"
+      },
+      {
+        "id": "0001",
+        "name": "Orcan Terror",
+        "division": "Upper Division",
+        "head_start": 0,
+        "scores": {
+          "13": 118.91,
+          "14": 220.17,
+          "15": 365.59,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 118.91,
+          "14": 339.08,
+          "15": 704.67,
+          "16": 704.67,
+          "17": 704.67
+        },
+        "eliminated_week": 15,
+        "finish_place": 3,
+        "draft_slot": "1.10"
+      },
+      {
+        "id": "0005",
+        "name": "Peaky Fookin Blinders",
+        "division": "Upper Division",
+        "head_start": 0,
+        "scores": {
+          "13": 124.01,
+          "14": 210.41,
+          "15": 0,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 124.01,
+          "14": 334.42,
+          "15": 334.42,
+          "16": 334.42,
+          "17": 334.42
+        },
+        "eliminated_week": 14,
+        "finish_place": 4,
+        "draft_slot": "1.09"
+      }
+    ],
+    "Middle Division": [
+      {
+        "id": "0009",
+        "name": "Springfield Isotopes",
+        "division": "Middle Division",
+        "head_start": 166.93,
+        "scores": {
+          "13": 211.44,
+          "14": 325.82,
+          "15": 491.9,
+          "16": 619.64,
+          "17": 743.55
+        },
+        "cumulative_after": {
+          "13": 378.37,
+          "14": 704.19,
+          "15": 1196.09,
+          "16": 1815.73,
+          "17": 2559.28
+        },
+        "eliminated_week": null,
+        "finish_place": 1,
+        "draft_slot": "1.05"
+      },
+      {
+        "id": "0012",
+        "name": "2 Roops, 1 Silva",
+        "division": "Middle Division",
+        "head_start": 131.96,
+        "scores": {
+          "13": 198.14,
+          "14": 325.27,
+          "15": 470.24,
+          "16": 575.17,
+          "17": 604.53
+        },
+        "cumulative_after": {
+          "13": 330.1,
+          "14": 655.37,
+          "15": 1125.61,
+          "16": 1700.78,
+          "17": 2305.31
+        },
+        "eliminated_week": 17,
+        "finish_place": 2,
+        "draft_slot": "1.06"
+      },
+      {
+        "id": "0010",
+        "name": "The Meaty Ogres",
+        "division": "Middle Division",
+        "head_start": 73.55,
+        "scores": {
+          "13": 182.65,
+          "14": 284.17,
+          "15": 397.15,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 256.2,
+          "14": 540.37,
+          "15": 937.52,
+          "16": 937.52,
+          "17": 937.52
+        },
+        "eliminated_week": 15,
+        "finish_place": 3,
+        "draft_slot": "1.07"
+      },
+      {
+        "id": "0006",
+        "name": "Ted Lasso",
+        "division": "Middle Division",
+        "head_start": 0,
+        "scores": {
+          "13": 102.9,
+          "14": 213.57,
+          "15": 0,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 102.9,
+          "14": 316.47,
+          "15": 316.47,
+          "16": 316.47,
+          "17": 316.47
+        },
+        "eliminated_week": 14,
+        "finish_place": 4,
+        "draft_slot": "1.08"
+      }
+    ],
+    "Lower Division": [
+      {
+        "id": "0008",
+        "name": "The Two Tones",
+        "division": "Lower Division",
+        "head_start": 109.82,
+        "scores": {
+          "13": 127.19,
+          "14": 258.83,
+          "15": 370.78,
+          "16": 492.67,
+          "17": 591.19
+        },
+        "cumulative_after": {
+          "13": 237.01,
+          "14": 495.84,
+          "15": 866.62,
+          "16": 1359.29,
+          "17": 1950.48
+        },
+        "eliminated_week": null,
+        "finish_place": 1,
+        "draft_slot": "1.01"
+      },
+      {
+        "id": "0004",
+        "name": "Hamsterdam",
+        "division": "Lower Division",
+        "head_start": 19.32,
+        "scores": {
+          "13": 114,
+          "14": 234.24,
+          "15": 351.16,
+          "16": 471.37,
+          "17": 650.39
+        },
+        "cumulative_after": {
+          "13": 133.32,
+          "14": 367.56,
+          "15": 718.72,
+          "16": 1190.09,
+          "17": 1840.48
+        },
+        "eliminated_week": 15,
+        "finish_place": 3,
+        "draft_slot": "1.03"
+      },
+      {
+        "id": "0011",
+        "name": "The Wild Cards",
+        "division": "Lower Division",
+        "head_start": 41.41,
+        "scores": {
+          "13": 122.66,
+          "14": 223.3,
+          "15": 348.33,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 164.07,
+          "14": 387.37,
+          "15": 735.7,
+          "16": 735.7,
+          "17": 735.7
+        },
+        "eliminated_week": 17,
+        "finish_place": 2,
+        "draft_slot": "1.02"
+      },
+      {
+        "id": "0007",
+        "name": "Norsemen",
+        "division": "Lower Division",
+        "head_start": 0,
+        "scores": {
+          "13": 110.67,
+          "14": 210.23,
+          "15": 0,
+          "16": 0,
+          "17": 0
+        },
+        "cumulative_after": {
+          "13": 110.67,
+          "14": 320.9,
+          "15": 320.9,
+          "16": 320.9,
+          "17": 320.9
+        },
+        "eliminated_week": 14,
+        "finish_place": 4,
+        "draft_slot": "1.04"
+      }
+    ]
   }
 }
