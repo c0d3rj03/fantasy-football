@@ -69,8 +69,8 @@
           <div id="standings-snapshot" class="space-y-3 text-xs"></div>
 
           <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2.5 mt-2.5 px-1">
-            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Leading (Promoted)</span>
-            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Lowest PP (Relegated)</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-white mr-1.5"></span> Projected Promotion</span>
+            <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-rose-400 mr-1.5"></span> Projected Relegation</span>
           </div>
         </div>
       </aside>
@@ -84,7 +84,7 @@
             <h2 class="text-sm md:text-base font-bold text-amber-400 uppercase tracking-wider">Postseason Guillotine Tournament (W13–W17)</h2>
             <p class="text-xs text-slate-400">Head Start Bonus + Weekly Scores • Top = Weekly PF, Bottom = Cumulative Total</p>
           </div>
-          <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono text-xs px-2.5 py-1 rounded-lg shrink-0 ml-2">Final Results</span>
+          <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 font-mono text-xs px-2.5 py-1 rounded-lg shrink-0 ml-2">2026 Postseason</span>
         </div>
 
         <div id="postseason-matrix-container" class="space-y-4"></div>
@@ -121,7 +121,7 @@
         renderPostseasonView();
       } else {
         const weeksInQ = quarterWeeksMap[currentQuarter] || ["1"];
-        currentWeek = weeksInQ[0]; // FIX: Pick single week string
+        currentWeek = weeksInQ[0];
         renderWeeksNav();
         renderWeekData(currentWeek);
       }
@@ -171,45 +171,54 @@
       document.getElementById('postseason-view').classList.add('hidden');
 
       const weekObj = leagueData.weekly_data?.[w];
-      if (!weekObj) return;
+      const isPlayed = weekObj?.played ?? false;
 
-      document.getElementById('matchup-header').innerText = `Week ${w} (Quarter ${weekObj.quarter}): Matchups`;
+      document.getElementById('matchup-header').innerText = isPlayed 
+        ? `Week ${w} (Quarter ${weekObj.quarter}): Matchups` 
+        : `Week ${w}: Scheduled Matchups (Unplayed)`;
       document.getElementById('standings-subhead').innerText = `Thru Week ${w}`;
       updateToggleUI();
 
-      // Matchups
+      // Matchups Grid
       const mGrid = document.getElementById('matchups-grid');
-      mGrid.innerHTML = weekObj.matchups.map(m => `
-        <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs space-y-1">
-          <div class="flex justify-between items-center font-semibold py-0.5">
-            <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team1.name}</span>
-            <div class="flex items-center justify-end space-x-1.5 shrink-0">
-              ${m.team1.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
-              <span class="text-slate-200 font-bold font-mono text-right w-12">${m.team1.score.toFixed(2)}</span>
+      if (weekObj?.matchups && weekObj.matchups.length > 0) {
+        mGrid.innerHTML = weekObj.matchups.map(m => `
+          <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs space-y-1">
+            <div class="flex justify-between items-center font-semibold py-0.5">
+              <span class="${m.team1.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team1.name}</span>
+              <div class="flex items-center justify-end space-x-1.5 shrink-0">
+                ${m.team1.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
+                <span class="text-slate-200 font-bold font-mono text-right w-12">${isPlayed ? m.team1.score.toFixed(2) : '-'}</span>
+              </div>
+            </div>
+            <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1 py-0.5">
+              <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team2.name}</span>
+              <div class="flex items-center justify-end space-x-1.5 shrink-0">
+                ${m.team2.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
+                <span class="text-slate-200 font-bold font-mono text-right w-12">${isPlayed ? m.team2.score.toFixed(2) : '-'}</span>
+              </div>
             </div>
           </div>
-          <div class="flex justify-between items-center font-semibold border-t border-slate-800/60 pt-1 py-0.5">
-            <span class="${m.team2.vp_earned ? 'text-amber-400' : 'text-slate-200'} truncate mr-2">${m.team2.name}</span>
-            <div class="flex items-center justify-end space-x-1.5 shrink-0">
-              ${m.team2.vp_earned ? '<span class="text-[9px] bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded font-bold">1 VP</span>' : ''}
-              <span class="text-slate-200 font-bold font-mono text-right w-12">${m.team2.score.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      } else {
+        mGrid.innerHTML = `
+          <div class="col-span-1 sm:col-span-2 text-center text-slate-400 py-8 font-mono text-xs bg-slate-900 border border-slate-800 rounded-lg">
+            🏈 Week ${w} matchups will be generated prior to kickoff.
+          </div>`;
+      }
 
-      // Battle Royale
+      // Battle Royale Grid
       const brGrid = document.getElementById('battle-royale-grid');
-      brGrid.innerHTML = Object.keys(weekObj.battle_royale).map(div => `
+      brGrid.innerHTML = Object.keys(weekObj?.battle_royale || {}).map(div => `
         <div class="bg-slate-900 border border-slate-800 rounded-lg p-2.5">
           <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 mb-1.5">${div}</h3>
           <div class="space-y-1">
             ${weekObj.battle_royale[div].map((t, i) => `
-              <div class="flex justify-between items-center py-0.5 ${i < 2 ? 'text-slate-200 font-medium' : 'text-slate-400'}">
+              <div class="flex justify-between items-center py-0.5 ${i < 2 && isPlayed ? 'text-slate-200 font-medium' : 'text-slate-400'}">
                 <span class="truncate mr-2">${i + 1}. ${t.name}</span>
                 <div class="flex items-center justify-end space-x-1.5 shrink-0">
                   ${t.battle_vp ? '<span class="text-amber-400 font-bold text-[9px] mr-0.5">1 VP</span>' : ''}
-                  <span class="font-mono text-right w-10">${t.score.toFixed(2)}</span>
+                  <span class="font-mono text-right w-10">${isPlayed && t.score !== null ? t.score.toFixed(2) : '-'}</span>
                 </div>
               </div>
             `).join('')}
@@ -217,7 +226,12 @@
         </div>
       `).join('');
 
-      // Sidebar Standings + Promotion/Relegation Banner
+      renderStandingsSnapshot(weekObj, w);
+    }
+
+    function renderStandingsSnapshot(weekObj, w) {
+      if (!weekObj) return;
+
       const targetStandings = standingsMode === 'season' ? weekObj.season_standings : weekObj.quarter_standings;
       const qStandings = weekObj.quarter_standings || {};
 
@@ -241,9 +255,9 @@
       const upperRelegatedId = upperRelegatedTeam?.id;
       const middleRelegatedId = middleRelegatedTeam?.id;
 
-      // Promotion / Relegation Banner on W4, W8, W12
+      // Render P&R summary ONLY if the quarter-end week has actually been played
       let summaryBannerHtml = '';
-      if (w === "4" || w === "8" || w === "12") {
+      if ((w === "4" || w === "8" || w === "12") && weekObj.played) {
         summaryBannerHtml = `
           <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs mb-3 space-y-2">
             <div class="flex justify-between items-center border-b border-amber-500/20 pb-1.5">
@@ -312,7 +326,6 @@
       `).join('');
     }
 
-    // RESPONSIVE POSTSEASON MATRIX VIEW
     function renderPostseasonView() {
       document.getElementById('regular-season-view').classList.add('hidden');
       document.getElementById('postseason-view').classList.remove('hidden');
@@ -326,163 +339,13 @@
       const matrixData = leagueData.postseason_matrix || {};
       const container = document.getElementById('postseason-matrix-container');
 
-      container.innerHTML = Object.keys(matrixData).map(divName => `
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 md:p-3.5 space-y-3">
-          <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-            <h3 class="font-bold text-amber-400 text-xs md:text-sm tracking-wider uppercase">${divName}</h3>
-            <span class="text-[10px] text-slate-400 font-mono">Guillotine Matrix</span>
-          </div>
-
-          <!-- 1. MOBILE CARD VIEW (< md) -->
-          <div class="space-y-2 md:hidden">
-            ${matrixData[divName].map((t, idx) => {
-              const isWinner = t.finish_place === 1;
-              const isElimW14 = t.eliminated_week === 14;
-              const isElimW15 = t.eliminated_week === 15;
-              const isElimW17 = t.eliminated_week === 17;
-
-              let resultBadge = `<span class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">Active</span>`;
-              if (isWinner) {
-                resultBadge = divName === "Upper Division" 
-                  ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-[9px] px-1.5 py-0.5 rounded">🏆 Champion</span>` 
-                  : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-[9px] px-1.5 py-0.5 rounded">Div Winner</span>`;
-              } else if (isElimW17) {
-                resultBadge = `<span class="bg-rose-500/20 text-rose-300 font-mono text-[9px] px-1.5 py-0.5 rounded">Runner-Up</span>`;
-              } else if (t.eliminated_week) {
-                resultBadge = `<span class="bg-slate-800 text-slate-400 font-mono text-[9px] px-1.5 py-0.5 rounded">Elim W${t.eliminated_week}</span>`;
-              }
-
-              return `
-                <div class="bg-slate-950/70 border border-slate-800 rounded-lg p-2.5 space-y-2">
-                  <div class="flex justify-between items-center">
-                    <div class="flex items-center space-x-1.5">
-                      <span class="font-bold text-slate-500 text-xs">${idx + 1}.</span>
-                      <span class="font-bold ${isWinner ? 'text-amber-400' : 'text-slate-200'} text-xs truncate max-w-[140px]">${t.name}</span>
-                    </div>
-                    <div class="flex items-center space-x-1.5">
-                      ${resultBadge}
-                      <span class="text-[9px] bg-slate-800 text-amber-300 border border-slate-700 px-1.5 py-0.5 rounded font-mono font-bold">Pick ${t.draft_slot || '-'}</span>
-                    </div>
-                  </div>
-
-                  <!-- 2-Level Mobile Grid (Weekly PF on Top-Left, Cumulative Tot on Bottom-Right) -->
-                  <div class="grid grid-cols-6 gap-1 text-[9px] bg-slate-900/90 p-1.5 rounded border border-slate-800/60 font-mono">
-                    <div class="text-center">
-                      <div class="text-[8px] text-slate-500 uppercase">Bonus</div>
-                      <div class="text-slate-400 font-bold mt-1">+${t.head_start.toFixed(2)}</div>
-                    </div>
-                    <div>
-                      <div class="text-[8px] text-slate-500 uppercase text-center">W13</div>
-                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["13"] || 0).toFixed(2)} PF</div>
-                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["13"] || 0).toFixed(2)} Tot</div>
-                    </div>
-                    <div class="${isElimW14 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
-                      <div class="text-[8px] text-slate-500 uppercase text-center">W14</div>
-                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["14"] || 0).toFixed(2)} PF</div>
-                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["14"] || 0).toFixed(2)} Tot</div>
-                    </div>
-                    <div class="${isElimW15 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
-                      <div class="text-[8px] text-slate-500 uppercase text-center">W15</div>
-                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["15"] || 0).toFixed(2)} PF</div>
-                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["15"] || 0).toFixed(2)} Tot</div>
-                    </div>
-                    <div>
-                      <div class="text-[8px] text-slate-500 uppercase text-center">W16</div>
-                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["16"] || 0).toFixed(2)} PF</div>
-                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["16"] || 0).toFixed(2)} Tot</div>
-                    </div>
-                    <div class="border-l border-amber-500/40 pl-0.5 ${isElimW17 ? 'bg-rose-500/20 text-rose-300 rounded p-0.5 border border-rose-500/30' : ''}">
-                      <div class="text-[8px] text-amber-400 font-bold uppercase text-center">W17★</div>
-                      <div class="text-left text-slate-300 text-[8px]">${(t.scores["17"] || 0).toFixed(2)} PF</div>
-                      <div class="text-right text-amber-400 font-bold text-[9px]">${(t.cumulative_after["17"] || 0).toFixed(2)} Tot</div>
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          <!-- 2. DESKTOP TABLE VIEW (≥ md) with 2-Level Cell View -->
-          <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead>
-                <tr class="text-[10px] uppercase font-semibold text-slate-400 border-b border-slate-800/80">
-                  <th class="pb-2 pr-2">Team</th>
-                  <th class="pb-2 text-center font-mono">Bonus</th>
-                  <th class="pb-2 text-center font-mono">W13</th>
-                  <th class="pb-2 text-center font-mono">W14</th>
-                  <th class="pb-2 text-center font-mono">W15</th>
-                  <th class="pb-2 text-center font-mono">W16</th>
-                  <th class="pb-2 text-center font-mono bg-amber-500/10 text-amber-300 rounded-t px-1 border-t border-x border-amber-500/30">W17 (Final)</th>
-                  <th class="pb-2 text-center">Result</th>
-                  <th class="pb-2 text-right font-mono">Pick</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-800/40">
-                ${matrixData[divName].map(t => {
-                  const isWinner = t.finish_place === 1;
-                  const isElimW14 = t.eliminated_week === 14;
-                  const isElimW15 = t.eliminated_week === 15;
-                  const isElimW17 = t.eliminated_week === 17;
-
-                  let resultBadge = `<span class="text-[10px] text-slate-400 font-mono">Active</span>`;
-                  if (isWinner) {
-                    resultBadge = divName === "Upper Division" 
-                      ? `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold text-[10px] px-2 py-0.5 rounded">🏆 Champion</span>` 
-                      : `<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-[10px] px-2 py-0.5 rounded">Div Winner</span>`;
-                  } else if (isElimW17) {
-                    resultBadge = `<span class="bg-rose-500/10 text-rose-300 font-mono text-[10px] px-1.5 py-0.5 rounded">Runner-Up</span>`;
-                  } else if (t.eliminated_week) {
-                    resultBadge = `<span class="bg-slate-800 text-slate-400 font-mono text-[10px] px-1.5 py-0.5 rounded">Elim W${t.eliminated_week}</span>`;
-                  }
-
-                  return `
-                    <tr class="hover:bg-slate-800/30">
-                      <td class="py-2.5 pr-2 font-medium ${isWinner ? 'text-amber-400 font-bold' : 'text-slate-200'}">
-                        ${t.name}
-                      </td>
-                      <td class="py-2.5 text-center font-mono text-slate-400">+${t.head_start.toFixed(2)}</td>
-
-                      <!-- W13 -->
-                      <td class="py-2 text-right font-mono px-1.5">
-                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["13"] || 0).toFixed(2)} PF</div>
-                        <div class="text-[11px] font-bold text-amber-400 text-right">${(t.cumulative_after["13"] || 0).toFixed(2)} Tot</div>
-                      </td>
-
-                      <!-- W14 -->
-                      <td class="py-2 text-right font-mono px-1.5 ${isElimW14 ? 'bg-rose-500/20 rounded border border-rose-500/40' : ''}">
-                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["14"] || 0).toFixed(2)} PF</div>
-                        <div class="text-[11px] font-bold ${isElimW14 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["14"] || 0).toFixed(2)} Tot</div>
-                      </td>
-
-                      <!-- W15 -->
-                      <td class="py-2 text-right font-mono px-1.5 ${isElimW15 ? 'bg-rose-500/20 rounded border border-rose-500/40' : ''}">
-                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["15"] || 0).toFixed(2)} PF</div>
-                        <div class="text-[11px] font-bold ${isElimW15 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["15"] || 0).toFixed(2)} Tot</div>
-                      </td>
-
-                      <!-- W16 -->
-                      <td class="py-2 text-right font-mono px-1.5">
-                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["16"] || 0).toFixed(2)} PF</div>
-                        <div class="text-[11px] font-bold text-amber-400 text-right">${(t.cumulative_after["16"] || 0).toFixed(2)} Tot</div>
-                      </td>
-
-                      <!-- W17 (Most Recent / Finale) -->
-                      <td class="py-2 text-right font-mono px-1.5 bg-amber-500/5 border-x border-amber-500/20 ${isElimW17 ? 'bg-rose-500/20 border border-rose-500/40' : ''}">
-                        <div class="text-[9px] text-slate-400 text-left">${(t.scores["17"] || 0).toFixed(2)} PF</div>
-                        <div class="text-[11px] font-bold ${isElimW17 ? 'text-rose-300' : 'text-amber-400'} text-right">${(t.cumulative_after["17"] || 0).toFixed(2)} Tot</div>
-                      </td>
-
-                      <td class="py-2.5 text-center">${resultBadge}</td>
-                      <td class="py-2.5 text-right font-mono text-amber-300 font-bold">${t.draft_slot || '-'}</td>
-                    </tr>
-                  `;
-                }).join('')}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      `).join('');
+      if (Object.keys(matrixData).length === 0) {
+        container.innerHTML = `
+          <div class="text-center text-slate-400 py-12 font-mono text-xs bg-slate-900 border border-slate-800 rounded-xl">
+            🏆 Postseason tournament begins after Week 12.
+          </div>`;
+        return;
+      }
     }
 
     loadData();
