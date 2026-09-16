@@ -11,7 +11,7 @@ const divisionNames = {
   "02": "Lower Division"
 };
 
-// 2026 Q1 Starting Seed (Corrected)
+// 2026 Q1 Starting Seed
 let activeDivisions = {
   "0003": "00", // Shankly's Ghost (Upper)
   "0002": "00", // BattleBots (Upper)
@@ -32,7 +32,9 @@ let activeDivisions = {
 function fetchAPI(command, params = {}) {
   return new Promise((resolve, reject) => {
     let url = `${BASE_URL}?TYPE=${command}&L=${LEAGUE_ID}&JSON=1`;
-    Object.keys(params).forEach(k => url += `&${k}=${params[k]}`);
+    Object.keys(params).forEach(k => {
+      url += `&${k}=${params[k]}`;
+    });
 
     https.get(url, (res) => {
       let data = '';
@@ -63,26 +65,29 @@ function evaluatePromotionRelegation(quarterStandings) {
   const middleTeams = quarterStandings["Middle Division"] || [];
   const lowerTeams = quarterStandings["Lower Division"] || [];
 
-  const promotedFromMiddle = middleTeams[0]?.id;
-  const promotedFromLower = lowerTeams[0]?.id;
+  const [promotedFromMiddle] = middleTeams;
+  const [promotedFromLower] = lowerTeams;
 
-  const upperRelegated = upperTeams.length > 0 
+  const promotedFromMiddleId = promotedFromMiddle?.id;
+  const promotedFromLowerId = promotedFromLower?.id;
+
+  const upperRelegatedId = upperTeams.length > 0 
     ? upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min))?.id 
     : null;
   
   const eligibleMiddle = middleTeams.slice(1);
-  const middleRelegated = eligibleMiddle.length > 0 
+  const middleRelegatedId = eligibleMiddle.length > 0 
     ? eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min))?.id 
     : null;
 
-  if (promotedFromMiddle && upperRelegated) {
-    nextDivisions[promotedFromMiddle] = "00";
-    nextDivisions[upperRelegated] = "01";
+  if (promotedFromMiddleId && upperRelegatedId) {
+    nextDivisions[promotedFromMiddleId] = "00";
+    nextDivisions[upperRelegatedId] = "01";
   }
 
-  if (promotedFromLower && middleRelegated) {
-    nextDivisions[promotedFromLower] = "01";
-    nextDivisions[middleRelegated] = "02";
+  if (promotedFromLowerId && middleRelegatedId) {
+    nextDivisions[promotedFromLowerId] = "01";
+    nextDivisions[middleRelegatedId] = "02";
   }
 
   return nextDivisions;
@@ -145,21 +150,30 @@ async function main() {
     const isPlayed = totalWeeklyPF > 0;
     const processedMatchups = [];
     const weeklyScoresMap = {};
-    const processedMatchupKeys = new Set();
-    const processedTeamsInWeek = new Set();
+
+    // Pre-seed weekly map for all active teams
+    Object.keys(activeDivisions).forEach(tId => {
+      weeklyScoresMap[tId] = {
+        id: tId,
+        name: franchises[tId]?.name || tId,
+        score: 0,
+        pp: 0,
+        division: activeDivisions[tId],
+        h2h_vp: 0,
+        wins: 0,
+        losses: 0,
+        ties: 0
+      };
+    });
 
     if (rawMatchups.length > 0) {
       rawMatchups.forEach(m => {
         const franchisesList = Array.isArray(m.franchise) ? m.franchise : [m.franchise];
         if (franchisesList.length < 2) return;
 
-        const f1 = franchisesList[0];
-        const f2 = franchisesList[1];
-
-        // Deduplicate matchups
-        const matchupKey = [f1.id, f2.id].sort().join('-');
-        if (processedMatchupKeys.has(matchupKey)) return;
-        processedMatchupKeys.add(matchupKey);
+        // ES6 Array Destructuring (prevents markdown bracket stripping)
+        const [f1, f2] = franchisesList;
+        if (!f1 || !f2 || !f1.id || !f2.id) return;
 
         const score1 = isPlayed ? parseFloat(f1.score || 0) : null;
         const score2 = isPlayed ? parseFloat(f2.score || 0) : null;
@@ -168,8 +182,8 @@ async function main() {
 
         let vp1 = 0, vp2 = 0;
         if (isPlayed) {
-          if (score1 > score2) vp1 = 1;
-          else if (score2 > score1) vp2 = 1;
+          if (score1 > score2) { vp1 = 1; vp2 = 0; }
+          else if (score2 > score1) { vp1 = 0; vp2 = 1; }
           else { vp1 = 0.5; vp2 = 0.5; }
         }
 
@@ -179,40 +193,24 @@ async function main() {
         });
 
         if (isPlayed) {
-          [
-            { id: f1.id, score: score1, pp: pp1, vp: vp1 },
-            { id: f2.id, score: score2, pp: pp2, vp: vp2 }
-          ].forEach(item => {
-            // Deduplicate team score additions per week
-            if (!processedTeamsInWeek.has(item.id)) {
-              processedTeamsInWeek.add(item.id);
+          // Accumulate H2H game results across both matchups per team
+          if (weeklyScoresMap[f1.id]) {
+            weeklyScoresMap[f1.id].score = score1;
+            weeklyScoresMap[f1.id].pp = pp1;
+            weeklyScoresMap[f1.id].h2h_vp += vp1;
+            if (vp1 === 1) weeklyScoresMap[f1.id].wins += 1;
+            else if (vp1 === 0) weeklyScoresMap[f1.id].losses += 1;
+            else if (vp1 === 0.5) weeklyScoresMap[f1.id].ties += 1;
+          }
 
-              weeklyScoresMap[item.id] = {
-                id: item.id,
-                name: franchises[item.id]?.name || item.id,
-                score: item.score,
-                pp: item.pp,
-                division: activeDivisions[item.id],
-                h2h_vp: item.vp
-              };
-
-              quarterAccumulators[item.id].pf += item.score;
-              quarterAccumulators[item.id].pp += item.pp;
-              quarterAccumulators[item.id].h2h_vp += item.vp;
-              quarterAccumulators[item.id].vp += item.vp;
-              if (item.vp === 1) quarterAccumulators[item.id].wins++;
-              else if (item.vp === 0.5) quarterAccumulators[item.id].ties++;
-              else quarterAccumulators[item.id].losses++;
-
-              seasonAccumulators[item.id].pf += item.score;
-              seasonAccumulators[item.id].pp += item.pp;
-              seasonAccumulators[item.id].h2h_vp += item.vp;
-              seasonAccumulators[item.id].vp += item.vp;
-              if (item.vp === 1) seasonAccumulators[item.id].wins++;
-              else if (item.vp === 0.5) seasonAccumulators[item.id].ties++;
-              else seasonAccumulators[item.id].losses++;
-            }
-          });
+          if (weeklyScoresMap[f2.id]) {
+            weeklyScoresMap[f2.id].score = score2;
+            weeklyScoresMap[f2.id].pp = pp2;
+            weeklyScoresMap[f2.id].h2h_vp += vp2;
+            if (vp2 === 1) weeklyScoresMap[f2.id].wins += 1;
+            else if (vp2 === 0) weeklyScoresMap[f2.id].losses += 1;
+            else if (vp2 === 0.5) weeklyScoresMap[f2.id].ties += 1;
+          }
         }
       });
     }
@@ -243,13 +241,26 @@ async function main() {
             total_weekly_vp: total_weekly_vp
           });
 
+          // Accumulate weekly totals once per team
           if (quarterAccumulators[team.id]) {
+            quarterAccumulators[team.id].pf += team.score;
+            quarterAccumulators[team.id].pp += team.pp;
+            quarterAccumulators[team.id].h2h_vp += team.h2h_vp;
             quarterAccumulators[team.id].battle_vp += battle_vp;
-            quarterAccumulators[team.id].vp += battle_vp;
+            quarterAccumulators[team.id].vp += total_weekly_vp;
+            quarterAccumulators[team.id].wins += team.wins;
+            quarterAccumulators[team.id].losses += team.losses;
+            quarterAccumulators[team.id].ties += team.ties;
           }
           if (seasonAccumulators[team.id]) {
+            seasonAccumulators[team.id].pf += team.score;
+            seasonAccumulators[team.id].pp += team.pp;
+            seasonAccumulators[team.id].h2h_vp += team.h2h_vp;
             seasonAccumulators[team.id].battle_vp += battle_vp;
-            seasonAccumulators[team.id].vp += battle_vp;
+            seasonAccumulators[team.id].vp += total_weekly_vp;
+            seasonAccumulators[team.id].wins += team.wins;
+            seasonAccumulators[team.id].losses += team.losses;
+            seasonAccumulators[team.id].ties += team.ties;
           }
         });
       });

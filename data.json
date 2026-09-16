@@ -195,18 +195,18 @@
             "name": "BattleBots",
             "score": 154.77,
             "pp": 190.07,
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "total_weekly_vp": 2
+            "total_weekly_vp": 3
           },
           {
             "id": "0001",
             "name": "Orcan Terror",
             "score": 133.85,
             "pp": 181.98,
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "total_weekly_vp": 1
+            "total_weekly_vp": 2
           },
           {
             "id": "0003",
@@ -233,27 +233,27 @@
             "name": "Ted Lasso",
             "score": 162.98,
             "pp": 173.33,
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "total_weekly_vp": 2
+            "total_weekly_vp": 3
           },
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
             "score": 150,
             "pp": 154.77,
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "total_weekly_vp": 1
+            "total_weekly_vp": 2
           },
           {
             "id": "0010",
             "name": "The Meaty Ogres",
             "score": 135.82,
             "pp": 162.82,
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "total_weekly_vp": 1
+            "total_weekly_vp": 2
           },
           {
             "id": "0009",
@@ -280,9 +280,9 @@
             "name": "Hamsterdam",
             "score": 129.74,
             "pp": 146.61,
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "total_weekly_vp": 2
+            "total_weekly_vp": 3
           },
           {
             "id": "0011",
@@ -309,12 +309,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -322,12 +322,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -341,7 +341,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -354,7 +354,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -363,12 +363,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -376,12 +376,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -389,12 +389,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -408,12 +408,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -423,20 +436,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -449,7 +449,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -462,7 +462,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -473,12 +473,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -486,12 +486,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -505,7 +505,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -518,7 +518,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -527,12 +527,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -540,12 +540,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -553,12 +553,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -572,12 +572,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -587,20 +600,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -613,7 +613,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -626,7 +626,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -942,12 +942,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -955,12 +955,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -974,7 +974,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -987,7 +987,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -996,12 +996,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1009,12 +1009,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -1022,12 +1022,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1041,12 +1041,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -1056,20 +1069,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -1082,7 +1082,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -1095,7 +1095,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -1106,12 +1106,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -1119,12 +1119,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -1138,7 +1138,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -1151,7 +1151,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -1160,12 +1160,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1173,12 +1173,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -1186,12 +1186,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1205,12 +1205,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -1220,20 +1233,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -1246,7 +1246,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -1259,7 +1259,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -1575,12 +1575,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -1588,12 +1588,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -1607,7 +1607,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -1620,7 +1620,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -1629,12 +1629,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1642,12 +1642,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -1655,12 +1655,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1674,12 +1674,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -1689,20 +1702,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -1715,7 +1715,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -1728,7 +1728,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -1739,12 +1739,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -1752,12 +1752,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -1771,7 +1771,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -1784,7 +1784,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -1793,12 +1793,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1806,12 +1806,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -1819,12 +1819,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -1838,12 +1838,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -1853,20 +1866,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -1879,7 +1879,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -1892,7 +1892,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -2208,12 +2208,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -2221,12 +2221,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -2240,7 +2240,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -2253,7 +2253,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -2262,12 +2262,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2275,12 +2275,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -2288,12 +2288,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2307,12 +2307,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -2322,20 +2335,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -2348,7 +2348,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -2361,7 +2361,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -2372,12 +2372,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -2385,12 +2385,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -2404,7 +2404,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -2417,7 +2417,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -2426,12 +2426,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2439,12 +2439,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -2452,12 +2452,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2471,12 +2471,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -2486,20 +2499,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -2512,7 +2512,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -2525,7 +2525,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -2836,12 +2836,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -2849,12 +2849,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -2868,7 +2868,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -2881,7 +2881,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -2890,12 +2890,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2903,12 +2903,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -2916,12 +2916,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -2935,12 +2935,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -2950,20 +2963,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -2976,7 +2976,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -2989,7 +2989,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -3300,12 +3300,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -3313,12 +3313,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -3332,7 +3332,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -3345,7 +3345,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -3354,12 +3354,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -3367,12 +3367,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -3380,12 +3380,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -3399,12 +3399,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -3414,20 +3427,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -3440,7 +3440,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -3453,7 +3453,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -3764,12 +3764,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -3777,12 +3777,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -3796,7 +3796,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -3809,7 +3809,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -3818,12 +3818,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -3831,12 +3831,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -3844,12 +3844,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -3863,12 +3863,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -3878,20 +3891,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -3904,7 +3904,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -3917,7 +3917,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -4228,12 +4228,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -4241,12 +4241,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -4260,7 +4260,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -4273,7 +4273,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -4282,12 +4282,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -4295,12 +4295,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -4308,12 +4308,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -4327,12 +4327,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -4342,20 +4355,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -4368,7 +4368,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -4381,7 +4381,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -4692,12 +4692,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -4705,12 +4705,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -4724,7 +4724,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -4737,7 +4737,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -4746,12 +4746,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -4759,12 +4759,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -4772,12 +4772,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -4791,12 +4791,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -4806,20 +4819,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -4832,7 +4832,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -4845,7 +4845,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -5156,12 +5156,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -5169,12 +5169,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -5188,7 +5188,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -5201,7 +5201,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -5210,12 +5210,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -5223,12 +5223,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -5236,12 +5236,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -5255,12 +5255,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -5270,20 +5283,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -5296,7 +5296,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -5309,7 +5309,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -5620,12 +5620,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -5633,12 +5633,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -5652,7 +5652,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -5665,7 +5665,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -5674,12 +5674,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -5687,12 +5687,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -5700,12 +5700,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -5719,12 +5719,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -5734,20 +5747,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -5760,7 +5760,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -5773,7 +5773,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
@@ -6084,12 +6084,12 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 154.77,
             "pp": 190.07,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "00"
@@ -6097,12 +6097,12 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 133.85,
             "pp": 181.98,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "00"
@@ -6116,7 +6116,7 @@
             "pf": 125.2,
             "pp": 149.1,
             "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "00"
           },
@@ -6129,7 +6129,7 @@
             "pf": 123.89,
             "pp": 159.59,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "00"
           }
@@ -6138,12 +6138,12 @@
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 1,
-            "vp": 2,
+            "vp": 3,
             "pf": 162.98,
             "pp": 173.33,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -6151,12 +6151,12 @@
           {
             "id": "0012",
             "name": "2 Roops, 1 Silva",
-            "h2h_vp": 0,
+            "h2h_vp": 1,
             "battle_vp": 1,
-            "vp": 1,
+            "vp": 2,
             "pf": 150,
             "pp": 154.77,
-            "wins": 0,
+            "wins": 1,
             "losses": 1,
             "ties": 0,
             "division": "01"
@@ -6164,12 +6164,12 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 1,
+            "h2h_vp": 2,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 2,
             "pf": 135.82,
             "pp": 162.82,
-            "wins": 1,
+            "wins": 2,
             "losses": 0,
             "ties": 0,
             "division": "01"
@@ -6183,12 +6183,25 @@
             "pf": 105.24,
             "pp": 131.52,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "01"
           }
         ],
         "Lower Division": [
+          {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "h2h_vp": 2,
+            "battle_vp": 1,
+            "vp": 3,
+            "pf": 129.74,
+            "pp": 146.61,
+            "wins": 2,
+            "losses": 0,
+            "ties": 0,
+            "division": "02"
+          },
           {
             "id": "0007",
             "name": "Norsemen",
@@ -6198,20 +6211,7 @@
             "pf": 138.63,
             "pp": 160.91,
             "wins": 1,
-            "losses": 0,
-            "ties": 0,
-            "division": "02"
-          },
-          {
-            "id": "0004",
-            "name": "Hamsterdam",
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "vp": 2,
-            "pf": 129.74,
-            "pp": 146.61,
-            "wins": 1,
-            "losses": 0,
+            "losses": 1,
             "ties": 0,
             "division": "02"
           },
@@ -6224,7 +6224,7 @@
             "pf": 113.57,
             "pp": 125.27,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           },
@@ -6237,7 +6237,7 @@
             "pf": 81.61,
             "pp": 91.49,
             "wins": 0,
-            "losses": 1,
+            "losses": 2,
             "ties": 0,
             "division": "02"
           }
