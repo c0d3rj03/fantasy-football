@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,12 +7,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Inter', sans-serif;
-    }
+    body { font-family: 'Inter', sans-serif; }
   </style>
 </head>
-
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
 
   <!-- Header & Navigation -->
@@ -27,12 +23,10 @@
         </div>
       </div>
       <nav class="flex gap-2">
-        <a href="index.html"
-          class="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+        <a href="index.html" class="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
           <span>🏈</span> Results & Standings
         </a>
-        <a href="prizes.html"
-          class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
+        <a href="prizes.html" class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
           <span>💰</span> League Prizes
         </a>
       </nav>
@@ -43,9 +37,8 @@
   <main class="max-w-7xl mx-auto px-4 mt-6 space-y-6">
 
     <!-- Single Controls Bar: Week, Quarter, and Team Focus on same row -->
-    <div
-      class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-4">
-
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-4">
+      
       <!-- Left side: Week (First) & Quarter (Second) Filter Chips -->
       <div class="flex flex-wrap items-center gap-4">
         <!-- Week Chips -->
@@ -62,26 +55,20 @@
         <div class="flex items-center gap-2">
           <span class="text-xs font-black uppercase tracking-wider text-slate-400">Quarter:</span>
           <div class="flex items-center gap-1.5">
-            <button onclick="selectQuarter(1)" id="btn-q1"
-              class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q1</button>
-            <button onclick="selectQuarter(2)" id="btn-q2"
-              class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q2</button>
-            <button onclick="selectQuarter(3)" id="btn-q3"
-              class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q3</button>
-            <button onclick="selectQuarter(4)" id="btn-q4"
-              class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Post</button>
+            <button onclick="selectQuarter(1)" id="btn-q1" class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q1</button>
+            <button onclick="selectQuarter(2)" id="btn-q2" class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q2</button>
+            <button onclick="selectQuarter(3)" id="btn-q3" class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Q3</button>
+            <button onclick="selectQuarter(4)" id="btn-q4" class="px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer">Post</button>
           </div>
         </div>
       </div>
 
       <!-- Right side: Team Focus Selector -->
       <div class="flex items-center gap-2 w-full sm:w-auto">
-        <label for="team-focus-select"
-          class="text-xs font-black uppercase tracking-wider text-sky-400 flex items-center gap-1 shrink-0">
+        <label for="team-focus-select" class="text-xs font-black uppercase tracking-wider text-sky-400 flex items-center gap-1 shrink-0">
           🎯 Focus:
         </label>
-        <select id="team-focus-select" onchange="onTeamFocusChange(this.value)"
-          class="bg-slate-950 border border-sky-500/40 text-sky-300 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-sky-400 cursor-pointer w-full sm:w-auto">
+        <select id="team-focus-select" onchange="onTeamFocusChange(this.value)" class="bg-slate-950 border border-sky-500/40 text-sky-300 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:border-sky-400 cursor-pointer w-full sm:w-auto">
           <option value="">All Teams (No Focus)</option>
         </select>
       </div>
@@ -124,14 +111,12 @@
       <div class="lg:col-span-4 space-y-6">
 
         <!-- Weekly Prize - League High Score Banner (Directly above Standings) -->
-        <div id="cash-king-banner"
-          class="hidden bg-gradient-to-r from-amber-950/50 via-slate-900 to-amber-950/50 border border-amber-500/30 rounded-2xl p-4 shadow-lg">
+        <div id="cash-king-banner" class="hidden bg-gradient-to-r from-amber-950/50 via-slate-900 to-amber-950/50 border border-amber-500/30 rounded-2xl p-4 shadow-lg">
           <div class="flex items-center justify-between gap-3">
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-2xl">👑</span>
               <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Weekly Prize - League High
-                  Score</div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Weekly Prize - League High Score</div>
                 <h2 id="cash-king-name" class="text-sm font-black text-slate-100 truncate">---</h2>
               </div>
             </div>
@@ -143,17 +128,14 @@
 
         <!-- Standings Section with Toggle -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-4">
-          <div
-            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-3">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-800 pb-3">
             <h2 class="text-base font-black text-amber-400 flex items-center gap-2">
               <span>📊</span> League Standings
             </h2>
             <!-- Toggle: Current vs Season Standings -->
             <div class="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 self-stretch sm:self-auto">
-              <button onclick="toggleStandings('current')" id="btn-standings-current"
-                class="flex-1 sm:flex-none px-2.5 py-1 text-[11px] font-black rounded-lg bg-amber-500 text-slate-950 shadow-sm transition cursor-pointer">Current</button>
-              <button onclick="toggleStandings('season')" id="btn-standings-season"
-                class="flex-1 sm:flex-none px-2.5 py-1 text-[11px] font-bold rounded-lg text-slate-400 hover:text-slate-200 transition cursor-pointer">Season</button>
+              <button onclick="toggleStandings('current')" id="btn-standings-current" class="flex-1 sm:flex-none px-2.5 py-1 text-[11px] font-black rounded-lg bg-amber-500 text-slate-950 shadow-sm transition cursor-pointer">Current</button>
+              <button onclick="toggleStandings('season')" id="btn-standings-season" class="flex-1 sm:flex-none px-2.5 py-1 text-[11px] font-bold rounded-lg text-slate-400 hover:text-slate-200 transition cursor-pointer">Season</button>
             </div>
           </div>
 
@@ -161,25 +143,21 @@
             <!-- Rendered dynamically -->
           </div>
 
-          <!-- Promotion / Relegation Legend at bottom -->
-          <div
-            class="text-[10px] text-slate-400 flex items-center justify-center gap-4 pt-3 border-t border-slate-800/80">
-            <span class="flex items-center gap-1 font-semibold text-amber-400"><span>⬆️</span> Projected
-              Promotion</span>
+          <!-- Promotion / Relegation Legend at bottom (Hidden in Season mode) -->
+          <div id="standings-legend" class="text-[10px] text-slate-400 flex items-center justify-center gap-4 pt-3 border-t border-slate-800/80">
+            <span class="flex items-center gap-1 font-semibold text-amber-400"><span>⬆️</span> Projected Promotion</span>
             <span class="flex items-center gap-1 font-semibold text-red-400"><span>⬇️</span> Projected Relegation</span>
           </div>
         </section>
 
         <!-- Quarterly Prizes Recap (Visible on Weeks 4, 8, 12) -->
-        <div id="quarterly-prizes-card"
-          class="hidden bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 shadow-xl space-y-3">
+        <div id="quarterly-prizes-card" class="hidden bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 shadow-xl space-y-3">
           <div class="flex items-center justify-between border-b border-amber-500/20 pb-2">
             <div class="flex items-center gap-2">
               <span class="text-xl">💰</span>
               <div>
-                <h3 id="quarterly-prizes-title" class="font-black text-amber-400 text-sm">Quarterly Cash Award Winners
-                </h3>
-                <p class="text-[10px] text-slate-400">$20 per Award</p>
+                <h3 id="quarterly-prizes-title" class="font-black text-amber-400 text-sm">Quarterly Cash Award Winners</h3>
+                <p class="text-[10px] text-slate-400">\$20 per Award</p>
               </div>
             </div>
           </div>
@@ -189,14 +167,12 @@
         </div>
 
         <!-- Promotion & Relegation Recap (Visible on Weeks 4, 8, 12) -->
-        <div id="relegation-card"
-          class="hidden bg-gradient-to-br from-indigo-950/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 shadow-xl space-y-3">
+        <div id="relegation-card" class="hidden bg-gradient-to-br from-indigo-950/40 via-slate-900 to-slate-900 border border-indigo-500/30 rounded-2xl p-4 shadow-xl space-y-3">
           <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2">
             <div class="flex items-center gap-2">
               <span class="text-xl">🔄</span>
               <div>
-                <h3 id="relegation-title" class="font-black text-indigo-400 text-sm">Quarterly Promotion & Relegation
-                </h3>
+                <h3 id="relegation-title" class="font-black text-indigo-400 text-sm">Quarterly Promotion & Relegation</h3>
                 <p class="text-[10px] text-slate-400">Quarter Alignment Shifts</p>
               </div>
             </div>
@@ -225,7 +201,7 @@
         const response = await fetch('data.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         leagueData = await response.json();
-
+        
         // Populate Team Focus Dropdown
         populateTeamFocusDropdown();
 
@@ -239,7 +215,7 @@
 
         renderQuarterChips();
         renderWeekChips();
-        toggleStandings('current'); // Ensures active styling is set on load
+        toggleStandings('current');
         renderWeek(selectedWeek);
       } catch (err) {
         console.error("Failed to load league data:", err);
@@ -277,7 +253,7 @@
         });
       }
 
-      Object.keys(teamMap).sort((a, b) => teamMap[a].localeCompare(teamMap[b])).forEach(id => {
+      Object.keys(teamMap).sort((a,b) => teamMap[a].localeCompare(teamMap[b])).forEach(id => {
         const opt = document.createElement('option');
         opt.value = id;
         opt.textContent = teamMap[id];
@@ -294,9 +270,9 @@
 
     function getLatestPlayedWeekKey() {
       if (!leagueData || !leagueData.weekly_data) return "1";
-      const keys = Object.keys(leagueData.weekly_data).sort((a, b) => Number(a) - Number(b));
+      const keys = Object.keys(leagueData.weekly_data).sort((a,b) => Number(a) - Number(b));
       const played = keys.filter(k => leagueData.weekly_data[k].played);
-      return played.length > 0 ? played[played.length - 1] : (keys[0] || "1");
+      return played.length > 0 ? played[played.length - 1] : (keys || "1");
     }
 
     function selectQuarter(qNum) {
@@ -304,7 +280,7 @@
       // Default to first week of selected quarter
       const quarterWeekStart = (qNum - 1) * 4 + 1;
       selectedWeek = quarterWeekStart.toString();
-
+      
       renderQuarterChips();
       renderWeekChips();
       renderWeek(selectedWeek);
@@ -374,7 +350,7 @@
 
     function toggleStandings(mode) {
       standingsMode = mode;
-
+      
       const btnCurrent = document.getElementById('btn-standings-current');
       const btnSeason = document.getElementById('btn-standings-season');
 
@@ -508,9 +484,9 @@
 
       Object.entries(weekObj.battle_royale).forEach(([divName, teams]) => {
         const style = divColors[divName] || { border: "border-slate-800", title: divName };
-
+        
         let rowsHtml = '';
-        const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
+        const sortedTeams = [...teams].sort((a,b) => b.score - a.score);
 
         sortedTeams.forEach((t, idx) => {
           const isBRWinner = idx < 2;
@@ -557,7 +533,7 @@
       }
 
       title.textContent = `Quarter ${quarterNum} Cash Payouts ($20 ea)`;
-
+      
       const startW = (quarterNum - 1) * 4 + 1;
       const endW = quarterNum * 4;
 
@@ -699,9 +675,10 @@
               if (!qStats[divName][t.id]) {
                 qStats[divName][t.id] = { id: t.id, name: t.name, vp: 0, pf: 0, pp: 0 };
               }
+              const teamPP = (typeof t.pp === 'number') ? t.pp : ((typeof t.potential_points === 'number') ? t.potential_points : t.score);
               qStats[divName][t.id].vp += t.total_weekly_vp || 0;
               qStats[divName][t.id].pf += t.score || 0;
-              qStats[divName][t.id].pp += t.potential_points || t.score || 0;
+              qStats[divName][t.id].pp += teamPP || 0;
             });
           });
         }
@@ -709,7 +686,7 @@
 
       const result = {};
       Object.entries(qStats).forEach(([divName, teamMap]) => {
-        result[divName] = Object.values(teamMap).sort((a, b) => {
+        result[divName] = Object.values(teamMap).sort((a,b) => {
           if (b.vp !== a.vp) return b.vp - a.vp;
           if (b.pf !== a.pf) return b.pf - a.pf;
           return b.pp - a.pp;
@@ -724,6 +701,16 @@
       if (!container) return;
       container.innerHTML = '';
 
+      // Toggle Legend Visibility: Show in 'current' mode, hide in 'season' mode
+      const legendEl = document.getElementById('standings-legend');
+      if (legendEl) {
+        if (standingsMode === 'current') {
+          legendEl.classList.remove('hidden');
+        } else {
+          legendEl.classList.add('hidden');
+        }
+      }
+
       let standingsData = null;
 
       if (standingsMode === 'current') {
@@ -735,7 +722,7 @@
         // Season standings: Calculate across ALL played weeks from Week 1 to latest played week
         const latestKey = Number(getLatestPlayedWeekKey());
         standingsData = computeQuarterStandings(1, latestKey);
-
+        
         // Fallback to leagueData.standings if provided
         if (!standingsData && leagueData) {
           standingsData = leagueData.standings;
@@ -769,31 +756,34 @@
           let iconMarker = "";
           const isFocused = (t.id === focusedTeamId);
 
-          if (divName === "Upper Division" && t.pp === minPP && teams.length > 1) {
-            nameClass = "font-bold text-red-400";
-            iconMarker = " ⬇️";
-          } else if (divName === "Middle Division") {
-            if (t.vp === maxVP && maxVP > 0) {
-              nameClass = "font-bold text-amber-400";
-              iconMarker = " ⬆️";
-            } else if (t.pp === minPP && teams.length > 1) {
+          // Promotion / Relegation indicators are ONLY applied in 'current' standings mode
+          if (standingsMode === 'current') {
+            if (divName === "Upper Division" && t.pp === minPP && teams.length > 1) {
               nameClass = "font-bold text-red-400";
               iconMarker = " ⬇️";
+            } else if (divName === "Middle Division") {
+              if (t.vp === maxVP && maxVP > 0) {
+                nameClass = "font-bold text-amber-400";
+                iconMarker = " ⬆️";
+              } else if (t.pp === minPP && teams.length > 1) {
+                nameClass = "font-bold text-red-400";
+                iconMarker = " ⬇️";
+              }
+            } else if (divName === "Lower Division" && t.vp === maxVP && maxVP > 0) {
+              nameClass = "font-bold text-amber-400";
+              iconMarker = " ⬆️";
             }
-          } else if (divName === "Lower Division" && t.vp === maxVP && maxVP > 0) {
-            nameClass = "font-bold text-amber-400";
-            iconMarker = " ⬆️";
           }
 
           rowsHtml += `
             <tr class="border-b border-slate-800/60 hover:bg-slate-800/40 text-xs ${isFocused ? 'bg-sky-950/80 border-sky-500/50' : ''}">
-              <td class="py-2 px-2 font-bold text-slate-500 text-center">${idx + 1}</td>
-              <td class="py-2 px-2 truncate max-w-[120px] ${isFocused ? 'font-black text-sky-300' : nameClass}">
+              <td class="py-2 px-1 font-bold text-slate-500 text-center">${idx + 1}</td>
+              <td class="py-2 px-1 truncate ${isFocused ? 'font-black text-sky-300' : nameClass}" title="${t.name}">
                 ${t.name}${iconMarker}
               </td>
-              <td class="py-2 px-2 font-bold text-amber-400 text-center">${t.vp}</td>
-              <td class="py-2 px-2 font-bold text-slate-300 text-right">${t.pf.toFixed(2)}</td>
-              <td class="py-2 px-2 font-bold text-slate-400 text-right">${t.pp.toFixed(2)}</td>
+              <td class="py-2 px-1 font-bold text-amber-400 text-center">${t.vp}</td>
+              <td class="py-2 px-1 font-bold text-slate-300 text-right">${t.pf.toFixed(2)}</td>
+              <td class="py-2 px-1 font-bold text-slate-400 text-right">${t.pp.toFixed(2)}</td>
             </tr>`;
         });
 
@@ -803,14 +793,14 @@
               <h3 class="font-black text-xs text-slate-200">${meta.title}</h3>
             </div>
             <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
+              <table class="w-full text-left border-collapse table-fixed">
                 <thead>
                   <tr class="border-b border-slate-800 text-[9px] uppercase tracking-wider text-slate-400 bg-slate-950/60">
-                    <th class="py-2 px-2 text-center w-6">#</th>
-                    <th class="py-2 px-2">Team</th>
-                    <th class="py-2 px-2 text-center">VP</th>
-                    <th class="py-2 px-2 text-right">PF</th>
-                    <th class="py-2 px-2 text-right">PP</th>
+                    <th class="py-2 px-1 text-center w-6">#</th>
+                    <th class="py-2 px-1 w-auto">Team</th>
+                    <th class="py-2 px-1 text-center w-10">VP</th>
+                    <th class="py-2 px-1 text-right w-16">PF</th>
+                    <th class="py-2 px-1 text-right w-16">PP</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -825,5 +815,4 @@
     window.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
-
 </html>
