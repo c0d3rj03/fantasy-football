@@ -8,6 +8,8 @@ const BASE_URL = `https://www42.myfantasyleague.com/${YEAR}`;
 const MFL_USERNAME = process.env.MFL_USERNAME;
 const MFL_PASSWORD = process.env.MFL_PASSWORD;
 
+const { authenticateCommissioner, submitCommissionerForm } = require('../shared/mfl\_client');
+
 function parseAuthCookie(response, existingCookie = '') {
   let rawCookies = [];
   if (typeof response.headers.getSetCookie === 'function') {

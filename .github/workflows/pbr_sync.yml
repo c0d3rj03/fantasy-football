@@ -18,13 +18,17 @@ jobs:
           node-version: '20'
 
       - name: Fetch and Calculate Weekly Results
-        run: node fetcher.js
+        run: 
+          cd pbr
+          node fetcher.js
   
       - name: Sync Victory Points to MFL
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
-        run: node mfl_updater.js
+        run: 
+          cd pbr
+          node mfl_updater.js
 
       - name: Commit and Push Updated Data
         run: |
