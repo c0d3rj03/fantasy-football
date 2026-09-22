@@ -334,7 +334,35 @@ async function main() {
 
   const dataPath = path.join(__dirname, 'data.json');
   fs.writeFileSync(dataPath, JSON.stringify(leagueData, null, 2));
-  console.log(`Successfully generated complete data.json at ${dataPath}`);  
+  console.log(`Successfully generated complete data.json at ${dataPath}`);
+
+  const targetWeek = process.argv[2] || '2';
+
+  if (process.env.MFL_USERNAME && process.env.MFL_PASSWORD) {
+    const battleVpMap = {};
+
+    // Extract only In-Division Battle Royale VPs for targetWeek
+    if (leagueData?.weekly_data?.[targetWeek]?.battle_royale) {
+      Object.values(leagueData.weekly_data[targetWeek].battle_royale).forEach(teams => {
+        teams.forEach(t => {
+          const mflFranchiseId = String(t.id).padStart(4, '0');
+          battleVpMap[mflFranchiseId] = t.battle_vp || 0;
+        });
+      });
+    }
+
+    console.log(`🔒 MFL Credentials found. Pushing Week ${targetWeek} In-Division Battle Royale VPs to MFL...`);
+    const mflClient = new MflAdminClient(
+      process.env.SEASON_YEAR || '2026',
+      process.env.LEAGUE_ID || '63213'
+    );
+    
+    // Uses existing pushVictoryPoints method on your class
+    await mflClient.pushVictoryPoints(targetWeek, battleVpMap);
+  } else {
+    console.log("ℹ️ Skipping MFL write-back (MFL_USERNAME / MFL_PASSWORD environment variables not set).");
+  }
+
 }
 
 // ---------------------------------------------------------------------------
@@ -357,7 +385,7 @@ class MflAdminClient {
     }
 
     try {
-      const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&amp;PASSWORD=${encodeURIComponent(password)}&amp;XML=1`;
+      const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&PASSWORD=${encodeURIComponent(password)}&XML=1`;
       const res = await fetch(loginUrl);
       const setCookie = res.headers.get('set-cookie');
 
@@ -387,7 +415,7 @@ class MflAdminClient {
 
     for (const [franchiseId, vp] of Object.entries(franchiseVps)) {
       try {
-        const url = `${this.baseUrl}/import?TYPE=adjustScores&amp;L=${this.leagueId}&amp;W=${week}&amp;FRANCHISE=${franchiseId}&amp;SCORE=${vp}&amp;COMMENTS=${encodeURIComponent(`Week \${week} PBR VP Sync`)}&amp;JSON=1`;
+        const url = `${this.baseUrl}/import?TYPE=adjustScores&L=${this.leagueId}&W=${week}&FRANCHISE=${franchiseId}&SCORE=${vp}&COMMENTS=${encodeURIComponent(`Week ${week} PBR VP Sync`)}&JSON=1`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Cookie': this.cookie }
