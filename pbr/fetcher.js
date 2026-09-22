@@ -109,40 +109,17 @@ class MflAdminClient {
     try {
       const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&PASSWORD=${encodeURIComponent(password)}&XML=1`;
       const res = await fetch(loginUrl);
-      const bodyText = await res.text();
+      const setCookie = res.headers.get('set-cookie');
 
-      // 1. Extract cookie from HTTP Set-Cookie headers
-      let cookieVal = null;
-      const rawCookies = typeof res.headers.getSetCookie === 'function'
-        ? res.headers.getSetCookie()
-        : [res.headers.get('set-cookie')].filter(Boolean);
-
-      for (const sc of rawCookies) {
-        const match = sc?.match(/MFL_USER_ID=([^;]+)/);
+      if (setCookie) {
+        const match = setCookie.match(/MFL_USER_ID=([^;]+)/);
         if (match) {
-          cookieVal = match[1];
-          break;
+          this.cookie = `MFL_USER_ID=${match[1]}`;
+          console.log("🔒 MFL Commissioner Authentication successful.");
+          return true;
         }
       }
-
-      // 2. Fallback: Parse cookie attribute from MFL XML response body (<status cookie="..."/>)
-      if (!cookieVal) {
-        const bodyMatch = bodyText.match(/cookie="([^"]+)"/);
-        if (bodyMatch) {
-          cookieVal = bodyMatch[1];
-        }
-      }
-
-      if (cookieVal) {
-        this.cookie = `MFL_USER_ID=${cookieVal}`;
-        console.log("🔒 MFL Commissioner Authentication successful.");
-        return true;
-      }
-
-      // 3. Extract and display specific error from MFL XML response if login failed
-      const errorMatch = bodyText.match(/<error[^>]*>(.*?)<\/error>/i);
-      const errorMsg = errorMatch ? errorMatch[1] : "MFL_USER_ID cookie not returned.";
-      console.warn(`⚠️ MFL Login failed: ${errorMsg}`);
+      console.warn("⚠️ MFL Login failed: MFL_USER_ID cookie not returned.");
       return false;
     } catch (err) {
       console.warn("⚠️ Error logging into MFL:", err.message);
@@ -162,14 +139,27 @@ class MflAdminClient {
       if (vp <= 0) continue; // Only push for +1 VP winners
 
       try {
-        const comments = encodeURIComponent(`Week ${week} PBR In-Division Battle Royale VP`);
-        const url = `${this.baseUrl}/import?TYPE=adjustScores&L=${this.leagueId}&W=${week}&FRANCHISE=${franchiseId}&SCORE=${vp}&COMMENTS=${comments}&JSON=1`;
+        const explanation = encodeURIComponent(`Week ${week} PBR In-Division Battle Royale VP`);
+        // Note: Official MFL import API for franchise score adjustment uses:
+        // TYPE=franchiseScoreAdjustment&L=...&FRANCHISE=...&WEEK=...&POINTS=...&EXPLANATION=...
+        const url = `${this.baseUrl}/import?TYPE=franchiseScoreAdjustment&L=${this.leagueId}&FRANCHISE=${franchiseId}&WEEK=${week}&POINTS=${vp}&EXPLANATION=${explanation}&JSON=1`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Cookie': this.cookie }
         });
-        const result = await res.json();
-        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -> MFL status: ${result?.status || 'OK'}`);
+        const text = await res.text();
+        let status = 'OK';
+        try {
+          const json = JSON.parse(text);
+          status = json.status || 'OK';
+        } catch (e) {
+          if (text.includes('<status>OK</status>') || text.includes('OK')) {
+            status = 'OK';
+          } else {
+            status = text.trim();
+          }
+        }
+        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -> MFL status: ${status}`);
       } catch (err) {
         console.warn(`  ⚠️ Failed to push VP for Franchise ${franchiseId}:`, err.message);
       }
