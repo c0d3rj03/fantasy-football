@@ -40,6 +40,15 @@ async function fetchSlackChannelHistory(channelId) {
     const res = await fetch(url, {
       headers: { 'Authorization': `Bearer ${SLACK_BOT_TOKEN}` }
     });
+    // Clean Slack history fetch
+    try {
+      const history = await slack.conversations.history({
+        channel: channelId.trim(), // Strip any hidden whitespace
+        limit: 20                  // Use 'limit', NOT 'count' or 'channel_id'
+      });
+    } catch (err) {
+      console.warn(`⚠️ Could not fetch Slack history for channel ${channelId}:`, err.message);
+    }
     const data = await res.json();
     if (!data.ok) {
       console.warn(`⚠️ Slack history warning for channel ${channelId}:`, data.error);
@@ -68,34 +77,21 @@ async function gatherSlackChatter() {
 // ============================================================================
 // 3. GEMINI API CALL WITH RETRY LOGIC (HANDLES 503 CAPACITY SPIKES)
 // ============================================================================
-async function callGeminiWithRetry(promptText, retries = 3, delayMs = 3000) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-  
-  for (let attempt = 1; attempt <= retries; attempt++) {
+// Retries Gemini up to 5 times with exponential backoff on 503 errors
+async function generateGeminiPost(model, prompt, maxRetries = 5) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }]
-        })
-      });
-
-      const aiData = await res.json();
-
-      if (res.status === 503 || res.status === 429) {
-        console.warn(`⚠️ Gemini API busy (HTTP ${res.status}). Attempt ${attempt}/${retries}. Retrying in ${delayMs / 1000}s...`);
-        if (attempt <= retries) {
-          await new Promise(resolve => setTimeout(resolve, delayMs));
-          delayMs *= 2;
-          continue;
-        }
-      }
-
-      return aiData;
+      const result = await model.generateContent(prompt);
+      return result.response.text();
     } catch (err) {
-      console.warn(`⚠️ Fetch attempt ${attempt} failed: ${err.message}`);
-      if (attempt <= retries) await new Promise(resolve => setTimeout(resolve, delayMs));
+      if (err.status === 503 || err.message?.includes('503')) {
+        const waitMs = Math.pow(2, attempt) * 2500; // 5s, 10s, 20s, 40s
+        console.warn(`⚠️ Gemini API busy (503). Attempt ${attempt}/${maxRetries}. Retrying in ${waitMs / 1000}s...`);
+        await new Promise(res => setTimeout(res, waitMs));
+      } else {
+        console.error("❌ Gemini API Error:", err.message);
+        break;
+      }
     }
   }
   return null;
@@ -161,17 +157,21 @@ async function generateAiPost(weekNum) {
   const fullPrompt = `${systemInstruction}\n\nHere is this week's league data and history:\n${JSON.stringify(promptContext, null, 2)}`;
   const aiData = await callGeminiWithRetry(fullPrompt);
 
-  const candidateText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+  // 1. Extract text from response (if successful)
+  let candidateText = aiData?.candidates?.[0]?.content?.parts?.[0]?.text;
 
+  // 2. Handle success vs. fallback
   if (candidateText) {
     console.log("\n================ GEMMY'S AI RECAP ================\n");
     console.log(candidateText);
-
-    fs.writeFileSync(path.join(__dirname, `gemmy_week_${weekNum}.md`), candidateText);
-    console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);
   } else {
-    console.error("❌ Failed to parse post content from Gemini API:", JSON.stringify(aiData));
+    console.warn("⚠️ Gemini API unavailable after retries; using basic fallback post.");
+    candidateText = `🏈 **PBR Week ${weekNum} Update**\n\nWeek ${weekNum} scores and Victory Points have been updated on the dashboard!`;
   }
+
+  // 3. Always save recap file so downstream steps (Slack notification &amp; Git commit) never fail
+  fs.writeFileSync(path.join(__dirname, `gemmy_week_${weekNum}.md`), candidateText);
+  console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);
 }
 
 const targetWeek = process.argv[2] || "1";
