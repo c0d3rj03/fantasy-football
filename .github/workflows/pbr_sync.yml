@@ -2,8 +2,8 @@ name: PBR Weekly Sync & Automation
 
 on:
   schedule:
-    # Runs every Tuesday at 10:00 AM UTC (6:00 AM EST / 3:00 AM PST)
-    - cron: '0 10 * * 2'
+    # Runs every Tuesday at 8:23 AM UTC (4:23 AM EDT / 3:23 AM EST)
+    - cron: '23 8 * * 2'
   workflow_dispatch:
     inputs:
       week:
@@ -35,12 +35,14 @@ jobs:
           fi
 
       # 1. FETCH WEEK RESULTS & CALCULATE VPS
-      - name: Fetch Live MFL Results
+      - name: Fetch Live MFL Results & Push VPs
         env:
           LEAGUE_ID: '63213'
           SEASON_YEAR: '2026'
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: node pbr/fetcher.js
-
+  
       # 2. GENERATE GEMMY'S AI RECAP
       - name: Generate Gemmy AI Post
         continue-on-error: true

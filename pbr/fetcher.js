@@ -337,4 +337,80 @@ async function main() {
   console.log(`Successfully generated complete data.json at ${dataPath}`);  
 }
 
+// ---------------------------------------------------------------------------
+// MFL COMMISSIONER WRITE-BACK CLIENT
+// ---------------------------------------------------------------------------
+class MflAdminClient {
+  constructor(seasonYear = '2026', leagueId = '63213') {
+    this.baseUrl = `https://www42.myfantasyleague.com/${seasonYear}`;
+    this.leagueId = leagueId;
+    this.cookie = null;
+  }
+
+  async login() {
+    const username = process.env.MFL_USERNAME;
+    const password = process.env.MFL_PASSWORD;
+
+    if (!username || !password) {
+      console.warn("⚠️ MFL_USERNAME or MFL_PASSWORD missing. Skipping MFL VP write-back.");
+      return false;
+    }
+
+    try {
+      const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&amp;PASSWORD=${encodeURIComponent(password)}&amp;XML=1`;
+      const res = await fetch(loginUrl);
+      const setCookie = res.headers.get('set-cookie');
+
+      if (setCookie) {
+        const match = setCookie.match(/MFL_USER_ID=([^;]+)/);
+        if (match) {
+          this.cookie = `MFL_USER_ID=${match[1]}`;
+          console.log("🔒 MFL Commissioner Authentication successful.");
+          return true;
+        }
+      }
+      console.warn("⚠️ MFL Login failed: MFL_USER_ID cookie not returned.");
+      return false;
+    } catch (err) {
+      console.warn("⚠️ Error logging into MFL:", err.message);
+      return false;
+    }
+  }
+
+  async pushVictoryPoints(week, franchiseVps) {
+    if (!this.cookie) {
+      const loggedIn = await this.login();
+      if (!loggedIn) return;
+    }
+
+    console.log(`🚀 Pushing Week ${week} Victory Points to MFL...`);
+
+    for (const [franchiseId, vp] of Object.entries(franchiseVps)) {
+      try {
+        const url = `${this.baseUrl}/import?TYPE=adjustScores&amp;L=${this.leagueId}&amp;W=${week}&amp;FRANCHISE=${franchiseId}&amp;SCORE=${vp}&amp;COMMENTS=${encodeURIComponent(`Week \${week} PBR VP Sync`)}&amp;JSON=1`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Cookie': this.cookie }
+        });
+        const result = await res.json();
+        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -&gt; MFL status: ${result?.status || 'OK'}`);
+      } catch (err) {
+        console.warn(`  ⚠️ Failed to push VP for Franchise ${franchiseId}:`, err.message);
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// EXECUTION CALL IN FETCHER MAIN FUNCTION
+// ---------------------------------------------------------------------------
+// Call this right after compiling week VPs in fetcher.js:
+async function syncVpsToMfl(weekNum, weeklyVpMap) {
+  const client = new MflAdminClient(
+    process.env.SEASON_YEAR || '2026',
+    process.env.LEAGUE_ID || '63213'
+  );
+  await client.pushVictoryPoints(weekNum, weeklyVpMap);
+}
+
 main().catch(console.error);

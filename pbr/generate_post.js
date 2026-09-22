@@ -97,7 +97,8 @@ async function generateAiPost() {
   const slackBanter = await fetchSlackBanter();
 
   const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league.
-Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, &gt; quotes, emojis).`;
+Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, &gt; quotes, emojis).
+IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*), NOT double asterisks (**bold**).`;
 
   const promptContext = {
     week: weekNum,
@@ -124,6 +125,9 @@ Week ${weekNum} scores and Victory Points have been updated on the dashboard!
 📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
   }
 
+  // Convert any lingering double asterisks to single asterisks for Slack
+  candidateText = candidateText.replace(/\*\*(.*?)\*\*/g, '*$1*');
+  
   const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);
   fs.writeFileSync(outputPath, candidateText);
   console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);
