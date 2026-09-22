@@ -1,0 +1,10 @@
+{
+  "name": "pbr-fantasy-football",
+  "version": "1.0.0",
+  "description": "PBR Fantasy Football Dashboard &amp; Automation",
+  "main": "pbr/fetcher.js",
+  "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@slack/web-api": "^7.8.0"
+  }
+}

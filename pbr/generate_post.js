@@ -3,8 +3,8 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { WebClient } = require('@slack/web-api');
 
-// Extract week number from command line args (default to Week 2)
-const weekNum = process.argv || '2';
+// Extract week argument (e.g., process.argv[2] -&gt; '2')
+const weekNum = process.argv[2] || '2';
 
 // ---------------------------------------------------------------------------
 // 1. SLACK BANTER FETCHER
@@ -16,7 +16,6 @@ async function fetchSlackBanter() {
     return [];
   }
 
-  // Safely initialize Slack client
   const slack = new WebClient(token);
   const channelIds = [
     process.env.PBR_SLACK_CHANNEL_GENERAL,
@@ -50,7 +49,7 @@ async function fetchSlackBanter() {
 }
 
 // ---------------------------------------------------------------------------
-// 2. GEMINI API RETRY WRAPPER (Handles 503 Overloads)
+// 2. GEMINI API RETRY WRAPPER
 // ---------------------------------------------------------------------------
 async function callGeminiWithRetry(prompt, maxRetries = 5) {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -71,7 +70,7 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
     } catch (err) {
       const is503 = err.status === 503 || (err.message && err.message.includes('503'));
       if (is503 && attempt < maxRetries) {
-        const waitMs = Math.pow(2, attempt) * 2500; // 5s, 10s, 20s, 40s
+        const waitMs = Math.pow(2, attempt) * 2500;
         console.warn(`⚠️ Gemini API busy (503). Attempt ${attempt}/${maxRetries}. Retrying in ${waitMs / 1000}s...`);
         await new Promise(res => setTimeout(res, waitMs));
       } else {
@@ -88,7 +87,6 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
 async function generateAiPost() {
   console.log(`🤖 Gathering Week ${weekNum} scores, full season history, ESPN news, and Slack banter...`);
 
-  // Ensure data.json exists in pbr/
   const dataPath = path.join(__dirname, 'data.json');
   if (!fs.existsSync(dataPath)) {
     console.error(`❌ Error: ${dataPath} not found!`);
@@ -98,9 +96,8 @@ async function generateAiPost() {
   const leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
   const slackBanter = await fetchSlackBanter();
 
-  // System Persona
   const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league.
-Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, > quotes, emojis).`;
+Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, &gt; quotes, emojis).`;
 
   const promptContext = {
     week: weekNum,
@@ -113,7 +110,6 @@ Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins,
 
   const fullPrompt = `${systemInstruction}\n\nHere is this week's league data and history:\n${JSON.stringify(promptContext, null, 2)}`;
   
-  // Invoke Gemini with Retry
   let candidateText = await callGeminiWithRetry(fullPrompt);
 
   if (candidateText) {
@@ -125,10 +121,9 @@ Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins,
 
 Week ${weekNum} scores and Victory Points have been updated on the dashboard!
 
-📊 Check out the updated standings and division rankings: https://c0d3rj03.github.io/fantasy-football/`;
+📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/`;
   }
 
-  // Always write pbr/gemmy_week_X.md so notify_slack.js never crashes
   const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);
   fs.writeFileSync(outputPath, candidateText);
   console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);

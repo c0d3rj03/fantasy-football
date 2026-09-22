@@ -2,14 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
-// Read argument (e.g. node notify_slack.js pbr/gemmy_week_2.md)
-const targetArg = process.argv || 'pbr/gemmy_week_2.md';
+// Extract argument (e.g., process.argv[2] -> 'pbr/gemmy_week_2.md')
+const targetArg = process.argv[2] || 'pbr/gemmy_week_2.md';
 const filePath = path.isAbsolute(targetArg) 
   ? targetArg 
   : path.join(process.cwd(), targetArg);
 
 if (!fs.existsSync(filePath)) {
-  console.error(`❌ Error: File '${filePath}' not found.`);
+  console.error(`❌ Error: File '${filePath}' not found at ${filePath}`);
   process.exit(1);
 }
 
