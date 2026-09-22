@@ -121,7 +121,7 @@ Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins,
 
 Week ${weekNum} scores and Victory Points have been updated on the dashboard!
 
-📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/`;
+📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
   }
 
   const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);

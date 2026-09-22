@@ -333,7 +333,7 @@ async function main() {
   }
 
   const dataPath = path.join(__dirname, 'data.json');
-  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+  fs.writeFileSync(dataPath, JSON.stringify(leagueData, null, 2));
   console.log(`Successfully generated complete data.json at ${dataPath}`);  
 }
 
