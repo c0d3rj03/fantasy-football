@@ -331,8 +331,9 @@ async function main() {
     }
   }
 
-  fs.writeFileSync('data.json', JSON.stringify(leagueData, null, 2));
-  console.log("Successfully generated complete 12-week data.json for 2026!");
+  const dataPath = path.join(__dirname, 'data.json');
+  fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+  console.log(`Successfully generated complete data.json at ${dataPath}`);  
 }
 
 main().catch(console.error);

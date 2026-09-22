@@ -1,26 +1,30 @@
 const fs = require('fs');
+const path = require('path');
 const https = require('https');
 
-const WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+// Read argument (e.g. node notify_slack.js pbr/gemmy_week_2.md)
+const targetArg = process.argv || 'pbr/gemmy_week_2.md';
+const filePath = path.isAbsolute(targetArg) 
+  ? targetArg 
+  : path.join(process.cwd(), targetArg);
 
-if (!WEBHOOK_URL) {
-  console.log("No SLACK_WEBHOOK_URL set. Skipping Slack notification.");
-  process.exit(0);
-}
-
-// Grab file path from command line arg: node notify_slack.js pbr/gemmy_week_1.md
-const targetFile = process.argv[2] || 'gemmy_post.txt';
-
-if (!fs.existsSync(targetFile)) {
-  console.error(`Error: File '${targetFile}' not found.`);
+if (!fs.existsSync(filePath)) {
+  console.error(`❌ Error: File '${filePath}' not found.`);
   process.exit(1);
 }
 
-const messageText = fs.readFileSync(targetFile, 'utf8');
-const payload = JSON.stringify({ text: messageText });
-const url = new URL(WEBHOOK_URL);
+const content = fs.readFileSync(filePath, 'utf8');
+const webhookUrl = process.env.SLACK_WEBHOOK_URL;
 
-const req = https.request({
+if (!webhookUrl) {
+  console.error("❌ Error: SLACK_WEBHOOK_URL environment variable is missing.");
+  process.exit(1);
+}
+
+const payload = JSON.stringify({ text: content });
+const url = new URL(webhookUrl);
+
+const options = {
   hostname: url.hostname,
   path: url.pathname + url.search,
   method: 'POST',
@@ -28,10 +32,15 @@ const req = https.request({
     'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(payload)
   }
-}, res => {
-  console.log(`Slack post delivered successfully! Status Code: ${res.statusCode}`);
+};
+
+const req = https.request(options, (res) => {
+  console.log(`✅ Slack Webhook Response Status: ${res.statusCode}`);
 });
 
-req.on('error', console.error);
+req.on('error', (e) => {
+  console.error(`❌ Error posting to Slack: ${e.message}`);
+});
+
 req.write(payload);
 req.end();
