@@ -9,7 +9,7 @@ if (!WEBHOOK_URL) {
 }
 
 // Grab file path from command line arg: node notify_slack.js pbr/gemmy_week_1.md
-const targetFile = process.argv || 'gemmy_post.txt';
+const targetFile = process.argv[2] || 'gemmy_post.txt';
 
 if (!fs.existsSync(targetFile)) {
   console.error(`Error: File '${targetFile}' not found.`);

@@ -32,7 +32,7 @@ jobs:
             echo "No package.json found. Skipping npm install."
           fi
 
-      # 1. FETCH WEEK 2 RESULTS & CALCULATE VPS
+      # 1. FETCH WEEK RESULTS & CALCULATE VPS
       - name: Fetch Live MFL Results
         env:
           LEAGUE_ID: '63213'
@@ -41,6 +41,7 @@ jobs:
 
       # 2. GENERATE GEMMY'S AI RECAP
       - name: Generate Gemmy AI Post
+        continue-on-error: true
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PBR_SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
@@ -52,6 +53,7 @@ jobs:
 
       # 3. POST RECAP TO SLACK
       - name: Post Recap to Slack
+        continue-on-error: true
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week || '2' }}.md
