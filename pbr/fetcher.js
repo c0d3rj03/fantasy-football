@@ -109,17 +109,40 @@ class MflAdminClient {
     try {
       const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&PASSWORD=${encodeURIComponent(password)}&XML=1`;
       const res = await fetch(loginUrl);
-      const setCookie = res.headers.get('set-cookie');
+      const bodyText = await res.text();
 
-      if (setCookie) {
-        const match = setCookie.match(/MFL_USER_ID=([^;]+)/);
+      // 1. Extract cookie from HTTP Set-Cookie headers
+      let cookieVal = null;
+      const rawCookies = typeof res.headers.getSetCookie === 'function'
+        ? res.headers.getSetCookie()
+        : [res.headers.get('set-cookie')].filter(Boolean);
+
+      for (const sc of rawCookies) {
+        const match = sc?.match(/MFL_USER_ID=([^;]+)/);
         if (match) {
-          this.cookie = `MFL_USER_ID=${match[1]}`;
-          console.log("🔒 MFL Commissioner Authentication successful.");
-          return true;
+          cookieVal = match[1];
+          break;
         }
       }
-      console.warn("⚠️ MFL Login failed: MFL_USER_ID cookie not returned.");
+
+      // 2. Fallback: Parse cookie attribute from MFL XML response body (<status cookie="..."/>)
+      if (!cookieVal) {
+        const bodyMatch = bodyText.match(/cookie="([^"]+)"/);
+        if (bodyMatch) {
+          cookieVal = bodyMatch[1];
+        }
+      }
+
+      if (cookieVal) {
+        this.cookie = `MFL_USER_ID=${cookieVal}`;
+        console.log("🔒 MFL Commissioner Authentication successful.");
+        return true;
+      }
+
+      // 3. Extract and display specific error from MFL XML response if login failed
+      const errorMatch = bodyText.match(/<error[^>]*>(.*?)<\/error>/i);
+      const errorMsg = errorMatch ? errorMatch[1] : "MFL_USER_ID cookie not returned.";
+      console.warn(`⚠️ MFL Login failed: ${errorMsg}`);
       return false;
     } catch (err) {
       console.warn("⚠️ Error logging into MFL:", err.message);
