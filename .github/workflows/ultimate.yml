@@ -1,0 +1,44 @@
+name: Ultimate Guillotine Automation
+
+on:
+  schedule:
+    - cron: '0 12 * * 2' # Tuesdays at 12:00 UTC (8:00 AM ET)
+  workflow_dispatch:
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Run Data Fetcher
+        env:
+          LEAGUE_ID: '25918'
+          SEASON_YEAR: '2026'
+        run: |
+          cd ultimate
+          node fetcher.js
+
+      - name: Run Tuesday Chop Automation
+        env:
+          LEAGUE_ID: '25918'
+          SEASON_YEAR: '2026'
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+        run: |
+          cd ultimate
+          node automation.js
+
+      - name: Commit and Push Updated Data
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add ultimate/data.json
+          git commit -m "chore(ultimate): auto-update weekly data payload" || echo "No changes to commit"
+          git push

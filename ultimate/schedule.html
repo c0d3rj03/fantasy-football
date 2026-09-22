@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Guillotine FFL - Schedule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #090a0f;
+      --bg-card: #12151e;
+      --bg-card-hover: #191e2b;
+      --border-color: #222938;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-red: #ef4444;
+      --accent-gold: #f59e0b;
+      --active-week-bg: rgba(239, 68, 68, 0.15);
+      --active-week-border: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; min-height: 100vh; padding: 12px; }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; }
+    .header-left { display: flex; flex-direction: column; }
+    .logo-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #f1f5f9; text-transform: uppercase; text-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+    .mfl-link { font-size: 0.75rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; font-weight: 600; transition: color 0.15s; }
+    .mfl-link:hover { color: #f87171; text-decoration: underline; }
+
+    .header-right { text-align: right; font-size: 0.85rem; font-weight: 700; color: #f1f5f9; display: flex; flex-direction: column; gap: 2px; }
+    .metric-item { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+    .metric-label { color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-val { color: #fff; font-weight: 800; }
+
+    /* Controls Bar */
+    .controls-bar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 12px; }
+    .page-title { font-size: 0.85rem; font-weight: 700; color: #fff; }
+
+    .nav-links { display: flex; gap: 12px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: color 0.15s; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-red); }
+
+    /* Info Banner */
+    .info-banner { background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); border-radius: 6px; padding: 10px 14px; font-size: 0.82rem; line-height: 1.4; color: var(--text-main); margin-bottom: 12px; }
+    .info-banner-title { font-size: 0.82rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+
+    /* Table Section */
+    .section-header { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+    th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.8rem; }
+    th { background: #1a1e27; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+    tr:last-child td { border-bottom: none; }
+    
+    .col-starters { min-width: 290px; }
+    
+    tr.current-week-row { background: var(--active-week-bg); border-left: 3px solid var(--active-week-border); }
+    
+    .badge-cut-2 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 2px 6px; border-radius: 3px; font-weight: 800; font-size: 0.72rem; }
+    .badge-cut-1 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 6px; border-radius: 3px; font-weight: 800; font-size: 0.72rem; }
+    
+    .badge-change { background: rgba(255, 255, 255, 0.08); color: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.72rem; }
+
+    @media (max-width: 600px) {
+      header { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .header-right { text-align: left; }
+      .metric-item { justify-content: flex-start; }
+      th, td { padding: 5px 6px; font-size: 0.72rem; }
+      .col-starters { min-width: 220px; }
+    }
+
+    footer { text-align: center; font-size: 0.72rem; color: var(--text-muted); padding: 12px 0; border-top: 1px solid var(--border-color); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <div class="logo-title">League Schedule</div>
+        <a href="https://www42.myfantasyleague.com/2026/home/25918" target="_blank" rel="noopener noreferrer" class="mfl-link">MFL League Home ↗</a>
+      </div>
+      <div class="header-right">
+        <div class="metric-item">
+          <span class="metric-label">Current:</span>
+          <span class="metric-val" id="hdrCurrentWeek">Week 2</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Teams Remaining:</span>
+          <span class="metric-val" id="hdrTeamsRemaining">22</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="controls-bar">
+      <div class="page-title">Roster Configurations & Weekly Chopping Schedule</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Results</a>
+        <a href="prizes.html" class="nav-link">Prizes</a>
+        <a href="schedule.html" class="nav-link active">Schedule</a>
+      </div>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-banner-title">Roster Expansion Protocol</div>
+      Teams start draft day with 8 players (8 starters, 0 bench). As teams are eliminated each week based on 2-week rolling scores, roster capacity and starting lineup positions expand (adding bench, flex, WR, QB, RB, and TE spots). Eliminated rosters are automatically locked every Tuesday morning and dropped into free agency for Wednesday FAAB waivers (\$200 budget).
+    </div>
+
+    <div class="section-header">Weekly Roster & Elimination Schedule</div>
+    <table>
+      <thead>
+        <tr>
+          <th>NFL Wk</th>
+          <th>Teams Start</th>
+          <th>Roster Size</th>
+          <th class="col-starters">Starting Lineup Configuration</th>
+          <th>Post-Week Roster Changes</th>
+          <th>Teams Cut</th>
+          <th>Teams Left</th>
+        </tr>
+      </thead>
+      <tbody id="scheduleTableBody"></tbody>
+    </table>
+
+    <footer>
+      MFL League 25918 • 24 Teams • 17-Week Elimination Protocol
+    </footer>
+  </div>
+
+  <script>
+    const SCHEDULE_DATA = [
+      { week: 1, start: 24, roster: 8, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX (0 Bench)", change: "+1 Bench Slot", cut: 0, left: 24 },
+      { week: 2, start: 24, roster: 9, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench", change: "None", cut: 2, left: 22 },
+      { week: 3, start: 22, roster: 9, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench", change: "+1 Bench Slot", cut: 2, left: 20 },
+      { week: 4, start: 20, roster: 10, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 2 Bench", change: "None", cut: 2, left: 18 },
+      { week: 5, start: 18, roster: 10, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 2 Bench", change: "+1 FLEX Slot", cut: 2, left: 16 },
+      { week: 6, start: 16, roster: 11, starters: "1 QB, 2 RB, 2 WR, 1 TE, 3 FLX, 2 Bench", change: "None", cut: 2, left: 14 },
+      { week: 7, start: 14, roster: 11, starters: "1 QB, 2 RB, 2 WR, 1 TE, 3 FLX, 2 Bench", change: "+1 WR Slot", cut: 1, left: 13 },
+      { week: 8, start: 13, roster: 12, starters: "1 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "None", cut: 1, left: 12 },
+      { week: 9, start: 12, roster: 12, starters: "1 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "+1 QB Slot", cut: 1, left: 11 },
+      { week: 10, start: 11, roster: 13, starters: "2 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "None", cut: 1, left: 10 },
+      { week: 11, start: 10, roster: 13, starters: "2 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "+1 RB Slot", cut: 1, left: 9 },
+      { week: 12, start: 9, roster: 14, starters: "2 QB, 3 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "None", cut: 1, left: 8 },
+      { week: 13, start: 8, roster: 14, starters: "2 QB, 3 RB, 3 WR, 1 TE, 3 FLX, 2 Bench", change: "+1 TE Slot", cut: 1, left: 7 },
+      { week: 14, start: 7, roster: 15, starters: "2 QB, 3 RB, 3 WR, 2 TE, 3 FLX, 2 Bench", change: "None", cut: 1, left: 6 },
+      { week: 15, start: 6, roster: 15, starters: "2 QB, 3 RB, 3 WR, 2 TE, 3 FLX, 2 Bench", change: "+1 FLEX Slot", cut: 1, left: 5 },
+      { week: 16, start: 5, roster: 16, starters: "2 QB, 3 RB, 3 WR, 2 TE, 4 FLX, 2 Bench", change: "None", cut: 1, left: 4 },
+      { week: 17, start: 4, roster: 16, starters: "2 QB, 3 RB, 3 WR, 2 TE, 4 FLX, 2 Bench", change: "Championship Showdown", cut: 0, left: 4 }
+    ];
+
+    async function init() {
+      let activeLeagueWeek = 2;
+      let remainingCount = 22;
+
+      try {
+        const res = await fetch('data.json');
+        if (res.ok) {
+          const data = await res.json();
+          activeLeagueWeek = data.currentWeek || 2;
+          
+          if (data.eliminatedTeams && data.franchises) {
+            const active = Object.keys(data.franchises).filter(fid => {
+              const elim = data.eliminatedTeams[fid];
+              return !elim || elim.eliminatedWeek >= activeLeagueWeek;
+            });
+            remainingCount = active.length;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load data.json');
+      }
+
+      document.getElementById('hdrCurrentWeek').textContent = `Week ${activeLeagueWeek}`;
+      document.getElementById('hdrTeamsRemaining').textContent = `${remainingCount}`;
+
+      const tbody = document.getElementById('scheduleTableBody');
+      tbody.innerHTML = '';
+
+      SCHEDULE_DATA.forEach(row => {
+        const isCurrentFinished = (row.week === activeLeagueWeek);
+        const tr = document.createElement('tr');
+        if (isCurrentFinished) {
+          tr.className = 'current-week-row';
+        }
+
+        let cutBadge = '<span style="color:#64748b;">0</span>';
+        if (row.cut === 2) {
+          cutBadge = '<span class="badge-cut-2">2 CUTS</span>';
+        } else if (row.cut === 1) {
+          cutBadge = '<span class="badge-cut-1">1 CUT</span>';
+        }
+
+        tr.innerHTML = `
+          <td><strong>Week ${row.week}</strong> ${isCurrentFinished ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 2px; font-weight: 800;">[CURRENT]</span>' : ''}</td>
+          <td>${row.start}</td>
+          <td><strong>${row.roster}</strong></td>
+          <td class="col-starters">${row.starters}</td>
+          <td><span class="badge-change">${row.change}</span></td>
+          <td>${cutBadge}</td>
+          <td><strong>${row.left}</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

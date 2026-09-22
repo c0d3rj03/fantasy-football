@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Guillotine FFL - Prizes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #090a0f;
+      --bg-card: #12151e;
+      --bg-card-hover: #191e2b;
+      --border-color: #222938;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-red: #ef4444;
+      --accent-gold: #f59e0b;
+      --accent-silver: #cbd5e1;
+      --accent-bronze: #cd7f32;
+      --active-week-bg: rgba(239, 68, 68, 0.15);
+      --active-week-border: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; min-height: 100vh; padding: 12px; }
+    .container { max-width: 960px; margin: 0 auto; }
+
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; }
+    .header-left { display: flex; flex-direction: column; }
+    .logo-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #f1f5f9; text-transform: uppercase; text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    .mfl-link { font-size: 0.75rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; font-weight: 600; transition: color 0.15s; }
+    .mfl-link:hover { color: #f87171; text-decoration: underline; }
+
+    .header-right { text-align: right; font-size: 0.85rem; font-weight: 700; color: #f1f5f9; display: flex; flex-direction: column; gap: 2px; }
+    .metric-item { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+    .metric-label { color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-val { color: #fff; font-weight: 800; }
+
+    /* Controls Bar */
+    .controls-bar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 12px; }
+    .page-title { font-size: 0.85rem; font-weight: 700; color: #fff; }
+
+    .nav-links { display: flex; gap: 12px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: color 0.15s; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-gold); }
+
+    /* Table Section */
+    .section-header { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 16px; }
+    th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.82rem; }
+    th { background: #1a1e27; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.5px; }
+    tr:last-child td { border-bottom: none; }
+    
+    tr.current-week-row { background: var(--active-week-bg); border-left: 3px solid var(--active-week-border); }
+    
+    .badge-prize { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 3px; font-weight: 800; font-size: 0.78rem; }
+    
+    /* Mega Week 17 Final 4 Rows (3rd, 2nd, 1st) */
+    tr.mega-row-bronze { background: rgba(205, 127, 50, 0.08); border-left: 4px solid var(--accent-bronze); font-size: 0.82rem; }
+    tr.mega-row-silver { background: rgba(203, 213, 225, 0.1); border-left: 4px solid var(--accent-silver); font-size: 0.92rem; }
+    tr.mega-row-gold { background: rgba(245, 158, 11, 0.14); border-left: 5px solid var(--accent-gold); font-size: 1.05rem; font-weight: 800; }
+
+    .badge-bronze { background: rgba(205, 127, 50, 0.2); color: #b45309; padding: 2px 8px; border-radius: 3px; font-weight: 800; }
+    .badge-silver { background: rgba(203, 213, 225, 0.2); color: #e2e8f0; padding: 3px 10px; border-radius: 3px; font-weight: 800; }
+    .badge-gold { background: rgba(245, 158, 11, 0.25); color: #fbbf24; padding: 4px 12px; border-radius: 4px; font-weight: 900; }
+
+    @media (max-width: 600px) {
+      header { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .header-right { text-align: left; }
+      .metric-item { justify-content: flex-start; }
+      th, td { padding: 6px 8px; font-size: 0.75rem; }
+    }
+
+    footer { text-align: center; font-size: 0.72rem; color: var(--text-muted); padding: 12px 0; border-top: 1px solid var(--border-color); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <div class="logo-title">Prize Pool</div>
+        <a href="https://www42.myfantasyleague.com/2026/home/25918" target="_blank" rel="noopener noreferrer" class="mfl-link">MFL League Home ↗</a>
+      </div>
+      <div class="header-right">
+        <div class="metric-item">
+          <span class="metric-label">Current:</span>
+          <span class="metric-val" id="hdrCurrentWeek">Week 17</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">Teams Remaining:</span>
+          <span class="metric-val" id="hdrTeamsRemaining">4</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="controls-bar">
+      <div class="page-title">Weekly High Scores & Grand Championship Payoffs (\$1,115 Pool)</div>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Results</a>
+        <a href="prizes.html" class="nav-link active">Prizes</a>
+        <a href="schedule.html" class="nav-link">Schedule</a>
+      </div>
+    </div>
+
+    <div class="section-header">Weekly Rewards & Grand Championships</div>
+    <table>
+      <thead>
+        <tr>
+          <th>NFL Week</th>
+          <th>Reward Amount</th>
+          <th>Weekly Winner</th>
+          <th>High Score</th>
+        </tr>
+      </thead>
+      <tbody id="prizeTableBody"></tbody>
+    </table>
+
+    <footer>
+      MFL League 25918 • Total Entry Fees: \$1,200 - \$85 MFL Fee = \$1,115 Prize Pool
+    </footer>
+  </div>
+
+  <script>
+    const WEEKLY_SCHEDULE = {
+      1: { amount: '\$10 FAAB' }, 2: { amount: '\$10 FAAB' },
+      3: { amount: '\$10 FAAB' }, 4: { amount: '\$10 FAAB' },
+      5: { amount: '\$15 Cash' }, 6: { amount: '\$15 Cash' },
+      7: { amount: '\$15 Cash' }, 8: { amount: '\$15 Cash' },
+      9: { amount: '\$30 Cash' }, 10: { amount: '\$30 Cash' },
+      11: { amount: '\$30 Cash' }, 12: { amount: '\$30 Cash' },
+      13: { amount: '\$50 Cash' }, 14: { amount: '\$50 Cash' },
+      15: { amount: '\$50 Cash' }, 16: { amount: '\$50 Cash' }
+    };
+
+    async function init() {
+      let winners = {};
+      let activeLeagueWeek = 17;
+      let remainingCount = 4;
+
+      try {
+        const res = await fetch('data.json');
+        if (res.ok) {
+          const data = await res.json();
+          winners = data.weeklyWinners || {};
+          activeLeagueWeek = data.currentWeek || 17;
+          
+          if (data.eliminatedTeams && data.franchises) {
+            const active = Object.keys(data.franchises).filter(fid => {
+              const elim = data.eliminatedTeams[fid];
+              return !elim || elim.eliminatedWeek >= activeLeagueWeek;
+            });
+            remainingCount = active.length;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load data.json');
+      }
+
+      document.getElementById('hdrCurrentWeek').textContent = `Week ${activeLeagueWeek}`;
+      document.getElementById('hdrTeamsRemaining').textContent = `${remainingCount}`;
+
+      const tbody = document.getElementById('prizeTableBody');
+      tbody.innerHTML = '';
+
+      for (let w = 1; w <= 16; w++) {
+        const sch = WEEKLY_SCHEDULE[w];
+        const wInfo = winners[w];
+        const isCurrentFinished = (w === activeLeagueWeek);
+
+        const tr = document.createElement('tr');
+        if (isCurrentFinished) {
+          tr.className = 'current-week-row';
+        }
+
+        tr.innerHTML = `
+          <td><strong>Week ${w}</strong> ${isCurrentFinished ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 4px; font-weight: 800;">[CURRENT]</span>' : ''}</td>
+          <td><span class="badge-prize">${sch.amount}</span></td>
+          <td>${wInfo ? wInfo.franchiseName : '<span style="color: #64748b;">Pending...</span>'}</td>
+          <td>${wInfo ? '<strong>' + wInfo.score.toFixed(2) + ' pts</strong>' : '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      // Week 17 Grand Championship Final 4: 3rd, 2nd, and 1st Place (Building Up Font Sizes)
+      
+      // 1. 3rd Place Finalist (Standard Font Size)
+      const r3 = document.createElement('tr');
+      r3.className = 'mega-row-bronze';
+      r3.innerHTML = `
+        <td><strong style="color: var(--accent-bronze);">Week 17</strong> (Final 4)</td>
+        <td><span class="badge-bronze">$60 CASH</span></td>
+        <td><strong style="color: var(--accent-bronze);">🥉 3rd Place: A Murder of Porgs</strong></td>
+        <td><strong>565.14 pts</strong></td>
+      `;
+      tbody.appendChild(r3);
+
+      // 2. 2nd Place Runner-Up (Slightly Larger Font Size)
+      const r2 = document.createElement('tr');
+      r2.className = 'mega-row-silver';
+      r2.innerHTML = `
+        <td><strong style="color: var(--accent-silver);">Week 17</strong> (Final 4)</td>
+        <td><span class="badge-silver">$120 CASH</span></td>
+        <td><strong style="color: var(--accent-silver);">🥈 2nd Place: Anne Boleyn</strong></td>
+        <td><strong>605.33 pts</strong></td>
+      `;
+      tbody.appendChild(r2);
+
+      // 3. 1st Place Champion (Largest Font Size, Grand Champion)
+      const r1 = document.createElement('tr');
+      r1.className = 'mega-row-gold';
+      r1.innerHTML = `
+        <td><strong style="color: var(--accent-gold);">Week 17</strong> (Final 4)</td>
+        <td><span class="badge-gold">$430 CASH</span></td>
+        <td><strong style="color: var(--accent-gold);">🥇 1st Place Champion: Cream Of The Crop</strong></td>
+        <td><strong>609.22 pts</strong></td>
+      `;
+      tbody.appendChild(r1);
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

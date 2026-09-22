@@ -1,0 +1,1837 @@
+{
+  "leagueId": "25918_2025_MODEL",
+  "seasonYear": "2025",
+  "lastUpdated": "2026-09-21T20:05:00.000Z",
+  "currentWeek": 17,
+  "franchises": {
+    "0001": {
+      "id": "0001",
+      "name": "Cream Of The Crop",
+      "icon": "",
+      "logo": ""
+    },
+    "0002": {
+      "id": "0002",
+      "name": "Catastrophic",
+      "icon": "",
+      "logo": ""
+    },
+    "0003": {
+      "id": "0003",
+      "name": "A Murder of Porgs",
+      "icon": "",
+      "logo": ""
+    },
+    "0004": {
+      "id": "0004",
+      "name": "Anne Boleyn",
+      "icon": "",
+      "logo": ""
+    },
+    "0005": {
+      "id": "0005",
+      "name": "The Headless Horsemen",
+      "icon": "",
+      "logo": ""
+    },
+    "0006": {
+      "id": "0006",
+      "name": "Karma Gawds",
+      "icon": "",
+      "logo": ""
+    },
+    "0007": {
+      "id": "0007",
+      "name": "The Scary Terry Show",
+      "icon": "",
+      "logo": ""
+    },
+    "0008": {
+      "id": "0008",
+      "name": "President Megaguillotines",
+      "icon": "",
+      "logo": ""
+    },
+    "0009": {
+      "id": "0009",
+      "name": "Tight Ends",
+      "icon": "",
+      "logo": ""
+    },
+    "0010": {
+      "id": "0010",
+      "name": "LadyBristol",
+      "icon": "",
+      "logo": ""
+    },
+    "0011": {
+      "id": "0011",
+      "name": "SleepyGenius",
+      "icon": "",
+      "logo": ""
+    },
+    "0012": {
+      "id": "0012",
+      "name": "Haaaave You Metcalf?",
+      "icon": "",
+      "logo": ""
+    },
+    "0013": {
+      "id": "0013",
+      "name": "Boozers Boyz",
+      "icon": "",
+      "logo": ""
+    },
+    "0014": {
+      "id": "0014",
+      "name": "Franchise 5",
+      "icon": "",
+      "logo": ""
+    },
+    "0015": {
+      "id": "0015",
+      "name": "The Elite",
+      "icon": "",
+      "logo": ""
+    },
+    "0016": {
+      "id": "0016",
+      "name": "Eish",
+      "icon": "",
+      "logo": ""
+    },
+    "0017": {
+      "id": "0017",
+      "name": "Tuding Tudors",
+      "icon": "",
+      "logo": ""
+    },
+    "0018": {
+      "id": "0018",
+      "name": "SloppyPants",
+      "icon": "",
+      "logo": ""
+    },
+    "0019": {
+      "id": "0019",
+      "name": "Hasta Laviska Baby!",
+      "icon": "",
+      "logo": ""
+    },
+    "0020": {
+      "id": "0020",
+      "name": "The Crushers",
+      "icon": "",
+      "logo": ""
+    },
+    "0021": {
+      "id": "0021",
+      "name": "Ultimate Last Man Standing",
+      "icon": "",
+      "logo": ""
+    },
+    "0022": {
+      "id": "0022",
+      "name": "It's Me, Giovani!!",
+      "icon": "",
+      "logo": ""
+    },
+    "0023": {
+      "id": "0023",
+      "name": "H0LLOW Squad",
+      "icon": "",
+      "logo": ""
+    },
+    "0024": {
+      "id": "0024",
+      "name": "Craptastic!",
+      "icon": "",
+      "logo": ""
+    }
+  },
+  "rosters": {},
+  "weeklySingleScores": {
+    "1": {
+      "0001": 146.72,
+      "0002": 123.18,
+      "0003": 80.26,
+      "0004": 152.39,
+      "0005": 123.03,
+      "0006": 128.56,
+      "0007": 135.61,
+      "0008": 124.98,
+      "0009": 101.67,
+      "0010": 83.96,
+      "0011": 123.12,
+      "0012": 113.47,
+      "0013": 152.29,
+      "0014": 164.44,
+      "0015": 138.47,
+      "0016": 115.61,
+      "0017": 129.87,
+      "0018": 101.44,
+      "0019": 127.75,
+      "0020": 109.68,
+      "0021": 138.73,
+      "0022": 103.25,
+      "0023": 144.79,
+      "0024": 106.52
+    },
+    "2": {
+      "0001": 125.95,
+      "0002": 103.09,
+      "0003": 121.79,
+      "0004": 131.28,
+      "0005": 117.01,
+      "0006": 165.5,
+      "0007": 104.14,
+      "0008": 126.49,
+      "0009": 140.98,
+      "0010": 120.44,
+      "0011": 153.04,
+      "0012": 91.0,
+      "0013": 107.66,
+      "0014": 98.98,
+      "0015": 107.1,
+      "0016": 122.21,
+      "0017": 129.55,
+      "0018": 127.55,
+      "0019": 135.52,
+      "0020": 117.21,
+      "0021": 91.82,
+      "0022": 103.62,
+      "0023": 44.75,
+      "0024": 84.38
+    },
+    "3": {
+      "0001": 136.24,
+      "0002": 127.73,
+      "0003": 130.57,
+      "0004": 113.38,
+      "0005": 109.76,
+      "0006": 130.75,
+      "0007": 132.05,
+      "0008": 139.54,
+      "0009": 88.95,
+      "0010": 110.13,
+      "0011": 142.49,
+      "0012": 154.53,
+      "0013": 96.09,
+      "0014": 138.29,
+      "0015": 117.43,
+      "0016": 114.46,
+      "0017": 122.47,
+      "0018": 114.93,
+      "0019": 121.74,
+      "0020": 98.18,
+      "0021": 109.14,
+      "0022": 96.91
+    },
+    "4": {
+      "0001": 133.08,
+      "0002": 100.85,
+      "0003": 151.72,
+      "0004": 144.26,
+      "0005": 122.52,
+      "0006": 106.14,
+      "0007": 130.04,
+      "0008": 109.25,
+      "0009": 164.05,
+      "0010": 149.61,
+      "0011": 108.02,
+      "0012": 155.76,
+      "0013": 161.19,
+      "0014": 99.68,
+      "0015": 187.79,
+      "0016": 157.04,
+      "0017": 120.53,
+      "0018": 92.39,
+      "0019": 83.64,
+      "0020": 106.08
+    },
+    "5": {
+      "0001": 143.61,
+      "0002": 190.4,
+      "0003": 148.09,
+      "0004": 116.01,
+      "0005": 210.43,
+      "0006": 123.33,
+      "0007": 105.81,
+      "0008": 126.7,
+      "0009": 149.69,
+      "0010": 131.99,
+      "0011": 107.16,
+      "0012": 175.19,
+      "0013": 128.96,
+      "0014": 201.47,
+      "0015": 131.75,
+      "0016": 89.16,
+      "0017": 88.16,
+      "0018": 111.67
+    },
+    "6": {
+      "0001": 161.06,
+      "0002": 183.8,
+      "0003": 150.97,
+      "0004": 131.41,
+      "0005": 124.91,
+      "0006": 144.81,
+      "0007": 174.16,
+      "0008": 151.28,
+      "0009": 127.06,
+      "0010": 172.4,
+      "0011": 138.18,
+      "0012": 137.95,
+      "0013": 167.1,
+      "0014": 143.54,
+      "0015": 110.94,
+      "0016": 114.78
+    },
+    "7": {
+      "0001": 118.66,
+      "0002": 203.87,
+      "0003": 146.63,
+      "0004": 120.74,
+      "0005": 146.33,
+      "0006": 176.68,
+      "0007": 153.73,
+      "0008": 139.32,
+      "0009": 188.63,
+      "0010": 116.5,
+      "0011": 141.09,
+      "0012": 137.03,
+      "0013": 107.93,
+      "0014": 101.86
+    },
+    "8": {
+      "0001": 170.5,
+      "0002": 151.37,
+      "0003": 205.97,
+      "0004": 199.06,
+      "0005": 165.1,
+      "0006": 145.12,
+      "0007": 136.05,
+      "0008": 147.38,
+      "0009": 96.39,
+      "0010": 164.09,
+      "0011": 162.98,
+      "0012": 120.84,
+      "0013": 133.57
+    },
+    "9": {
+      "0001": 206.63,
+      "0002": 151.3,
+      "0003": 156.32,
+      "0004": 193.05,
+      "0005": 135.53,
+      "0006": 186.86,
+      "0007": 118.52,
+      "0008": 124.57,
+      "0009": 171.04,
+      "0010": 99.73,
+      "0011": 114.98,
+      "0012": 119.86
+    },
+    "10": {
+      "0001": 176.78,
+      "0002": 160.22,
+      "0003": 218.13,
+      "0004": 147.89,
+      "0005": 156.5,
+      "0006": 177.0,
+      "0007": 213.46,
+      "0008": 186.81,
+      "0009": 153.68,
+      "0010": 154.73,
+      "0011": 121.42
+    },
+    "11": {
+      "0001": 243.88,
+      "0002": 220.54,
+      "0003": 188.4,
+      "0004": 204.9,
+      "0005": 196.39,
+      "0006": 206.93,
+      "0007": 159.66,
+      "0008": 197.39,
+      "0009": 146.68,
+      "0010": 129.41
+    },
+    "12": {
+      "0001": 262.73,
+      "0002": 212.62,
+      "0003": 219.8,
+      "0004": 209.74,
+      "0005": 197.26,
+      "0006": 138.28,
+      "0007": 189.54,
+      "0008": 159.08,
+      "0009": 156.79
+    },
+    "13": {
+      "0001": 216.22,
+      "0002": 241.0,
+      "0003": 245.27,
+      "0004": 212.6,
+      "0005": 253.23,
+      "0006": 271.51,
+      "0007": 197.59,
+      "0008": 188.01
+    },
+    "14": {
+      "0001": 273.26,
+      "0002": 282.69,
+      "0003": 265.77,
+      "0004": 216.51,
+      "0005": 265.77,
+      "0006": 223.12,
+      "0007": 210.44
+    },
+    "15": {
+      "0001": 243.23,
+      "0002": 207.66,
+      "0003": 276.76,
+      "0004": 257.15,
+      "0005": 197.47,
+      "0006": 204.34
+    },
+    "16": {
+      "0001": 320.63,
+      "0002": 261.02,
+      "0003": 298.37,
+      "0004": 328.47,
+      "0005": 246.6
+    },
+    "17": {
+      "0001": 288.59,
+      "0002": 300.21,
+      "0003": 266.77,
+      "0004": 276.86
+    }
+  },
+  "rollingScores": {
+    "1": {
+      "0001": {
+        "single": 146.72,
+        "prior": 0.0,
+        "rollingTotal": 146.72
+      },
+      "0002": {
+        "single": 123.18,
+        "prior": 0.0,
+        "rollingTotal": 123.18
+      },
+      "0003": {
+        "single": 80.26,
+        "prior": 0.0,
+        "rollingTotal": 80.26
+      },
+      "0004": {
+        "single": 152.39,
+        "prior": 0.0,
+        "rollingTotal": 152.39
+      },
+      "0005": {
+        "single": 123.03,
+        "prior": 0.0,
+        "rollingTotal": 123.03
+      },
+      "0006": {
+        "single": 128.56,
+        "prior": 0.0,
+        "rollingTotal": 128.56
+      },
+      "0007": {
+        "single": 135.61,
+        "prior": 0.0,
+        "rollingTotal": 135.61
+      },
+      "0008": {
+        "single": 124.98,
+        "prior": 0.0,
+        "rollingTotal": 124.98
+      },
+      "0009": {
+        "single": 101.67,
+        "prior": 0.0,
+        "rollingTotal": 101.67
+      },
+      "0010": {
+        "single": 83.96,
+        "prior": 0.0,
+        "rollingTotal": 83.96
+      },
+      "0011": {
+        "single": 123.12,
+        "prior": 0.0,
+        "rollingTotal": 123.12
+      },
+      "0012": {
+        "single": 113.47,
+        "prior": 0.0,
+        "rollingTotal": 113.47
+      },
+      "0013": {
+        "single": 152.29,
+        "prior": 0.0,
+        "rollingTotal": 152.29
+      },
+      "0014": {
+        "single": 164.44,
+        "prior": 0.0,
+        "rollingTotal": 164.44
+      },
+      "0015": {
+        "single": 138.47,
+        "prior": 0.0,
+        "rollingTotal": 138.47
+      },
+      "0016": {
+        "single": 115.61,
+        "prior": 0.0,
+        "rollingTotal": 115.61
+      },
+      "0017": {
+        "single": 129.87,
+        "prior": 0.0,
+        "rollingTotal": 129.87
+      },
+      "0018": {
+        "single": 101.44,
+        "prior": 0.0,
+        "rollingTotal": 101.44
+      },
+      "0019": {
+        "single": 127.75,
+        "prior": 0.0,
+        "rollingTotal": 127.75
+      },
+      "0020": {
+        "single": 109.68,
+        "prior": 0.0,
+        "rollingTotal": 109.68
+      },
+      "0021": {
+        "single": 138.73,
+        "prior": 0.0,
+        "rollingTotal": 138.73
+      },
+      "0022": {
+        "single": 103.25,
+        "prior": 0.0,
+        "rollingTotal": 103.25
+      },
+      "0023": {
+        "single": 144.79,
+        "prior": 0.0,
+        "rollingTotal": 144.79
+      },
+      "0024": {
+        "single": 106.52,
+        "prior": 0.0,
+        "rollingTotal": 106.52
+      }
+    },
+    "2": {
+      "0001": {
+        "single": 125.95,
+        "prior": 146.72,
+        "rollingTotal": 272.67
+      },
+      "0002": {
+        "single": 103.09,
+        "prior": 123.18,
+        "rollingTotal": 226.27
+      },
+      "0003": {
+        "single": 121.79,
+        "prior": 80.26,
+        "rollingTotal": 202.05
+      },
+      "0004": {
+        "single": 131.28,
+        "prior": 152.39,
+        "rollingTotal": 283.67
+      },
+      "0005": {
+        "single": 117.01,
+        "prior": 123.03,
+        "rollingTotal": 240.04
+      },
+      "0006": {
+        "single": 165.5,
+        "prior": 128.56,
+        "rollingTotal": 294.06
+      },
+      "0007": {
+        "single": 104.14,
+        "prior": 135.61,
+        "rollingTotal": 239.75
+      },
+      "0008": {
+        "single": 126.49,
+        "prior": 124.98,
+        "rollingTotal": 251.47
+      },
+      "0009": {
+        "single": 140.98,
+        "prior": 101.67,
+        "rollingTotal": 242.65
+      },
+      "0010": {
+        "single": 120.44,
+        "prior": 83.96,
+        "rollingTotal": 204.4
+      },
+      "0011": {
+        "single": 153.04,
+        "prior": 123.12,
+        "rollingTotal": 276.16
+      },
+      "0012": {
+        "single": 91.0,
+        "prior": 113.47,
+        "rollingTotal": 204.47
+      },
+      "0013": {
+        "single": 107.66,
+        "prior": 152.29,
+        "rollingTotal": 259.95
+      },
+      "0014": {
+        "single": 98.98,
+        "prior": 164.44,
+        "rollingTotal": 263.42
+      },
+      "0015": {
+        "single": 107.1,
+        "prior": 138.47,
+        "rollingTotal": 245.57
+      },
+      "0016": {
+        "single": 122.21,
+        "prior": 115.61,
+        "rollingTotal": 237.82
+      },
+      "0017": {
+        "single": 129.55,
+        "prior": 129.87,
+        "rollingTotal": 259.42
+      },
+      "0018": {
+        "single": 127.55,
+        "prior": 101.44,
+        "rollingTotal": 228.99
+      },
+      "0019": {
+        "single": 135.52,
+        "prior": 127.75,
+        "rollingTotal": 263.27
+      },
+      "0020": {
+        "single": 117.21,
+        "prior": 109.68,
+        "rollingTotal": 226.89
+      },
+      "0021": {
+        "single": 91.82,
+        "prior": 138.73,
+        "rollingTotal": 230.55
+      },
+      "0022": {
+        "single": 103.62,
+        "prior": 103.25,
+        "rollingTotal": 206.87
+      },
+      "0023": {
+        "single": 44.75,
+        "prior": 144.79,
+        "rollingTotal": 189.54
+      },
+      "0024": {
+        "single": 84.38,
+        "prior": 106.52,
+        "rollingTotal": 190.9
+      }
+    },
+    "3": {
+      "0001": {
+        "single": 136.24,
+        "prior": 125.95,
+        "rollingTotal": 262.19
+      },
+      "0002": {
+        "single": 127.73,
+        "prior": 103.09,
+        "rollingTotal": 230.82
+      },
+      "0003": {
+        "single": 130.57,
+        "prior": 121.79,
+        "rollingTotal": 252.36
+      },
+      "0004": {
+        "single": 113.38,
+        "prior": 131.28,
+        "rollingTotal": 244.66
+      },
+      "0005": {
+        "single": 109.76,
+        "prior": 117.01,
+        "rollingTotal": 226.77
+      },
+      "0006": {
+        "single": 130.75,
+        "prior": 165.5,
+        "rollingTotal": 296.25
+      },
+      "0007": {
+        "single": 132.05,
+        "prior": 104.14,
+        "rollingTotal": 236.19
+      },
+      "0008": {
+        "single": 139.54,
+        "prior": 126.49,
+        "rollingTotal": 266.03
+      },
+      "0009": {
+        "single": 88.95,
+        "prior": 140.98,
+        "rollingTotal": 229.93
+      },
+      "0010": {
+        "single": 110.13,
+        "prior": 120.44,
+        "rollingTotal": 230.57
+      },
+      "0011": {
+        "single": 142.49,
+        "prior": 153.04,
+        "rollingTotal": 295.53
+      },
+      "0012": {
+        "single": 154.53,
+        "prior": 91.0,
+        "rollingTotal": 245.53
+      },
+      "0013": {
+        "single": 96.09,
+        "prior": 107.66,
+        "rollingTotal": 203.75
+      },
+      "0014": {
+        "single": 138.29,
+        "prior": 98.98,
+        "rollingTotal": 237.27
+      },
+      "0015": {
+        "single": 117.43,
+        "prior": 107.1,
+        "rollingTotal": 224.53
+      },
+      "0016": {
+        "single": 114.46,
+        "prior": 122.21,
+        "rollingTotal": 236.67
+      },
+      "0017": {
+        "single": 122.47,
+        "prior": 129.55,
+        "rollingTotal": 252.02
+      },
+      "0018": {
+        "single": 114.93,
+        "prior": 127.55,
+        "rollingTotal": 242.48
+      },
+      "0019": {
+        "single": 121.74,
+        "prior": 135.52,
+        "rollingTotal": 257.26
+      },
+      "0020": {
+        "single": 98.18,
+        "prior": 117.21,
+        "rollingTotal": 215.39
+      },
+      "0021": {
+        "single": 109.14,
+        "prior": 91.82,
+        "rollingTotal": 200.96
+      },
+      "0022": {
+        "single": 96.91,
+        "prior": 103.62,
+        "rollingTotal": 200.53
+      }
+    },
+    "4": {
+      "0001": {
+        "single": 133.08,
+        "prior": 136.24,
+        "rollingTotal": 269.32
+      },
+      "0002": {
+        "single": 100.85,
+        "prior": 127.73,
+        "rollingTotal": 228.58
+      },
+      "0003": {
+        "single": 151.72,
+        "prior": 130.57,
+        "rollingTotal": 282.29
+      },
+      "0004": {
+        "single": 144.26,
+        "prior": 113.38,
+        "rollingTotal": 257.64
+      },
+      "0005": {
+        "single": 122.52,
+        "prior": 109.76,
+        "rollingTotal": 232.28
+      },
+      "0006": {
+        "single": 106.14,
+        "prior": 130.75,
+        "rollingTotal": 236.89
+      },
+      "0007": {
+        "single": 130.04,
+        "prior": 132.05,
+        "rollingTotal": 262.09
+      },
+      "0008": {
+        "single": 109.25,
+        "prior": 139.54,
+        "rollingTotal": 248.79
+      },
+      "0009": {
+        "single": 164.05,
+        "prior": 88.95,
+        "rollingTotal": 253.0
+      },
+      "0010": {
+        "single": 149.61,
+        "prior": 110.13,
+        "rollingTotal": 259.74
+      },
+      "0011": {
+        "single": 108.02,
+        "prior": 142.49,
+        "rollingTotal": 250.51
+      },
+      "0012": {
+        "single": 155.76,
+        "prior": 154.53,
+        "rollingTotal": 310.29
+      },
+      "0013": {
+        "single": 161.19,
+        "prior": 96.09,
+        "rollingTotal": 257.28
+      },
+      "0014": {
+        "single": 99.68,
+        "prior": 138.29,
+        "rollingTotal": 237.97
+      },
+      "0015": {
+        "single": 187.79,
+        "prior": 117.43,
+        "rollingTotal": 305.22
+      },
+      "0016": {
+        "single": 157.04,
+        "prior": 114.46,
+        "rollingTotal": 271.5
+      },
+      "0017": {
+        "single": 120.53,
+        "prior": 122.47,
+        "rollingTotal": 243.0
+      },
+      "0018": {
+        "single": 92.39,
+        "prior": 114.93,
+        "rollingTotal": 207.32
+      },
+      "0019": {
+        "single": 83.64,
+        "prior": 121.74,
+        "rollingTotal": 205.38
+      },
+      "0020": {
+        "single": 106.08,
+        "prior": 98.18,
+        "rollingTotal": 204.26
+      }
+    },
+    "5": {
+      "0001": {
+        "single": 143.61,
+        "prior": 133.08,
+        "rollingTotal": 276.69
+      },
+      "0002": {
+        "single": 190.4,
+        "prior": 100.85,
+        "rollingTotal": 291.25
+      },
+      "0003": {
+        "single": 148.09,
+        "prior": 151.72,
+        "rollingTotal": 299.81
+      },
+      "0004": {
+        "single": 116.01,
+        "prior": 144.26,
+        "rollingTotal": 260.27
+      },
+      "0005": {
+        "single": 210.43,
+        "prior": 122.52,
+        "rollingTotal": 332.95
+      },
+      "0006": {
+        "single": 123.33,
+        "prior": 106.14,
+        "rollingTotal": 229.47
+      },
+      "0007": {
+        "single": 105.81,
+        "prior": 130.04,
+        "rollingTotal": 235.85
+      },
+      "0008": {
+        "single": 126.7,
+        "prior": 109.25,
+        "rollingTotal": 235.95
+      },
+      "0009": {
+        "single": 149.69,
+        "prior": 164.05,
+        "rollingTotal": 313.74
+      },
+      "0010": {
+        "single": 131.99,
+        "prior": 149.61,
+        "rollingTotal": 281.6
+      },
+      "0011": {
+        "single": 107.16,
+        "prior": 108.02,
+        "rollingTotal": 215.18
+      },
+      "0012": {
+        "single": 175.19,
+        "prior": 155.76,
+        "rollingTotal": 330.95
+      },
+      "0013": {
+        "single": 128.96,
+        "prior": 161.19,
+        "rollingTotal": 290.15
+      },
+      "0014": {
+        "single": 201.47,
+        "prior": 99.68,
+        "rollingTotal": 301.15
+      },
+      "0015": {
+        "single": 131.75,
+        "prior": 187.79,
+        "rollingTotal": 319.54
+      },
+      "0016": {
+        "single": 89.16,
+        "prior": 157.04,
+        "rollingTotal": 246.2
+      },
+      "0017": {
+        "single": 88.16,
+        "prior": 120.53,
+        "rollingTotal": 208.69
+      },
+      "0018": {
+        "single": 111.67,
+        "prior": 92.39,
+        "rollingTotal": 204.06
+      }
+    },
+    "6": {
+      "0001": {
+        "single": 161.06,
+        "prior": 143.61,
+        "rollingTotal": 304.67
+      },
+      "0002": {
+        "single": 183.8,
+        "prior": 190.4,
+        "rollingTotal": 374.2
+      },
+      "0003": {
+        "single": 150.97,
+        "prior": 148.09,
+        "rollingTotal": 299.06
+      },
+      "0004": {
+        "single": 131.41,
+        "prior": 116.01,
+        "rollingTotal": 247.42
+      },
+      "0005": {
+        "single": 124.91,
+        "prior": 210.43,
+        "rollingTotal": 335.34
+      },
+      "0006": {
+        "single": 144.81,
+        "prior": 123.33,
+        "rollingTotal": 268.14
+      },
+      "0007": {
+        "single": 174.16,
+        "prior": 105.81,
+        "rollingTotal": 279.97
+      },
+      "0008": {
+        "single": 151.28,
+        "prior": 126.7,
+        "rollingTotal": 277.98
+      },
+      "0009": {
+        "single": 127.06,
+        "prior": 149.69,
+        "rollingTotal": 276.75
+      },
+      "0010": {
+        "single": 172.4,
+        "prior": 131.99,
+        "rollingTotal": 304.39
+      },
+      "0011": {
+        "single": 138.18,
+        "prior": 107.16,
+        "rollingTotal": 245.34
+      },
+      "0012": {
+        "single": 137.95,
+        "prior": 175.19,
+        "rollingTotal": 313.14
+      },
+      "0013": {
+        "single": 167.1,
+        "prior": 128.96,
+        "rollingTotal": 296.06
+      },
+      "0014": {
+        "single": 143.54,
+        "prior": 201.47,
+        "rollingTotal": 345.01
+      },
+      "0015": {
+        "single": 110.94,
+        "prior": 131.75,
+        "rollingTotal": 242.69
+      },
+      "0016": {
+        "single": 114.78,
+        "prior": 89.16,
+        "rollingTotal": 203.94
+      }
+    },
+    "7": {
+      "0001": {
+        "single": 118.66,
+        "prior": 161.06,
+        "rollingTotal": 279.72
+      },
+      "0002": {
+        "single": 203.87,
+        "prior": 183.8,
+        "rollingTotal": 387.67
+      },
+      "0003": {
+        "single": 146.63,
+        "prior": 150.97,
+        "rollingTotal": 297.6
+      },
+      "0004": {
+        "single": 120.74,
+        "prior": 131.41,
+        "rollingTotal": 252.15
+      },
+      "0005": {
+        "single": 146.33,
+        "prior": 124.91,
+        "rollingTotal": 271.24
+      },
+      "0006": {
+        "single": 176.68,
+        "prior": 144.81,
+        "rollingTotal": 321.49
+      },
+      "0007": {
+        "single": 153.73,
+        "prior": 174.16,
+        "rollingTotal": 327.89
+      },
+      "0008": {
+        "single": 139.32,
+        "prior": 151.28,
+        "rollingTotal": 290.6
+      },
+      "0009": {
+        "single": 188.63,
+        "prior": 127.06,
+        "rollingTotal": 315.69
+      },
+      "0010": {
+        "single": 116.5,
+        "prior": 172.4,
+        "rollingTotal": 288.9
+      },
+      "0011": {
+        "single": 141.09,
+        "prior": 138.18,
+        "rollingTotal": 279.27
+      },
+      "0012": {
+        "single": 137.03,
+        "prior": 137.95,
+        "rollingTotal": 274.98
+      },
+      "0013": {
+        "single": 107.93,
+        "prior": 167.1,
+        "rollingTotal": 275.03
+      },
+      "0014": {
+        "single": 101.86,
+        "prior": 143.54,
+        "rollingTotal": 245.4
+      }
+    },
+    "8": {
+      "0001": {
+        "single": 170.5,
+        "prior": 118.66,
+        "rollingTotal": 289.16
+      },
+      "0002": {
+        "single": 151.37,
+        "prior": 203.87,
+        "rollingTotal": 355.24
+      },
+      "0003": {
+        "single": 205.97,
+        "prior": 146.63,
+        "rollingTotal": 352.6
+      },
+      "0004": {
+        "single": 199.06,
+        "prior": 120.74,
+        "rollingTotal": 319.8
+      },
+      "0005": {
+        "single": 165.1,
+        "prior": 146.33,
+        "rollingTotal": 311.43
+      },
+      "0006": {
+        "single": 145.12,
+        "prior": 176.68,
+        "rollingTotal": 321.8
+      },
+      "0007": {
+        "single": 136.05,
+        "prior": 153.73,
+        "rollingTotal": 289.78
+      },
+      "0008": {
+        "single": 147.38,
+        "prior": 139.32,
+        "rollingTotal": 286.7
+      },
+      "0009": {
+        "single": 96.39,
+        "prior": 188.63,
+        "rollingTotal": 285.02
+      },
+      "0010": {
+        "single": 164.09,
+        "prior": 116.5,
+        "rollingTotal": 280.59
+      },
+      "0011": {
+        "single": 162.98,
+        "prior": 141.09,
+        "rollingTotal": 304.07
+      },
+      "0012": {
+        "single": 120.84,
+        "prior": 137.03,
+        "rollingTotal": 257.87
+      },
+      "0013": {
+        "single": 133.57,
+        "prior": 107.93,
+        "rollingTotal": 241.5
+      }
+    },
+    "9": {
+      "0001": {
+        "single": 206.63,
+        "prior": 170.5,
+        "rollingTotal": 377.13
+      },
+      "0002": {
+        "single": 151.3,
+        "prior": 151.37,
+        "rollingTotal": 302.67
+      },
+      "0003": {
+        "single": 156.32,
+        "prior": 205.97,
+        "rollingTotal": 362.29
+      },
+      "0004": {
+        "single": 193.05,
+        "prior": 199.06,
+        "rollingTotal": 392.11
+      },
+      "0005": {
+        "single": 135.53,
+        "prior": 165.1,
+        "rollingTotal": 300.63
+      },
+      "0006": {
+        "single": 186.86,
+        "prior": 145.12,
+        "rollingTotal": 331.98
+      },
+      "0007": {
+        "single": 118.52,
+        "prior": 136.05,
+        "rollingTotal": 254.57
+      },
+      "0008": {
+        "single": 124.57,
+        "prior": 147.38,
+        "rollingTotal": 271.95
+      },
+      "0009": {
+        "single": 171.04,
+        "prior": 96.39,
+        "rollingTotal": 267.43
+      },
+      "0010": {
+        "single": 99.73,
+        "prior": 164.09,
+        "rollingTotal": 263.82
+      },
+      "0011": {
+        "single": 114.98,
+        "prior": 162.98,
+        "rollingTotal": 277.96
+      },
+      "0012": {
+        "single": 119.86,
+        "prior": 120.84,
+        "rollingTotal": 240.7
+      }
+    },
+    "10": {
+      "0001": {
+        "single": 176.78,
+        "prior": 206.63,
+        "rollingTotal": 383.41
+      },
+      "0002": {
+        "single": 160.22,
+        "prior": 151.3,
+        "rollingTotal": 311.52
+      },
+      "0003": {
+        "single": 218.13,
+        "prior": 156.32,
+        "rollingTotal": 374.45
+      },
+      "0004": {
+        "single": 147.89,
+        "prior": 193.05,
+        "rollingTotal": 340.94
+      },
+      "0005": {
+        "single": 156.5,
+        "prior": 135.53,
+        "rollingTotal": 292.03
+      },
+      "0006": {
+        "single": 177.0,
+        "prior": 186.86,
+        "rollingTotal": 363.86
+      },
+      "0007": {
+        "single": 213.46,
+        "prior": 118.52,
+        "rollingTotal": 331.98
+      },
+      "0008": {
+        "single": 186.81,
+        "prior": 124.57,
+        "rollingTotal": 311.38
+      },
+      "0009": {
+        "single": 153.68,
+        "prior": 171.04,
+        "rollingTotal": 324.72
+      },
+      "0010": {
+        "single": 154.73,
+        "prior": 99.73,
+        "rollingTotal": 254.46
+      },
+      "0011": {
+        "single": 121.42,
+        "prior": 114.98,
+        "rollingTotal": 236.4
+      }
+    },
+    "11": {
+      "0001": {
+        "single": 243.88,
+        "prior": 176.78,
+        "rollingTotal": 420.66
+      },
+      "0002": {
+        "single": 220.54,
+        "prior": 160.22,
+        "rollingTotal": 380.76
+      },
+      "0003": {
+        "single": 188.4,
+        "prior": 218.13,
+        "rollingTotal": 406.53
+      },
+      "0004": {
+        "single": 204.9,
+        "prior": 147.89,
+        "rollingTotal": 352.79
+      },
+      "0005": {
+        "single": 196.39,
+        "prior": 156.5,
+        "rollingTotal": 352.89
+      },
+      "0006": {
+        "single": 206.93,
+        "prior": 177.0,
+        "rollingTotal": 383.93
+      },
+      "0007": {
+        "single": 159.66,
+        "prior": 213.46,
+        "rollingTotal": 373.12
+      },
+      "0008": {
+        "single": 197.39,
+        "prior": 186.81,
+        "rollingTotal": 384.2
+      },
+      "0009": {
+        "single": 146.68,
+        "prior": 153.68,
+        "rollingTotal": 300.36
+      },
+      "0010": {
+        "single": 129.41,
+        "prior": 154.73,
+        "rollingTotal": 284.14
+      }
+    },
+    "12": {
+      "0001": {
+        "single": 262.73,
+        "prior": 243.88,
+        "rollingTotal": 506.61
+      },
+      "0002": {
+        "single": 212.62,
+        "prior": 220.54,
+        "rollingTotal": 433.16
+      },
+      "0003": {
+        "single": 219.8,
+        "prior": 188.4,
+        "rollingTotal": 408.2
+      },
+      "0004": {
+        "single": 209.74,
+        "prior": 204.9,
+        "rollingTotal": 414.64
+      },
+      "0005": {
+        "single": 197.26,
+        "prior": 196.39,
+        "rollingTotal": 393.65
+      },
+      "0006": {
+        "single": 138.28,
+        "prior": 206.93,
+        "rollingTotal": 345.21
+      },
+      "0007": {
+        "single": 189.54,
+        "prior": 159.66,
+        "rollingTotal": 349.2
+      },
+      "0008": {
+        "single": 159.08,
+        "prior": 197.39,
+        "rollingTotal": 356.47
+      },
+      "0009": {
+        "single": 156.79,
+        "prior": 146.68,
+        "rollingTotal": 303.47
+      }
+    },
+    "13": {
+      "0001": {
+        "single": 216.22,
+        "prior": 262.73,
+        "rollingTotal": 478.95
+      },
+      "0002": {
+        "single": 241.0,
+        "prior": 212.62,
+        "rollingTotal": 453.62
+      },
+      "0003": {
+        "single": 245.27,
+        "prior": 219.8,
+        "rollingTotal": 465.07
+      },
+      "0004": {
+        "single": 212.6,
+        "prior": 209.74,
+        "rollingTotal": 422.34
+      },
+      "0005": {
+        "single": 253.23,
+        "prior": 197.26,
+        "rollingTotal": 450.49
+      },
+      "0006": {
+        "single": 271.51,
+        "prior": 138.28,
+        "rollingTotal": 409.79
+      },
+      "0007": {
+        "single": 197.59,
+        "prior": 189.54,
+        "rollingTotal": 387.13
+      },
+      "0008": {
+        "single": 188.01,
+        "prior": 159.08,
+        "rollingTotal": 347.09
+      }
+    },
+    "14": {
+      "0001": {
+        "single": 273.26,
+        "prior": 216.22,
+        "rollingTotal": 489.48
+      },
+      "0002": {
+        "single": 282.69,
+        "prior": 241.0,
+        "rollingTotal": 523.69
+      },
+      "0003": {
+        "single": 265.77,
+        "prior": 245.27,
+        "rollingTotal": 511.04
+      },
+      "0004": {
+        "single": 216.51,
+        "prior": 212.6,
+        "rollingTotal": 429.11
+      },
+      "0005": {
+        "single": 265.77,
+        "prior": 253.23,
+        "rollingTotal": 519.0
+      },
+      "0006": {
+        "single": 223.12,
+        "prior": 271.51,
+        "rollingTotal": 494.63
+      },
+      "0007": {
+        "single": 210.44,
+        "prior": 197.59,
+        "rollingTotal": 408.03
+      }
+    },
+    "15": {
+      "0001": {
+        "single": 243.23,
+        "prior": 273.26,
+        "rollingTotal": 516.49
+      },
+      "0002": {
+        "single": 207.66,
+        "prior": 282.69,
+        "rollingTotal": 490.35
+      },
+      "0003": {
+        "single": 276.76,
+        "prior": 265.77,
+        "rollingTotal": 542.53
+      },
+      "0004": {
+        "single": 257.15,
+        "prior": 216.51,
+        "rollingTotal": 473.66
+      },
+      "0005": {
+        "single": 197.47,
+        "prior": 265.77,
+        "rollingTotal": 463.24
+      },
+      "0006": {
+        "single": 204.34,
+        "prior": 223.12,
+        "rollingTotal": 427.46
+      }
+    },
+    "16": {
+      "0001": {
+        "single": 320.63,
+        "prior": 243.23,
+        "rollingTotal": 563.86
+      },
+      "0002": {
+        "single": 261.02,
+        "prior": 207.66,
+        "rollingTotal": 468.68
+      },
+      "0003": {
+        "single": 298.37,
+        "prior": 276.76,
+        "rollingTotal": 575.13
+      },
+      "0004": {
+        "single": 328.47,
+        "prior": 257.15,
+        "rollingTotal": 585.62
+      },
+      "0005": {
+        "single": 246.6,
+        "prior": 197.47,
+        "rollingTotal": 444.07
+      }
+    },
+    "17": {
+      "0001": {
+        "single": 288.59,
+        "prior": 320.63,
+        "rollingTotal": 609.22
+      },
+      "0002": {
+        "single": 300.21,
+        "prior": 261.02,
+        "rollingTotal": 561.23
+      },
+      "0003": {
+        "single": 266.77,
+        "prior": 298.37,
+        "rollingTotal": 565.14
+      },
+      "0004": {
+        "single": 276.86,
+        "prior": 328.47,
+        "rollingTotal": 605.33
+      }
+    }
+  },
+  "eliminatedTeams": {
+    "0023": {
+      "eliminatedWeek": 2,
+      "rollingScore": 189.54,
+      "singleScore": 44.75,
+      "franchiseName": "H0LLOW Squad"
+    },
+    "0024": {
+      "eliminatedWeek": 2,
+      "rollingScore": 190.9,
+      "singleScore": 84.38,
+      "franchiseName": "Craptastic!"
+    },
+    "0022": {
+      "eliminatedWeek": 3,
+      "rollingScore": 200.53,
+      "singleScore": 96.91,
+      "franchiseName": "It's Me, Giovani!!"
+    },
+    "0021": {
+      "eliminatedWeek": 3,
+      "rollingScore": 200.96,
+      "singleScore": 109.14,
+      "franchiseName": "Ultimate Last Man Standing"
+    },
+    "0020": {
+      "eliminatedWeek": 4,
+      "rollingScore": 204.26,
+      "singleScore": 106.08,
+      "franchiseName": "The Crushers"
+    },
+    "0019": {
+      "eliminatedWeek": 4,
+      "rollingScore": 205.38,
+      "singleScore": 83.64,
+      "franchiseName": "Hasta Laviska Baby!"
+    },
+    "0018": {
+      "eliminatedWeek": 5,
+      "rollingScore": 204.06,
+      "singleScore": 111.67,
+      "franchiseName": "SloppyPants"
+    },
+    "0017": {
+      "eliminatedWeek": 5,
+      "rollingScore": 208.69,
+      "singleScore": 88.16,
+      "franchiseName": "Tuding Tudors"
+    },
+    "0016": {
+      "eliminatedWeek": 6,
+      "rollingScore": 203.94,
+      "singleScore": 114.78,
+      "franchiseName": "Eish"
+    },
+    "0015": {
+      "eliminatedWeek": 6,
+      "rollingScore": 242.69,
+      "singleScore": 110.94,
+      "franchiseName": "The Elite"
+    },
+    "0014": {
+      "eliminatedWeek": 7,
+      "rollingScore": 245.4,
+      "singleScore": 101.86,
+      "franchiseName": "Franchise 5"
+    },
+    "0013": {
+      "eliminatedWeek": 8,
+      "rollingScore": 241.5,
+      "singleScore": 133.57,
+      "franchiseName": "Boozers Boyz"
+    },
+    "0012": {
+      "eliminatedWeek": 9,
+      "rollingScore": 240.7,
+      "singleScore": 119.86,
+      "franchiseName": "Haaaave You Metcalf?"
+    },
+    "0011": {
+      "eliminatedWeek": 10,
+      "rollingScore": 236.4,
+      "singleScore": 121.42,
+      "franchiseName": "SleepyGenius"
+    },
+    "0010": {
+      "eliminatedWeek": 11,
+      "rollingScore": 284.14,
+      "singleScore": 129.41,
+      "franchiseName": "LadyBristol"
+    },
+    "0009": {
+      "eliminatedWeek": 12,
+      "rollingScore": 303.47,
+      "singleScore": 156.79,
+      "franchiseName": "Tight Ends"
+    },
+    "0008": {
+      "eliminatedWeek": 13,
+      "rollingScore": 347.09,
+      "singleScore": 188.01,
+      "franchiseName": "President Megaguillotines"
+    },
+    "0007": {
+      "eliminatedWeek": 14,
+      "rollingScore": 408.03,
+      "singleScore": 210.44,
+      "franchiseName": "The Scary Terry Show"
+    },
+    "0006": {
+      "eliminatedWeek": 15,
+      "rollingScore": 427.46,
+      "singleScore": 204.34,
+      "franchiseName": "Karma Gawds"
+    },
+    "0005": {
+      "eliminatedWeek": 16,
+      "rollingScore": 444.07,
+      "singleScore": 246.6,
+      "franchiseName": "The Headless Horsemen"
+    }
+  },
+  "weeklyWinners": {
+    "1": {
+      "franchiseId": "0014",
+      "franchiseName": "Franchise 5",
+      "score": 164.44,
+      "prize": {
+        "type": "FAAB",
+        "amount": 10
+      }
+    },
+    "2": {
+      "franchiseId": "0006",
+      "franchiseName": "Karma Gawds",
+      "score": 165.5,
+      "prize": {
+        "type": "FAAB",
+        "amount": 10
+      }
+    },
+    "3": {
+      "franchiseId": "0012",
+      "franchiseName": "Haaaave You Metcalf?",
+      "score": 154.53,
+      "prize": {
+        "type": "FAAB",
+        "amount": 10
+      }
+    },
+    "4": {
+      "franchiseId": "0015",
+      "franchiseName": "The Elite",
+      "score": 187.79,
+      "prize": {
+        "type": "FAAB",
+        "amount": 10
+      }
+    },
+    "5": {
+      "franchiseId": "0005",
+      "franchiseName": "The Headless Horsemen",
+      "score": 210.43,
+      "prize": {
+        "type": "CASH",
+        "amount": 15
+      }
+    },
+    "6": {
+      "franchiseId": "0002",
+      "franchiseName": "Catastrophic",
+      "score": 183.8,
+      "prize": {
+        "type": "CASH",
+        "amount": 15
+      }
+    },
+    "7": {
+      "franchiseId": "0002",
+      "franchiseName": "Catastrophic",
+      "score": 203.87,
+      "prize": {
+        "type": "CASH",
+        "amount": 15
+      }
+    },
+    "8": {
+      "franchiseId": "0003",
+      "franchiseName": "A Murder of Porgs",
+      "score": 205.97,
+      "prize": {
+        "type": "CASH",
+        "amount": 15
+      }
+    },
+    "9": {
+      "franchiseId": "0001",
+      "franchiseName": "Cream Of The Crop",
+      "score": 206.63,
+      "prize": {
+        "type": "CASH",
+        "amount": 30
+      }
+    },
+    "10": {
+      "franchiseId": "0003",
+      "franchiseName": "A Murder of Porgs",
+      "score": 218.13,
+      "prize": {
+        "type": "CASH",
+        "amount": 30
+      }
+    },
+    "11": {
+      "franchiseId": "0001",
+      "franchiseName": "Cream Of The Crop",
+      "score": 243.88,
+      "prize": {
+        "type": "CASH",
+        "amount": 30
+      }
+    },
+    "12": {
+      "franchiseId": "0001",
+      "franchiseName": "Cream Of The Crop",
+      "score": 262.73,
+      "prize": {
+        "type": "CASH",
+        "amount": 30
+      }
+    },
+    "13": {
+      "franchiseId": "0006",
+      "franchiseName": "Karma Gawds",
+      "score": 271.51,
+      "prize": {
+        "type": "CASH",
+        "amount": 50
+      }
+    },
+    "14": {
+      "franchiseId": "0002",
+      "franchiseName": "Catastrophic",
+      "score": 282.69,
+      "prize": {
+        "type": "CASH",
+        "amount": 50
+      }
+    },
+    "15": {
+      "franchiseId": "0003",
+      "franchiseName": "A Murder of Porgs",
+      "score": 276.76,
+      "prize": {
+        "type": "CASH",
+        "amount": 50
+      }
+    },
+    "16": {
+      "franchiseId": "0004",
+      "franchiseName": "Anne Boleyn",
+      "score": 328.47,
+      "prize": {
+        "type": "CASH",
+        "amount": 50
+      }
+    }
+  },
+  "aliveFranchiseIds": [
+    "0001",
+    "0002",
+    "0003",
+    "0004"
+  ]
+}
