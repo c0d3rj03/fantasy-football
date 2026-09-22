@@ -22,10 +22,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Install Dependencies
-        run: npm ci || npm install
+      - name: Install Dependencies (if package.json exists)
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci || npm install
+          else
+            echo "No package.json found. Skipping npm install."
+          fi
 
       # 1. FETCH WEEK 2 RESULTS & CALCULATE VPS
       - name: Fetch Live MFL Results
@@ -45,7 +50,7 @@ jobs:
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
         run: node pbr/generate_post.js ${{ github.event.inputs.week || '2' }}
 
-      # 3. POST RECAP TO SLACK (Safe if secret is missing)
+      # 3. POST RECAP TO SLACK
       - name: Post Recap to Slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
