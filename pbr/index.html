@@ -198,7 +198,7 @@
 
     async function initApp() {
       try {
-        const response = await fetch('data.json');
+        const response = await fetch(`data.json?t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         leagueData = await response.json();
         
