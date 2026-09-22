@@ -1,45 +1,61 @@
-name: Update League Data
+name: PBR Weekly Sync & Automation
 
 on:
   schedule:
-    - cron: '0 06 * * 2'
+    # Runs every Tuesday at 10:00 AM UTC (6:00 AM EST / 3:00 AM PST)
+    - cron: '0 10 * * 2'
   workflow_dispatch:
+    inputs:
+      week:
+        description: 'NFL Week Number'
+        required: true
+        default: '2'
 
 jobs:
-  build-and-deploy:
+  pbr-sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Fetch and Calculate Weekly Results
-        run: 
-          cd pbr
-          node fetcher.js
-  
-      - name: Sync Victory Points to MFL
-        env:
-          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
-          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
-        run: 
-          cd pbr
-          node mfl_updater.js
+      - name: Install Dependencies
+        run: npm ci || npm install
 
-      - name: Commit and Push Updated Data
+      # 1. FETCH WEEK 2 RESULTS & CALCULATE VPS
+      - name: Fetch Live MFL Results
+        env:
+          LEAGUE_ID: '63213'
+          SEASON_YEAR: '2026'
+        run: node pbr/fetcher.js
+
+      # 2. GENERATE GEMMY'S AI RECAP
+      - name: Generate Gemmy AI Post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PBR_SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
+          PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
+          PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
+          PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
+          PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
+        run: node pbr/generate_post.js ${{ github.event.inputs.week || '2' }}
+
+      # 3. POST RECAP TO SLACK (Safe if secret is missing)
+      - name: Post Recap to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week || '2' }}.md
+
+      # 4. COMMIT & DEPLOY TO GITHUB PAGES
+      - name: Commit & Deploy Updated Data
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update weekly scores" && git push)
-
-          - name: Set up Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '20'
-    
-    
+          git add pbr/data.json pbr/gemmy_week_*.md
+          git commit -m "auto(pbr): sync Week 2 scores and Gemmy recap [skip ci]" || echo "No changes to commit"
+          git push origin main
