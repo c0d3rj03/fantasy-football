@@ -3,7 +3,7 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { WebClient } = require('@slack/web-api');
 
-// Extract week argument (e.g., process.argv[2] -&gt; '2')
+// Extract week argument (e.g., process.argv[2] -> '2')
 const weekNum = process.argv[2] || '2';
 
 // ---------------------------------------------------------------------------
@@ -29,11 +29,7 @@ async function fetchSlackBanter() {
   for (const channelId of channelIds) {
     try {
       const cleanId = channelId.trim();
-      const result = await slack.conversations.history({
-        channel: cleanId,
-        limit: 20
-      });
-
+      const result = await slack.conversations.history({ channel: cleanId, limit: 20 });
       if (result.messages) {
         const textMessages = result.messages
           .filter(m => m.text && !m.subtype)
@@ -78,6 +74,7 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
       }
     }
   }
+
   return null;
 }
 
@@ -96,9 +93,7 @@ async function generateAiPost() {
   const leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
   const slackBanter = await fetchSlackBanter();
 
-  const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league.
-Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, &gt; quotes, emojis).
-IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*), NOT double asterisks (**bold**).`;
+  const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league. Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, > quotes, emojis). IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*), NOT double asterisks (**bold**).`;
 
   const promptContext = {
     week: weekNum,
@@ -110,7 +105,7 @@ IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*)
   console.log(`🧠 Invoking Gemini API (${GEMINI_MODEL}) to compose recap...`);
 
   const fullPrompt = `${systemInstruction}\n\nHere is this week's league data and history:\n${JSON.stringify(promptContext, null, 2)}`;
-  
+
   let candidateText = await callGeminiWithRetry(fullPrompt);
 
   if (candidateText) {
@@ -118,16 +113,12 @@ IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*)
     console.log(candidateText);
   } else {
     console.warn("⚠️ Gemini API unavailable after retries; generating fallback post.");
-    candidateText = `🏈 *PBR Week ${weekNum} Update*
-
-Week ${weekNum} scores and Victory Points have been updated on the dashboard!
-
-📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
+    candidateText = `🏈 *PBR Week ${weekNum} Update*\n\nWeek ${weekNum} scores and Victory Points have been updated on the dashboard! 📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
   }
 
   // Convert any lingering double asterisks to single asterisks for Slack
   candidateText = candidateText.replace(/\*\*(.*?)\*\*/g, '*$1*');
-  
+
   const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);
   fs.writeFileSync(outputPath, candidateText);
   console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);

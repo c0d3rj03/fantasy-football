@@ -4,11 +4,8 @@ const path = require('path');
 const LEAGUE_ID = "63213";
 const YEAR = "2026";
 const BASE_URL = `https://www42.myfantasyleague.com/${YEAR}`;
-
 const MFL_USERNAME = process.env.MFL_USERNAME;
 const MFL_PASSWORD = process.env.MFL_PASSWORD;
-
-const { authenticateCommissioner, submitCommissionerForm } = require('../shared/mfl_client');
 
 function parseAuthCookie(response, existingCookie = '') {
   let rawCookies = [];
@@ -45,7 +42,6 @@ function parseAuthCookie(response, existingCookie = '') {
     .join('; ');
 }
 
-// Custom fetch wrapper that manually intercepts 302 redirects to preserve Set-Cookie headers
 async function fetchWithCookieAccumulation(url, options = {}, existingCookie = '') {
   const reqHeaders = { ...(options.headers || {}) };
   if (existingCookie) {
@@ -60,7 +56,6 @@ async function fetchWithCookieAccumulation(url, options = {}, existingCookie = '
 
   const updatedCookie = parseAuthCookie(response, existingCookie);
 
-  // If redirected, extract cookies and manually follow location
   if ([301, 302, 303, 307, 308].includes(response.status)) {
     const location = response.headers.get('location');
     if (location) {
@@ -74,19 +69,20 @@ async function fetchWithCookieAccumulation(url, options = {}, existingCookie = '
 
 function extractHiddenFields(html) {
   const hiddenFields = {};
-  const inputRegex = /<input\b[^>]*>/gi;
+  const inputRegex = /<input[^>]*>/gi;
   let match;
 
   while ((match = inputRegex.exec(html)) !== null) {
     const [tag] = match;
     if (/type=["']?hidden["']?/i.test(tag)) {
-      const nameMatch = /name=["']?([^"' >]+)["']?/i.exec(tag);
+      const nameMatch = /name=["']?([^"'>]+)["']?/i.exec(tag);
       const valueMatch = /value=["']?([^"'>]*)["']?/i.exec(tag);
-      if (nameMatch && nameMatch) {
-        hiddenFields[nameMatch] = valueMatch && valueMatch ? valueMatch : '';
+      if (nameMatch && nameMatch[1]) {
+        hiddenFields[nameMatch[1]] = valueMatch && valueMatch[1] ? valueMatch[1] : '';
       }
     }
   }
+
   return hiddenFields;
 }
 
@@ -105,7 +101,6 @@ async function loginToMFL() {
   };
 
   try {
-    // 1. Perform Web HTML Login
     let { cookie } = await fetchWithCookieAccumulation(loginUrl, {
       method: 'POST',
       headers: { ...baseHeaders, 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -119,7 +114,6 @@ async function loginToMFL() {
 
     console.log("✅ Authenticated with MFL. Elevating session to Commissioner mode (BECOME=0000)...");
 
-    // 2. Trigger "Become Commissioner" with manual redirect interception
     const becomeUrl = `${BASE_URL}/logout?L=${LEAGUE_ID}&BECOME=0000`;
     const result = await fetchWithCookieAccumulation(becomeUrl, {
       method: 'GET',
@@ -127,7 +121,6 @@ async function loginToMFL() {
     }, cookie);
 
     cookie = result.cookie;
-
     console.log("\n📋 Active Session Cookies:");
     console.log("  ", cookie);
 
@@ -138,7 +131,6 @@ async function loginToMFL() {
     }
 
     return cookie;
-
   } catch (err) {
     console.error("❌ Network or login error:", err.message);
     return null;
@@ -172,7 +164,6 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
     console.log("Captured hidden tokens:", hiddenTokens);
 
     const params = new URLSearchParams();
-
     params.set("form_name", hiddenTokens.form_name || "sadj");
     params.set("LEAGUE_ID", LEAGUE_ID);
     params.set("C", "STANDADJ");
@@ -187,7 +178,6 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
     for (let i = 1; i <= 12; i++) {
       const formattedFid = String(i).padStart(4, '0');
       const isWinner = winnerSet.has(formattedFid);
-
       params.set(`WEEK${formattedFid}`, String(weekNum));
       params.set(`ADJUST_VP${formattedFid}`, isWinner ? "1" : "");
       params.set(`EXP${formattedFid}`, isWinner ? "In-Division Top 2 Score" : "");
@@ -198,10 +188,7 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
     console.log("Submitting form adjustments to MFL...");
     const postResponse = await fetch(postUrl, {
       method: 'POST',
-      headers: {
-        ...headers,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
+      headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params
     });
 
@@ -211,7 +198,7 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
     if (postResponse.ok) {
       console.log(`\n🎉 Form submitted for Week ${weekNum}! Response written to mfl_response.html.`);
       console.log("Winning teams updated:");
-      vpWinners.forEach(fid => console.log(`   - Team ID ${String(fid).padStart(4, '0')} (+1 VP)`));
+      vpWinners.forEach(fid => console.log(` - Team ID ${String(fid).padStart(4, '0')} (+1 VP)`));
     } else {
       console.error(`❌ MFL POST failed with HTTP status: ${postResponse.status}`);
     }
@@ -256,14 +243,14 @@ async function main() {
   }
 
   console.log(`Targeting Week ${targetWeekKey} results...`);
-
   const vpWinners = [];
   const battleRoyale = weekObj.battle_royale || {};
+
   Object.entries(battleRoyale).forEach(([divName, teams]) => {
     const sorted = [...teams].sort((a, b) => (b.score || 0) - (a.score || 0));
     const top2 = sorted.slice(0, 2);
     top2.forEach(t => vpWinners.push(t.id));
-    console.log(`  • ${divName} Top 2: ${top2.map(t => `${t.name} (${t.score.toFixed(2)} PF)`).join(', ')}`);
+    console.log(` • ${divName} Top 2: ${top2.map(t => `${t.name} (${t.score.toFixed(2)} PF)`).join(', ')}`);
   });
 
   if (vpWinners.length === 0) {
