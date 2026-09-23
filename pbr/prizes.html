@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>PBR 2026 - League Prizes & Cash Ledger</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
   </style>
 </head>
+
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
 
   <!-- Header & Navigation -->
@@ -23,10 +30,12 @@
         </div>
       </div>
       <nav class="flex gap-2">
-        <a href="index.html" class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
+        <a href="index.html"
+          class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
           <span>🏈</span> Results & Standings
         </a>
-        <a href="prizes.html" class="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
+        <a href="prizes.html"
+          class="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
           <span>💰</span> League Prizes
         </a>
       </nav>
@@ -44,11 +53,13 @@
       </div>
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center shadow-md">
         <div class="text-xs uppercase font-bold text-slate-400 tracking-wider">Weekly Prizes</div>
-        <div class="text-3xl font-black text-amber-400 mt-1">$120 <span class="text-xs text-slate-500 font-normal">($10/wk)</span></div>
+        <div class="text-3xl font-black text-amber-400 mt-1">$120 <span
+            class="text-xs text-slate-500 font-normal">($10/wk)</span></div>
       </div>
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center shadow-md">
         <div class="text-xs uppercase font-bold text-slate-400 tracking-wider">Quarterly Awards</div>
-        <div class="text-3xl font-black text-amber-400 mt-1">$240 <span class="text-xs text-slate-500 font-normal">($20/ea)</span></div>
+        <div class="text-3xl font-black text-amber-400 mt-1">$240 <span
+            class="text-xs text-slate-500 font-normal">($20/ea)</span></div>
       </div>
       <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 text-center shadow-md">
         <div class="text-xs uppercase font-bold text-slate-400 tracking-wider">Season Champion</div>
@@ -79,7 +90,7 @@
 
     <!-- Section 3 & 4: Postseason Payouts & Dynasty / Empire Pot -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      
+
       <!-- Postseason & Championship Payouts -->
       <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
         <h2 class="text-lg font-black text-amber-400 flex items-center gap-2 mb-4">
@@ -99,14 +110,16 @@
               <span class="font-bold text-slate-200">Empire Pot Accumulator</span>
               <span class="text-xl font-black text-amber-400">$530+</span>
             </div>
-            <p class="text-xs text-slate-400">Awarded to any owner who wins two Season Championships within a 3-year rolling window.</p>
+            <p class="text-xs text-slate-400">Awarded to any owner who wins two Season Championships within a 3-year
+              rolling window.</p>
           </div>
           <div class="p-4 bg-slate-950/60 rounded-xl border border-slate-800 shadow-inner">
             <div class="flex justify-between items-center mb-1">
               <span class="font-bold text-slate-200">Consecutive UD Postseason Bonus</span>
               <span class="text-xs text-amber-400 font-bold">$20 x Consecutive Yrs</span>
             </div>
-            <p class="text-xs text-slate-400">Teams making consecutive Upper Division postseasons earn escalating cash bonuses each year.</p>
+            <p class="text-xs text-slate-400">Teams making consecutive Upper Division postseasons earn escalating cash
+              bonuses each year.</p>
           </div>
         </div>
       </section>
@@ -116,15 +129,59 @@
   </main>
 
   <script>
-    // 1. Weekly Winners Data
-    const knownWinners = {
-      1: { name: "Ted Lasso", pf: "162.98" }
-    };
+    let leagueData = null;
 
-    const weeklyGrid = document.getElementById('weekly-winners-grid');
-    if (weeklyGrid) {
+    async function initPrizes() {
+      // Static fallback in case data.json isn't loaded yet
+      let weeklyWinners = {
+        1: { name: "Ted Lasso", pf: 162.98 }
+      };
+
+      try {
+        const res = await fetch(`data.json?t=${Date.now()}`);
+        if (res.ok) {
+          leagueData = await res.json();
+          // Extract actual weekly high scorers dynamically from data.json
+          if (leagueData && leagueData.weekly_data) {
+            Object.keys(leagueData.weekly_data).forEach(wKey => {
+              const wObj = leagueData.weekly_data[wKey];
+              if (wObj && wObj.played && wObj.battle_royale) {
+                let maxScore = -1;
+                let topTeam = null;
+                Object.values(wObj.battle_royale).forEach(teams => {
+                  teams.forEach(t => {
+                    if (t.score > maxScore) {
+                      maxScore = t.score;
+                      topTeam = t;
+                    }
+                  });
+                });
+                if (topTeam && maxScore > 0) {
+                  weeklyWinners[wKey] = {
+                    name: topTeam.name,
+                    pf: maxScore.toFixed(2)
+                  };
+                }
+              }
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch dynamic data.json for prizes, using fallback:", err);
+      }
+
+      renderWeeklyGrid(weeklyWinners);
+      renderQuarterlyGrid();
+      renderPostseasonPayouts();
+    }
+
+    function renderWeeklyGrid(weeklyWinners) {
+      const weeklyGrid = document.getElementById('weekly-winners-grid');
+      if (!weeklyGrid) return;
+      weeklyGrid.innerHTML = '';
+
       for (let w = 1; w <= 12; w++) {
-        const winner = knownWinners[w];
+        const winner = weeklyWinners[w];
         if (winner) {
           weeklyGrid.innerHTML += `
             <div class="bg-slate-950/80 border border-amber-500/40 rounded-xl p-3 flex justify-between items-center shadow-md">
@@ -152,9 +209,11 @@
       }
     }
 
-    // 2. Quarterly Awards Grid
-    const quarterGrid = document.getElementById('quarterly-awards-grid');
-    if (quarterGrid) {
+    function renderQuarterlyGrid() {
+      const quarterGrid = document.getElementById('quarterly-awards-grid');
+      if (!quarterGrid) return;
+      quarterGrid.innerHTML = '';
+
       const quarters = [
         { q: 1, range: "Weeks 1–4" },
         { q: 2, range: "Weeks 5–8" },
@@ -162,24 +221,85 @@
       ];
 
       quarters.forEach(item => {
+        // Calculate quarter winners dynamically if quarter week 4, 8, or 12 is played
+        const endW = item.q * 4;
+        const startW = (item.q - 1) * 4 + 1;
+        let isQuarterComplete = false;
+
+        let upperWinner = "TBD";
+        let middleWinner = "TBD";
+        let lowerWinner = "TBD";
+        let highScorer = "TBD";
+
+        if (leagueData && leagueData.weekly_data && leagueData.weekly_data[endW.toString()]?.played) {
+          isQuarterComplete = true;
+          const qStats = {};
+          for (let w = startW; w <= endW; w++) {
+            const wData = leagueData.weekly_data[w.toString()];
+            if (wData && wData.battle_royale) {
+              Object.entries(wData.battle_royale).forEach(([divName, teams]) => {
+                teams.forEach(t => {
+                  if (!qStats[t.id]) {
+                    qStats[t.id] = { name: t.name, division: divName, total_vp: 0, total_pf: 0 };
+                  }
+                  qStats[t.id].total_vp += t.total_weekly_vp || 0;
+                  qStats[t.id].total_pf += t.score || 0;
+                });
+              });
+            }
+          }
+          let divLeaders = { "Upper Division": null, "Middle Division": null, "Lower Division": null };
+          let qTopScore = -1;
+          let qTopTeam = null;
+
+          Object.values(qStats).forEach(t => {
+            if (!divLeaders[t.division] || t.total_vp > divLeaders[t.division].total_vp) {
+              divLeaders[t.division] = t;
+            }
+            if (t.total_pf > qTopScore) {
+              qTopScore = t.total_pf;
+              qTopTeam = t;
+            }
+          });
+
+          if (divLeaders["Upper Division"]) upperWinner = divLeaders["Upper Division"].name;
+          if (divLeaders["Middle Division"]) middleWinner = divLeaders["Middle Division"].name;
+          if (divLeaders["Lower Division"]) lowerWinner = divLeaders["Lower Division"].name;
+          if (qTopTeam) highScorer = `${qTopTeam.name} (${qTopScore.toFixed(1)} PF)`;
+        }
+
         quarterGrid.innerHTML += `
           <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4 shadow-md">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2 mb-3">
               <h3 class="text-sm font-black text-slate-200">Quarter ${item.q} <span class="text-xs text-slate-500 font-normal">(${item.range})</span></h3>
             </div>
             <ul class="space-y-2.5 text-xs">
-              <li class="flex justify-between items-center"><span class="text-slate-400">Upper Div Winner:</span> <span class="font-bold text-slate-400 italic">TBD ($20)</span></li>
-              <li class="flex justify-between items-center"><span class="text-slate-400">Middle Div Winner:</span> <span class="font-bold text-slate-400 italic">TBD ($20)</span></li>
-              <li class="flex justify-between items-center"><span class="text-slate-400">Lower Div Winner:</span> <span class="font-bold text-slate-400 italic">TBD ($20)</span></li>
-              <li class="flex justify-between items-center border-t border-slate-800/80 pt-2.5"><span class="text-amber-400 font-semibold">⚡ Q${item.q} High Scorer:</span> <span class="font-bold text-slate-400 italic">TBD ($20)</span></li>
+              <li class="flex justify-between items-center">
+                <span class="text-slate-400">Upper Div Winner:</span>
+                <span class="${upperWinner !== 'TBD' ? 'font-bold text-amber-400' : 'font-bold text-slate-400 italic'}">${upperWinner} ($20)</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span class="text-slate-400">Middle Div Winner:</span>
+                <span class="${middleWinner !== 'TBD' ? 'font-bold text-amber-400' : 'font-bold text-slate-400 italic'}">${middleWinner} ($20)</span>
+              </li>
+              <li class="flex justify-between items-center">
+                <span class="text-slate-400">Lower Div Winner:</span>
+                <span class="${lowerWinner !== 'TBD' ? 'font-bold text-amber-400' : 'font-bold text-slate-400 italic'}">${lowerWinner} ($20)</span>
+              </li>
+              <li class="flex justify-between items-center border-t border-slate-800/80 pt-2.5">
+                <span class="text-amber-400 font-semibold">⚡ Q${item.q} High Scorer:</span>
+                <span class="${highScorer !== 'TBD' ? 'font-bold text-amber-400' : 'font-bold text-slate-400 italic'}">${highScorer} ($20)</span>
+              </li>
             </ul>
           </div>`;
       });
     }
 
-    // 3. Postseason Payouts List
-    const payoutsList = document.getElementById('postseason-payouts-list');
-    if (payoutsList) {
+    function renderPostseasonPayouts() {
+      const payoutsList = document.getElementById('postseason-payouts-list');
+      if (!payoutsList) return;
+      payoutsList.innerHTML = '';
+
       const payouts = [
         { title: "League Season Champion", sub: "Upper Division Postseason Winner", amount: "$200" },
         { title: "League Season Runner-Up", sub: "Upper Division Postseason 2nd Place", amount: "$50" },
@@ -199,6 +319,9 @@
           </div>`;
       });
     }
+
+    window.addEventListener('DOMContentLoaded', initPrizes);
   </script>
 </body>
+
 </html>
