@@ -87,11 +87,11 @@
       <div class="header-right">
         <div class="metric-item">
           <span class="metric-label">Current:</span>
-          <span class="metric-val" id="hdrCurrentWeek">Week 17</span>
+          <span class="metric-val" id="hdrCurrentWeek">Week 2</span>
         </div>
         <div class="metric-item">
           <span class="metric-label">Teams Remaining:</span>
-          <span class="metric-val" id="hdrTeamsRemaining">4</span>
+          <span class="metric-val" id="hdrTeamsRemaining">22</span>
         </div>
       </div>
     </header>
@@ -137,17 +137,19 @@
 
     async function init() {
       let winners = {};
-      let activeLeagueWeek = 17;
-      let remainingCount = 4;
+      let activeLeagueWeek = 2;
+      let remainingCount = 22;
 
       try {
         const res = await fetch('data.json');
         if (res.ok) {
           const data = await res.json();
           winners = data.weeklyWinners || {};
-          activeLeagueWeek = data.currentWeek || 17;
+          activeLeagueWeek = data.currentWeek || 2;
           
-          if (data.eliminatedTeams && data.franchises) {
+          if (data.aliveFranchiseIds) {
+            remainingCount = data.aliveFranchiseIds.length;
+          } else if (data.eliminatedTeams && data.franchises) {
             const active = Object.keys(data.franchises).filter(fid => {
               const elim = data.eliminatedTeams[fid];
               return !elim || elim.eliminatedWeek >= activeLeagueWeek;
@@ -184,38 +186,39 @@
         tbody.appendChild(tr);
       }
 
-      // Week 17 Grand Championship Final 4: 3rd, 2nd, and 1st Place (Building Up Font Sizes)
-      
-      // 1. 3rd Place Finalist (Standard Font Size)
+      // Week 17 Grand Championship Final 4: 3rd, 2nd, and 1st Place
+      const w17Data = winners[17] || {};
+
+      // 1. 3rd Place Finalist
       const r3 = document.createElement('tr');
       r3.className = 'mega-row-bronze';
       r3.innerHTML = `
         <td><strong style="color: var(--accent-bronze);">Week 17</strong> (Final 4)</td>
         <td><span class="badge-bronze">$60 CASH</span></td>
-        <td><strong style="color: var(--accent-bronze);">🥉 3rd Place: A Murder of Porgs</strong></td>
-        <td><strong>565.14 pts</strong></td>
+        <td><strong style="color: var(--accent-bronze);">🥉 3rd Place: ${w17Data.third ? w17Data.third.franchiseName : 'TBD'}</strong></td>
+        <td><strong>${w17Data.third ? w17Data.third.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
       tbody.appendChild(r3);
 
-      // 2. 2nd Place Runner-Up (Slightly Larger Font Size)
+      // 2. 2nd Place Runner-Up
       const r2 = document.createElement('tr');
       r2.className = 'mega-row-silver';
       r2.innerHTML = `
         <td><strong style="color: var(--accent-silver);">Week 17</strong> (Final 4)</td>
         <td><span class="badge-silver">$120 CASH</span></td>
-        <td><strong style="color: var(--accent-silver);">🥈 2nd Place: Anne Boleyn</strong></td>
-        <td><strong>605.33 pts</strong></td>
+        <td><strong style="color: var(--accent-silver);">🥈 2nd Place: ${w17Data.second ? w17Data.second.franchiseName : 'TBD'}</strong></td>
+        <td><strong>${w17Data.second ? w17Data.second.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
       tbody.appendChild(r2);
 
-      // 3. 1st Place Champion (Largest Font Size, Grand Champion)
+      // 3. 1st Place Champion
       const r1 = document.createElement('tr');
       r1.className = 'mega-row-gold';
       r1.innerHTML = `
         <td><strong style="color: var(--accent-gold);">Week 17</strong> (Final 4)</td>
         <td><span class="badge-gold">$430 CASH</span></td>
-        <td><strong style="color: var(--accent-gold);">🥇 1st Place Champion: Cream Of The Crop</strong></td>
-        <td><strong>609.22 pts</strong></td>
+        <td><strong style="color: var(--accent-gold);">🥇 1st Place Champion: ${w17Data.first ? w17Data.first.franchiseName : 'TBD'}</strong></td>
+        <td><strong>${w17Data.first ? w17Data.first.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
       tbody.appendChild(r1);
     }

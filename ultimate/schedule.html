@@ -86,7 +86,7 @@
       <div class="header-right">
         <div class="metric-item">
           <span class="metric-label">Current:</span>
-          <span class="metric-val" id="hdrCurrentWeek">Week 2</span>
+          <span class="metric-val" id="hdrCurrentWeek">Week 3</span>
         </div>
         <div class="metric-item">
           <span class="metric-label">Teams Remaining:</span>
@@ -152,19 +152,21 @@
     ];
 
     async function init() {
-      let activeLeagueWeek = 2;
+      let completedWeek = 2;
       let remainingCount = 22;
 
       try {
         const res = await fetch('data.json');
         if (res.ok) {
           const data = await res.json();
-          activeLeagueWeek = data.currentWeek || 2;
+          completedWeek = data.currentWeek || 2;
           
-          if (data.eliminatedTeams && data.franchises) {
+          if (data.aliveFranchiseIds) {
+            remainingCount = data.aliveFranchiseIds.length;
+          } else if (data.eliminatedTeams && data.franchises) {
             const active = Object.keys(data.franchises).filter(fid => {
               const elim = data.eliminatedTeams[fid];
-              return !elim || elim.eliminatedWeek >= activeLeagueWeek;
+              return !elim || elim.eliminatedWeek >= completedWeek;
             });
             remainingCount = active.length;
           }
@@ -173,16 +175,19 @@
         console.warn('Could not load data.json');
       }
 
-      document.getElementById('hdrCurrentWeek').textContent = `Week ${activeLeagueWeek}`;
+      // Schedule page highlights the UPCOMING active week
+      const upcomingWeek = Math.min(completedWeek + 1, 17);
+
+      document.getElementById('hdrCurrentWeek').textContent = `Week ${upcomingWeek}`;
       document.getElementById('hdrTeamsRemaining').textContent = `${remainingCount}`;
 
       const tbody = document.getElementById('scheduleTableBody');
       tbody.innerHTML = '';
 
       SCHEDULE_DATA.forEach(row => {
-        const isCurrentFinished = (row.week === activeLeagueWeek);
+        const isUpcomingActive = (row.week === upcomingWeek);
         const tr = document.createElement('tr');
-        if (isCurrentFinished) {
+        if (isUpcomingActive) {
           tr.className = 'current-week-row';
         }
 
@@ -194,7 +199,7 @@
         }
 
         tr.innerHTML = `
-          <td><strong>Week ${row.week}</strong> ${isCurrentFinished ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 2px; font-weight: 800;">[CURRENT]</span>' : ''}</td>
+          <td><strong>Week ${row.week}</strong> ${isUpcomingActive ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 2px; font-weight: 800;">[UPCOMING]</span>' : ''}</td>
           <td>${row.start}</td>
           <td><strong>${row.roster}</strong></td>
           <td class="col-starters">${row.starters}</td>
