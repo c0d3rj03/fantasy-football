@@ -31,7 +31,6 @@ async function fetchMFL(type, params = {}) {
   return await response.json();
 }
 
-// Normalize MFL array vs single object responses
 function normalizeArray(item) {
   if (!item) return [];
   return Array.isArray(item) ? item : [item];
@@ -70,38 +69,66 @@ async function runFetcher() {
     console.warn('Could not fetch MFL liveScoring:', err.message);
   }
 
-  // 3. Fetch Weekly Scores for completed/historical weeks
-  const weeklySingleScores = {};
+  // Read existing data.json for historical score preservation
+  const existingDataPath = path.join(__dirname, 'data.json');
+  let existingData = {};
+  if (fs.existsSync(existingDataPath)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(existingDataPath, 'utf-8'));
+    } catch (e) {}
+  }
+
+  // 3. Fetch Weekly Scores for completed/historical weeks (Cumulative to Single-Week)
+  const weeklySingleScores = existingData.weeklySingleScores || {};
   const maxWeeksToFetch = 17;
   let latestCompletedWeek = 0;
+  const cumulativeScoresByWeek = {};
 
   for (let w = 1; w <= maxWeeksToFetch; w++) {
     try {
       const scoreData = await fetchMFL('weeklyResults', { W: w.toString() });
-      const matchSet = scoreData.weeklyResults?.matchup;
+      const resultsObj = scoreData.weeklyResults;
+      if (!resultsObj) continue;
 
-      if (!matchSet) continue;
-
-      const matchups = normalizeArray(matchSet);
-      let weekHasScores = false;
-      const weekScores = {};
-
-      matchups.forEach(m => {
-        const franchiseScores = normalizeArray(m.franchise);
-        franchiseScores.forEach(f => {
-          if (f.id && f.score !== undefined && f.score !== '') {
-            const scoreVal = parseFloat(f.score);
-            if (!isNaN(scoreVal) && scoreVal > 0) {
-              weekScores[f.id] = scoreVal;
-              weekHasScores = true;
-            }
-          }
+      let rawFranchiseScores = [];
+      if (resultsObj.franchise) {
+        rawFranchiseScores = normalizeArray(resultsObj.franchise);
+      } else if (resultsObj.matchup) {
+        const matchups = normalizeArray(resultsObj.matchup);
+        matchups.forEach(m => {
+          rawFranchiseScores.push(...normalizeArray(m.franchise));
         });
+      }
+
+      if (rawFranchiseScores.length === 0) continue;
+
+      let weekHasScores = false;
+      const currentCumScores = {};
+
+      rawFranchiseScores.forEach(f => {
+        if (f.id && f.score !== undefined && f.score !== '') {
+          const scoreVal = parseFloat(f.score);
+          if (!isNaN(scoreVal) && scoreVal > 0) {
+            currentCumScores[f.id] = scoreVal;
+            weekHasScores = true;
+          }
+        }
       });
 
       if (weekHasScores) {
-        weeklySingleScores[w] = weekScores;
-        // If week w is strictly less than liveScoringWeek or if games are complete
+        cumulativeScoresByWeek[w] = currentCumScores;
+        
+        // Calculate true single-week score: Single(W) = Cumulative(W) - Cumulative(W-1)
+        const singleScoresThisWeek = {};
+        Object.keys(currentCumScores).forEach(fid => {
+          const cumScore = currentCumScores[fid];
+          const priorCum = w > 1 ? (cumulativeScoresByWeek[w - 1]?.[fid] || 0) : 0;
+          const singleScore = Math.max(0, cumScore - priorCum);
+          singleScoresThisWeek[fid] = parseFloat(singleScore.toFixed(2));
+        });
+
+        weeklySingleScores[w] = singleScoresThisWeek;
+
         if (!liveScoringWeek || w < liveScoringWeek) {
           latestCompletedWeek = w;
         }
@@ -113,13 +140,17 @@ async function runFetcher() {
 
   const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
 
-  // 4. Process Live Details if currently in a live week
+  // 4. Process Live Details for the active week
   const liveDetails = {};
 
   if (rawLiveFranchises.length > 0) {
     rawLiveFranchises.forEach(lf => {
       const fid = lf.id;
       const totalLiveScore = parseFloat(lf.score || 0);
+
+      // Prior week carryover score (e.g. Week 2 score for Week 3)
+      const priorWeekNum = currentWeek - 1;
+      const priorScoreCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
 
       const ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
       const inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
@@ -142,12 +173,25 @@ async function runFetcher() {
             liveScore += pScore;
           }
         });
+
+        // If MFL player scores included priorWeekScore or if totalLiveScore includes FSCOREADJ:
+        const currentWeekPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
+        const calcSum = doneScore + liveScore;
+
+        if (calcSum > currentWeekPoints + 0.1 && calcSum >= priorScoreCarryover) {
+          // If player scores sum included prior carryover, adjust doneScore
+          doneScore = Math.max(0, doneScore - priorScoreCarryover);
+        } else if (calcSum === 0 && currentWeekPoints > 0) {
+          if (inGameCount > 0) liveScore = currentWeekPoints;
+          else doneScore = currentWeekPoints;
+        }
       } else {
-        // Fallback if player breakdown is omitted
+        // Fallback when player array is omitted in liveScoring
+        const currentWeekPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
         if (inGameCount > 0) {
-          liveScore = totalLiveScore;
+          liveScore = currentWeekPoints;
         } else {
-          doneScore = totalLiveScore;
+          doneScore = currentWeekPoints;
         }
       }
 
@@ -165,20 +209,7 @@ async function runFetcher() {
     });
   }
 
-  // 5. Calculate Eliminations and Standings
-  const eliminatedTeams = {};
-  const activeFranchiseIds = Object.keys(franchises);
-
-  // Read existing eliminatedTeams or calculate dynamically based on 2-week rolling totals
-  // (In production, this is preserved or synced from data.json)
-  const existingDataPath = path.join(__dirname, 'data.json');
-  let existingData = {};
-  if (fs.existsSync(existingDataPath)) {
-    try {
-      existingData = JSON.parse(fs.readFileSync(existingDataPath, 'utf-8'));
-    } catch (e) {}
-  }
-
+  // 5. Construct & Save Payload
   const finalPayload = {
     leagueId: LEAGUE_ID,
     seasonYear: SEASON_YEAR,

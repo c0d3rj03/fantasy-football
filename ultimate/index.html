@@ -1,691 +1,481 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ultimate Guillotine FFL - Results</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --bg-main: #090a0f;
-            --bg-card: #12151e;
-            --bg-card-hover: #191e2b;
-            --bg-bar-track: #1a202c;
-            --bg-bar-prior: #475569;
-            /* Slate 600 - Steel Gray */
-            --bg-bar-current: #dc2626;
-            /* Guillotine Red */
-            --border-color: #222938;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-red: #ef4444;
-            --accent-gold: #f59e0b;
-            --chopped-bg: rgba(220, 38, 38, 0.12);
-            --chopped-border: #991b1b;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Guillotine FFL - Results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #090a0f;
+      --bg-card: #12151e;
+      --bg-card-hover: #191e2b;
+      --bg-bar-track: #1a202c;
+      --bg-bar-prior: #475569; /* Slate 600 - Steel Gray */
+      --bg-bar-done: #dc2626;  /* Solid Red - Finished Players */
+      --border-color: #222938;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-red: #ef4444;
+      --accent-gold: #f59e0b;
+      --chopped-bg: rgba(220, 38, 38, 0.12);
+      --chopped-border: #991b1b;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; min-height: 100vh; padding: 12px; }
+    .container { max-width: 960px; margin: 0 auto; }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            padding: 12px;
-        }
+    /* Header */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 12px; }
+    .header-left { display: flex; flex-direction: column; }
+    .logo-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; color: #f1f5f9; text-transform: uppercase; text-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+    .mfl-link { font-size: 0.75rem; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; text-decoration: none; font-weight: 600; transition: color 0.15s; }
+    .mfl-link:hover { color: #f87171; text-decoration: underline; }
+    
+    .header-right { text-align: right; font-size: 0.85rem; font-weight: 700; color: #f1f5f9; display: flex; flex-direction: column; gap: 2px; }
+    .metric-item { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+    .metric-label { color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-val { color: #fff; font-weight: 800; }
+    
+    /* Live Indicator */
+    .live-indicator { display: inline-flex; align-items: center; gap: 5px; color: #ef4444; font-weight: 800; font-size: 0.8rem; background: rgba(239, 68, 68, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .live-dot { width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; box-shadow: 0 0 8px #ef4444; animation: blink 1.2s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-        }
+    /* Controls Bar */
+    .controls-bar { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .week-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    
+    select { background: #1e293b; color: #fff; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 5px; font-size: 0.82rem; font-weight: 600; cursor: pointer; outline: none; }
+    select:focus { border-color: var(--accent-red); }
 
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0 12px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 12px;
-        }
+    .week-btn { background: #1e293b; color: var(--text-muted); border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 5px; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+    .week-btn:hover { color: #fff; border-color: var(--accent-red); }
+    .week-btn.active { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
+    
+    .nav-links { display: flex; gap: 12px; }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.82rem; font-weight: 600; transition: color 0.15s; }
+    .nav-link:hover, .nav-link.active { color: var(--accent-red); }
 
-        .header-left {
-            display: flex;
-            flex-direction: column;
-        }
+    /* Callout Banner */
+    .callout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    @media (max-width: 500px) { .callout-grid { grid-template-columns: 1fr; } }
+    .callout-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; }
+    .callout-card.eliminated { border-left: 3px solid var(--accent-red); background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, var(--bg-card) 100%); }
+    .callout-card.winner { border-left: 3px solid var(--accent-gold); background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--bg-card) 100%); }
+    .callout-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 700; }
+    .callout-value { font-size: 0.95rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .logo-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: #f1f5f9;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
-        }
+    /* Results Header & Legend */
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; }
+    .legend { display: flex; gap: 12px; font-size: 0.73rem; font-weight: 600; color: var(--text-muted); flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-color { width: 10px; height: 10px; border-radius: 2px; }
+    .color-prior { background-color: var(--bg-bar-prior); }
+    .color-done { background-color: var(--bg-bar-done); }
+    .color-live { 
+      background: repeating-linear-gradient(
+        -45deg,
+        #881337,
+        #881337 3px,
+        #ef4444 3px,
+        #ef4444 6px
+      ); 
+    }
 
-        .mfl-link {
-            font-size: 0.75rem;
-            color: var(--accent-red);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.15s;
-        }
+    /* Column Headers above list */
+    .list-col-headers { display: flex; justify-content: space-between; align-items: center; padding: 0 8px 4px; font-size: 0.68rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
 
-        .mfl-link:hover {
-            color: #f87171;
-            text-decoration: underline;
-        }
+    /* Dense Team Row List */
+    .team-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+    
+    .team-row { display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 5px; padding: 4px 8px; gap: 6px; min-height: 34px; }
+    .team-row.chopped { background: var(--chopped-bg); border-color: var(--chopped-border); }
 
-        .header-right {
-            text-align: right;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
+    /* Left: Rank & Team Name */
+    .team-meta { display: flex; align-items: center; gap: 6px; width: 155px; flex-shrink: 0; min-width: 0; }
+    .team-rank { font-weight: 800; font-size: 0.78rem; color: var(--text-muted); width: 22px; text-align: right; flex-shrink: 0; }
+    .team-name { font-size: 0.82rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+    .badge-chopped { background: #dc2626; color: #fff; font-size: 0.62rem; font-weight: 800; padding: 1px 4px; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
 
-        .metric-item {
-            display: flex;
-            gap: 6px;
-            justify-content: flex-end;
-            align-items: center;
-        }
+    /* Middle: Bar Track */
+    .bar-container { flex: 1; min-width: 0; display: flex; align-items: center; }
+    .bar-track { background: var(--bg-bar-track); height: 20px; border-radius: 4px; width: 100%; display: flex; overflow: visible; position: relative; border: 1px solid rgba(255,255,255,0.05); }
+    
+    .bar-seg { height: 100%; display: flex; align-items: center; font-size: 0.66rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: width 0.25s ease; }
+    .bar-seg-prior { background-color: var(--bg-bar-prior); justify-content: flex-start; padding-left: 6px; }
+    .bar-seg-done { background-color: var(--bg-bar-done); justify-content: flex-end; padding-right: 6px; }
+    
+    /* Slashed / Striped Red Bar for In-Game Scores */
+    .bar-seg-live { 
+      background: repeating-linear-gradient(
+        -45deg,
+        #881337,
+        #881337 4px,
+        #e11d48 4px,
+        #e11d48 8px
+      ); 
+      justify-content: center; 
+      padding: 0 4px;
+      border-left: 1px solid rgba(255,255,255,0.25);
+    }
 
-        .metric-label {
-            color: var(--text-muted);
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    /* Floating Live Label outside right edge of bar */
+    .floating-live-label {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #f87171;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 5;
+    }
 
-        .metric-val {
-            color: #fff;
-            font-weight: 800;
-        }
+    /* Right: Total Score + Tight Player Status Columns */
+    .row-right-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .team-score { width: 58px; text-align: right; font-weight: 800; font-size: 0.85rem; color: #fff; }
 
-        /* Controls Bar */
-        .controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+    /* Tight Status Columns (YTP, LIVE, DONE) */
+    .status-cols { display: flex; gap: 3px; align-items: center; }
+    .stat-badge { 
+      width: 26px; 
+      height: 20px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 3px; 
+      font-size: 0.68rem; 
+      font-weight: 800; 
+    }
+    
+    .stat-ytp { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.25); }
+    .stat-live { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .stat-done { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
 
-        .week-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+    .cols-header-group { display: flex; gap: 3px; align-items: center; font-size: 0.65rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+    .hdr-badge { width: 26px; text-align: center; }
 
-        select {
-            background: #1e293b;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            outline: none;
-        }
+    @media (max-width: 600px) {
+      .team-meta { width: 120px; }
+      .team-name { font-size: 0.75rem; }
+      .team-score { width: 48px; font-size: 0.78rem; }
+      .stat-badge { width: 22px; font-size: 0.62rem; }
+      .hdr-badge { width: 22px; }
+      .bar-seg { font-size: 0.6rem; }
+      .bar-seg-prior { padding-left: 3px; }
+      .bar-seg-done { padding-right: 3px; }
+      header { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .header-right { text-align: left; }
+    }
 
-        select:focus {
-            border-color: var(--accent-red);
-        }
-
-        .week-btn {
-            background: #1e293b;
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .week-btn:hover {
-            color: #fff;
-            border-color: var(--accent-red);
-        }
-
-        .week-btn.active {
-            background: var(--accent-red);
-            color: #fff;
-            border-color: var(--accent-red);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 12px;
-        }
-
-        .nav-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.82rem;
-            font-weight: 600;
-            transition: color 0.15s;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: var(--accent-red);
-        }
-
-        /* Callout Banner */
-        .callout-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        @media (max-width: 500px) {
-            .callout-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .callout-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 8px 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .callout-card.eliminated {
-            border-left: 3px solid var(--accent-red);
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, var(--bg-card) 100%);
-        }
-
-        .callout-card.winner {
-            border-left: 3px solid var(--accent-gold);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--bg-card) 100%);
-        }
-
-        .callout-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .callout-value {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* Results Header */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-            font-weight: 700;
-        }
-
-        .legend {
-            display: flex;
-            gap: 10px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .legend-color {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-        }
-
-        .color-prior {
-            background-color: var(--bg-bar-prior);
-        }
-
-        .color-current {
-            background-color: var(--bg-bar-current);
-        }
-
-        /* Dense Team Row List */
-        .team-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 16px;
-        }
-
-        .team-row {
-            display: flex;
-            align-items: center;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            padding: 4px 8px;
-            gap: 8px;
-            min-height: 34px;
-        }
-
-        .team-row.chopped {
-            background: var(--chopped-bg);
-            border-color: var(--chopped-border);
-        }
-
-        /* Left: Rank & Team Name */
-        .team-meta {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            width: 170px;
-            flex-shrink: 0;
-            min-width: 0;
-        }
-
-        .team-rank {
-            font-weight: 800;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            width: 22px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .team-name {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-
-        .badge-chopped {
-            background: #dc2626;
-            color: #fff;
-            font-size: 0.62rem;
-            font-weight: 800;
-            padding: 1px 4px;
-            border-radius: 3px;
-            text-transform: uppercase;
-            flex-shrink: 0;
-        }
-
-        /* Middle: Bar Track with In-Bar Score Alignment */
-        .bar-container {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .bar-track {
-            background: var(--bg-bar-track);
-            height: 20px;
-            border-radius: 4px;
-            width: 100%;
-            display: flex;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .bar-seg {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            font-size: 0.68rem;
-            font-weight: 700;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            transition: width 0.25s ease;
-        }
-
-        .bar-seg-prior {
-            background-color: var(--bg-bar-prior);
-            justify-content: flex-start;
-            padding-left: 8px;
-        }
-
-        .bar-seg-current {
-            background-color: var(--bg-bar-current);
-            justify-content: flex-end;
-            padding-right: 8px;
-        }
-
-        /* Right: Total Score */
-        .team-score {
-            width: 68px;
-            text-align: right;
-            font-weight: 800;
-            font-size: 0.85rem;
-            color: #fff;
-            flex-shrink: 0;
-        }
-
-        @media (max-width: 600px) {
-            .team-meta {
-                width: 130px;
-            }
-
-            .team-name {
-                font-size: 0.78rem;
-            }
-
-            .team-score {
-                width: 55px;
-                font-size: 0.8rem;
-            }
-
-            .bar-seg {
-                font-size: 0.62rem;
-            }
-
-            .bar-seg-prior {
-                padding-left: 4px;
-            }
-
-            .bar-seg-current {
-                padding-right: 4px;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-            }
-
-            .header-right {
-                text-align: left;
-            }
-
-            .metric-item {
-                justify-content: flex-start;
-            }
-        }
-
-        footer {
-            text-align: center;
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            padding: 12px 0;
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
+    footer { text-align: center; font-size: 0.72rem; color: var(--text-muted); padding: 12px 0; border-top: 1px solid var(--border-color); }
+  </style>
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <div class="header-left">
-                <div class="logo-title">Ultimate Guillotine</div>
-                <a href="https://www42.myfantasyleague.com/2026/home/25918" target="_blank" rel="noopener noreferrer"
-                    class="mfl-link">MFL League Home ↗</a>
-            </div>
-            <div class="header-right">
-                <div class="metric-item">
-                    <span class="metric-label">Current:</span>
-                    <span class="metric-val" id="hdrCurrentWeek">Week 2</span>
-                </div>
-                <div class="metric-item">
-                    <span class="metric-label">Teams Remaining:</span>
-                    <span class="metric-val" id="hdrTeamsRemaining">22</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="controls-bar">
-            <div class="week-controls">
-                <select id="weekDropdown">
-                    <option value="" disabled selected>Select Week...</option>
-                </select>
-                <button id="btnCurrentWeek" class="week-btn active">Week 2</button>
-                <button id="btnNextWeek" class="week-btn">Week 3</button>
-            </div>
-
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Results</a>
-                <a href="prizes.html" class="nav-link">Prizes</a>
-                <a href="schedule.html" class="nav-link">Schedule</a>
-            </div>
+  <div class="container">
+    <header>
+      <div class="header-left">
+        <div class="logo-title">Ultimate Guillotine</div>
+        <a href="https://www42.myfantasyleague.com/2026/home/25918" target="_blank" rel="noopener noreferrer" class="mfl-link">MFL League Home ↗</a>
+      </div>
+      <div class="header-right">
+        <div class="metric-item">
+          <span class="metric-label">Status:</span>
+          <div class="live-indicator" id="hdrStatus"><div class="live-dot"></div> LIVE - WEEK 3</div>
         </div>
-
-        <div class="callout-grid">
-            <div class="callout-card eliminated">
-                <div class="callout-title">Chopped This Week</div>
-                <div class="callout-value" id="eliminatedText">Loading...</div>
-            </div>
-
-            <div class="callout-card winner">
-                <div class="callout-title">🏆 Weekly High Score</div>
-                <div class="callout-value" id="winnerText">Loading...</div>
-            </div>
+        <div class="metric-item">
+          <span class="metric-label">Teams Remaining:</span>
+          <span class="metric-val" id="hdrTeamsRemaining">22</span>
         </div>
+      </div>
+    </header>
 
-        <div class="section-header">
-            <span>Results</span>
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color color-prior"></div> Prior Wk
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color color-current"></div> Current Wk
-                </div>
-            </div>
-        </div>
+    <div class="controls-bar">
+      <div class="week-controls">
+        <button id="btnCurrentWeek" class="week-btn active">Week 2</button>
+        <button id="btnNextWeek" class="week-btn">Week 3</button>
+        <select id="weekDropdown">
+          <option value="" disabled selected>Select Week...</option>
+        </select>
+      </div>
 
-        <div class="team-list" id="teamList"></div>
-
-        <footer>
-            MFL League 25918 • Automated Updates
-        </footer>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Results</a>
+        <a href="prizes.html" class="nav-link">Prizes</a>
+        <a href="schedule.html" class="nav-link">Schedule</a>
+      </div>
     </div>
 
-    <script>
-        let leagueData = null;
-        let selectedWeek = 2;
-        let activeLeagueWeek = 2;
+    <div class="callout-grid">
+      <div class="callout-card eliminated">
+        <div class="callout-title" id="eliminatedTitle">Chopped This Week</div>
+        <div class="callout-value" id="eliminatedText">Loading...</div>
+      </div>
 
-        async function init() {
-            try {
-                const res = await fetch('data.json');
-                if (res.ok) {
-                    leagueData = await res.json();
-                    activeLeagueWeek = leagueData.currentWeek || 2;
-                }
-            } catch (e) {
-                console.warn('Using default fallback structure');
-            }
+      <div class="callout-card winner">
+        <div class="callout-title" id="winnerTitle">🏆 Weekly High Score</div>
+        <div class="callout-value" id="winnerText">Loading...</div>
+      </div>
+    </div>
 
-            selectedWeek = activeLeagueWeek;
-            setupControls();
-            renderWeek(selectedWeek);
+    <div class="section-header">
+      <span id="resultsSectionTitle">Results</span>
+      <div class="legend" id="legendContainer">
+        <div class="legend-item"><div class="legend-color color-prior"></div> Prior Wk</div>
+        <div class="legend-item"><div class="legend-color color-done"></div> Current Wk</div>
+      </div>
+    </div>
+
+    <div class="list-col-headers">
+      <div style="width: 155px;">Team</div>
+      <div style="flex: 1; text-align: center;" id="barHeaderTitle">Rolling Score Breakdown</div>
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <div style="width: 58px; text-align: right;">Total</div>
+        <div class="cols-header-group">
+          <div class="hdr-badge" title="Yet to Play">YTP</div>
+          <div class="hdr-badge" title="Currently Playing">LIVE</div>
+          <div class="hdr-badge" title="Games Finished">DONE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-list" id="teamList"></div>
+
+    <footer>
+      MFL League 25918 • Automated Real-Time Updates
+    </footer>
+  </div>
+
+  <script>
+    let leagueData = null;
+    let selectedWeek = 3;
+    let activeLeagueWeek = 3;
+
+    async function init() {
+      try {
+        const res = await fetch('data.json');
+        if (res.ok) {
+          leagueData = await res.json();
+          activeLeagueWeek = leagueData.currentWeek || 3;
+        }
+      } catch (e) {
+        console.warn('Using default fallback structure');
+      }
+
+      selectedWeek = activeLeagueWeek;
+      setupControls();
+      renderWeek(selectedWeek);
+    }
+
+    function setupControls() {
+      const btnCurrent = document.getElementById('btnCurrentWeek');
+      const btnNext = document.getElementById('btnNextWeek');
+      const dropdown = document.getElementById('weekDropdown');
+
+      const isLiveWeek = leagueData && leagueData.isLive;
+      const hdrStatusEl = document.getElementById('hdrStatus');
+      
+      if (isLiveWeek) {
+        hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${activeLeagueWeek}`;
+      } else {
+        hdrStatusEl.textContent = `Week ${activeLeagueWeek}`;
+      }
+
+      // Dynamic Button Labels:
+      // If live or in-progress week W, Button 1 = Week W-1, Button 2 = Week W
+      if (isLiveWeek && activeLeagueWeek > 1) {
+        btnCurrent.textContent = `Week ${activeLeagueWeek - 1}`;
+        btnNext.textContent = `Week ${activeLeagueWeek}`;
+      } else {
+        btnCurrent.textContent = `Week ${activeLeagueWeek}`;
+        if (activeLeagueWeek >= 17) {
+          btnNext.style.display = 'none';
+        } else {
+          btnNext.textContent = `Week ${activeLeagueWeek + 1}`;
+          btnNext.style.display = 'inline-block';
+        }
+      }
+
+      dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
+      for (let w = 1; w <= 17; w++) {
+        const opt = document.createElement('option');
+        opt.value = w;
+        opt.textContent = `Week ${w}`;
+        dropdown.appendChild(opt);
+      }
+
+      btnCurrent.addEventListener('click', () => {
+        selectedWeek = isLiveWeek && activeLeagueWeek > 1 ? activeLeagueWeek - 1 : activeLeagueWeek;
+        btnCurrent.classList.add('active');
+        btnNext.classList.remove('active');
+        dropdown.value = '';
+        renderWeek(selectedWeek);
+      });
+
+      btnNext.addEventListener('click', () => {
+        selectedWeek = isLiveWeek && activeLeagueWeek > 1 ? activeLeagueWeek : activeLeagueWeek + 1;
+        btnNext.classList.add('active');
+        btnCurrent.classList.remove('active');
+        dropdown.value = '';
+        renderWeek(selectedWeek);
+      });
+
+      dropdown.addEventListener('change', (e) => {
+        selectedWeek = parseInt(e.target.value);
+        btnCurrent.classList.remove('active');
+        btnNext.classList.remove('active');
+        renderWeek(selectedWeek);
+      });
+    }
+
+    function renderWeek(week) {
+      if (!leagueData) return;
+
+      const eliminated = leagueData.eliminatedTeams || {};
+      const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
+      const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
+
+      // Legend Container Update
+      const legendEl = document.getElementById('legendContainer');
+      if (isLiveNow) {
+        legendEl.innerHTML = `
+          <div class="legend-item"><div class="legend-color color-prior"></div> W${week-1} Total</div>
+          <div class="legend-item"><div class="legend-color color-done"></div> W${week} Done</div>
+          <div class="legend-item"><div class="legend-color color-live"></div> W${week} In-Game</div>
+        `;
+      } else {
+        legendEl.innerHTML = `
+          <div class="legend-item"><div class="legend-color color-prior"></div> Prior Wk</div>
+          <div class="legend-item"><div class="legend-color color-done"></div> Current Wk</div>
+        `;
+      }
+
+      const activeTeams = Object.keys(leagueData.franchises).filter(fid => {
+        const elimInfo = eliminated[fid];
+        return !elimInfo || elimInfo.eliminatedWeek >= week;
+      });
+
+      document.getElementById('hdrTeamsRemaining').textContent = `${activeTeams.length}`;
+
+      const choppedThisWeek = Object.entries(eliminated)
+        .filter(([_, info]) => info.eliminatedWeek === week)
+        .map(([_, info]) => info.franchiseName);
+
+      const elimEl = document.getElementById('eliminatedText');
+      if (choppedThisWeek.length > 0) {
+        elimEl.textContent = choppedThisWeek.join(', ');
+      } else if (week === 1) {
+        elimEl.textContent = 'None (Safe Week)';
+      } else {
+        elimEl.textContent = 'In Progress';
+      }
+
+      const winnerEl = document.getElementById('winnerText');
+      if (weeklyWinner) {
+        winnerEl.textContent = `${weeklyWinner.franchiseName} (${weeklyWinner.score.toFixed(2)} pts)`;
+      } else {
+        winnerEl.textContent = 'In Progress...';
+      }
+
+      const teamListEl = document.getElementById('teamList');
+      teamListEl.innerHTML = '';
+
+      const priorWeekNum = week - 1;
+      const currentWeekNum = week;
+
+      const liveDetails = leagueData.liveDetails || {};
+
+      const teamData = activeTeams.map(fid => {
+        const singleScores = leagueData.weeklySingleScores || {};
+        const priorScore = priorWeekNum >= 1 ? (singleScores[priorWeekNum]?.[fid] || 0) : 0;
+        
+        let doneScore = 0;
+        let liveScore = 0;
+        let ytp = 0;
+        let inGame = 0;
+        let finished = 0;
+
+        if (isLiveNow && liveDetails[fid]) {
+          doneScore = liveDetails[fid].doneScore || 0;
+          liveScore = liveDetails[fid].liveScore || 0;
+          ytp = liveDetails[fid].ytp || 0;
+          inGame = liveDetails[fid].inGame || 0;
+          finished = liveDetails[fid].finished || 0;
+        } else {
+          doneScore = singleScores[currentWeekNum]?.[fid] || 0;
         }
 
-        function setupControls() {
-            const btnCurrent = document.getElementById('btnCurrentWeek');
-            const btnNext = document.getElementById('btnNextWeek');
-            const dropdown = document.getElementById('weekDropdown');
+        const totalScore = priorScore + doneScore + liveScore;
+        const isChoppedNow = eliminated[fid] && eliminated[fid].eliminatedWeek === week;
 
-            document.getElementById('hdrCurrentWeek').textContent = `Week ${activeLeagueWeek}`;
+        return {
+          id: fid,
+          name: leagueData.franchises[fid].name,
+          priorScore,
+          doneScore,
+          liveScore,
+          totalScore,
+          ytp,
+          inGame,
+          finished,
+          isChoppedNow
+        };
+      });
 
-            btnCurrent.textContent = `Week ${activeLeagueWeek}`;
+      teamData.sort((a, b) => b.totalScore - a.totalScore);
 
-            if (activeLeagueWeek >= 17) {
-                btnNext.style.display = 'none';
-            } else {
-                const nextWeek = activeLeagueWeek + 1;
-                btnNext.textContent = `Week ${nextWeek}`;
-                btnNext.style.display = 'inline-block';
-            }
+      const rawMax = Math.max(...teamData.map(t => t.totalScore), 150);
+      // Scale max so the top team takes 90% of track width in live mode, reserving 10% for floating labels
+      const maxScore = isLiveNow ? (rawMax / 0.90) : rawMax;
 
-            dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
-            for (let w = 1; w <= 17; w++) {
-                const opt = document.createElement('option');
-                opt.value = w;
-                opt.textContent = `Week ${w}`;
-                dropdown.appendChild(opt);
-            }
+      teamData.forEach((team, idx) => {
+        const row = document.createElement('div');
+        row.className = `team-row ${team.isChoppedNow ? 'chopped' : ''}`;
 
-            btnCurrent.addEventListener('click', () => {
-                selectedWeek = activeLeagueWeek;
-                btnCurrent.classList.add('active');
-                btnNext.classList.remove('active');
-                dropdown.value = '';
-                renderWeek(selectedWeek);
-            });
+        const priorPct = (team.priorScore / maxScore) * 100;
+        const donePct = (team.doneScore / maxScore) * 100;
+        const livePct = (team.liveScore / maxScore) * 100;
+        const totalPct = priorPct + donePct + livePct;
 
-            btnNext.addEventListener('click', () => {
-                if (activeLeagueWeek < 17) {
-                    selectedWeek = activeLeagueWeek + 1;
-                    btnNext.classList.add('active');
-                    btnCurrent.classList.remove('active');
-                    dropdown.value = '';
-                    renderWeek(selectedWeek);
-                }
-            });
+        const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(1)}` : '';
+        const doneLabel = team.doneScore > 0 ? `${team.doneScore.toFixed(1)}` : '';
 
-            dropdown.addEventListener('change', (e) => {
-                selectedWeek = parseInt(e.target.value);
-                btnCurrent.classList.remove('active');
-                btnNext.classList.remove('active');
-                renderWeek(selectedWeek);
-            });
-        }
-
-        function renderWeek(week) {
-            if (!leagueData) return;
-
-            const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
-            const eliminated = leagueData.eliminatedTeams || {};
-            const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
-
-            const activeTeams = Object.keys(leagueData.franchises).filter(fid => {
-                const elimInfo = eliminated[fid];
-                return !elimInfo || elimInfo.eliminatedWeek >= week;
-            });
-
-            document.getElementById('hdrTeamsRemaining').textContent = `${activeTeams.length}`;
-
-            const choppedThisWeek = Object.entries(eliminated)
-                .filter(([_, info]) => info.eliminatedWeek === week)
-                .map(([_, info]) => info.franchiseName);
-
-            const elimEl = document.getElementById('eliminatedText');
-            if (choppedThisWeek.length > 0) {
-                elimEl.textContent = choppedThisWeek.join(', ');
-            } else if (week === 1) {
-                elimEl.textContent = 'None (Safe Week)';
-            } else {
-                elimEl.textContent = 'None logged';
-            }
-
-            const winnerEl = document.getElementById('winnerText');
-            if (weeklyWinner) {
-                winnerEl.textContent = `${weeklyWinner.franchiseName} (${weeklyWinner.score.toFixed(2)} pts)`;
-            } else {
-                winnerEl.textContent = 'TBD';
-            }
-
-            const teamListEl = document.getElementById('teamList');
-            teamListEl.innerHTML = '';
-
-            const priorWeekNum = week - 1;
-            const currentWeekNum = week;
-
-            const teamData = activeTeams.map(fid => {
-                const singleScores = leagueData.weeklySingleScores || {};
-                const priorScore = priorWeekNum >= 1 ? (singleScores[priorWeekNum]?.[fid] || 0) : 0;
-                const currentScore = singleScores[currentWeekNum]?.[fid] || 0;
-                const totalScore = priorScore + currentScore;
-                const isChoppedNow = eliminated[fid] && eliminated[fid].eliminatedWeek === week;
-
-                return {
-                    id: fid,
-                    name: leagueData.franchises[fid].name,
-                    priorScore,
-                    currentScore,
-                    totalScore,
-                    isChoppedNow
-                };
-            });
-
-            teamData.sort((a, b) => b.totalScore - a.totalScore);
-
-            const maxScore = Math.max(...teamData.map(t => t.totalScore), 150);
-
-            teamData.forEach((team, idx) => {
-                const row = document.createElement('div');
-                row.className = `team-row ${team.isChoppedNow ? 'chopped' : ''}`;
-
-                const priorPct = (team.priorScore / maxScore) * 100;
-                const currentPct = (team.currentScore / maxScore) * 100;
-
-                const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(2)}` : '';
-                const currentLabel = team.currentScore > 0 ? `W${currentWeekNum} - ${team.currentScore.toFixed(2)}` : '';
-
-                row.innerHTML = `
+        row.innerHTML = `
           <div class="team-meta">
             <span class="team-rank">#${idx + 1}</span>
             <span class="team-name" title="${team.name}">${team.name}</span>
             ${team.isChoppedNow ? '<span class="badge-chopped">CUT</span>' : ''}
           </div>
-          
+
           <div class="bar-container">
             <div class="bar-track">
-                ${priorPct > 0 ? `<div class="bar-seg bar-seg-prior" style="width: ${priorPct}%" title="W${priorWeekNum}: ${team.priorScore.toFixed(2)}">${priorLabel}</div>` : ''}
-                ${currentPct > 0 ? `<div class="bar-seg bar-seg-current" style="width: ${currentPct}%" title="W${currentWeekNum}: ${team.currentScore.toFixed(2)}">${currentLabel}</div>` : ''}
+              ${priorPct > 0 ? `<div class="bar-seg bar-seg-prior" style="width: ${priorPct}%" title="Prior Wk: ${team.priorScore.toFixed(2)}">${priorLabel}</div>` : ''}
+              ${donePct > 0 ? `<div class="bar-seg bar-seg-done" style="width: ${donePct}%" title="Current Done: ${team.doneScore.toFixed(2)}">${doneLabel}</div>` : ''}
+              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}"></div>` : ''}
+              ${(isLiveNow && team.liveScore > 0) ? `<span class="floating-live-label" style="left: calc(${totalPct}% + 8px);">${team.liveScore.toFixed(1)}</span>` : ''}
             </div>
           </div>
 
-          <div class="team-score">${team.totalScore.toFixed(2)}</div>
+          <div class="row-right-group">
+            <div class="team-score">${team.totalScore.toFixed(2)}</div>
+            <div class="status-cols">
+              <div class="stat-badge stat-ytp" title="Yet to Play: ${team.ytp} player(s)">${team.ytp}</div>
+              <div class="stat-badge stat-live" title="Currently Playing: ${team.inGame} player(s)">${team.inGame}</div>
+              <div class="stat-badge stat-done" title="Games Finished: ${team.finished} player(s)">${team.finished}</div>
+            </div>
+          </div>
         `;
 
-                teamListEl.appendChild(row);
-            });
-        }
+        teamListEl.appendChild(row);
+      });
+    }
 
-        window.addEventListener('DOMContentLoaded', init);
-    </script>
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
-
 </html>
