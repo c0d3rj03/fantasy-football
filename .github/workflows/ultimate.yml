@@ -19,10 +19,10 @@ on:
     # --- MONDAY NIGHT FOOTBALL ---
     # 6. MNF Live Updates (Mon 8:15 PM - 12:30 AM ET -> Tue 00:00 - 05:55 UTC every 10m)
     - cron: '*/10 0-5 * * 2'
-    # 7. Official End-of-Week Final Wrap (Tue 3:00 AM ET -> Tue 07:00 &amp; 08:00 UTC for EST/EDT)
+    # 7. Official End-of-Week Final Wrap (Tue 3:00 AM ET -> Tue 07:00 & 08:00 UTC for EST/EDT)
     - cron: '0 7,8 * * 2'
 
-    # --- SPECIAL SLATES (Thanksgiving &amp; Late-Season Saturdays) ---
+    # --- SPECIAL SLATES (Thanksgiving & Late-Season Saturdays) ---
     # 8. Thanksgiving Thursday Slate (Thu 12:30 PM - 8:00 PM ET -> Thu 16:00 - 23:55 UTC every 10m)
     - cron: '*/10 16-23 * * 4'
     # 9. Saturday Late-Season Slate (Sat 1:00 PM - 12:30 AM ET -> Sat 17:00 - Sun 05:55 UTC every 10m)
@@ -30,6 +30,9 @@ on:
 
   # Allows manual execution anytime from GitHub Actions tab
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   update-scores:
@@ -52,7 +55,7 @@ jobs:
           LEAGUE_ID: '25918'
           SEASON_YEAR: '2026'
 
-      - name: Commit &amp; Push Changes (Only if data.json changed)
+      - name: Commit & Push Changes (Only if data.json changed)
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

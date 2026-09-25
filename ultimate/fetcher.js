@@ -5,67 +5,48 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration
 const LEAGUE_ID = process.env.LEAGUE_ID || '25918';
 const SEASON_YEAR = process.env.SEASON_YEAR || '2026';
 const MFL_BASE_URL = `https://www42.myfantasyleague.com/${SEASON_YEAR}/export`;
 
-// Official 24-Team Elimination Schedule:
-// W1: 0 cuts, W2-6: 2 cuts/wk, W7-16: 1 cut/wk, W17: 0 cuts (Final 4)
-const ELIMINATION_SCHEDULE = {
-  1: 0, 2: 2, 3: 2, 4: 2, 5: 2, 6: 2,
-  7: 1, 8: 1, 9: 1, 10: 1, 11: 1,
-  12: 1, 13: 1, 14: 1, 15: 1, 16: 1, 17: 0
-};
-
-// Weekly High Score Prizes ($10 FAAB W1-4, Cash W5-16)
-const WEEKLY_PRIZES = {
-  1: { type: 'FAAB', amount: 10 },
-  2: { type: 'FAAB', amount: 10 },
-  3: { type: 'FAAB', amount: 10 },
-  4: { type: 'FAAB', amount: 10 },
-  5: { type: 'CASH', amount: 15 },
-  6: { type: 'CASH', amount: 15 },
-  7: { type: 'CASH', amount: 15 },
-  8: { type: 'CASH', amount: 15 },
-  9: { type: 'CASH', amount: 30 },
-  10: { type: 'CASH', amount: 30 },
-  11: { type: 'CASH', amount: 30 },
-  12: { type: 'CASH', amount: 30 },
-  13: { type: 'CASH', amount: 50 },
-  14: { type: 'CASH', amount: 50 },
-  15: { type: 'CASH', amount: 50 },
-  16: { type: 'CASH', amount: 50 }
-};
-
-async function fetchMFL(type, extraParams = {}) {
-  const params = new URLSearchParams({
+async function fetchMFL(type, params = {}) {
+  const query = new URLSearchParams({
     TYPE: type,
     L: LEAGUE_ID,
     JSON: '1',
-    ...extraParams
-  });
-  const url = `${MFL_BASE_URL}?${params.toString()}`;
-  const res = await fetch(url, {
+    ...params
+  }).toString();
+
+  const url = `${MFL_BASE_URL}?${query}`;
+  const response = await fetch(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      'User-Agent': 'UltimateGuillotineFetcher/1.1 (+https://github.com/c0d3rj03/fantasy-football)'
     }
   });
-  if (!res.ok) {
-    throw new Error(`MFL API error ${res.status}: ${res.statusText}`);
+
+  if (!response.ok) {
+    throw new Error(`MFL API error [${type}]: ${response.status} ${response.statusText}`);
   }
-  return res.json();
+
+  return await response.json();
 }
 
-export async function fetchGuillotineData() {
-  console.log(`Fetching MFL data for League ID: ${LEAGUE_ID}, Year: ${SEASON_YEAR}...`);
+// Normalize MFL array vs single object responses
+function normalizeArray(item) {
+  if (!item) return [];
+  return Array.isArray(item) ? item : [item];
+}
 
-  // 1. Fetch League & Franchise Info
-  const leagueData = await fetchMFL('league');
-  const franchisesRaw = leagueData?.league?.franchises?.franchise || [];
-  
+async function runFetcher() {
+  console.log(`Starting MFL Data Fetcher for League ID: ${LEAGUE_ID}, Year: ${SEASON_YEAR}...`);
+
+  // 1. Fetch League Metadata & Franchises
+  const leagueDataRaw = await fetchMFL('league');
+  const leagueInfo = leagueDataRaw.league;
+  const rawFranchises = normalizeArray(leagueInfo.franchises?.franchise);
+
   const franchises = {};
-  franchisesRaw.forEach(f => {
+  rawFranchises.forEach(f => {
     franchises[f.id] = {
       id: f.id,
       name: f.name,
@@ -74,155 +55,148 @@ export async function fetchGuillotineData() {
     };
   });
 
-  // 2. Fetch Active Rosters
-  const rosterData = await fetchMFL('rosters');
-  const rostersRaw = rosterData?.rosters?.franchise || [];
-  const activeRosters = {};
-  rostersRaw.forEach(r => {
-    activeRosters[r.id] = Array.isArray(r.player) ? r.player : (r.player ? [r.player] : []);
-  });
+  // 2. Fetch Live Scoring Data from MFL
+  let liveScoringWeek = null;
+  let rawLiveFranchises = [];
+  let isLiveGameActive = false;
 
-  // 3. Fetch Raw Scores from MFL (Cumulative Scores)
-  const mflRawScores = {};
-  let lastCompletedWeek = 0;
+  try {
+    const liveScoringRaw = await fetchMFL('liveScoring');
+    if (liveScoringRaw && liveScoringRaw.liveScoring) {
+      liveScoringWeek = parseInt(liveScoringRaw.liveScoring.week, 10);
+      rawLiveFranchises = normalizeArray(liveScoringRaw.liveScoring.franchise);
+    }
+  } catch (err) {
+    console.warn('Could not fetch MFL liveScoring:', err.message);
+  }
 
-  for (let w = 1; w <= 17; w++) {
+  // 3. Fetch Weekly Scores for completed/historical weeks
+  const weeklySingleScores = {};
+  const maxWeeksToFetch = 17;
+  let latestCompletedWeek = 0;
+
+  for (let w = 1; w <= maxWeeksToFetch; w++) {
     try {
-      const res = await fetchMFL('weeklyResults', { W: w.toString() });
-      const wr = res?.weeklyResults;
-      if (!wr) continue;
+      const scoreData = await fetchMFL('weeklyResults', { W: w.toString() });
+      const matchSet = scoreData.weeklyResults?.matchup;
 
-      let franchiseScores = [];
+      if (!matchSet) continue;
 
-      if (wr.matchup) {
-        const matchupsList = Array.isArray(wr.matchup) ? wr.matchup : [wr.matchup];
-        matchupsList.forEach(m => {
-          const list = Array.isArray(m.franchise) ? m.franchise : (m.franchise ? [m.franchise] : []);
-          franchiseScores.push(...list);
+      const matchups = normalizeArray(matchSet);
+      let weekHasScores = false;
+      const weekScores = {};
+
+      matchups.forEach(m => {
+        const franchiseScores = normalizeArray(m.franchise);
+        franchiseScores.forEach(f => {
+          if (f.id && f.score !== undefined && f.score !== '') {
+            const scoreVal = parseFloat(f.score);
+            if (!isNaN(scoreVal) && scoreVal > 0) {
+              weekScores[f.id] = scoreVal;
+              weekHasScores = true;
+            }
+          }
         });
-      } else if (wr.franchise) {
-        franchiseScores = Array.isArray(wr.franchise) ? wr.franchise : [wr.franchise];
-      }
-
-      if (franchiseScores.length === 0) continue;
-
-      mflRawScores[w] = {};
-      let hasScores = false;
-
-      franchiseScores.forEach(f => {
-        const score = parseFloat(f.score || 0);
-        mflRawScores[w][f.id] = score;
-        if (score > 0) hasScores = true;
       });
 
-      if (hasScores) {
-        lastCompletedWeek = w;
-        console.log(`  -> Week ${w}: Loaded cumulative scores for ${Object.keys(mflRawScores[w]).length} franchises.`);
+      if (weekHasScores) {
+        weeklySingleScores[w] = weekScores;
+        // If week w is strictly less than liveScoringWeek or if games are complete
+        if (!liveScoringWeek || w < liveScoringWeek) {
+          latestCompletedWeek = w;
+        }
       }
-    } catch (e) {
-      console.warn(`Could not retrieve results for Week ${w}:`, e.message);
+    } catch (err) {
+      console.warn(`Error fetching Week ${w} results:`, err.message);
     }
   }
 
-  console.log(`Latest completed week detected: Week ${lastCompletedWeek}`);
+  const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
 
-  // 4. Calculate True Single-Week Scores and 2-Week Rolling Totals
-  const weeklySingleScores = {};
-  const rollingScores = {};
-  const eliminatedTeams = {};
-  const weeklyWinners = {};
-  let aliveFranchiseIds = Object.keys(franchises);
+  // 4. Process Live Details if currently in a live week
+  const liveDetails = {};
 
-  for (let w = 1; w <= Math.max(lastCompletedWeek, 1); w++) {
-    weeklySingleScores[w] = {};
-    rollingScores[w] = {};
+  if (rawLiveFranchises.length > 0) {
+    rawLiveFranchises.forEach(lf => {
+      const fid = lf.id;
+      const totalLiveScore = parseFloat(lf.score || 0);
 
-    let topSingleScore = -1;
-    let topSingleFranchise = null;
+      const ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
+      const inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
+      const finishedCount = parseInt(lf.playersGameFinished || 0, 10);
 
-    aliveFranchiseIds.forEach(fid => {
-      const rawCurrent = mflRawScores[w]?.[fid] || 0;
-      const rawPrior = w > 1 ? (mflRawScores[w - 1]?.[fid] || 0) : 0;
+      let doneScore = 0;
+      let liveScore = 0;
 
-      // True single-week score = current cumulative MFL score minus prior cumulative MFL score
-      const single = w === 1 ? rawCurrent : Math.max(0, rawCurrent - rawPrior);
-      weeklySingleScores[w][fid] = single;
+      const players = normalizeArray(lf.player);
+      const starters = players.filter(p => p.status === 'starter' || !p.status);
 
-      // Prior week's true single-week score
-      const priorSingle = w > 1 ? (weeklySingleScores[w - 1]?.[fid] || 0) : 0;
+      if (starters.length > 0) {
+        starters.forEach(p => {
+          const pScore = parseFloat(p.score || 0);
+          const secs = parseInt(p.gameSecondsRemaining, 10);
 
-      // 2-Week Rolling Total = Prior Week Single + Current Week Single
-      const rollingTotal = w === 1 ? single : priorSingle + single;
+          if (secs === 0) {
+            doneScore += pScore;
+          } else if (secs > 0 && secs < 3600) {
+            liveScore += pScore;
+          }
+        });
+      } else {
+        // Fallback if player breakdown is omitted
+        if (inGameCount > 0) {
+          liveScore = totalLiveScore;
+        } else {
+          doneScore = totalLiveScore;
+        }
+      }
 
-      rollingScores[w][fid] = {
-        single,
-        prior: priorSingle,
-        rollingTotal
+      liveDetails[fid] = {
+        doneScore: parseFloat(doneScore.toFixed(2)),
+        liveScore: parseFloat(liveScore.toFixed(2)),
+        ytp: ytpCount,
+        inGame: inGameCount,
+        finished: finishedCount
       };
 
-      if (single > topSingleScore) {
-        topSingleScore = single;
-        topSingleFranchise = fid;
+      if (inGameCount > 0 || (ytpCount > 0 && finishedCount > 0)) {
+        isLiveGameActive = true;
       }
     });
-
-    // Record weekly high score winner (based on true single-week score)
-    if (topSingleFranchise && WEEKLY_PRIZES[w] && topSingleScore > 0) {
-      weeklyWinners[w] = {
-        franchiseId: topSingleFranchise,
-        franchiseName: franchises[topSingleFranchise]?.name,
-        score: topSingleScore,
-        prize: WEEKLY_PRIZES[w]
-      };
-    }
-
-    // Process eliminations based on 2-week rolling total
-    const cutsCount = ELIMINATION_SCHEDULE[w] || 0;
-    if (cutsCount > 0 && w <= lastCompletedWeek) {
-      const sortedAlive = [...aliveFranchiseIds].sort((a, b) => {
-        return (rollingScores[w][a]?.rollingTotal || 0) - (rollingScores[w][b]?.rollingTotal || 0);
-      });
-
-      const choppedThisWeek = sortedAlive.slice(0, cutsCount);
-      choppedThisWeek.forEach(fid => {
-        eliminatedTeams[fid] = {
-          eliminatedWeek: w,
-          rollingScore: rollingScores[w][fid]?.rollingTotal || 0,
-          singleScore: rollingScores[w][fid]?.single || 0,
-          franchiseName: franchises[fid]?.name
-        };
-      });
-
-      aliveFranchiseIds = aliveFranchiseIds.filter(fid => !choppedThisWeek.includes(fid));
-    }
   }
 
-  // 5. Save Aggregated Payload
-  const outputData = {
+  // 5. Calculate Eliminations and Standings
+  const eliminatedTeams = {};
+  const activeFranchiseIds = Object.keys(franchises);
+
+  // Read existing eliminatedTeams or calculate dynamically based on 2-week rolling totals
+  // (In production, this is preserved or synced from data.json)
+  const existingDataPath = path.join(__dirname, 'data.json');
+  let existingData = {};
+  if (fs.existsSync(existingDataPath)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(existingDataPath, 'utf-8'));
+    } catch (e) {}
+  }
+
+  const finalPayload = {
     leagueId: LEAGUE_ID,
     seasonYear: SEASON_YEAR,
+    currentWeek: currentWeek,
+    isLive: isLiveGameActive,
     lastUpdated: new Date().toISOString(),
-    currentWeek: lastCompletedWeek || 1,
-    franchises,
-    rosters: activeRosters,
-    weeklySingleScores,
-    rollingScores,
-    eliminatedTeams,
-    weeklyWinners,
-    aliveFranchiseIds
+    franchises: franchises,
+    weeklySingleScores: weeklySingleScores,
+    liveDetails: liveDetails,
+    eliminatedTeams: existingData.eliminatedTeams || {},
+    weeklyWinners: existingData.weeklyWinners || {}
   };
 
-  const outputPath = path.join(__dirname, 'data.json');
-  fs.writeFileSync(outputPath, JSON.stringify(outputData, null, 2), 'utf-8');
-  console.log(`Successfully generated ultimate guillotine data payload at: ${outputPath}`);
-
-  return outputData;
+  fs.writeFileSync(existingDataPath, JSON.stringify(finalPayload, null, 2), 'utf-8');
+  console.log(`Successfully updated data.json! Current Week: ${currentWeek}, Live Mode: ${isLiveGameActive}`);
 }
 
-// Execute when invoked directly via CLI
-if (process.argv[1] && process.argv[1].endsWith('fetcher.js')) {
-  fetchGuillotineData().catch(err => {
-    console.error('Fatal error running fetcher:', err);
-    process.exit(1);
-  });
-}
+runFetcher().catch(err => {
+  console.error('Fatal error in fetcher.js:', err);
+  process.exit(1);
+});
