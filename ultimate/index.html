@@ -103,7 +103,7 @@
 
     /* Middle: Bar Track */
     .bar-container { flex: 1; min-width: 0; display: flex; align-items: center; }
-    .bar-track { background: var(--bg-bar-track); height: 20px; border-radius: 4px; width: 100%; display: flex; overflow: visible; position: relative; border: 1px solid rgba(255,255,255,0.05); }
+    .bar-track { background: var(--bg-bar-track); height: 20px; border-radius: 4px; width: 100%; display: flex; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.05); }
     
     .bar-seg { height: 100%; display: flex; align-items: center; font-size: 0.66rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: width 0.25s ease; }
     .bar-seg-prior { background-color: var(--bg-bar-prior); justify-content: flex-start; padding-left: 6px; }
@@ -120,20 +120,8 @@
       ); 
       justify-content: center; 
       padding: 0 4px;
+      text-shadow: 0 0 3px rgba(0,0,0,0.9);
       border-left: 1px solid rgba(255,255,255,0.25);
-    }
-
-    /* Floating Live Label outside right edge of bar */
-    .floating-live-label {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.68rem;
-      font-weight: 800;
-      color: #f87171;
-      white-space: nowrap;
-      pointer-events: none;
-      z-index: 5;
     }
 
     /* Right: Total Score + Tight Player Status Columns */
@@ -197,11 +185,11 @@
 
     <div class="controls-bar">
       <div class="week-controls">
-        <button id="btnCurrentWeek" class="week-btn active">Week 2</button>
-        <button id="btnNextWeek" class="week-btn">Week 3</button>
         <select id="weekDropdown">
           <option value="" disabled selected>Select Week...</option>
         </select>
+        <button id="btnCurrentWeek" class="week-btn active">Week 2</button>
+        <button id="btnNextWeek" class="week-btn">Week 3</button>
       </div>
 
       <div class="nav-links">
@@ -253,15 +241,15 @@
 
   <script>
     let leagueData = null;
-    let selectedWeek = 3;
-    let activeLeagueWeek = 3;
+    let selectedWeek = 2;
+    let activeLeagueWeek = 2;
 
     async function init() {
       try {
         const res = await fetch('data.json');
         if (res.ok) {
           leagueData = await res.json();
-          activeLeagueWeek = leagueData.currentWeek || 3;
+          activeLeagueWeek = leagueData.currentWeek || 2;
         }
       } catch (e) {
         console.warn('Using default fallback structure');
@@ -286,19 +274,14 @@
         hdrStatusEl.textContent = `Week ${activeLeagueWeek}`;
       }
 
-      // Dynamic Button Labels:
-      // If live or in-progress week W, Button 1 = Week W-1, Button 2 = Week W
-      if (isLiveWeek && activeLeagueWeek > 1) {
-        btnCurrent.textContent = `Week ${activeLeagueWeek - 1}`;
-        btnNext.textContent = `Week ${activeLeagueWeek}`;
+      btnCurrent.textContent = `Week ${activeLeagueWeek}`;
+
+      if (activeLeagueWeek >= 17) {
+        btnNext.style.display = 'none';
       } else {
-        btnCurrent.textContent = `Week ${activeLeagueWeek}`;
-        if (activeLeagueWeek >= 17) {
-          btnNext.style.display = 'none';
-        } else {
-          btnNext.textContent = `Week ${activeLeagueWeek + 1}`;
-          btnNext.style.display = 'inline-block';
-        }
+        const nextWeek = activeLeagueWeek + 1;
+        btnNext.textContent = `Week ${nextWeek}`;
+        btnNext.style.display = 'inline-block';
       }
 
       dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
@@ -310,7 +293,7 @@
       }
 
       btnCurrent.addEventListener('click', () => {
-        selectedWeek = isLiveWeek && activeLeagueWeek > 1 ? activeLeagueWeek - 1 : activeLeagueWeek;
+        selectedWeek = activeLeagueWeek;
         btnCurrent.classList.add('active');
         btnNext.classList.remove('active');
         dropdown.value = '';
@@ -318,11 +301,13 @@
       });
 
       btnNext.addEventListener('click', () => {
-        selectedWeek = isLiveWeek && activeLeagueWeek > 1 ? activeLeagueWeek : activeLeagueWeek + 1;
-        btnNext.classList.add('active');
-        btnCurrent.classList.remove('active');
-        dropdown.value = '';
-        renderWeek(selectedWeek);
+        if (activeLeagueWeek < 17) {
+          selectedWeek = activeLeagueWeek + 1;
+          btnNext.classList.add('active');
+          btnCurrent.classList.remove('active');
+          dropdown.value = '';
+          renderWeek(selectedWeek);
+        }
       });
 
       dropdown.addEventListener('change', (e) => {
@@ -336,6 +321,7 @@
     function renderWeek(week) {
       if (!leagueData) return;
 
+      const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
       const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
@@ -400,7 +386,8 @@
         let inGame = 0;
         let finished = 0;
 
-        if (isLiveNow && liveDetails[fid]) {
+        const isCurrentActiveWeek = (week === activeLeagueWeek);
+        if (isCurrentActiveWeek && liveDetails[fid]) {
           doneScore = liveDetails[fid].doneScore || 0;
           liveScore = liveDetails[fid].liveScore || 0;
           ytp = liveDetails[fid].ytp || 0;
@@ -429,9 +416,7 @@
 
       teamData.sort((a, b) => b.totalScore - a.totalScore);
 
-      const rawMax = Math.max(...teamData.map(t => t.totalScore), 150);
-      // Scale max so the top team takes 90% of track width in live mode, reserving 10% for floating labels
-      const maxScore = isLiveNow ? (rawMax / 0.90) : rawMax;
+      const maxScore = Math.max(...teamData.map(t => t.totalScore), 150);
 
       teamData.forEach((team, idx) => {
         const row = document.createElement('div');
@@ -440,10 +425,10 @@
         const priorPct = (team.priorScore / maxScore) * 100;
         const donePct = (team.doneScore / maxScore) * 100;
         const livePct = (team.liveScore / maxScore) * 100;
-        const totalPct = priorPct + donePct + livePct;
 
         const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(1)}` : '';
         const doneLabel = team.doneScore > 0 ? `${team.doneScore.toFixed(1)}` : '';
+        const liveLabel = team.liveScore > 0 ? `${team.liveScore.toFixed(1)}*` : '';
 
         row.innerHTML = `
           <div class="team-meta">
@@ -456,8 +441,7 @@
             <div class="bar-track">
               ${priorPct > 0 ? `<div class="bar-seg bar-seg-prior" style="width: ${priorPct}%" title="Prior Wk: ${team.priorScore.toFixed(2)}">${priorLabel}</div>` : ''}
               ${donePct > 0 ? `<div class="bar-seg bar-seg-done" style="width: ${donePct}%" title="Current Done: ${team.doneScore.toFixed(2)}">${doneLabel}</div>` : ''}
-              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}"></div>` : ''}
-              ${(isLiveNow && team.liveScore > 0) ? `<span class="floating-live-label" style="left: calc(${totalPct}% + 8px);">${team.liveScore.toFixed(1)}</span>` : ''}
+              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}">${liveLabel}</div>` : ''}
             </div>
           </div>
 

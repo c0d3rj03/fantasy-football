@@ -69,65 +69,47 @@ async function runFetcher() {
     console.warn('Could not fetch MFL liveScoring:', err.message);
   }
 
-  // Read existing data.json for historical score preservation
-  const existingDataPath = path.join(__dirname, 'data.json');
-  let existingData = {};
-  if (fs.existsSync(existingDataPath)) {
-    try {
-      existingData = JSON.parse(fs.readFileSync(existingDataPath, 'utf-8'));
-    } catch (e) {}
-  }
-
-  // 3. Fetch Weekly Scores for completed/historical weeks (Cumulative to Single-Week)
-  const weeklySingleScores = existingData.weeklySingleScores || {};
+  // 3. Fetch Weekly Scores for completed/historical weeks
+  const weeklySingleScores = {};
   const maxWeeksToFetch = 17;
   let latestCompletedWeek = 0;
-  const cumulativeScoresByWeek = {};
 
   for (let w = 1; w <= maxWeeksToFetch; w++) {
     try {
       const scoreData = await fetchMFL('weeklyResults', { W: w.toString() });
-      const resultsObj = scoreData.weeklyResults;
-      if (!resultsObj) continue;
-
-      let rawFranchiseScores = [];
-      if (resultsObj.franchise) {
-        rawFranchiseScores = normalizeArray(resultsObj.franchise);
-      } else if (resultsObj.matchup) {
-        const matchups = normalizeArray(resultsObj.matchup);
+      
+      let franchiseList = [];
+      if (scoreData.weeklyResults?.franchise) {
+        franchiseList = normalizeArray(scoreData.weeklyResults.franchise);
+      } else if (scoreData.weeklyResults?.matchup) {
+        const matchups = normalizeArray(scoreData.weeklyResults.matchup);
         matchups.forEach(m => {
-          rawFranchiseScores.push(...normalizeArray(m.franchise));
+          franchiseList.push(...normalizeArray(m.franchise));
         });
       }
 
-      if (rawFranchiseScores.length === 0) continue;
+      if (franchiseList.length === 0) continue;
 
       let weekHasScores = false;
-      const currentCumScores = {};
+      const weekCumulativeScores = {};
 
-      rawFranchiseScores.forEach(f => {
+      franchiseList.forEach(f => {
         if (f.id && f.score !== undefined && f.score !== '') {
           const scoreVal = parseFloat(f.score);
           if (!isNaN(scoreVal) && scoreVal > 0) {
-            currentCumScores[f.id] = scoreVal;
+            weekCumulativeScores[f.id] = scoreVal;
             weekHasScores = true;
           }
         }
       });
 
       if (weekHasScores) {
-        cumulativeScoresByWeek[w] = currentCumScores;
-        
-        // Calculate true single-week score: Single(W) = Cumulative(W) - Cumulative(W-1)
-        const singleScoresThisWeek = {};
-        Object.keys(currentCumScores).forEach(fid => {
-          const cumScore = currentCumScores[fid];
-          const priorCum = w > 1 ? (cumulativeScoresByWeek[w - 1]?.[fid] || 0) : 0;
-          const singleScore = Math.max(0, cumScore - priorCum);
-          singleScoresThisWeek[fid] = parseFloat(singleScore.toFixed(2));
+        weeklySingleScores[w] = {};
+        Object.keys(weekCumulativeScores).forEach(fid => {
+          const cumulativeVal = weekCumulativeScores[fid];
+          const priorCumulativeVal = w > 1 ? (weeklySingleScores[w - 1]?.[fid] || 0) : 0;
+          weeklySingleScores[w][fid] = parseFloat((cumulativeVal - priorCumulativeVal).toFixed(2));
         });
-
-        weeklySingleScores[w] = singleScoresThisWeek;
 
         if (!liveScoringWeek || w < liveScoringWeek) {
           latestCompletedWeek = w;
@@ -140,17 +122,13 @@ async function runFetcher() {
 
   const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
 
-  // 4. Process Live Details for the active week
+  // 4. Process Live Details if currently in a live week
   const liveDetails = {};
 
   if (rawLiveFranchises.length > 0) {
     rawLiveFranchises.forEach(lf => {
       const fid = lf.id;
       const totalLiveScore = parseFloat(lf.score || 0);
-
-      // Prior week carryover score (e.g. Week 2 score for Week 3)
-      const priorWeekNum = currentWeek - 1;
-      const priorScoreCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
 
       const ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
       const inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
@@ -173,25 +151,13 @@ async function runFetcher() {
             liveScore += pScore;
           }
         });
-
-        // If MFL player scores included priorWeekScore or if totalLiveScore includes FSCOREADJ:
-        const currentWeekPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
-        const calcSum = doneScore + liveScore;
-
-        if (calcSum > currentWeekPoints + 0.1 && calcSum >= priorScoreCarryover) {
-          // If player scores sum included prior carryover, adjust doneScore
-          doneScore = Math.max(0, doneScore - priorScoreCarryover);
-        } else if (calcSum === 0 && currentWeekPoints > 0) {
-          if (inGameCount > 0) liveScore = currentWeekPoints;
-          else doneScore = currentWeekPoints;
-        }
       } else {
-        // Fallback when player array is omitted in liveScoring
-        const currentWeekPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
+        const priorCarryover = currentWeek > 1 ? (weeklySingleScores[currentWeek - 1]?.[fid] || 0) : 0;
+        const currentWeekTotal = Math.max(0, totalLiveScore - priorCarryover);
         if (inGameCount > 0) {
-          liveScore = currentWeekPoints;
+          liveScore = currentWeekTotal;
         } else {
-          doneScore = currentWeekPoints;
+          doneScore = currentWeekTotal;
         }
       }
 
@@ -203,13 +169,22 @@ async function runFetcher() {
         finished: finishedCount
       };
 
-      if (inGameCount > 0 || (ytpCount > 0 && finishedCount > 0)) {
+      // LIVE mode is ONLY true if at least one player in the league is currently in-game right now
+      if (inGameCount > 0) {
         isLiveGameActive = true;
       }
     });
   }
 
-  // 5. Construct & Save Payload
+  // 5. Calculate Eliminations and Standings
+  const existingDataPath = path.join(__dirname, 'data.json');
+  let existingData = {};
+  if (fs.existsSync(existingDataPath)) {
+    try {
+      existingData = JSON.parse(fs.readFileSync(existingDataPath, 'utf-8'));
+    } catch (e) {}
+  }
+
   const finalPayload = {
     leagueId: LEAGUE_ID,
     seasonYear: SEASON_YEAR,
