@@ -3,29 +3,29 @@ name: Ultimate Guillotine Live Score Fetcher
 on:
   schedule:
     # --- THURSDAY NIGHT FOOTBALL ---
-    # 1. TNF Live Updates (Thu 8:15 PM - 12:30 AM ET -&gt; Fri 00:00 - 05:55 UTC every 10m)
+    # 1. TNF Live Updates (Thu 8:15 PM - 12:30 AM ET -> Fri 00:00 - 05:55 UTC every 10m)
     - cron: '*/10 0-5 * * 5'
-    # 2. Post-TNF Wrap (Fri 3:00 AM ET -&gt; Fri 07:00 UTC)
+    # 2. Post-TNF Wrap (Fri 3:00 AM ET -> Fri 07:00 UTC)
     - cron: '0 7 * * 5'
 
     # --- SUNDAY SLATE ---
-    # 3. Sunday Early/Afternoon Slate (Sun 9:30 AM - 8:00 PM ET -&gt; Sun 13:00 - 23:55 UTC every 10m)
+    # 3. Sunday Early/Afternoon Slate (Sun 9:30 AM - 8:00 PM ET -> Sun 13:00 - 23:55 UTC every 10m)
     - cron: '*/10 13-23 * * 0'
-    # 4. Sunday Night Football Live (Sun 8:15 PM - 12:30 AM ET -&gt; Mon 00:00 - 05:55 UTC every 10m)
+    # 4. Sunday Night Football Live (Sun 8:15 PM - 12:30 AM ET -> Mon 00:00 - 05:55 UTC every 10m)
     - cron: '*/10 0-5 * * 1'
-    # 5. Post-SNF Wrap (Mon 3:00 AM ET -&gt; Mon 07:00 UTC)
+    # 5. Post-SNF Wrap (Mon 3:00 AM ET -> Mon 07:00 UTC)
     - cron: '0 7 * * 1'
 
     # --- MONDAY NIGHT FOOTBALL ---
-    # 6. MNF Live Updates (Mon 8:15 PM - 12:30 AM ET -&gt; Tue 00:00 - 05:55 UTC every 10m)
+    # 6. MNF Live Updates (Mon 8:15 PM - 12:30 AM ET -> Tue 00:00 - 05:55 UTC every 10m)
     - cron: '*/10 0-5 * * 2'
-    # 7. Official End-of-Week Final Wrap (Tue 3:00 AM ET -&gt; Tue 07:00 &amp; 08:00 UTC for EST/EDT)
+    # 7. Official End-of-Week Final Wrap (Tue 3:00 AM ET -> Tue 07:00 &amp; 08:00 UTC for EST/EDT)
     - cron: '0 7,8 * * 2'
 
     # --- SPECIAL SLATES (Thanksgiving &amp; Late-Season Saturdays) ---
-    # 8. Thanksgiving Thursday Slate (Thu 12:30 PM - 8:00 PM ET -&gt; Thu 16:00 - 23:55 UTC every 10m)
+    # 8. Thanksgiving Thursday Slate (Thu 12:30 PM - 8:00 PM ET -> Thu 16:00 - 23:55 UTC every 10m)
     - cron: '*/10 16-23 * * 4'
-    # 9. Saturday Late-Season Slate (Sat 1:00 PM - 12:30 AM ET -&gt; Sat 17:00 - Sun 05:55 UTC every 10m)
+    # 9. Saturday Late-Season Slate (Sat 1:00 PM - 12:30 AM ET -> Sat 17:00 - Sun 05:55 UTC every 10m)
     - cron: '*/10 17-23 * * 6'
 
   # Allows manual execution anytime from GitHub Actions tab
