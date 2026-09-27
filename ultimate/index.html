@@ -102,11 +102,11 @@
     .badge-chopped { background: #dc2626; color: #fff; font-size: 0.62rem; font-weight: 800; padding: 1px 4px; border-radius: 3px; text-transform: uppercase; flex-shrink: 0; }
 
     /* Middle: Bar Track */
-    .bar-container { flex: 1; min-width: 0; display: flex; align-items: center; }
-    .bar-track { background: var(--bg-bar-track); height: 20px; border-radius: 4px; width: 100%; display: flex; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.05); }
+    .bar-container { flex: 1; min-width: 0; display: flex; align-items: center; position: relative; }
+    .bar-track { background: var(--bg-bar-track); height: 20px; border-radius: 4px; width: 100%; display: flex; overflow: visible; position: relative; border: 1px solid rgba(255,255,255,0.05); transition: width 0.2s ease; }
     
     .bar-seg { height: 100%; display: flex; align-items: center; font-size: 0.66rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: width 0.25s ease; }
-    .bar-seg-prior { background-color: var(--bg-bar-prior); justify-content: flex-start; padding-left: 6px; }
+    .bar-seg-prior { background-color: var(--bg-bar-prior); justify-content: flex-start; padding-left: 6px; border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
     .bar-seg-done { background-color: var(--bg-bar-done); justify-content: flex-end; padding-right: 6px; }
     
     /* Slashed / Striped Red Bar for In-Game Scores */
@@ -119,9 +119,24 @@
         #e11d48 8px
       ); 
       justify-content: center; 
-      padding: 0 4px;
+      padding: 0;
       text-shadow: 0 0 3px rgba(0,0,0,0.9);
       border-left: 1px solid rgba(255,255,255,0.25);
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+    }
+
+    /* Floating Live Score Label to the right of live bar */
+    .live-score-outside {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: #f87171;
+      white-space: nowrap;
+      pointer-events: none;
+      text-shadow: 0 0 4px rgba(0,0,0,0.9);
     }
 
     /* Right: Total Score + Tight Player Status Columns */
@@ -224,7 +239,7 @@
       <div style="flex: 1; text-align: center;" id="barHeaderTitle">Rolling Score Breakdown</div>
       <div style="display: flex; gap: 6px; align-items: center;">
         <div style="width: 58px; text-align: right;">Total</div>
-        <div class="cols-header-group" id="statusHeaderCols">
+        <div class="cols-header-group" id="colsHeaderGroup">
           <div class="hdr-badge" title="Yet to Play">YTP</div>
           <div class="hdr-badge" title="Currently Playing">LIVE</div>
           <div class="hdr-badge" title="Games Finished">DONE</div>
@@ -265,6 +280,7 @@
       const btnNext = document.getElementById('btnNextWeek');
       const dropdown = document.getElementById('weekDropdown');
 
+      const isWeekInProgress = (activeLeagueWeek > 1) && !leagueData?.isWeekComplete;
       const isLiveWeek = leagueData && leagueData.isLive;
       const hdrStatusEl = document.getElementById('hdrStatus');
       
@@ -274,14 +290,17 @@
         hdrStatusEl.textContent = `Week ${activeLeagueWeek}`;
       }
 
-      btnCurrent.textContent = `Week ${activeLeagueWeek}`;
-
-      if (activeLeagueWeek >= 17) {
-        btnNext.style.display = 'none';
+      if (isWeekInProgress) {
+        btnCurrent.textContent = `Week ${activeLeagueWeek - 1}`;
+        btnNext.textContent = `Week ${activeLeagueWeek}`;
       } else {
-        const nextWeek = activeLeagueWeek + 1;
-        btnNext.textContent = `Week ${nextWeek}`;
-        btnNext.style.display = 'inline-block';
+        btnCurrent.textContent = `Week ${activeLeagueWeek}`;
+        if (activeLeagueWeek >= 17) {
+          btnNext.style.display = 'none';
+        } else {
+          btnNext.textContent = `Week ${activeLeagueWeek + 1}`;
+          btnNext.style.display = 'inline-block';
+        }
       }
 
       dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
@@ -293,7 +312,7 @@
       }
 
       btnCurrent.addEventListener('click', () => {
-        selectedWeek = activeLeagueWeek;
+        selectedWeek = isWeekInProgress ? (activeLeagueWeek - 1) : activeLeagueWeek;
         btnCurrent.classList.add('active');
         btnNext.classList.remove('active');
         dropdown.value = '';
@@ -301,13 +320,11 @@
       });
 
       btnNext.addEventListener('click', () => {
-        if (activeLeagueWeek < 17) {
-          selectedWeek = activeLeagueWeek + 1;
-          btnNext.classList.add('active');
-          btnCurrent.classList.remove('active');
-          dropdown.value = '';
-          renderWeek(selectedWeek);
-        }
+        selectedWeek = isWeekInProgress ? activeLeagueWeek : (activeLeagueWeek + 1);
+        btnNext.classList.add('active');
+        btnCurrent.classList.remove('active');
+        dropdown.value = '';
+        renderWeek(selectedWeek);
       });
 
       dropdown.addEventListener('change', (e) => {
@@ -325,30 +342,44 @@
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
       
-      const isWeekInProgress = (week === activeLeagueWeek) && !leagueData.isWeekComplete;
+      const isCurrentActiveWeek = (week === activeLeagueWeek);
+      const isWeekInProgress = isCurrentActiveWeek && !leagueData.isWeekComplete;
+      const isLiveNow = isCurrentActiveWeek && leagueData.isLive;
 
-      // Header status & legend update
+      // Header status indicator update
+      const colsHdrGroup = document.getElementById('colsHeaderGroup');
+      if (colsHdrGroup) {
+        colsHdrGroup.style.display = isWeekInProgress ? 'flex' : 'none';
+      }
+
+      // Legend Container Update
       const legendEl = document.getElementById('legendContainer');
-      const statusHdrCols = document.getElementById('statusHeaderCols');
-
       if (isWeekInProgress) {
         legendEl.innerHTML = `
           <div class="legend-item"><div class="legend-color color-prior"></div> W${week-1} Total</div>
           <div class="legend-item"><div class="legend-color color-done"></div> W${week} Done</div>
           <div class="legend-item"><div class="legend-color color-live"></div> W${week} In-Game</div>
         `;
-        if (statusHdrCols) statusHdrCols.style.display = 'flex';
       } else {
         legendEl.innerHTML = `
           <div class="legend-item"><div class="legend-color color-prior"></div> Prior Wk</div>
           <div class="legend-item"><div class="legend-color color-done"></div> Current Wk</div>
         `;
-        if (statusHdrCols) statusHdrCols.style.display = 'none';
       }
+
+      const liveDetails = leagueData.liveDetails || {};
 
       const activeTeams = Object.keys(leagueData.franchises).filter(fid => {
         const elimInfo = eliminated[fid];
-        return !elimInfo || elimInfo.eliminatedWeek >= week;
+        if (elimInfo && elimInfo.eliminatedWeek < week) return false;
+
+        if (isWeekInProgress && liveDetails[fid]) {
+          const ld = liveDetails[fid];
+          if (ld.isCut || (ld.ytp === 0 && ld.inGame === 0 && ld.finished === 0)) {
+            return false;
+          }
+        }
+        return true;
       });
 
       document.getElementById('hdrTeamsRemaining').textContent = `${activeTeams.length}`;
@@ -378,8 +409,6 @@
 
       const priorWeekNum = week - 1;
       const currentWeekNum = week;
-
-      const liveDetails = leagueData.liveDetails || {};
 
       const teamData = activeTeams.map(fid => {
         const singleScores = leagueData.weeklySingleScores || {};
@@ -429,10 +458,13 @@
         const priorPct = (team.priorScore / maxScore) * 100;
         const donePct = (team.doneScore / maxScore) * 100;
         const livePct = (team.liveScore / maxScore) * 100;
+        const totalFilledPct = priorPct + donePct + livePct;
 
         const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(1)}` : '';
         const doneLabel = team.doneScore > 0 ? `${team.doneScore.toFixed(1)}` : '';
-        const liveLabel = team.liveScore > 0 ? `${team.liveScore.toFixed(1)}` : '';
+
+        // Draw track with 90% width during in-progress live mode to leave space for live score label
+        const trackWidthStyle = isWeekInProgress ? 'width: 90%;' : 'width: 100%;';
 
         row.innerHTML = `
           <div class="team-meta">
@@ -442,10 +474,11 @@
           </div>
 
           <div class="bar-container">
-            <div class="bar-track">
+            <div class="bar-track" style="${trackWidthStyle}">
               ${priorPct > 0 ? `<div class="bar-seg bar-seg-prior" style="width: ${priorPct}%" title="Prior Wk: ${team.priorScore.toFixed(2)}">${priorLabel}</div>` : ''}
               ${donePct > 0 ? `<div class="bar-seg bar-seg-done" style="width: ${donePct}%" title="Current Done: ${team.doneScore.toFixed(2)}">${doneLabel}</div>` : ''}
-              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}">${liveLabel}</div>` : ''}
+              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}"></div>` : ''}
+              ${(isWeekInProgress && team.liveScore > 0) ? `<span class="live-score-outside" style="left: calc(${totalFilledPct}% + 5px);">${team.liveScore.toFixed(1)}</span>` : ''}
             </div>
           </div>
 

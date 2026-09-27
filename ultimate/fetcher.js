@@ -144,14 +144,13 @@ export async function fetchGuillotineData() {
     const rostersRaw = normalizeArray(rawRosters);
     
     rostersRaw.forEach(r => {
-      const plist = normalizeArray(r.player);
-      activeRosters[r.id] = plist;
+      activeRosters[r.id] = normalizeArray(r.player);
     });
   } catch (e) {
     console.warn('MFL Rosters API unavailable, using empty active rosters fallback.');
   }
 
-  // 3. Fetch Completed Historical Weekly Scores (Weeks 1 to 17)
+  // 3. Fetch Historical Weekly Scores (Weeks 1 to 17)
   for (let w = 1; w <= 17; w++) {
     try {
       const res = await fetchMFL('weeklyResults', { W: w.toString() });
@@ -159,12 +158,9 @@ export async function fetchGuillotineData() {
       if (!wr) continue;
 
       let franchiseScores = [];
-
       if (wr.matchup) {
-        const matchupsList = normalizeArray(wr.matchup);
-        matchupsList.forEach(m => {
-          const list = normalizeArray(m.franchise);
-          franchiseScores.push(...list);
+        normalizeArray(wr.matchup).forEach(m => {
+          franchiseScores.push(...normalizeArray(m.franchise));
         });
       } else if (wr.franchise) {
         franchiseScores = normalizeArray(wr.franchise);
@@ -172,26 +168,33 @@ export async function fetchGuillotineData() {
 
       if (franchiseScores.length === 0) continue;
 
-      let weekHasScores = false;
-      const weekScores = {};
+      weeklySingleScores[w] = {};
+      let hasScores = false;
 
+      // Deduct prior cumulative scores to isolate single-week performance for Week w
       franchiseScores.forEach(f => {
-        const score = parseFloat(f.score || 0);
-        weekScores[f.id] = score;
-        if (score > 0) weekHasScores = true;
+        const mflCumulativeScore = parseFloat(f.score || 0);
+        
+        let priorCumulative = 0;
+        for (let k = 1; k < w; k++) {
+          priorCumulative += (weeklySingleScores[k]?.[f.id] || 0);
+        }
+
+        const singleWeekScore = Math.max(0, mflCumulativeScore - priorCumulative);
+        weeklySingleScores[w][f.id] = parseFloat(singleWeekScore.toFixed(2));
+        if (mflCumulativeScore > 0) hasScores = true;
       });
 
-      if (weekHasScores) {
-        weeklySingleScores[w] = weekScores;
+      if (hasScores) {
         lastCompletedWeek = w;
-        console.log(`  -> Completed Week ${w}: Loaded scores for ${Object.keys(weeklySingleScores[w]).length} franchises.`);
+        console.log(`  -> Historical Week ${w}: Loaded single-week scores for ${Object.keys(weeklySingleScores[w]).length} franchises.`);
       }
     } catch (e) {
-      // API call retry
+      // API call silent retry / fallback
     }
   }
 
-  // Fallback to 2026 official weekly scoring if historical fetch returned empty
+  // Fallback to 2026 official weekly scoring if live fetch returned empty scores
   if (lastCompletedWeek === 0 || !weeklySingleScores[1]) {
     console.log('Historical scores not detected via API, populating 2026 official scores...');
     weeklySingleScores = JSON.parse(JSON.stringify(FALLBACK_2026_SCORES));
@@ -218,20 +221,19 @@ export async function fetchGuillotineData() {
     console.warn('Could not fetch MFL liveScoring:', err.message);
   }
 
-  const currentWeek = liveScoringWeek || (lastCompletedWeek + 1);
+  const activeWeekNum = liveScoringWeek || (lastCompletedWeek + 1);
 
   if (rawLiveFranchises.length > 0) {
-    weeklySingleScores[currentWeek] = {};
-
     rawLiveFranchises.forEach(lf => {
       const fid = lf.id;
+      
       let doneScore = 0;
       let liveScore = 0;
       let ytpCount = 0;
       let inGameCount = 0;
       let finishedCount = 0;
 
-      const playerList = normalizeArray(lf.players?.player);
+      const playerList = normalizeArray(lf.players?.player || lf.player);
       const starters = playerList.filter(p => p.status === 'starter' || !p.status);
 
       starters.forEach(p => {
@@ -249,23 +251,26 @@ export async function fetchGuillotineData() {
         }
       });
 
+      // Check if team is cut/eliminated (0 YTP, 0 LIVE, 0 DONE)
+      const isCut = (ytpCount === 0 && inGameCount === 0 && finishedCount === 0);
+
       totalYtp += ytpCount;
       totalInGame += inGameCount;
       totalFinished += finishedCount;
-
-      const singleWeekTotal = parseFloat((doneScore + liveScore).toFixed(2));
-      weeklySingleScores[currentWeek][fid] = singleWeekTotal;
 
       liveDetails[fid] = {
         doneScore: parseFloat(doneScore.toFixed(2)),
         liveScore: parseFloat(liveScore.toFixed(2)),
         ytp: ytpCount,
         inGame: inGameCount,
-        finished: finishedCount
+        finished: finishedCount,
+        isCut: isCut
       };
 
-      const fname = franchises[fid]?.name || fid;
-      console.log(`[Team ${fid}] ${fname.padEnd(28)} | YTP: ${ytpCount} | LIVE: ${inGameCount} | DONE: ${finishedCount} || DoneScore: ${doneScore.toFixed(2)} | LiveScore: ${liveScore.toFixed(2)}`);
+      if (!isCut) {
+        const fname = franchises[fid]?.name || fid;
+        console.log(`[Team ${fid}] ${fname.padEnd(28)} | YTP: ${ytpCount} | LIVE: ${inGameCount} | DONE: ${finishedCount} || DoneScore: ${doneScore.toFixed(2)} | LiveScore: ${liveScore.toFixed(2)}`);
+      }
     });
 
     isLiveGameActive = (totalInGame > 0);
@@ -277,6 +282,7 @@ export async function fetchGuillotineData() {
     lastCompletedWeek = Math.max(lastCompletedWeek, liveScoringWeek);
   }
 
+  const currentWeek = activeWeekNum;
   console.log(`Current Week locked to: Week ${currentWeek} (Live: ${isLiveGameActive}, Week Complete: ${isWeekComplete})`);
 
   // 5. Calculate Rolling Two-Week Scores & Track Eliminations
@@ -285,7 +291,7 @@ export async function fetchGuillotineData() {
   const weeklyWinners = {};
   let aliveFranchiseIds = Object.keys(franchises);
 
-  for (let w = 1; w <= Math.max(currentWeek, lastCompletedWeek); w++) {
+  for (let w = 1; w <= Math.max(lastCompletedWeek, 1); w++) {
     rollingScores[w] = {};
     const singleScores = weeklySingleScores[w] || {};
 
@@ -317,7 +323,7 @@ export async function fetchGuillotineData() {
 
     // Process eliminations based on rolling 2-week total
     const cutsCount = ELIMINATION_SCHEDULE[w] || 0;
-    if (cutsCount > 0 && w <= lastCompletedWeek && (w < currentWeek || isWeekComplete)) {
+    if (cutsCount > 0 && w <= lastCompletedWeek) {
       const sortedAlive = [...aliveFranchiseIds].sort((a, b) => {
         return (rollingScores[w][a]?.rollingTotal || 0) - (rollingScores[w][b]?.rollingTotal || 0);
       });
@@ -361,7 +367,7 @@ export async function fetchGuillotineData() {
   return outputData;
 }
 
-if (process.argv[1] && process.argv[1].includes('fetcher.js')) {
+if (process.argv[1] && fileURLToPath(import.meta.url).includes(path.basename(process.argv[1]))) {
   fetchGuillotineData().catch(err => {
     console.error('Fatal error running fetcher:', err);
     process.exit(1);

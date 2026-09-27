@@ -1,7 +1,7 @@
 {
   "leagueId": "25918",
   "seasonYear": "2026",
-  "lastUpdated": "2026-09-27T21:12:34.068Z",
+  "lastUpdated": "2026-09-27T21:48:19.716Z",
   "currentWeek": 3,
   "isLive": true,
   "isWeekComplete": false,
@@ -158,12 +158,12 @@
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "15708"
+        "id": "15708",
+        "status": "ROSTER"
       },
       {
-        "id": "16615",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16615"
       },
       {
         "id": "14085",
@@ -196,12 +196,12 @@
         "id": "14832"
       },
       {
-        "id": "13593",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "13593"
       },
       {
-        "status": "ROSTER",
-        "id": "13299"
+        "id": "13299",
+        "status": "ROSTER"
       },
       {
         "id": "16188",
@@ -224,8 +224,8 @@
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "17078"
+        "id": "17078",
+        "status": "ROSTER"
       },
       {
         "status": "INJURED_RESERVE",
@@ -235,12 +235,12 @@
     "0003": [],
     "0004": [
       {
-        "id": "13589",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "13589"
       },
       {
-        "id": "17042",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17042"
       },
       {
         "status": "ROSTER",
@@ -251,8 +251,8 @@
         "id": "17081"
       },
       {
-        "id": "11671",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "11671"
       },
       {
         "status": "ROSTER",
@@ -273,40 +273,40 @@
     ],
     "0005": [
       {
-        "id": "13130",
+        "status": "ROSTER",
+        "id": "13130"
+      },
+      {
+        "id": "15753",
+        "status": "ROSTER"
+      },
+      {
+        "id": "16579",
         "status": "ROSTER"
       },
       {
         "status": "ROSTER",
-        "id": "15753"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16579"
-      },
-      {
-        "id": "16614",
-        "status": "ROSTER"
+        "id": "16614"
       },
       {
         "id": "16618",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "14871"
+        "id": "14871",
+        "status": "ROSTER"
       },
       {
         "id": "12263",
         "status": "ROSTER"
       },
       {
-        "id": "13132",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "13132"
       },
       {
-        "status": "ROSTER",
-        "id": "11150"
+        "id": "11150",
+        "status": "ROSTER"
       }
     ],
     "0006": [
@@ -323,16 +323,16 @@
         "id": "16206"
       },
       {
-        "status": "ROSTER",
-        "id": "17043"
+        "id": "17043",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
         "id": "17066"
       },
       {
-        "status": "ROSTER",
-        "id": "16788"
+        "id": "16788",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
@@ -346,44 +346,44 @@
     "0007": [],
     "0008": [
       {
-        "id": "15751",
+        "status": "ROSTER",
+        "id": "15751"
+      },
+      {
+        "id": "16580",
         "status": "ROSTER"
       },
       {
         "status": "ROSTER",
-        "id": "16580"
-      },
-      {
-        "id": "16214",
-        "status": "ROSTER"
+        "id": "16214"
       },
       {
         "id": "16604",
         "status": "ROSTER"
       },
       {
-        "id": "14102",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "14102"
       },
       {
         "status": "ROSTER",
         "id": "15712"
       },
       {
-        "status": "ROSTER",
-        "id": "17099"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16630"
-      },
-      {
-        "id": "15889",
+        "id": "17099",
         "status": "ROSTER"
       },
       {
-        "status": "INJURED_RESERVE",
-        "id": "16581"
+        "id": "16630",
+        "status": "ROSTER"
+      },
+      {
+        "status": "ROSTER",
+        "id": "15889"
+      },
+      {
+        "id": "16581",
+        "status": "INJURED_RESERVE"
       }
     ],
     "0009": [
@@ -396,62 +396,62 @@
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "17473"
+        "id": "17473",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "12676"
+        "id": "12676",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
         "id": "13630"
       },
       {
-        "status": "ROSTER",
-        "id": "17502"
+        "id": "17502",
+        "status": "ROSTER"
       },
       {
-        "id": "16620",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16620"
       },
       {
         "id": "17543",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "13066"
+        "id": "13066",
+        "status": "ROSTER"
       }
     ],
     "0010": [
       {
-        "status": "ROSTER",
-        "id": "17472"
+        "id": "17472",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
         "id": "17045"
       },
       {
-        "status": "ROSTER",
-        "id": "15237"
+        "id": "15237",
+        "status": "ROSTER"
       },
       {
-        "id": "16269",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16269"
       },
       {
         "id": "15761",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "16195"
+        "id": "16195",
+        "status": "ROSTER"
       },
       {
-        "id": "16641",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16641"
       },
       {
         "status": "ROSTER",
@@ -492,8 +492,8 @@
         "id": "13113"
       },
       {
-        "status": "ROSTER",
-        "id": "12645"
+        "id": "12645",
+        "status": "ROSTER"
       },
       {
         "id": "13592",
@@ -506,8 +506,8 @@
     ],
     "0012": [
       {
-        "id": "17044",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17044"
       },
       {
         "status": "ROSTER",
@@ -518,42 +518,42 @@
         "status": "ROSTER"
       },
       {
-        "id": "14138",
-        "status": "ROSTER"
-      },
-      {
-        "id": "12186",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "14138"
       },
       {
         "status": "ROSTER",
-        "id": "14127"
+        "id": "12186"
       },
       {
-        "status": "ROSTER",
-        "id": "16387"
+        "id": "14127",
+        "status": "ROSTER"
+      },
+      {
+        "id": "16387",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
         "id": "15293"
       },
       {
-        "id": "16644",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16644"
       },
       {
-        "id": "13674",
-        "status": "INJURED_RESERVE"
+        "status": "INJURED_RESERVE",
+        "id": "13674"
       }
     ],
     "0013": [
       {
-        "status": "ROSTER",
-        "id": "12626"
+        "id": "12626",
+        "status": "ROSTER"
       },
       {
-        "id": "17102",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17102"
       },
       {
         "id": "14797",
@@ -564,16 +564,16 @@
         "status": "ROSTER"
       },
       {
-        "id": "15779",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "15779"
       },
       {
         "id": "16809",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "16148"
+        "id": "16148",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
@@ -586,20 +586,20 @@
     ],
     "0014": [
       {
-        "status": "ROSTER",
-        "id": "15281"
+        "id": "15281",
+        "status": "ROSTER"
       },
       {
         "id": "16194",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "17051"
+        "id": "17051",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "13189"
+        "id": "13189",
+        "status": "ROSTER"
       },
       {
         "id": "13604",
@@ -622,8 +622,8 @@
         "status": "ROSTER"
       },
       {
-        "id": "16597",
-        "status": "INJURED_RESERVE"
+        "status": "INJURED_RESERVE",
+        "id": "16597"
       }
     ],
     "0015": [
@@ -632,8 +632,8 @@
         "id": "16181"
       },
       {
-        "status": "ROSTER",
-        "id": "15253"
+        "id": "15253",
+        "status": "ROSTER"
       },
       {
         "id": "12620",
@@ -648,20 +648,20 @@
         "id": "13163"
       },
       {
-        "id": "16187",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16187"
       },
       {
         "status": "ROSTER",
         "id": "14137"
       },
       {
-        "id": "17474",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17474"
       },
       {
-        "id": "14974",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "14974"
       },
       {
         "id": "17047",
@@ -678,12 +678,12 @@
         "status": "ROSTER"
       },
       {
-        "id": "11675",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "11675"
       },
       {
-        "id": "15259",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "15259"
       },
       {
         "status": "ROSTER",
@@ -694,16 +694,16 @@
         "id": "14059"
       },
       {
-        "status": "ROSTER",
-        "id": "14143"
-      },
-      {
-        "id": "17053",
+        "id": "14143",
         "status": "ROSTER"
       },
       {
         "status": "ROSTER",
-        "id": "17499"
+        "id": "17053"
+      },
+      {
+        "id": "17499",
+        "status": "ROSTER"
       }
     ],
     "0017": [
@@ -712,20 +712,20 @@
         "id": "17104"
       },
       {
-        "id": "15256",
+        "status": "ROSTER",
+        "id": "15256"
+      },
+      {
+        "id": "14835",
         "status": "ROSTER"
       },
       {
         "status": "ROSTER",
-        "id": "14835"
+        "id": "15698"
       },
       {
-        "id": "15698",
+        "id": "15721",
         "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15721"
       },
       {
         "status": "ROSTER",
@@ -740,8 +740,8 @@
         "id": "17485"
       },
       {
-        "id": "17082",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17082"
       },
       {
         "status": "INJURED_RESERVE",
@@ -750,16 +750,16 @@
     ],
     "0018": [
       {
-        "status": "ROSTER",
-        "id": "15754"
+        "id": "15754",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "14071"
+        "id": "14071",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "15742"
+        "id": "15742",
+        "status": "ROSTER"
       },
       {
         "id": "13116",
@@ -774,8 +774,8 @@
         "status": "ROSTER"
       },
       {
-        "id": "17072",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17072"
       },
       {
         "status": "ROSTER",
@@ -786,8 +786,8 @@
         "id": "17511"
       },
       {
-        "id": "14104",
-        "status": "INJURED_RESERVE"
+        "status": "INJURED_RESERVE",
+        "id": "14104"
       }
     ],
     "0019": [
@@ -796,8 +796,8 @@
         "status": "ROSTER"
       },
       {
-        "id": "16627",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16627"
       },
       {
         "status": "ROSTER",
@@ -812,16 +812,16 @@
         "id": "12611"
       },
       {
-        "status": "ROSTER",
-        "id": "13289"
+        "id": "13289",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "17048"
+        "id": "17048",
+        "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "16596"
+        "id": "16596",
+        "status": "ROSTER"
       },
       {
         "id": "17506",
@@ -834,8 +834,8 @@
         "status": "ROSTER"
       },
       {
-        "id": "13635",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "13635"
       },
       {
         "status": "ROSTER",
@@ -846,24 +846,24 @@
         "status": "ROSTER"
       },
       {
-        "id": "17256",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17256"
       },
       {
-        "status": "ROSTER",
-        "id": "17501"
+        "id": "17501",
+        "status": "ROSTER"
       },
       {
         "id": "16617",
         "status": "ROSTER"
       },
       {
-        "status": "ROSTER",
-        "id": "17073"
+        "id": "17073",
+        "status": "ROSTER"
       },
       {
-        "id": "16629",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16629"
       },
       {
         "status": "INJURED_RESERVE",
@@ -884,20 +884,20 @@
         "id": "15798"
       },
       {
+        "id": "16582",
+        "status": "ROSTER"
+      },
+      {
         "status": "ROSTER",
-        "id": "16582"
+        "id": "15802"
       },
       {
-        "id": "15802",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "13319"
       },
       {
-        "id": "13319",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16432",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16432"
       },
       {
         "id": "11222",
@@ -908,8 +908,8 @@
         "status": "ROSTER"
       },
       {
-        "id": "17498",
-        "status": "INJURED_RESERVE"
+        "status": "INJURED_RESERVE",
+        "id": "17498"
       }
     ],
     "0022": [
@@ -922,16 +922,16 @@
         "status": "ROSTER"
       },
       {
-        "id": "14783",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "14783"
       },
       {
         "status": "ROSTER",
         "id": "14800"
       },
       {
-        "id": "15261",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "15261"
       },
       {
         "id": "17105",
@@ -952,8 +952,8 @@
     ],
     "0023": [
       {
-        "status": "ROSTER",
-        "id": "16211"
+        "id": "16211",
+        "status": "ROSTER"
       },
       {
         "id": "15282",
@@ -964,24 +964,24 @@
         "status": "ROSTER"
       },
       {
-        "id": "17107",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17107"
       },
       {
         "id": "15255",
         "status": "ROSTER"
       },
       {
-        "id": "16593",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "16593"
       },
       {
         "status": "ROSTER",
         "id": "13590"
       },
       {
-        "status": "ROSTER",
-        "id": "14805"
+        "id": "14805",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
@@ -994,20 +994,20 @@
     ],
     "0024": [
       {
-        "id": "15711",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "15711"
       },
       {
-        "id": "17070",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17070"
       },
       {
         "status": "ROSTER",
         "id": "15756"
       },
       {
-        "status": "ROSTER",
-        "id": "17497"
+        "id": "17497",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
@@ -1018,20 +1018,20 @@
         "id": "15762"
       },
       {
-        "status": "ROSTER",
-        "id": "16167"
+        "id": "16167",
+        "status": "ROSTER"
       },
       {
         "status": "ROSTER",
         "id": "17039"
       },
       {
-        "id": "17520",
-        "status": "ROSTER"
+        "status": "ROSTER",
+        "id": "17520"
       },
       {
-        "status": "INJURED_RESERVE",
-        "id": "15290"
+        "id": "15290",
+        "status": "INJURED_RESERVE"
       }
     ]
   },
@@ -1063,56 +1063,420 @@
       "0024": 152.9
     },
     "2": {
-      "0001": 230.83,
-      "0002": 188.62,
-      "0003": 166.35,
-      "0004": 257.86,
-      "0005": 207.91,
-      "0006": 219.66,
-      "0007": 165.57,
-      "0008": 179.78,
-      "0009": 222.28,
-      "0010": 207.52,
-      "0011": 276.06,
-      "0012": 266.01,
-      "0013": 315.19,
-      "0014": 173.65,
-      "0015": 208.97,
-      "0016": 192.33,
-      "0017": 211.56,
-      "0018": 226.28,
-      "0019": 234.54,
-      "0020": 226.13,
-      "0021": 240.12,
-      "0022": 273.66,
-      "0023": 200.01,
-      "0024": 260.96
+      "0001": 111.49,
+      "0002": 99.35,
+      "0003": 68.9,
+      "0004": 123.09,
+      "0005": 107.14,
+      "0006": 107.2,
+      "0007": 83.74,
+      "0008": 92.54,
+      "0009": 119.11,
+      "0010": 82.22,
+      "0011": 99.35,
+      "0012": 139.66,
+      "0013": 136.36,
+      "0014": 86.68,
+      "0015": 100.02,
+      "0016": 128.15,
+      "0017": 119.71,
+      "0018": 103.61,
+      "0019": 121.51,
+      "0020": 102.01,
+      "0021": 119.79,
+      "0022": 102.32,
+      "0023": 123.16,
+      "0024": 108.06
     },
     "3": {
-      "0001": 120.7,
-      "0002": 52.99,
+      "0001": 0,
+      "0002": 0,
       "0003": 0,
-      "0004": 64.42,
-      "0005": 90.23,
-      "0006": 49.46,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
       "0007": 0,
-      "0008": 81.42,
-      "0009": 82.51,
-      "0010": 94.26,
-      "0011": 140.17,
-      "0012": 68.85,
-      "0013": 67.43,
-      "0014": 73.51,
-      "0015": 66.77,
-      "0016": 96.1,
-      "0017": 88.63,
-      "0018": 99.63,
-      "0019": 93.27,
-      "0020": 117.78,
-      "0021": 59.7,
-      "0022": 82.65,
-      "0023": 21.05,
-      "0024": 80.93
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "4": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "5": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "6": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "7": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "8": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "9": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "10": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "11": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "12": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "13": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "14": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "15": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "16": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
+    },
+    "17": {
+      "0001": 0,
+      "0002": 0,
+      "0003": 0,
+      "0004": 0,
+      "0005": 0,
+      "0006": 0,
+      "0007": 0,
+      "0008": 0,
+      "0009": 0,
+      "0010": 0,
+      "0011": 0,
+      "0012": 0,
+      "0013": 0,
+      "0014": 0,
+      "0015": 0,
+      "0016": 0,
+      "0017": 0,
+      "0018": 0,
+      "0019": 0,
+      "0020": 0,
+      "0021": 0,
+      "0022": 0,
+      "0023": 0,
+      "0024": 0
     }
   },
   "rollingScores": {
@@ -1240,421 +1604,333 @@
     },
     "2": {
       "0001": {
-        "single": 230.83,
+        "single": 111.49,
         "prior": 119.34,
-        "rollingTotal": 350.17
+        "rollingTotal": 230.82999999999998
       },
       "0002": {
-        "single": 188.62,
+        "single": 99.35,
         "prior": 89.27,
-        "rollingTotal": 277.89
+        "rollingTotal": 188.62
       },
       "0003": {
-        "single": 166.35,
+        "single": 68.9,
         "prior": 97.45,
-        "rollingTotal": 263.8
+        "rollingTotal": 166.35000000000002
       },
       "0004": {
-        "single": 257.86,
+        "single": 123.09,
         "prior": 134.77,
-        "rollingTotal": 392.63
+        "rollingTotal": 257.86
       },
       "0005": {
-        "single": 207.91,
+        "single": 107.14,
         "prior": 100.77,
-        "rollingTotal": 308.68
+        "rollingTotal": 207.91
       },
       "0006": {
-        "single": 219.66,
+        "single": 107.2,
         "prior": 112.46,
-        "rollingTotal": 332.12
+        "rollingTotal": 219.66
       },
       "0007": {
-        "single": 165.57,
+        "single": 83.74,
         "prior": 81.83,
-        "rollingTotal": 247.39999999999998
+        "rollingTotal": 165.57
       },
       "0008": {
-        "single": 179.78,
+        "single": 92.54,
         "prior": 87.24,
-        "rollingTotal": 267.02
+        "rollingTotal": 179.78
       },
       "0009": {
-        "single": 222.28,
+        "single": 119.11,
         "prior": 103.17,
-        "rollingTotal": 325.45
+        "rollingTotal": 222.28
       },
       "0010": {
-        "single": 207.52,
+        "single": 82.22,
         "prior": 125.3,
-        "rollingTotal": 332.82
+        "rollingTotal": 207.51999999999998
       },
       "0011": {
-        "single": 276.06,
+        "single": 99.35,
         "prior": 176.71,
-        "rollingTotal": 452.77
+        "rollingTotal": 276.06
       },
       "0012": {
-        "single": 266.01,
+        "single": 139.66,
         "prior": 126.35,
-        "rollingTotal": 392.36
+        "rollingTotal": 266.01
       },
       "0013": {
-        "single": 315.19,
+        "single": 136.36,
         "prior": 178.83,
-        "rollingTotal": 494.02
+        "rollingTotal": 315.19000000000005
       },
       "0014": {
-        "single": 173.65,
+        "single": 86.68,
         "prior": 86.97,
-        "rollingTotal": 260.62
+        "rollingTotal": 173.65
       },
       "0015": {
-        "single": 208.97,
+        "single": 100.02,
         "prior": 108.95,
-        "rollingTotal": 317.92
+        "rollingTotal": 208.97
       },
       "0016": {
-        "single": 192.33,
+        "single": 128.15,
         "prior": 64.18,
-        "rollingTotal": 256.51
+        "rollingTotal": 192.33
       },
       "0017": {
-        "single": 211.56,
+        "single": 119.71,
         "prior": 91.85,
-        "rollingTotal": 303.40999999999997
+        "rollingTotal": 211.56
       },
       "0018": {
-        "single": 226.28,
+        "single": 103.61,
         "prior": 122.67,
-        "rollingTotal": 348.95
+        "rollingTotal": 226.28
       },
       "0019": {
-        "single": 234.54,
+        "single": 121.51,
         "prior": 113.03,
-        "rollingTotal": 347.57
+        "rollingTotal": 234.54000000000002
       },
       "0020": {
-        "single": 226.13,
+        "single": 102.01,
         "prior": 124.12,
-        "rollingTotal": 350.25
+        "rollingTotal": 226.13
       },
       "0021": {
-        "single": 240.12,
+        "single": 119.79,
         "prior": 120.33,
-        "rollingTotal": 360.45
+        "rollingTotal": 240.12
       },
       "0022": {
-        "single": 273.66,
+        "single": 102.32,
         "prior": 171.34,
-        "rollingTotal": 445
+        "rollingTotal": 273.65999999999997
       },
       "0023": {
-        "single": 200.01,
+        "single": 123.16,
         "prior": 76.85,
-        "rollingTotal": 276.86
+        "rollingTotal": 200.01
       },
       "0024": {
-        "single": 260.96,
+        "single": 108.06,
         "prior": 152.9,
-        "rollingTotal": 413.86
-      }
-    },
-    "3": {
-      "0001": {
-        "single": 120.7,
-        "prior": 230.83,
-        "rollingTotal": 351.53000000000003
-      },
-      "0002": {
-        "single": 52.99,
-        "prior": 188.62,
-        "rollingTotal": 241.61
-      },
-      "0003": {
-        "single": 0,
-        "prior": 166.35,
-        "rollingTotal": 166.35
-      },
-      "0004": {
-        "single": 64.42,
-        "prior": 257.86,
-        "rollingTotal": 322.28000000000003
-      },
-      "0005": {
-        "single": 90.23,
-        "prior": 207.91,
-        "rollingTotal": 298.14
-      },
-      "0006": {
-        "single": 49.46,
-        "prior": 219.66,
-        "rollingTotal": 269.12
-      },
-      "0008": {
-        "single": 81.42,
-        "prior": 179.78,
-        "rollingTotal": 261.2
-      },
-      "0009": {
-        "single": 82.51,
-        "prior": 222.28,
-        "rollingTotal": 304.79
-      },
-      "0010": {
-        "single": 94.26,
-        "prior": 207.52,
-        "rollingTotal": 301.78000000000003
-      },
-      "0011": {
-        "single": 140.17,
-        "prior": 276.06,
-        "rollingTotal": 416.23
-      },
-      "0012": {
-        "single": 68.85,
-        "prior": 266.01,
-        "rollingTotal": 334.86
-      },
-      "0013": {
-        "single": 67.43,
-        "prior": 315.19,
-        "rollingTotal": 382.62
-      },
-      "0014": {
-        "single": 73.51,
-        "prior": 173.65,
-        "rollingTotal": 247.16000000000003
-      },
-      "0015": {
-        "single": 66.77,
-        "prior": 208.97,
-        "rollingTotal": 275.74
-      },
-      "0017": {
-        "single": 88.63,
-        "prior": 211.56,
-        "rollingTotal": 300.19
-      },
-      "0018": {
-        "single": 99.63,
-        "prior": 226.28,
-        "rollingTotal": 325.90999999999997
-      },
-      "0019": {
-        "single": 93.27,
-        "prior": 234.54,
-        "rollingTotal": 327.81
-      },
-      "0020": {
-        "single": 117.78,
-        "prior": 226.13,
-        "rollingTotal": 343.90999999999997
-      },
-      "0021": {
-        "single": 59.7,
-        "prior": 240.12,
-        "rollingTotal": 299.82
-      },
-      "0022": {
-        "single": 82.65,
-        "prior": 273.66,
-        "rollingTotal": 356.31000000000006
-      },
-      "0023": {
-        "single": 21.05,
-        "prior": 200.01,
-        "rollingTotal": 221.06
-      },
-      "0024": {
-        "single": 80.93,
-        "prior": 260.96,
-        "rollingTotal": 341.89
+        "rollingTotal": 260.96000000000004
       }
     }
   },
   "liveDetails": {
     "0001": {
       "doneScore": 99.52,
-      "liveScore": 21.18,
+      "liveScore": 39.31,
       "ytp": 0,
       "inGame": 3,
-      "finished": 5
+      "finished": 5,
+      "isCut": false
     },
     "0002": {
       "doneScore": 40.1,
-      "liveScore": 12.89,
+      "liveScore": 18.64,
       "ytp": 1,
       "inGame": 3,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0003": {
       "doneScore": 0,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 0
+      "finished": 0,
+      "isCut": true
     },
     "0004": {
       "doneScore": 43.92,
-      "liveScore": 20.5,
+      "liveScore": 34.05,
       "ytp": 0,
       "inGame": 5,
-      "finished": 3
+      "finished": 3,
+      "isCut": false
     },
     "0005": {
       "doneScore": 80.43,
-      "liveScore": 9.8,
+      "liveScore": 13.8,
       "ytp": 1,
       "inGame": 3,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0006": {
       "doneScore": 34.61,
-      "liveScore": 14.85,
+      "liveScore": 21.2,
       "ytp": 1,
       "inGame": 3,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0007": {
       "doneScore": 0,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 0
+      "finished": 0,
+      "isCut": true
     },
     "0008": {
       "doneScore": 77.07,
-      "liveScore": 4.35,
+      "liveScore": 4.95,
       "ytp": 0,
       "inGame": 1,
-      "finished": 7
+      "finished": 7,
+      "isCut": false
     },
     "0009": {
       "doneScore": 82.51,
       "liveScore": 0,
       "ytp": 2,
       "inGame": 0,
-      "finished": 6
+      "finished": 6,
+      "isCut": false
     },
     "0010": {
       "doneScore": 66.06,
-      "liveScore": 28.2,
+      "liveScore": 40.2,
       "ytp": 1,
       "inGame": 2,
-      "finished": 5
+      "finished": 5,
+      "isCut": false
     },
     "0011": {
       "doneScore": 126.97,
-      "liveScore": 13.2,
+      "liveScore": 20.2,
       "ytp": 0,
       "inGame": 1,
-      "finished": 7
+      "finished": 7,
+      "isCut": false
     },
     "0012": {
       "doneScore": 64.85,
-      "liveScore": 4,
+      "liveScore": 6.1,
       "ytp": 1,
       "inGame": 2,
-      "finished": 5
+      "finished": 5,
+      "isCut": false
     },
     "0013": {
       "doneScore": 54.88,
-      "liveScore": 12.55,
+      "liveScore": 20.95,
       "ytp": 3,
       "inGame": 1,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0014": {
       "doneScore": 73.51,
       "liveScore": 0,
       "ytp": 3,
       "inGame": 1,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0015": {
       "doneScore": 59.6,
-      "liveScore": 7.17,
+      "liveScore": 25.39,
       "ytp": 0,
       "inGame": 4,
-      "finished": 4
+      "finished": 4,
+      "isCut": false
     },
     "0016": {
       "doneScore": 94.2,
-      "liveScore": 1.9,
+      "liveScore": 18,
       "ytp": 1,
       "inGame": 1,
-      "finished": 6
+      "finished": 6,
+      "isCut": false
     },
     "0017": {
       "doneScore": 59.3,
-      "liveScore": 29.33,
+      "liveScore": 34.82,
       "ytp": 2,
       "inGame": 3,
-      "finished": 3
+      "finished": 3,
+      "isCut": false
     },
     "0018": {
       "doneScore": 96.93,
-      "liveScore": 2.7,
+      "liveScore": 8.6,
       "ytp": 0,
       "inGame": 1,
-      "finished": 7
+      "finished": 7,
+      "isCut": false
     },
     "0019": {
       "doneScore": 87.67,
       "liveScore": 5.6,
       "ytp": 0,
       "inGame": 1,
-      "finished": 7
+      "finished": 7,
+      "isCut": false
     },
     "0020": {
       "doneScore": 117.78,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 8
+      "finished": 8,
+      "isCut": false
     },
     "0021": {
       "doneScore": 34.15,
-      "liveScore": 25.55,
+      "liveScore": 26.85,
       "ytp": 2,
       "inGame": 3,
-      "finished": 3
+      "finished": 3,
+      "isCut": false
     },
     "0022": {
       "doneScore": 70.05,
-      "liveScore": 12.6,
+      "liveScore": 15.3,
       "ytp": 2,
       "inGame": 1,
-      "finished": 5
+      "finished": 5,
+      "isCut": false
     },
     "0023": {
       "doneScore": 13.3,
-      "liveScore": 7.75,
+      "liveScore": 9.51,
       "ytp": 3,
       "inGame": 2,
-      "finished": 3
+      "finished": 3,
+      "isCut": false
     },
     "0024": {
       "doneScore": 67.3,
-      "liveScore": 13.63,
+      "liveScore": 21.28,
       "ytp": 1,
       "inGame": 2,
-      "finished": 5
+      "finished": 5,
+      "isCut": false
     }
   },
   "eliminatedTeams": {
     "0007": {
       "eliminatedWeek": 2,
-      "rollingScore": 247.39999999999998,
-      "singleScore": 165.57,
+      "rollingScore": 165.57,
+      "singleScore": 83.74,
       "franchiseName": "Mar-a-Lago Monsters"
     },
-    "0016": {
+    "0003": {
       "eliminatedWeek": 2,
-      "rollingScore": 256.51,
-      "singleScore": 192.33,
-      "franchiseName": "FantasyDiva "
+      "rollingScore": 166.35000000000002,
+      "singleScore": 68.9,
+      "franchiseName": "Bang bang from the bay!"
     }
   },
   "weeklyWinners": {
@@ -1668,18 +1944,9 @@
       }
     },
     "2": {
-      "franchiseId": "0013",
-      "franchiseName": "DMC Gonna Run Thru U",
-      "score": 315.19,
-      "prize": {
-        "type": "FAAB",
-        "amount": 10
-      }
-    },
-    "3": {
-      "franchiseId": "0011",
-      "franchiseName": "Chopping Rod",
-      "score": 140.17,
+      "franchiseId": "0012",
+      "franchiseName": "PBR superstar ",
+      "score": 139.66,
       "prize": {
         "type": "FAAB",
         "amount": 10
@@ -1689,7 +1956,6 @@
   "aliveFranchiseIds": [
     "0001",
     "0002",
-    "0003",
     "0004",
     "0005",
     "0006",
@@ -1701,6 +1967,7 @@
     "0013",
     "0014",
     "0015",
+    "0016",
     "0017",
     "0018",
     "0019",
