@@ -224,7 +224,7 @@
       <div style="flex: 1; text-align: center;" id="barHeaderTitle">Rolling Score Breakdown</div>
       <div style="display: flex; gap: 6px; align-items: center;">
         <div style="width: 58px; text-align: right;">Total</div>
-        <div class="cols-header-group">
+        <div class="cols-header-group" id="statusHeaderCols">
           <div class="hdr-badge" title="Yet to Play">YTP</div>
           <div class="hdr-badge" title="Currently Playing">LIVE</div>
           <div class="hdr-badge" title="Games Finished">DONE</div>
@@ -324,21 +324,26 @@
       const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
-      const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
+      
+      const isWeekInProgress = (week === activeLeagueWeek) && !leagueData.isWeekComplete;
 
-      // Legend Container Update
+      // Header status & legend update
       const legendEl = document.getElementById('legendContainer');
-      if (isLiveNow) {
+      const statusHdrCols = document.getElementById('statusHeaderCols');
+
+      if (isWeekInProgress) {
         legendEl.innerHTML = `
           <div class="legend-item"><div class="legend-color color-prior"></div> W${week-1} Total</div>
           <div class="legend-item"><div class="legend-color color-done"></div> W${week} Done</div>
           <div class="legend-item"><div class="legend-color color-live"></div> W${week} In-Game</div>
         `;
+        if (statusHdrCols) statusHdrCols.style.display = 'flex';
       } else {
         legendEl.innerHTML = `
           <div class="legend-item"><div class="legend-color color-prior"></div> Prior Wk</div>
           <div class="legend-item"><div class="legend-color color-done"></div> Current Wk</div>
         `;
+        if (statusHdrCols) statusHdrCols.style.display = 'none';
       }
 
       const activeTeams = Object.keys(leagueData.franchises).filter(fid => {
@@ -386,8 +391,7 @@
         let inGame = 0;
         let finished = 0;
 
-        const isCurrentActiveWeek = (week === activeLeagueWeek);
-        if (isCurrentActiveWeek && liveDetails[fid]) {
+        if (isWeekInProgress && liveDetails[fid]) {
           doneScore = liveDetails[fid].doneScore || 0;
           liveScore = liveDetails[fid].liveScore || 0;
           ytp = liveDetails[fid].ytp || 0;
@@ -428,7 +432,7 @@
 
         const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(1)}` : '';
         const doneLabel = team.doneScore > 0 ? `${team.doneScore.toFixed(1)}` : '';
-        const liveLabel = team.liveScore > 0 ? `${team.liveScore.toFixed(1)}*` : '';
+        const liveLabel = team.liveScore > 0 ? `${team.liveScore.toFixed(1)}` : '';
 
         row.innerHTML = `
           <div class="team-meta">
@@ -447,11 +451,13 @@
 
           <div class="row-right-group">
             <div class="team-score">${team.totalScore.toFixed(2)}</div>
-            <div class="status-cols">
-              <div class="stat-badge stat-ytp" title="Yet to Play: ${team.ytp} player(s)">${team.ytp}</div>
-              <div class="stat-badge stat-live" title="Currently Playing: ${team.inGame} player(s)">${team.inGame}</div>
-              <div class="stat-badge stat-done" title="Games Finished: ${team.finished} player(s)">${team.finished}</div>
-            </div>
+            ${isWeekInProgress ? `
+              <div class="status-cols">
+                <div class="stat-badge stat-ytp" title="Yet to Play: ${team.ytp} player(s)">${team.ytp}</div>
+                <div class="stat-badge stat-live" title="Currently Playing: ${team.inGame} player(s)">${team.inGame}</div>
+                <div class="stat-badge stat-done" title="Games Finished: ${team.finished} player(s)">${team.finished}</div>
+              </div>
+            ` : ''}
           </div>
         `;
 
