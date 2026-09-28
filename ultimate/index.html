@@ -339,7 +339,8 @@
       const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
-      const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
+      // Use live/in-progress details if viewing active week and liveDetails exists
+      const isLiveNow = (week === activeLeagueWeek && Boolean(leagueData.liveDetails && Object.keys(leagueData.liveDetails).length > 0));
 
       // Legend Container Update
       const legendEl = document.getElementById('legendContainer');
