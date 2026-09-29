@@ -43,6 +43,7 @@
     /* Live Indicator */
     .live-indicator { display: inline-flex; align-items: center; gap: 5px; color: #ef4444; font-weight: 800; font-size: 0.8rem; background: rgba(239, 68, 68, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
     .live-dot { width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; box-shadow: 0 0 8px #ef4444; animation: blink 1.2s infinite; }
+    .week-indicator { display: inline-flex; align-items: center; gap: 5px; color: var(--text-muted); font-weight: 800; font-size: 0.8rem; background: #1e293b; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border-color); }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     /* Controls Bar */
@@ -174,7 +175,7 @@
       <div class="header-right">
         <div class="metric-item">
           <span class="metric-label">Status:</span>
-          <div class="live-indicator" id="hdrStatus"><div class="live-dot"></div> LIVE - WEEK 3</div>
+          <div class="week-indicator" id="hdrStatus">Week 3</div>
         </div>
         <div class="metric-item">
           <span class="metric-label">Teams Remaining:</span>
@@ -188,8 +189,8 @@
         <select id="weekDropdown">
           <option value="" disabled selected>Select Week...</option>
         </select>
-        <button id="btnCurrentWeek" class="week-btn">Week 2</button>
-        <button id="btnNextWeek" class="week-btn active">Week 3</button>
+        <button id="btnCurrentWeek" class="week-btn active">Week 3</button>
+        <button id="btnNextWeek" class="week-btn">Week 4</button>
       </div>
 
       <div class="nav-links">
@@ -224,7 +225,7 @@
       <div style="flex: 1; text-align: center;" id="barHeaderTitle">Rolling Score Breakdown</div>
       <div style="display: flex; gap: 6px; align-items: center;">
         <div style="width: 58px; text-align: right;">Total</div>
-        <div class="cols-header-group">
+        <div class="cols-header-group" id="statusColHeaders" style="display: none;">
           <div class="hdr-badge" title="Yet to Play">YTP</div>
           <div class="hdr-badge" title="Currently Playing">LIVE</div>
           <div class="hdr-badge" title="Games Finished">DONE</div>
@@ -241,15 +242,15 @@
 
   <script>
     let leagueData = null;
-    let selectedWeek = 2;
-    let activeLeagueWeek = 2;
+    let selectedWeek = 3;
+    let activeLeagueWeek = 3;
 
     async function init() {
       try {
         const res = await fetch('data.json');
         if (res.ok) {
           leagueData = await res.json();
-          activeLeagueWeek = leagueData.currentWeek || 2;
+          activeLeagueWeek = leagueData.currentWeek || 3;
         }
       } catch (e) {
         console.warn('Using default fallback structure');
@@ -265,42 +266,26 @@
       const btnNext = document.getElementById('btnNextWeek');
       const dropdown = document.getElementById('weekDropdown');
 
-      const isLiveWeek = Boolean(leagueData && leagueData.isLive);
+      const isLiveWeek = leagueData && leagueData.isLive;
       const hdrStatusEl = document.getElementById('hdrStatus');
-
-      let weekBtn1, weekBtn2;
-
-      if (isLiveWeek && activeLeagueWeek > 1) {
-        // Active/Live Week: show prior week (btn1) and live week (btn2)
-        weekBtn1 = activeLeagueWeek - 1;
-        weekBtn2 = activeLeagueWeek;
-      } else {
-        // Inactive/Completed Week: show completed week (btn1) and next week (btn2)
-        weekBtn1 = activeLeagueWeek;
-        weekBtn2 = activeLeagueWeek + 1;
-      }
       
       if (isLiveWeek) {
+        hdrStatusEl.className = 'live-indicator';
         hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${activeLeagueWeek}`;
       } else {
+        hdrStatusEl.className = 'week-indicator';
         hdrStatusEl.textContent = `Week ${activeLeagueWeek}`;
       }
 
-      btnCurrent.textContent = `Week ${weekBtn1}`;
+      btnCurrent.textContent = `Week ${activeLeagueWeek}`;
 
-      if (weekBtn2 > 17) {
+      if (activeLeagueWeek >= 17) {
         btnNext.style.display = 'none';
       } else {
-        btnNext.textContent = `Week ${weekBtn2}`;
+        const nextWeek = activeLeagueWeek + 1;
+        btnNext.textContent = `Week ${nextWeek}`;
         btnNext.style.display = 'inline-block';
       }
-
-      function updateActiveButtons() {
-        btnCurrent.classList.toggle('active', selectedWeek === weekBtn1);
-        btnNext.classList.toggle('active', selectedWeek === weekBtn2);
-      }
-
-      updateActiveButtons();
 
       dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
       for (let w = 1; w <= 17; w++) {
@@ -311,16 +296,18 @@
       }
 
       btnCurrent.addEventListener('click', () => {
-        selectedWeek = weekBtn1;
-        updateActiveButtons();
+        selectedWeek = activeLeagueWeek;
+        btnCurrent.classList.add('active');
+        btnNext.classList.remove('active');
         dropdown.value = '';
         renderWeek(selectedWeek);
       });
 
       btnNext.addEventListener('click', () => {
-        if (weekBtn2 <= 17) {
-          selectedWeek = weekBtn2;
-          updateActiveButtons();
+        if (activeLeagueWeek < 17) {
+          selectedWeek = activeLeagueWeek + 1;
+          btnNext.classList.add('active');
+          btnCurrent.classList.remove('active');
           dropdown.value = '';
           renderWeek(selectedWeek);
         }
@@ -328,7 +315,8 @@
 
       dropdown.addEventListener('change', (e) => {
         selectedWeek = parseInt(e.target.value);
-        updateActiveButtons();
+        btnCurrent.classList.remove('active');
+        btnNext.classList.remove('active');
         renderWeek(selectedWeek);
       });
     }
@@ -339,8 +327,13 @@
       const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
-      // Use live/in-progress details if viewing active week and liveDetails exists
-      const isLiveNow = (week === activeLeagueWeek && Boolean(leagueData.liveDetails && Object.keys(leagueData.liveDetails).length > 0));
+      const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
+
+      // Toggle Header Status Columns (YTP, LIVE, DONE)
+      const statusColHeadersEl = document.getElementById('statusColHeaders');
+      if (statusColHeadersEl) {
+        statusColHeadersEl.style.display = isLiveNow ? 'flex' : 'none';
+      }
 
       // Legend Container Update
       const legendEl = document.getElementById('legendContainer');
@@ -373,6 +366,8 @@
         elimEl.textContent = choppedThisWeek.join(', ');
       } else if (week === 1) {
         elimEl.textContent = 'None (Safe Week)';
+      } else if (week > activeLeagueWeek) {
+        elimEl.textContent = 'Upcoming / TBD';
       } else {
         elimEl.textContent = 'In Progress';
       }
@@ -380,6 +375,8 @@
       const winnerEl = document.getElementById('winnerText');
       if (weeklyWinner) {
         winnerEl.textContent = `${weeklyWinner.franchiseName} (${weeklyWinner.score.toFixed(2)} pts)`;
+      } else if (week > activeLeagueWeek) {
+        winnerEl.textContent = 'Upcoming / TBD';
       } else {
         winnerEl.textContent = 'In Progress...';
       }
@@ -431,43 +428,52 @@
 
       teamData.sort((a, b) => b.totalScore - a.totalScore);
 
-      const maxScore = Math.max(...teamData.map(t => t.totalScore), 150) * 1.12;
+      const maxScore = Math.max(...teamData.map(t => t.totalScore), 150);
 
       teamData.forEach((team, idx) => {
         const row = document.createElement('div');
-        row.className = `team-row ${team.isChoppedNow ? 'chopped' : ''}`;
+        const choppedClass = team.isChoppedNow ? 'chopped' : '';
+        row.className = 'team-row ' + (choppedClass ? ' ' + choppedClass : '');
 
         const priorPct = (team.priorScore / maxScore) * 100;
         const donePct = (team.doneScore / maxScore) * 100;
         const livePct = (team.liveScore / maxScore) * 100;
 
-        const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? `W${priorWeekNum} - ${team.priorScore.toFixed(1)}` : '';
-        const doneLabel = team.doneScore > 0 ? `${team.doneScore.toFixed(1)}` : '';
-        const liveLabel = team.liveScore > 0 ? `${team.liveScore.toFixed(1)}*` : '';
+        const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? 'W' + priorWeekNum + ' - ' + team.priorScore.toFixed(1) : '';
+        const doneLabel = team.doneScore > 0 ? team.doneScore.toFixed(1) : '';
+        const liveLabel = team.liveScore > 0 ? team.liveScore.toFixed(1) + '*' : '';
+
+        const choppedBadge = team.isChoppedNow ? '<span class="badge-chopped">CUT</span>' : '';
+
+        const priorBarHtml = priorPct > 0 ? '<div class="bar-seg bar-seg-prior" style="width: ' + priorPct + '%" title="Prior Wk: ' + team.priorScore.toFixed(2) + '">' + priorLabel + '</div>' : '';
+        const doneBarHtml = donePct > 0 ? '<div class="bar-seg bar-seg-done" style="width: ' + donePct + '%" title="Current Done: ' + team.doneScore.toFixed(2) + '">' + doneLabel + '</div>' : '';
+        const liveBarHtml = livePct > 0 ? '<div class="bar-seg bar-seg-live" style="width: ' + livePct + '%" title="In-Game Live: ' + team.liveScore.toFixed(2) + '">' + liveLabel + '</div>' : '';
+
+        const statusColsHtml = isLiveNow ? `
+            <div class="status-cols">
+              <div class="stat-badge stat-ytp" title="Yet to Play: ${team.ytp} player(s)">${team.ytp}</div>
+              <div class="stat-badge stat-live" title="Currently Playing: ${team.inGame} player(s)">${team.inGame}</div>
+              <div class="stat-badge stat-done" title="Games Finished: ${team.finished} player(s)">${team.finished}</div>
+            </div>` : '';
 
         row.innerHTML = `
           <div class="team-meta">
             <span class="team-rank">#${idx + 1}</span>
             <span class="team-name" title="${team.name}">${team.name}</span>
-            ${team.isChoppedNow ? '<span class="badge-chopped">CUT</span>' : ''}
+            ${choppedBadge}
           </div>
 
           <div class="bar-container">
             <div class="bar-track">
-              ${priorPct > 0 ? `<div class="bar-seg bar-seg-prior" style="width: ${priorPct}%" title="Prior Wk: ${team.priorScore.toFixed(2)}">${priorLabel}</div>` : ''}
-              ${donePct > 0 ? `<div class="bar-seg bar-seg-done" style="width: ${donePct}%" title="Current Done: ${team.doneScore.toFixed(2)}">${doneLabel}</div>` : ''}
-              ${livePct > 0 ? `<div class="bar-seg bar-seg-live" style="width: ${livePct}%" title="In-Game Live: ${team.liveScore.toFixed(2)}"></div>` : ''}
-              ${team.liveScore > 0 ? `<span style="color: #ffffff; font-size: 0.66rem; font-weight: 700; padding-left: 5px; white-space: nowrap; z-index: 2;">${team.liveScore.toFixed(1)}</span>` : ''}
+              ${priorBarHtml}
+              ${doneBarHtml}
+              ${liveBarHtml}
             </div>
           </div>
 
           <div class="row-right-group">
             <div class="team-score">${team.totalScore.toFixed(2)}</div>
-            <div class="status-cols">
-              <div class="stat-badge stat-ytp" title="Yet to Play: ${team.ytp} player(s)">${team.ytp}</div>
-              <div class="stat-badge stat-live" title="Currently Playing: ${team.inGame} player(s)">${team.inGame}</div>
-              <div class="stat-badge stat-done" title="Games Finished: ${team.finished} player(s)">${team.finished}</div>
-            </div>
+            ${statusColsHtml}
           </div>
         `;
 
