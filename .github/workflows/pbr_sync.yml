@@ -63,10 +63,8 @@ jobs:
         run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week || '2' }}.md
 
       # 4. COMMIT & DEPLOY TO GITHUB PAGES
-      - name: Commit & Deploy Updated Data
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add pbr/data.json pbr/gemmy_week_*.md
-          git commit -m "auto(pbr): sync Week 2 scores and Gemmy recap [skip ci]" || echo "No changes to commit"
-          git push origin main
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "auto(pbr): sync scores and recaps [skip ci]"
+
