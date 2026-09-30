@@ -70,5 +70,19 @@ jobs:
         continue-on-error: true
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week }}.md
+        run: |
+          WEEK_VAL="${{ github.event.inputs.week }}"
+          if [ -z "$WEEK_VAL" ]; then
+            # Automatically find the most recently generated recap file
+            RECAP_FILE=$(ls -t pbr/gemmy_week_*.md 2>/dev/null | head -n 1)
+          else
+            RECAP_FILE="pbr/gemmy_week_${WEEK_VAL}.md"
+          fi
+
+          if [ -n "$RECAP_FILE" ] && [ -f "$RECAP_FILE" ]; then
+            echo "📢 Posting $RECAP_FILE to Slack..."
+            node notify_slack.js "$RECAP_FILE"
+          else
+            echo "⚠️ No recap file found to post to Slack."
+          fi
 
