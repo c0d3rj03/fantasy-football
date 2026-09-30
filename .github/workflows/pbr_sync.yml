@@ -2,39 +2,37 @@ name: PBR Weekly Sync & Automation
 
 on:
   schedule:
-    # Runs every Tuesday at 8:23 AM UTC (4:23 AM EDT / 3:23 AM EST)
-    - cron: '23 8 * * 2'
+    # Runs every Tuesday at (5:23 AM EDT)
+    - cron: '23 5 * * 2'
+      timezone: 'America/New_York'
+
   workflow_dispatch:
     inputs:
       week:
         description: 'NFL Week Number'
         required: true
-        default: '2'
 
 jobs:
   pbr-sync:
     runs-on: ubuntu-latest
-    permissions: 
-      contents: write
-
     steps:
-      - name: Checkout Code
+      # 1. Checkout repository with full git history
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      # 2. Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
 
-      - name: Install Dependencies (if package.json exists)
-        run: |
-          if [ -f "package.json" ]; then
-            npm ci || npm install
-          else
-            echo "No package.json found. Skipping npm install."
-          fi
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci || npm install
 
-      # 1. FETCH WEEK RESULTS & CALCULATE VPS
+      # 4. FETCH WEEK RESULTS & CALCULATE VPS
       - name: Fetch Live MFL Results & Push VPs
         env:
           LEAGUE_ID: '63213'
@@ -43,7 +41,7 @@ jobs:
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: node pbr/fetcher.js
   
-      # 2. GENERATE GEMMY'S AI RECAP
+      # 5. GENERATE GEMMY'S AI RECAP
       - name: Generate Gemmy AI Post
         continue-on-error: true
         env:
@@ -55,16 +53,20 @@ jobs:
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
         run: node pbr/generate_post.js ${{ github.event.inputs.week || '2' }}
 
-      # 3. POST RECAP TO SLACK
+      # 6. Rebase remote changes to prevent push conflicts
+      - name: Pull remote changes
+        run: git pull --rebase origin main
+
+      # 7. Commit and Push updated data.json and recaps to GitHub FIRST
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "auto(pbr): sync scores and recaps [skip ci]"
+          
+      # 8. POST RECAP TO SLACK
       - name: Post Recap to Slack
         continue-on-error: true
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week || '2' }}.md
-
-      # 4. COMMIT & DEPLOY TO GITHUB PAGES
-      - name: Commit and Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "auto(pbr): sync scores and recaps [skip ci]"
 
