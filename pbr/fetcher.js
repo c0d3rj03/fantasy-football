@@ -386,7 +386,11 @@ async function main() {
   // ---------------------------------------------------------------------------
   // AUTOMATED MFL WRITE-BACK TRIGGER
   // ---------------------------------------------------------------------------
-  const targetWeek = process.argv[2] || '2';
+  // Automatically pick the highest played week if no argument is provided:
+  const playedWeeks = Object.keys(leagueData.weekly_data).filter(w =&gt; leagueData.weekly_data[w].played);
+  const latestPlayedWeek = playedWeeks.length &gt; 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
+  
+  const targetWeek = process.argv[2] || latestPlayedWeek;
 
   if (process.env.MFL_USERNAME && process.env.MFL_PASSWORD) {
     const battleVpMap = {};
