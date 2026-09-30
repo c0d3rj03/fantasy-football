@@ -1,37 +1,67 @@
-:robot_face: *Gemmy’s Week 2 Debrief: Heartbreaks, Meat Slaps, and 70-Point Disasters*
+🎙️ *GEMMY'S WEEK 2 RECAP: HEARTBREAK, OGRE RAMPAGES, AND A 70-POINT ABOMINATION* 🎙️
 
-Welcome back, degenerates. Week 2 of Premier Battle Royale is in the books, and while a couple of you looked like championship contenders, a few of you put up scores that belong in a fantasy football crime scene photo. 
+Welcome back to Premier Battle Royale, where your playoff dreams are constructed on quicksand and your fantasy ego gets dismantled in hundredths of a point. Week 2 delivered maximum drama, complete with a soul-crushing beatdown, a legendary stat-correction level heart attack, and an offensive display from Lower Division that belonged in a 1940s leather-helmet league. 
 
-We had a league-wide explosion, a *0.08-point soul-crushing beatdown*, and performances in the Lower Division so bad I had to check if MFL was glitching. Let’s dive into the wreckage.
+Let's dive into the carnage. 💥
 
-:cut_of_meat: *Middle Division: Ogres, Heartbreaks &amp; Tragedies*
-&gt; *"Someone check his betting account."* — Slack, watching offensive line play, but it applies to half the league this week.
-* *THE MEATY OGRES SLAP THE LEAGUE:* *The Meaty Ogres* didn't just win; they unleashed a absolute massacre with a league-high *178.46 points* (and a 194.96 PP). They swept their matchups and captured the Middle Division Battle VP to sit atop the standings at *4-0 (5 total VPs)*. Upper Division teams, start sweating now.
-* *THE 0.08 HEARTBREAK:* Matchup of the year so far! *2 Roops, 1 Silva* (147.63) edged out *Shankly's Ghost* (147.55) by *0.08 points*. Eight hundredths of a point! Somewhere, Shankly is staring into the void questioning every bench decision he's ever made. *2 Roops* parlayed that clutch win into a 3-VP week and sits tied at *5 VPs*.
-* *TED LASSO COLLAPSE:* After dropping 162.98 in Week 1, *Ted Lasso* plummeted to a putrid *96.55 points* in Week 2, getting swept by *Orcan Terror* and *Hamsterdam*. "Believe" all you want, Ted, but 96 points won't earn you jack in this division.
+---
 
-### :shield: *Upper Division: BattleBots Rebounds*
-* *TOP DOGS HOLD THE LINE:* *BattleBots* put up a strong *150.96 points*, grabbing a Battle VP and splitting H2H to stay in 1st place in the Upper Division at *5 VPs (3-1)*. 
-* *ORCAN &amp; PEAKY SWEEP:* *Orcan Terror* (127.96) and *Peaky Fookin Blinders* (130.96) both capitalized on easy matchups to secure clean 2-0 H2H sweeps. *Orcan* sits nicely at 4 VPs, while *Peaky* finally got on the board to move to 2 VPs. 
+### 🏆 *THE HEADLINES: MARGINS & MONSTERS*
 
-### :toilet: *Lower Division: A Absolute Biohazard Zone*
-Look, I try to stay professional, but what on earth is happening at the bottom of the table?
+*1. The 0.08-Point Heartbreak* 💀
+> _"An actual tie…! To the hundredths of a point, wow!"_ 
 
-* *THE HALL OF SHAME:* *The Two Tones* put up *70.11 points*. Seventy. Point. One. One. In a dynasty league! I’ve seen automated auto-draft teams drop 90 in their sleep. 
-* *TRIPLE ZERO CLUB:* Between *The Two Tones* (70.11) and *The Wild Cards* (85.68), both teams are sitting dead last at *0-4 with 0 VPs*. If you two don't turn it around fast, you won't just stay in the Lower Division—I’m going to petition to relegate you to a free public league on Yahoo.
-* *HAMSTERDAM LEADS THE TRASH HEAP:* *Hamsterdam* scored a modest 106.71, but in the Lower Division, that’s practically elite. They bagged 2 VPs to move to *5 VPs overall*, proving that timing is everything in PBR.
+*Shankly's Ghost* put up a stellar 148.55 points—enough to beat almost anyone in the league this week. Too bad they ran straight into *2 Roops, 1 Silva* (148.63), who scraped by with a *0.08-point victory*. That isn't just a loss; that's a stat-correction nightmare waiting to happen. Shankly still salvaged 2 VPs thanks to a H2H win against The Two Tones and a Upper Division Battle VP, but losing by eight-hundredths of a point is going to require deep therapy.
 
-### :speaking_head_in_silhouette: *Slack Banter Desk &amp; Injury Wails*
-* *Puka Watch:* BattleBots spent half the week pacing around praying for MFL to slap the `OUT` tag on Puka Nacua before kickoff. Fantasy football is suffering, and we love to see it.
-* *Caleb’s Nail Polish:* Slack spent considerable time analyzing Caleb Williams' nail polish options. Given how the Bears offensive line looked, maybe he should start painting extra coats for armor.
-* *"Where are Week 2 results?":* A few of you were getting impatient waiting for numbers. Trust the process. The math works, even if your rosters don't.
+*2. The Meaty Ogres Unleash Absolute Havoc* 🔥
+While everyone else was biting their nails, *The Meaty Ogres* dropped a league-wide week-high *179.46 points*. They steamrolled *BattleBots* (151.96) and *Norsemen* (94.82) without breaking a sweat, sweeping 3 VPs for the week. Through two weeks, the Ogres are a flawless 4-0 in H2H matchups and sit atop the Middle Division with 5 VPs and 315.28 PF. 👑
 
-### :bar_chart: *Quarter 1 Promotion/Relegation Watch (2 Weeks Left!)*
-We are officially halfway through *Quarter 1* (Weeks 1-4). Standings are solidifying before the first divisional re-alignment:
-* *UPPER SAFE ZONE:* *BattleBots* (5 VP) &amp; *Orcan Terror* (4 VP) are controlling their fate. *Peaky Blinders* (2 VP) are sitting in the demotion danger zone.
-* *PROMOTION BOUND?:* *The Meaty Ogres* (5 VP) and *2 Roops, 1 Silva* (5 VP) look like Upper Division teams playing in disguise. *Springfield Isotopes* (1 VP) need a miracle to avoid dropping.
-* *LOWER ESCAPE:* *Hamsterdam* (5 VP) is pacing to climb out of the basement, while *Two Tones* and *Wild Cards* are fighting over who gets the wooden spoon.
+*3. Ted Lasso’s Rapid Fall From Grace* 📉
+In Week 1, *Ted Lasso* was sipping tea atop the world with 162.98 points. In Week 2? A miserable *96.55 points*, losing both H2H matchups to *Orcan Terror* and *Hamsterdam*. That’s a 66-point crash in seven days. "Believe" all you want, Ted, but your bench didn't get the memo.
 
-Get your lineups set for Week 3. And for the love of football, *Two Tones*, score more than 80 points. 
+---
 
-— *Gemmy* :robot_face: Out.
+### 🛡️ *DIVISION & BATTLE ROYALE BREAKDOWN*
+
+*👑 UPPER DIVISION: COMPLETE PARITY*
+Talk about a bloody knife fight. Every single team in Upper Division went 1-1 in H2H and earned *exactly 2 VPs* this week:
+* *BattleBots* (151.96) took down Wild Cards but got crushed by the Ogres. Still hanging onto 1st place in the division standings (5 total VPs).
+* *Shankly's Ghost* (148.55) bounced back against Two Tones after the 0.08 heartbreaker (3 total VPs).
+* *Peaky Fookin Blinders* (130.96) finally woke up, sweeping Springfield and Hamsterdam to double-dip on H2H VPs (2 total VPs).
+* *Orcan Terror* (127.96) handled business against Ted Lasso and Norsemen, staying right on BattleBots' heels with 4 total VPs.
+
+*⚔️ MIDDLE DIVISION: OGRES & ROOPS RUN THE SHOW*
+* *The Meaty Ogres* (179.46) and *2 Roops, 1 Silva* (148.63) completely swallowed Middle Division, taking all 6 available VPs between them. 
+* *Springfield Isotopes* (124.97) managed 1 VP by beating Two Tones, but their 1-3 H2H record is starting to smell like nuclear waste.
+* *Ted Lasso* (96.55) walked away with 0 VPs. Ouch.
+
+*💩 LOWER DIVISION: OFFENSIVE HAZARD ZONE*
+* *Hamsterdam* (107.71) continues to be the king of the mud, taking down Ted Lasso to lock up 2 weekly VPs and hold 1st place in Lower (5 total VPs).
+* *Norsemen* (94.82) snatched 1 Battle VP despite going 0-2 in H2H.
+* *The Wild Cards* (85.68) and *The Two Tones* (70.11) combined for 155.79 points. To put that into perspective: *The Meaty Ogres outscored both of them combined BY THEMSELVES.* 🚽
+> _"Demotion in Q1 was my goal."_ 
+Keep putting up 70 points, Two Tones, and you won't just achieve demotion—you'll get banished to a regional rec league.
+
+---
+
+### 🎙️ *LEAGUE BANTER & STRATEGY CORNER*
+
+> _"Why compete with 3 top tier teams and struggle to stay in when you can dominate 3 mid tier teams and not lose a pick."_
+
+The big-brain tactical discourse in Slack is reaching astronomical levels. Some managers claim falling down to lower divisions early in the quarter is "cunning strategy" to secure easy playoff pathways later. Sure, let's call it strategy instead of terrible roster management. Whatever helps you sleep at night!
+
+Meanwhile, trade bait is floating everywhere:
+> _"You want Watson? Sure. I can trade him too! I's be willing to trade Hampton and Watson for one player."_
+> _"my 3.03, 3.04 and 3.05 are available in trades"_
+
+If anyone wants to salvage their depth before Quarter 1 wraps up in Week 4, the trading block is officially open. 🎯
+
+---
+
+### 📈 *STANDINGS SNAPSHOT (THRU WEEK 2)*
+
+* UPPER:* BattleBots (5 VP) | Orcan Terror (4 VP) | Shankly's Ghost (3 VP) | Peaky Blinders (2 VP)
+* MIDDLE:* The Meaty Ogres (5 VP) | 2 Roops, 1 Silva (5 VP) | Ted Lasso (3 VP) | Springfield Isotopes (1 VP)
+* LOWER:* Hamsterdam (5 VP) | Norsemen (3 VP) | The Wild Cards (0 VP) | The Two Tones (0 VP)
+
+Set those lineups for Week 3. Gemmy out! 🤖💎

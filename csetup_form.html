@@ -214,7 +214,7 @@ function live_auction_window (url) {
 <li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/support?PROGRAM=csetup_standadj&L=63213" target="_blank">Help&nbsp;on&nbsp;this&nbsp;Page</a></li>
 <li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/my_tickets" target="">My&nbsp;Support&nbsp;Tickets</a></li>
 <li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/site_news?L=63213" target="">What's&nbsp;New?</a></li>
-<li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/csetup?PRINTER=1" target="">Printer&nbsp;Friendly&nbsp;Page</a></li>
+<li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/csetup?L=63213&C=STANDADJ&VICTORY_POINTS=1&PRINTER=1" target="">Printer&nbsp;Friendly&nbsp;Page</a></li>
 <li><a class="no-sub" href="https://www42.myfantasyleague.com/2026/api_info?L=63213" target="">Developer's&nbsp;API</a></li>
 </ul>
 </li>
@@ -232,8 +232,141 @@ function live_auction_window (url) {
 <a href="https://c0d3rj03.github.io/fantasy-football/pbr/index.html">Premiere Battle Royale <span>Adjust Standings</span></a></h1></td></tr></table><div class="pagebody" id="csetup_standadj">
 <div id="contentframe">
 <div id="hsubmenu"><ul id="hsubmenuitems"><li><a href="/2026/home/63213">Home</a></li><li><a href="/2026/options?L=63213&O=07">Rosters</a></li><li><a href="/2026/options?L=63213&O=17">Draft</a></li><li><a href="/2026/lineup?L=63213">Submit Lineup</a></li><li><a href="/2026/add_drop?L=63213">Add/Drops</a></li><li><a href="/2026/options?L=63213&O=05">Trades</a></li><li><a href="/2026/options?L=63213&O=08">Player Stats</a></li><li><a href="/2026/standings?L=63213">Standings</a></li><li><a href="/2026/options?L=63213&O=03">Transactions</a></li><li><a href="https://www42.myfantasyleague.com/2026/ajax_ls?L=63213">Live Scoring</a></li><li><a href="/2026/options?L=63213&O=15">Schedule</a></li></ul></div>
-<div id="withmenus"><h3>6 Standings Adjustment(s) Added.</h3>
-<h3>Continue With: <a href="https://www42.myfantasyleague.com/2026/csetup?L=63213&C=STANDADJ&VICTORY_POINTS=1">Previous Page</a> | <a href="https://www42.myfantasyleague.com/2026/home/63213">League Home</a>  | <a href="https://www42.myfantasyleague.com/2026/commissioner_setup?L=63213">Commissioner Setup</a></h3>
+<div id="withmenus"><style>
+tr.hidden  { display:none; }
+div.hidden { display:none; }
+label.radioIndent { display:block; margin-left:34px; }
+input.radioIndent { width:30px; float:left; clear:left; }
+div.radioSet { min-height:22px; }
+</style>
+<script type="text/javascript">var e;</script><form action="csetup" method="post" name="sadj">
+<input type="hidden" name="form_name" value="sadj"  />
+<input type="hidden" name="LEAGUE_ID" value="63213"  />
+<input type="hidden" name="C" value="STANDADJ"  />
+<input type="hidden" name="input_expires" value="1790735993"/>
+<table align="center" cellspacing="1" class="report"><caption><span>Add Victory Points Adjustments</span></caption><tbody>
+<input type="hidden" name="VICTORY_POINTS" id="VICTORY_POINTS" value="1"  />
+<input type="hidden" name="PREFIX" id="PREFIX" value=""  />
+<tr class="eventablerow" id="row_HEADER"><td  align="center"  valign="middle" ><b>Franchise</b></td><td align="center"  valign="middle" ><b>Week</b></td><td align="center"  valign="middle" ><b>+/- Victory Points Adjustments</b></td><td align="center"  valign="middle" ><b>Explanation</b></td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0001"><td  align="left" ><b><a title="Owner: Joe Sosa, Record: 5-1-0, PF: 426.13"  class="franchise_0001 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0001&amp;O=07">Orcan Terror</a></b></td><td align="center" ><select size="1" name="WEEK0001" id="WEEK0001" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0001" id="ADJUST_VP0001" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0001" id="EXP0001" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0002"><td  align="left" ><b><a title="Owner: Jim Carsello, Record: 5-1-0, PF: 473.30"  class="franchise_0002 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0002&amp;O=07">BattleBots</a></b></td><td align="center" ><select size="1" name="WEEK0002" id="WEEK0002" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0002" id="ADJUST_VP0002" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0002" id="EXP0002" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0003"><td  align="left" ><b><a title="Owner: Steven Quinn, Record: 4-2-0, PF: 412.66"  class="franchise_0003 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0003&amp;O=07">Shankly's Ghost</a></b></td><td align="center" ><select size="1" name="WEEK0003" id="WEEK0003" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0003" id="ADJUST_VP0003" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0003" id="EXP0003" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0004"><td  align="left" ><b><a title="Owner: Amar Patel, Record: 3-3-0, PF: 339.30"  class="franchise_0004 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0004&amp;O=07">Hamsterdam</a></b></td><td align="center" ><select size="1" name="WEEK0004" id="WEEK0004" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0004" id="ADJUST_VP0004" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0004" id="EXP0004" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0005"><td  align="left" ><b><a title="Owner: Brownkowski, Record: 3-3-0, PF: 373.55"  class="franchise_0005 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0005&amp;O=07">Peaky Fookin Blinders</a></b></td><td align="center" ><select size="1" name="WEEK0005" id="WEEK0005" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0005" id="ADJUST_VP0005" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0005" id="EXP0005" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0006"><td  align="left" ><b><a title="Owner: Ali Sipahi, Record: 3-3-0, PF: 389.07"  class="franchise_0006 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0006&amp;O=07">Ted Lasso</a></b></td><td align="center" ><select size="1" name="WEEK0006" id="WEEK0006" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0006" id="ADJUST_VP0006" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0006" id="EXP0006" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0007"><td  align="left" ><b><a title="Owner: Stu Finkelson, Record: 2-4-0, PF: 345.87"  class="franchise_0007 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0007&amp;O=07">Norsemen</a></b></td><td align="center" ><select size="1" name="WEEK0007" id="WEEK0007" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0007" id="ADJUST_VP0007" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0007" id="EXP0007" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0008"><td  align="left" ><b><a title="Owner: TJ van Rooyen, Record: 1-5-0, PF: 271.42"  class="franchise_0008 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0008&amp;O=07">The Two Tones</a></b></td><td align="center" ><select size="1" name="WEEK0008" id="WEEK0008" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0008" id="ADJUST_VP0008" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0008" id="EXP0008" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0009"><td  align="left" ><b><a title="Owner: Lee Kreloff, Record: 1-5-0, PF: 351.91"  class="franchise_0009 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0009&amp;O=07">Springfield Isotopes</a></b></td><td align="center" ><select size="1" name="WEEK0009" id="WEEK0009" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0009" id="ADJUST_VP0009" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0009" id="EXP0009" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0010"><td  align="left" ><b><a title="Owner: Seth Ashman, Record: 5-1-0, PF: 443.02"  class="franchise_0010 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0010&amp;O=07">The Meaty Ogres</a></b></td><td align="center" ><select size="1" name="WEEK0010" id="WEEK0010" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0010" id="ADJUST_VP0010" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0010" id="EXP0010" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0011"><td  align="left" ><b><a title="Owner: Josh Ufland, Record: 1-5-0, PF: 335.44"  class="franchise_0011 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0011&amp;O=07">The Wild Cards</a></b></td><td align="center" ><select size="1" name="WEEK0011" id="WEEK0011" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0011" id="ADJUST_VP0011" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0011" id="EXP0011" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_F0012"><td  align="left" ><b><a title="Owner: Alex, Sean, and Kevin, Record: 3-3-0, PF: 400.56"  class="franchise_0012 " href="https://www42.myfantasyleague.com/2026/options?L=63213&amp;F=0012&amp;O=07">2 Roops, 1 Silva</a></b></td><td align="center" ><select size="1" name="WEEK0012" id="WEEK0012" ><option value="4" >4</option>
+<option value="3" selected="selected">3</option>
+<option value="2" >2</option>
+<option value="1" >1</option>
+</select>
+</td><td align="center" ><input type="text" name="ADJUST_VP0012" id="ADJUST_VP0012" value="" size="4" maxlength=""  />
+</td><td align="left" ><input type="text" name="EXP0012" id="EXP0012" value="" size="50" maxlength=""  />
+</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_ASUBMIT"><td colspan="5"  align="center"  class="form_buttons" ><input type="submit" name="ASUBMIT" value="Adjust Standings" onclick="this.style.display='none';"  />
+</td><td>&nbsp;</td></tr>
+</table>
+
+<table align="center" cellspacing="1" class="report"><caption><span>Delete Victory Points Adjustments</span></caption><tbody>
+<tr class="eventablerow" id="row_HEADER"><td  align="left"  valign="middle" ><b>Delete?</b></td><td align="left"  valign="middle" ><b>Franchise</b></td><td align="left"  valign="middle" ><b>Week</b></td><td align="left"  valign="middle" ><b>Standings Adjustment</b></td><td align="left"  valign="middle" ><b>Explanation</b></td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_01_0001"><td  align="left" ><input type="checkbox" name="D_01_0001" id="D_01_0001"  /></td><td align="left" >Orcan Terror</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_01_0002"><td  align="left" ><input type="checkbox" name="D_01_0002" id="D_01_0002"  /></td><td align="left" >BattleBots</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_01_0004"><td  align="left" ><input type="checkbox" name="D_01_0004" id="D_01_0004"  /></td><td align="left" >Hamsterdam</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_01_0006"><td  align="left" ><input type="checkbox" name="D_01_0006" id="D_01_0006"  /></td><td align="left" >Ted Lasso</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_01_0007"><td  align="left" ><input type="checkbox" name="D_01_0007" id="D_01_0007"  /></td><td align="left" >Norsemen</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_01_0012"><td  align="left" ><input type="checkbox" name="D_01_0012" id="D_01_0012"  /></td><td align="left" >2 Roops, 1 Silva</td><td align="left" >1</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_02_0002"><td  align="left" ><input type="checkbox" name="D_02_0002" id="D_02_0002"  /></td><td align="left" >BattleBots</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_02_0003"><td  align="left" ><input type="checkbox" name="D_02_0003" id="D_02_0003"  /></td><td align="left" >Shankly's Ghost</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_02_0004"><td  align="left" ><input type="checkbox" name="D_02_0004" id="D_02_0004"  /></td><td align="left" >Hamsterdam</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_02_0007"><td  align="left" ><input type="checkbox" name="D_02_0007" id="D_02_0007"  /></td><td align="left" >Norsemen</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_D_02_0010"><td  align="left" ><input type="checkbox" name="D_02_0010" id="D_02_0010"  /></td><td align="left" >The Meaty Ogres</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="eventablerow" id="row_D_02_0012"><td  align="left" ><input type="checkbox" name="D_02_0012" id="D_02_0012"  /></td><td align="left" >2 Roops, 1 Silva</td><td align="left" >2</td><td align="left" >1</td><td align="left" >In-Division Top 2 Score</td><td>&nbsp;</td></tr>
+<tr class="oddtablerow" id="row_DSUBMIT"><td colspan="6"  align="center"  class="form_buttons" ><input type="submit" name="DSUBMIT" value="Delete Selected Standings Adjustments" onclick="this.style.display='none';"  />
+</td><td>&nbsp;</td></tr>
+</table>
+
+</form>
 </div></div></div><div class="pagefooter"><table border="0" cellpadding="1" cellspacing="1" align="center">
 <tr><td colspan="2" align="center"><a href="#body_csetup_standadj">Back To Top Of Page</a></td></tr>
 <tr><td colspan="2" align="center">Page Generated Tue Sep 29 9:39:53 p.m. ET 2026</td></tr>
