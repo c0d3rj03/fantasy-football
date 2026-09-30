@@ -3,7 +3,14 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { WebClient } = require('@slack/web-api');
 
-const weekNum = process.argv[2] || '2';
+// Auto-detect the latest played week from data.json if no week argument is passed
+const dataPath = path.join(__dirname, 'data.json');
+const leagueData = fs.existsSync(dataPath) ? JSON.parse(fs.readFileSync(dataPath, 'utf8')) : {};
+const playedWeeks = Object.keys(leagueData.weekly_data || {}).filter(w => leagueData.weekly_data[w].played);
+const latestPlayedWeek = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
+
+const rawArg = process.argv[2];
+const weekNum = (rawArg && rawArg.trim() !== '') ? rawArg : latestPlayedWeek;
 
 async function fetchSlackBanter() {
   const token = process.env.PBR_SLACK_BOT_TOKEN;
