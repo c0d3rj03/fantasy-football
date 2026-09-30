@@ -9,8 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       week:
-        description: 'NFL Week Number'
-        required: true
+        description: 'Week number (leave blank for auto-latest)'
+        required: false
+        default: ''
 
 jobs:
   pbr-sync:
@@ -39,7 +40,9 @@ jobs:
           SEASON_YEAR: '2026'
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
-        run: node pbr/fetcher.js
+        run: |
+          node pbr/fetcher.js ${{ github.event.inputs.week }}
+          node pbr/mfl_updater.js ${{ github.event.inputs.week }}
   
       # 5. GENERATE GEMMY'S AI RECAP
       - name: Generate Gemmy AI Post
@@ -51,22 +54,22 @@ jobs:
           PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
           PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
-        run: node pbr/generate_post.js ${{ github.event.inputs.week || '2' }}
+        run: node pbr/generate_post.js ${{ github.event.inputs.week }}
 
       # 6. Rebase remote changes to prevent push conflicts
-      - name: Pull remote changes
-        run: git pull --rebase origin main
-
-      # 7. Commit and Push updated data.json and recaps to GitHub FIRST
-      - name: Commit and Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "auto(pbr): sync scores and recaps [skip ci]"
-          
-      # 8. POST RECAP TO SLACK
+      - name: Commit and Sync Remote Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff-index --quiet HEAD || git commit -m "auto(pbr): sync scores and recaps [skip ci]"
+          git pull --rebase origin main
+          git push origin main
+                
+      # 7. POST RECAP TO SLACK
       - name: Post Recap to Slack
         continue-on-error: true
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week || '2' }}.md
+        run: node notify_slack.js pbr/gemmy_week_${{ github.event.inputs.week }}.md
 
