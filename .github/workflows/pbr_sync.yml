@@ -3,8 +3,7 @@ name: PBR Weekly Sync & Automation
 on:
   schedule:
     # Runs every Tuesday at (5:23 AM EDT)
-    - cron: '23 5 * * 2'
-      timezone: 'America/New_York'
+    - cron: '23 9 * * 2'
 
   workflow_dispatch:
     inputs:
