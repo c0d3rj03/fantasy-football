@@ -73,10 +73,10 @@ function extractHiddenFields(html) {
   let match;
 
   while ((match = inputRegex.exec(html)) !== null) {
-    const tag = match[0];
-    if (/type=["']?hidden["']?/i.test(tag)) {
-      const nameMatch = /name=["']?([^"'\s>]+)["']?/i.exec(tag);
-      const valueMatch = /value=["']?([^"'>]*)["']?/i.exec(tag);
+    const [tag] = match;
+    if (/type=[\"']?hidden[\"']?/i.test(tag)) {
+      const nameMatch = /name=[\"']?([^\"'>]+)[\"']?/i.exec(tag);
+      const valueMatch = /value=[\"']?([^\"'>]*)[\"']?/i.exec(tag);
       if (nameMatch && nameMatch[1]) {
         hiddenFields[nameMatch[1]] = valueMatch && valueMatch[1] ? valueMatch[1] : '';
       }
@@ -101,56 +101,33 @@ async function loginToMFL() {
   };
 
   try {
-    // 1. Login POST
-    let { response, cookie } = await fetchWithCookieAccumulation(loginUrl, {
+    let { cookie } = await fetchWithCookieAccumulation(loginUrl, {
       method: 'POST',
       headers: { ...baseHeaders, 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params
     });
-
-    const loginHtml = await response.text();
 
     if (!cookie || !cookie.includes('MFL_USER_ID')) {
       console.error("❌ Failed to authenticate with MFL. Check credentials.");
       return null;
     }
 
-    console.log("✅ Authenticated with MFL (MFL_USER_ID obtained).");
+    console.log("✅ Authenticated with MFL. Elevating session to Commissioner mode (BECOME=0000)...");
 
-    // 2. Extract "Become Commissioner" URL from HTML
-    // Looking for: href="https://www42.myfantasyleague.com/2026/logout?L=63213&amp;BECOME=0000" or similar
-    let becomeUrl = null;
-    const commishLinkRegex = /href=["']([^"']*BECOME=0000[^"']*)["']/i;
-    const match = commishLinkRegex.exec(loginHtml);
-
-    if (match && match[1]) {
-      // CRITICAL FIX: Unescape HTML entity &amp; -> & so URL parameter BECOME=0000 is sent cleanly!
-      becomeUrl = match[1].replace(/&amp;/g, '&');
-      if (!becomeUrl.startsWith('http')) {
-        becomeUrl = new URL(becomeUrl, BASE_URL).toString();
-      }
-      console.log(`👑 Found 'Become Commissioner' link: ${becomeUrl}`);
-    } else {
-      // Fallback
-      becomeUrl = `${BASE_URL}/logout?L=${LEAGUE_ID}&BECOME=0000`;
-      console.log(`ℹ️ 'Become Commissioner' link not found in login HTML. Using fallback: ${becomeUrl}`);
-    }
-
-    // 3. Elevate session to Commissioner mode
-    console.log("Elevating session to Commissioner mode...");
-    const becomeResult = await fetchWithCookieAccumulation(becomeUrl, {
+    const becomeUrl = `${BASE_URL}/logout?L=${LEAGUE_ID}&BECOME=0000`;
+    const result = await fetchWithCookieAccumulation(becomeUrl, {
       method: 'GET',
       headers: baseHeaders
     }, cookie);
 
-    cookie = becomeResult.cookie;
-    console.log("\n📋 Active Session Cookies after elevation:");
+    cookie = result.cookie;
+    console.log("\n📋 Active Session Cookies:");
     console.log("  ", cookie);
 
     if (cookie.includes('MFL_IS_COMMISH')) {
       console.log("✅ Commissioner mode (MFL_IS_COMMISH) active!\n");
     } else {
-      console.log("ℹ️ Session updated with Commissioner mode elevation.\n");
+      console.log("⚠️ Warning: MFL_IS_COMMISH not detected in session cookie.\n");
     }
 
     return cookie;
@@ -170,26 +147,18 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.9',
     'Referer': csetupUrl,
-    'Origin': BASE_URL
+    'Origin': BASE_URL,
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'same-origin',
+    'Sec-Fetch-User': '?1',
+    'Upgrade-Insecure-Requests': '1'
   };
 
   try {
     console.log("Fetching MFL Standings Adjustment form to extract session tokens...");
-    const getResponseObj = await fetchWithCookieAccumulation(csetupUrl, { method: 'GET', headers: { ...headers, 'Cookie': cookie } }, cookie);
-    cookie = getResponseObj.cookie;
-    const getHtml = await getResponseObj.response.text();
-
-    const csetupPath1 = path.join(__dirname, 'csetup_form.html');
-    const csetupPath2 = path.join(process.cwd(), 'csetup_form.html');
-    fs.writeFileSync(csetupPath1, getHtml);
-    if (csetupPath1 !== csetupPath2) fs.writeFileSync(csetupPath2, getHtml);
-
-    console.log(`📄 Saved GET form HTML to:\n  - ${csetupPath1}`);
-
-    if (getHtml.includes("Commissioner Access Required")) {
-      console.error("\n❌ MFL Session Error: MFL returned 'Commissioner Access Required' page. Verify your account has Commissioner rights for league " + LEAGUE_ID);
-      return;
-    }
+    const getResponse = await fetch(csetupUrl, { method: 'GET', headers });
+    const getHtml = await getResponse.text();
 
     const hiddenTokens = extractHiddenFields(getHtml);
     console.log("Captured hidden tokens:", hiddenTokens);
@@ -216,32 +185,23 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
 
     params.set("ASUBMIT", "Adjust Standings");
 
-    console.log("\nSubmitting form adjustments to MFL...");
-    console.log("Payload String:", params.toString());
-
-    const postResultObj = await fetchWithCookieAccumulation(postUrl, {
+    console.log("Submitting form adjustments to MFL...");
+    const postResponse = await fetch(postUrl, {
       method: 'POST',
-      headers: {
-        'Cookie': cookie,
-        'User-Agent': headers['User-Agent'],
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': csetupUrl,
-        'Origin': BASE_URL
-      },
+      headers: { ...headers, 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params
-    }, cookie);
+    });
 
-    const postHtml = await postResultObj.response.text();
+    const postHtml = await postResponse.text();
+    fs.writeFileSync('mfl_response.html', postHtml);
 
-    const mflRespPath1 = path.join(__dirname, 'mfl_response.html');
-    const mflRespPath2 = path.join(process.cwd(), 'mfl_response.html');
-    fs.writeFileSync(mflRespPath1, postHtml);
-    if (mflRespPath1 !== mflRespPath2) fs.writeFileSync(mflRespPath2, postHtml);
-
-    console.log(`\n🎉 Form submitted for Week ${weekNum}! Response written to:\n  - ${mflRespPath1}`);
-    console.log("Winning teams updated:");
-    vpWinners.forEach(fid => console.log(` - Team ID ${String(fid).padStart(4, '0')} (+1 VP)`));
-
+    if (postResponse.ok) {
+      console.log(`\n🎉 Form submitted for Week ${weekNum}! Response written to mfl_response.html.`);
+      console.log("Winning teams updated:");
+      vpWinners.forEach(fid => console.log(` - Team ID ${String(fid).padStart(4, '0')} (+1 VP)`));
+    } else {
+      console.error(`❌ MFL POST failed with HTTP status: ${postResponse.status}`);
+    }
   } catch (err) {
     console.error("❌ Failed during MFL update process:", err.message);
   }
@@ -264,10 +224,10 @@ async function main() {
   const leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
   const weeklyData = leagueData.weekly_data || {};
 
-  const [, , weekArg] = process.argv;
-  let targetWeekKey = weekArg;
+  const rawArg = process.argv[2];
+  let targetWeekKey = rawArg;
 
-  if (!targetWeekKey) {
+  if (!targetWeekKey || targetWeekKey.trim() === '') {
     const playedWeeks = Object.keys(weeklyData).filter(k => weeklyData[k].played);
     if (playedWeeks.length === 0) {
       console.log("⚠️ No played weeks found in data.json.");
@@ -290,7 +250,7 @@ async function main() {
     const sorted = [...teams].sort((a, b) => (b.score || 0) - (a.score || 0));
     const top2 = sorted.slice(0, 2);
     top2.forEach(t => vpWinners.push(t.id));
-    console.log(` • ${divName} Top 2: ${top2.map(t => `${t.name} (${t.score.toFixed(2)} PF)`).join(', ')}`);
+    console.log(` • ${divName} Top 2: ${top2.map(t => `${t.name} (${t.score ? t.score.toFixed(2) : '0'} PF)`).join(', ')}`);
   });
 
   if (vpWinners.length === 0) {

@@ -3,15 +3,30 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { WebClient } = require('@slack/web-api');
 
-// Auto-detect the latest played week from data.json if no week argument is passed
+// ---------------------------------------------------------------------------
+// 1. DATA & WEEK RESOLUTION
+// ---------------------------------------------------------------------------
 const dataPath = path.join(__dirname, 'data.json');
-const leagueData = fs.existsSync(dataPath) ? JSON.parse(fs.readFileSync(dataPath, 'utf8')) : {};
-const playedWeeks = Object.keys(leagueData.weekly_data || {}).filter(w => leagueData.weekly_data[w].played);
-const latestPlayedWeek = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
+let leagueData = {};
+if (fs.existsSync(dataPath)) {
+  try {
+    leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+  } catch (err) {
+    console.warn("⚠️ Could not parse data.json:", err.message);
+  }
+}
 
 const rawArg = process.argv[2];
-const weekNum = (rawArg && rawArg.trim() !== '') ? rawArg : latestPlayedWeek;
+let weekNum = rawArg;
 
+if (!weekNum || weekNum.trim() === '') {
+  const playedWeeks = Object.keys(leagueData.weekly_data || {}).filter(w => leagueData.weekly_data[w].played);
+  weekNum = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
+}
+
+// ---------------------------------------------------------------------------
+// 2. SLACK BANTER FETCHER
+// ---------------------------------------------------------------------------
 async function fetchSlackBanter() {
   const token = process.env.PBR_SLACK_BOT_TOKEN;
   if (!token) {
@@ -40,13 +55,16 @@ async function fetchSlackBanter() {
         banterList.push(...textMessages);
       }
     } catch (err) {
-      console.warn(`⚠️ Could not fetch Slack history for channel ${channelId}:`, err.message);
+      console.warn(`⚠️ Could not fetch Slack history for channel ${cleanId}:`, err.message);
     }
   }
 
   return banterList;
 }
 
+// ---------------------------------------------------------------------------
+// 3. GEMINI API RETRY WRAPPER
+// ---------------------------------------------------------------------------
 async function callGeminiWithRetry(prompt, maxRetries = 5) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -78,22 +96,43 @@ async function callGeminiWithRetry(prompt, maxRetries = 5) {
   return null;
 }
 
+// ---------------------------------------------------------------------------
+// 4. MAIN RECAP GENERATOR
+// ---------------------------------------------------------------------------
 async function generateAiPost() {
-  console.log(`🤖 Gathering Week ${weekNum} scores, full season history, ESPN news, and Slack banter...`);
+  console.log(`🤖 Gathering Week ${weekNum} scores, full season history, demotion risks, and Slack banter...`);
 
-  const dataPath = path.join(__dirname, 'data.json');
-  if (!fs.existsSync(dataPath)) {
-    console.error(`❌ Error: ${dataPath} not found!`);
+  if (!leagueData || !leagueData.weekly_data) {
+    console.error(`❌ Error: Valid data.json not found or empty!`);
     process.exit(1);
   }
 
-  const leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
   const slackBanter = await fetchSlackBanter();
 
-  const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league. Your goal is to write the weekly recap for Week ${weekNum}. Highlight huge wins, painful losses, victory points, and call out league banter. Format in clean Slack Markdown (*bold*, _italics_, > quotes). IMPORTANT: Use Slack Markdown formatting! Use single asterisks for bold (*bold*), NOT double asterisks (**bold**). Use standard native Unicode emojis (like 🏆, 🏈, 🎙️, 🚽, 🔥, 💩, 👑, 🎯, 💯, 📉, 📈, 💀, 🤖, 💥, ⚡, 💎) so they render seamlessly on both Slack and web dashboards!`;
+  // Determine quarter position and demotion candidate context
+  const weekInt = parseInt(weekNum, 10);
+  const currentQuarter = Math.ceil(weekInt / 4);
+  const quarterWeek = ((weekInt - 1) % 4) + 1; // 1, 2, 3, or 4
+  const isPastHalfway = quarterWeek >= 2;
+
+  const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet highly knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league.
+
+Your goal is to write the weekly recap for Week ${weekNum} (Quarter ${currentQuarter}, Week ${quarterWeek} of 4 in this quarter).
+
+Key Instructions & Persona Directives:
+1. Highlighting Performance: Call out huge wins, painful losses, blowout scores, and Victory Point (VP) accruals.
+2. Demotion/Relegation Radar: ${isPastHalfway ? `CRITICAL - We are at or past the halfway mark of Quarter ${currentQuarter}! Pay intense attention to demotion candidates sitting in the bottom of the Upper Division and Middle Division standings. Be extra snarky toward owners in danger of getting relegated at the end of Week ${currentQuarter * 4}.` : `Keep an eye on teams stumbling early in Quarter ${currentQuarter} who could face demotion pressure soon.`}
+3. Trade Pressure & Snark: Explicitly push struggling or at-risk owners to bust a move and trade to save their season! Tell them to check the MFL Trade Bait page (https://www42.myfantasyleague.com/2026/options?L=63213&O=133) and get active in the #trade-talk Slack channel before promotion/relegation locks at the end of the quarter.
+4. Call Out League Banter: Incorporate recent Slack banter creatively with full snark.
+5. Formatting: Format in clean Slack Markdown (*bold*, _italics_, > quotes, emojis).
+   IMPORTANT FORMATTING RULE: Use Slack Markdown formatting! Use single asterisks for bold (*bold*), NOT double asterisks (**bold**).`;
 
   const promptContext = {
     week: weekNum,
+    quarter: currentQuarter,
+    quarterWeek: quarterWeek,
+    isPastHalfwayMark: isPastHalfway,
+    mflTradeBaitUrl: "https://www42.myfantasyleague.com/2026/options?L=63213&O=133",
     leagueData: leagueData,
     recentSlackBanter: slackBanter.slice(0, 30)
   };
@@ -113,12 +152,27 @@ async function generateAiPost() {
     candidateText = `🏈 *PBR Week ${weekNum} Update*\n\nWeek ${weekNum} scores and Victory Points have been updated on the dashboard! 📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
   }
 
-  // Convert any lingering double asterisks to single asterisks
+  // Convert any lingering double asterisks to single asterisks for Slack
   candidateText = candidateText.replace(/\*\*(.*?)\*\*/g, '*$1*');
 
+  // Save Markdown file
   const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);
   fs.writeFileSync(outputPath, candidateText);
   console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);
+
+  // Embed recap directly into data.json so the website dashboard updates automatically
+  if (fs.existsSync(dataPath)) {
+    try {
+      const updatedLeagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+      if (updatedLeagueData.weekly_data && updatedLeagueData.weekly_data[weekNum]) {
+        updatedLeagueData.weekly_data[weekNum].recap = candidateText;
+        fs.writeFileSync(dataPath, JSON.stringify(updatedLeagueData, null, 2));
+        console.log(`💾 Embedded Week ${weekNum} recap directly into data.json`);
+      }
+    } catch (e) {
+      console.warn("⚠️ Could not embed recap into data.json:", e.message);
+    }
+  }
 }
 
 generateAiPost().catch(err => {

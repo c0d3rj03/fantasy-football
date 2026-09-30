@@ -139,27 +139,14 @@ class MflAdminClient {
       if (vp <= 0) continue; // Only push for +1 VP winners
 
       try {
-        const explanation = encodeURIComponent(`Week ${week} PBR In-Division Battle Royale VP`);
-        // Note: Official MFL import API for franchise score adjustment uses:
-        // TYPE=franchiseScoreAdjustment&L=...&FRANCHISE=...&WEEK=...&POINTS=...&EXPLANATION=...
-        const url = `${this.baseUrl}/import?TYPE=franchiseScoreAdjustment&L=${this.leagueId}&FRANCHISE=${franchiseId}&WEEK=${week}&POINTS=${vp}&EXPLANATION=${explanation}&JSON=1`;
+        const comments = encodeURIComponent(`Week ${week} PBR In-Division Battle Royale VP`);
+        const url = `${this.baseUrl}/import?TYPE=adjustScores&L=${this.leagueId}&W=${week}&FRANCHISE=${franchiseId}&SCORE=${vp}&COMMENTS=${comments}&JSON=1`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Cookie': this.cookie }
         });
-        const text = await res.text();
-        let status = 'OK';
-        try {
-          const json = JSON.parse(text);
-          status = json.status || 'OK';
-        } catch (e) {
-          if (text.includes('<status>OK</status>') || text.includes('OK')) {
-            status = 'OK';
-          } else {
-            status = text.trim();
-          }
-        }
-        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -> MFL status: ${status}`);
+        const result = await res.json();
+        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -> MFL status: ${result?.status || 'OK'}`);
       } catch (err) {
         console.warn(`  ⚠️ Failed to push VP for Franchise ${franchiseId}:`, err.message);
       }
@@ -169,6 +156,23 @@ class MflAdminClient {
 
 async function main() {
   const franchises = await fetchFranchises();
+
+  // Preserve existing recaps from data.json so they aren't erased on re-fetch
+  const existingRecaps = {};
+  const dataPath = path.join(__dirname, 'data.json');
+  if (fs.existsSync(dataPath)) {
+    try {
+      const oldData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+      Object.keys(oldData.weekly_data || {}).forEach(w => {
+        if (oldData.weekly_data[w].recap) {
+          existingRecaps[w] = oldData.weekly_data[w].recap;
+        }
+      });
+    } catch (e) {
+      console.warn("⚠️ Could not read existing recaps from data.json:", e.message);
+    }
+  }
+
   const leagueData = { weekly_data: {}, postseason_matrix: {} };
 
   let quarterAccumulators = {};
@@ -370,7 +374,8 @@ async function main() {
       matchups: processedMatchups,
       battle_royale: battleRoyale,
       quarter_standings: quarterStandings,
-      season_standings: seasonStandings
+      season_standings: seasonStandings,
+      recap: existingRecaps[week.toString()] || '' // <-- Preserves existing recaps
     };
 
     if (isPlayed && (week === 4 || week === 8 || week === 12)) {
@@ -379,18 +384,16 @@ async function main() {
     }
   }
 
-  const dataPath = path.join(__dirname, 'data.json');
   fs.writeFileSync(dataPath, JSON.stringify(leagueData, null, 2));
   console.log(`Successfully generated complete data.json at ${dataPath}`);
 
   // ---------------------------------------------------------------------------
   // AUTOMATED MFL WRITE-BACK TRIGGER
   // ---------------------------------------------------------------------------
-  // Automatically pick the highest played week if no argument is provided:
+  const rawArg = process.argv[2];
   const playedWeeks = Object.keys(leagueData.weekly_data).filter(w => leagueData.weekly_data[w].played);
   const latestPlayedWeek = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
-  
-  const targetWeek = process.argv[2] || latestPlayedWeek;
+  const targetWeek = (rawArg && rawArg.trim() !== '') ? rawArg : latestPlayedWeek;
 
   if (process.env.MFL_USERNAME && process.env.MFL_PASSWORD) {
     const battleVpMap = {};
