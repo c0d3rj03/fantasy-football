@@ -9,6 +9,27 @@ const LEAGUE_ID = process.env.LEAGUE_ID || '25918';
 const SEASON_YEAR = process.env.SEASON_YEAR || '2026';
 const MFL_BASE_URL = `https://www42.myfantasyleague.com/${SEASON_YEAR}/export`;
 
+// Master Weekly Starting Lineup Requirements
+const ROSTER_SCHEDULE = {
+  1: { startersTotal: 8 },
+  2: { startersTotal: 8 },
+  3: { startersTotal: 8 },
+  4: { startersTotal: 8 },
+  5: { startersTotal: 8 },
+  6: { startersTotal: 9 },
+  7: { startersTotal: 9 },
+  8: { startersTotal: 10 },
+  9: { startersTotal: 10 },
+  10: { startersTotal: 11 },
+  11: { startersTotal: 11 },
+  12: { startersTotal: 12 },
+  13: { startersTotal: 12 },
+  14: { startersTotal: 13 },
+  15: { startersTotal: 13 },
+  16: { startersTotal: 14 },
+  17: { startersTotal: 14 }
+};
+
 async function fetchMFL(type, params = {}) {
   const query = new URLSearchParams({
     TYPE: type,
@@ -116,7 +137,7 @@ export async function runFetcher() {
       if (weekHasScores) {
         weeklySingleScores[w] = {};
 
-        // Calculate single week score:
+        // Calculate single-week scores:
         // W=1: Single = MFL_Score
         // W>=2: MFL_Score(W) = Single(W-1) + Single(W) => Single(W) = MFL_Score(W) - Single(W-1)
         Object.keys(mflScoresThisWeek).forEach(fid => {
@@ -150,6 +171,7 @@ export async function runFetcher() {
   }
 
   const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
+  const totalStartersForWeek = ROSTER_SCHEDULE[currentWeek]?.startersTotal || 8;
   let isLiveGameActive = false;
 
   // 4. Process Live Details for the active week
@@ -162,77 +184,84 @@ export async function runFetcher() {
       const fid = lf.id;
       const totalLiveScore = parseFloat(lf.score || 0);
 
+      // Carryover from prior week (e.g. Single score for Week 3)
       const priorScoreCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
       const currentWeekTotalPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
 
+      // Parse player list for starter filtering
       const players = normalizeArray(lf.player);
       const starters = players.filter(p => {
         const st = (p.status || '').toLowerCase();
         return st === 'starter' || !p.status;
       });
 
-      let finishedCount = 0;
-      let inGameCount = 0;
-      let ytpCount = 0;
-      let doneScore = 0;
-      let liveScore = 0;
+      const numStarters = starters.length > 0 ? starters.length : totalStartersForWeek;
 
+      // Extract MFL top-level counts
+      let ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
+      let inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
+      let finishedCount = lf.playersGameFinished !== undefined && lf.playersGameFinished !== ''
+        ? parseInt(lf.playersGameFinished, 10)
+        : Math.max(0, numStarters - ytpCount - inGameCount);
+
+      // If starter players array is available, calculate finishedCount directly from gameSecondsRemaining === 0
       if (starters.length > 0) {
+        let calcFinished = 0;
+        let calcInGame = 0;
+        let calcYtp = 0;
+
         starters.forEach(p => {
-          const pScore = parseFloat(p.score || 0);
           const secsRaw = p.gameSecondsRemaining;
           const secs = (secsRaw !== undefined && secsRaw !== null && secsRaw !== '') ? parseInt(secsRaw, 10) : 3600;
           const hasPlayed = String(p.hasPlayed || '');
 
-          const isFinished = secs === 0 || hasPlayed === '2';
-          const isInGame = (secs > 0 && secs < 3600) || hasPlayed === '1';
-
-          if (isFinished) {
-            finishedCount++;
-            doneScore += pScore;
-          } else if (isInGame) {
-            inGameCount++;
-            liveScore += pScore;
+          if (secs === 0 || hasPlayed === '2') {
+            calcFinished++;
+          } else if ((secs > 0 && secs < 3600) || hasPlayed === '1') {
+            calcInGame++;
           } else {
-            ytpCount++;
+            calcYtp++;
           }
         });
 
-        doneScore = parseFloat(doneScore.toFixed(2));
-        liveScore = parseFloat(liveScore.toFixed(2));
-
-        // Fallback 1: Off-hour alignment when games are NOT live
-        // If no active games are currently playing, but team has finished starters and week points > 0:
-        // Ensure doneScore matches currentWeekTotalPoints (protects against MFL off-hour detail zeroing)
-        if (inGameCount === 0 && finishedCount > 0 && currentWeekTotalPoints > 0 && doneScore === 0) {
-          doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
-        }
-
-        // Fallback 2: Live game alignment during active slate
-        // If games are in progress but individual player score updates lag behind total franchise score:
-        if (inGameCount > 0 && liveScore === 0 && currentWeekTotalPoints > doneScore) {
-          liveScore = parseFloat((currentWeekTotalPoints - doneScore).toFixed(2));
-        }
-      } else {
-        ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
-        inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
-        finishedCount = parseInt(lf.playersGameFinished || 0, 10);
-
-        if (inGameCount > 0) {
-          liveScore = parseFloat(currentWeekTotalPoints.toFixed(2));
-        } else {
-          doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+        // Use calculated counts if valid
+        if (calcFinished + calcInGame + calcYtp === numStarters) {
+          finishedCount = calcFinished;
+          inGameCount = calcInGame;
+          ytpCount = calcYtp;
         }
       }
 
-      // Synchronize player counts if MFL top-level summary reports higher counts
-      const mflFinished = parseInt(lf.playersGameFinished || 0, 10);
-      const mflInGame = parseInt(lf.playersCurrentlyPlaying || 0, 10);
-      const mflYTP = parseInt(lf.playersYetToPlay || 0, 10);
+      // Ensure finishedCount falls back to totalStarters - YTP - Live if 0 but currentWeekTotalPoints > 0
+      if (finishedCount === 0 && inGameCount === 0 && currentWeekTotalPoints > 0) {
+        finishedCount = Math.max(1, numStarters - ytpCount);
+      }
 
-      if (finishedCount === 0 && mflFinished > 0) finishedCount = mflFinished;
-      if (inGameCount === 0 && mflInGame > 0) inGameCount = mflInGame;
-      if (ytpCount === 0 && mflYTP > 0) ytpCount = mflYTP;
+      // Determine doneScore vs liveScore
+      let doneScore = 0;
+      let liveScore = 0;
+
+      if (inGameCount === 0) {
+        // No games currently in progress: all current week points earned so far belong to doneScore
+        doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+        liveScore = 0;
+      } else {
+        // Active games in progress: sum active players into liveScore
+        if (starters.length > 0) {
+          starters.forEach(p => {
+            const pScore = parseFloat(p.score || 0);
+            const secsRaw = p.gameSecondsRemaining;
+            const secs = (secsRaw !== undefined && secsRaw !== null && secsRaw !== '') ? parseInt(secsRaw, 10) : 3600;
+            const hasPlayed = String(p.hasPlayed || '');
+
+            if ((secs > 0 && secs < 3600) || hasPlayed === '1') {
+              liveScore += pScore;
+            }
+          });
+        }
+        liveScore = parseFloat(liveScore.toFixed(2));
+        doneScore = parseFloat(Math.max(0, currentWeekTotalPoints - liveScore).toFixed(2));
+      }
 
       liveDetails[fid] = {
         doneScore: doneScore,
