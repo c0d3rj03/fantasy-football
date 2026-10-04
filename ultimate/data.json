@@ -3,7 +3,7 @@
   "seasonYear": "2026",
   "currentWeek": 4,
   "isLive": true,
-  "lastUpdated": "2026-10-04T20:06:37.542Z",
+  "lastUpdated": "2026-10-04T20:16:36.549Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -245,16 +245,16 @@
   "liveDetails": {
     "0001": {
       "doneScore": 0,
-      "liveScore": 86.6,
+      "liveScore": 86.9,
       "ytp": 3,
-      "inGame": 3,
+      "inGame": 1,
       "finished": 0
     },
     "0002": {
       "doneScore": 0,
-      "liveScore": 172.96,
+      "liveScore": 192.21,
       "ytp": 1,
-      "inGame": 7,
+      "inGame": 2,
       "finished": 0
     },
     "0003": {
@@ -265,24 +265,24 @@
       "finished": 0
     },
     "0004": {
-      "doneScore": 0,
-      "liveScore": 46.74,
+      "doneScore": 45.39,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 3,
+      "inGame": 0,
       "finished": 0
     },
     "0005": {
       "doneScore": 0,
       "liveScore": 43.77,
       "ytp": 2,
-      "inGame": 3,
+      "inGame": 1,
       "finished": 0
     },
     "0006": {
-      "doneScore": 0,
-      "liveScore": 99.86,
+      "doneScore": 100.31,
+      "liveScore": 0,
       "ytp": 2,
-      "inGame": 2,
+      "inGame": 0,
       "finished": 0
     },
     "0007": {
@@ -300,29 +300,29 @@
       "finished": 0
     },
     "0009": {
-      "doneScore": 0,
-      "liveScore": 68.36,
+      "doneScore": 73.69,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 2,
+      "inGame": 0,
       "finished": 0
     },
     "0010": {
       "doneScore": 0,
-      "liveScore": 73.75,
+      "liveScore": 74.26,
       "ytp": 2,
-      "inGame": 6,
+      "inGame": 1,
       "finished": 0
     },
     "0011": {
-      "doneScore": 0,
-      "liveScore": 41.7,
+      "doneScore": 47.7,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 4,
+      "inGame": 0,
       "finished": 0
     },
     "0012": {
       "doneScore": 0,
-      "liveScore": 43.02,
+      "liveScore": 44.43,
       "ytp": 3,
       "inGame": 3,
       "finished": 0
@@ -331,70 +331,70 @@
       "doneScore": 0,
       "liveScore": 71.3,
       "ytp": 3,
-      "inGame": 2,
+      "inGame": 1,
       "finished": 0
     },
     "0014": {
       "doneScore": 0,
-      "liveScore": 81.89,
+      "liveScore": 82.46,
       "ytp": 3,
-      "inGame": 4,
+      "inGame": 1,
       "finished": 0
     },
     "0015": {
-      "doneScore": 0,
-      "liveScore": 57.74,
+      "doneScore": 64,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 2,
+      "inGame": 0,
       "finished": 0
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 94.99,
+      "liveScore": 95.24,
       "ytp": 0,
-      "inGame": 6,
-      "finished": 0
-    },
-    "0017": {
-      "doneScore": 0,
-      "liveScore": 107.7,
-      "ytp": 4,
       "inGame": 3,
       "finished": 0
     },
+    "0017": {
+      "doneScore": 107.7,
+      "liveScore": 0,
+      "ytp": 4,
+      "inGame": 0,
+      "finished": 0
+    },
     "0018": {
-      "doneScore": 0,
-      "liveScore": 26.65,
+      "doneScore": 26.65,
+      "liveScore": 0,
       "ytp": 6,
-      "inGame": 1,
+      "inGame": 0,
       "finished": 0
     },
     "0019": {
       "doneScore": 0,
       "liveScore": 58.15,
       "ytp": 3,
-      "inGame": 3,
+      "inGame": 1,
       "finished": 0
     },
     "0020": {
-      "doneScore": 0,
-      "liveScore": 72.8,
+      "doneScore": 72.8,
+      "liveScore": 0,
       "ytp": 2,
-      "inGame": 2,
+      "inGame": 0,
       "finished": 0
     },
     "0021": {
       "doneScore": 0,
-      "liveScore": 54.8,
+      "liveScore": 55.25,
       "ytp": 3,
-      "inGame": 2,
+      "inGame": 1,
       "finished": 0
     },
     "0022": {
       "doneScore": 0,
-      "liveScore": 73.34,
+      "liveScore": 75.74,
       "ytp": 3,
-      "inGame": 5,
+      "inGame": 2,
       "finished": 0
     },
     "0023": {
@@ -405,10 +405,10 @@
       "finished": 0
     },
     "0024": {
-      "doneScore": 0,
-      "liveScore": 77.95,
+      "doneScore": 80.25,
+      "liveScore": 0,
       "ytp": 4,
-      "inGame": 2,
+      "inGame": 0,
       "finished": 0
     }
   },
