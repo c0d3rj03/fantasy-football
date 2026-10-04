@@ -20,7 +20,7 @@ async function fetchMFL(type, params = {}) {
   const url = `${MFL_BASE_URL}?${query}`;
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'UltimateGuillotineFetcher/1.4 (+https://github.com/c0d3rj03/fantasy-football)'
+      'User-Agent': 'UltimateGuillotineFetcher/1.2.4 (+https://github.com/c0d3rj03/fantasy-football)'
     }
   });
 
@@ -54,7 +54,7 @@ export async function runFetcher() {
     };
   });
 
-  // 2. Fetch Live Scoring Data from MFL with DETAILS=1
+  // 2. Fetch Live Scoring Data with DETAILS=1
   let liveScoringWeek = null;
   let rawLiveFranchises = [];
 
@@ -68,7 +68,7 @@ export async function runFetcher() {
     console.warn('Could not fetch MFL liveScoring:', err.message);
   }
 
-  // Read existing data.json
+  // Read existing data.json for historical preservation
   const existingDataPath = path.join(__dirname, 'data.json');
   let existingData = {};
   if (fs.existsSync(existingDataPath)) {
@@ -117,8 +117,8 @@ export async function runFetcher() {
         weeklySingleScores[w] = {};
 
         // Calculate single week score:
-        // W=1: Single = MFL_Score
-        // W>=2: MFL_Score(W) = Single(W-1) + Single(W) => Single(W) = MFL_Score(W) - Single(W-1)
+        // W=1: Single(1) = MFL_WeeklyResults(1)
+        // W>=2: Single(W) = MFL_WeeklyResults(W) - Single(W-1)
         Object.keys(mflScoresThisWeek).forEach(fid => {
           const scoreVal = mflScoresThisWeek[fid];
           if (w === 1) {
@@ -152,18 +152,12 @@ export async function runFetcher() {
   const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
   let isLiveGameActive = false;
 
-  // 4. Process Live Details for the active week
+  // 4. Process Live Details for the active week using explicit player scoring
   const liveDetails = {};
 
   if (rawLiveFranchises.length > 0) {
-    const priorWeekNum = currentWeek - 1;
-
     rawLiveFranchises.forEach(lf => {
       const fid = lf.id;
-      const totalLiveScore = parseFloat(lf.score || 0);
-
-      const priorScoreCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
-      const currentWeekTotalPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
 
       const players = normalizeArray(lf.player);
       const starters = players.filter(p => {
@@ -184,41 +178,37 @@ export async function runFetcher() {
           const secs = (secsRaw !== undefined && secsRaw !== null && secsRaw !== '') ? parseInt(secsRaw, 10) : 3600;
           const hasPlayed = String(p.hasPlayed || '');
 
-          const isFinished = (secs === 0) || (hasPlayed === '2');
-          const isInGame = (!isFinished) && ((secs > 0 && secs < 3600) || (hasPlayed === '1') || (p.status === 'in_game'));
+          const isFinished = secs === 0 || hasPlayed === '2';
+          const isInGame = (secs > 0 && secs < 3600) || hasPlayed === '1';
 
           if (isFinished) {
             finishedCount++;
             doneScore += pScore;
           } else if (isInGame) {
             inGameCount++;
+            liveScore += pScore;
           } else {
             ytpCount++;
           }
         });
 
         doneScore = parseFloat(doneScore.toFixed(2));
-
-        // If there are active games in progress, liveScore is the remainder of current week points
-        if (inGameCount > 0) {
-          liveScore = parseFloat(Math.max(0, currentWeekTotalPoints - doneScore).toFixed(2));
-        } else {
-          liveScore = 0;
-          if (finishedCount > 0) {
-            doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
-          }
-        }
+        liveScore = parseFloat(liveScore.toFixed(2));
       } else {
+        // Fallback to top-level MFL properties if player breakdown is absent
         ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
         inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
         finishedCount = parseInt(lf.playersGameFinished || 0, 10);
 
+        const totalPoints = parseFloat(lf.score || 0);
+        const priorWeekNum = currentWeek - 1;
+        const priorCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
+        const thisWeekPts = Math.max(0, totalPoints - priorCarryover);
+
         if (inGameCount > 0) {
-          liveScore = parseFloat(currentWeekTotalPoints.toFixed(2));
-          doneScore = 0;
+          liveScore = parseFloat(thisWeekPts.toFixed(2));
         } else {
-          liveScore = 0;
-          doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+          doneScore = parseFloat(thisWeekPts.toFixed(2));
         }
       }
 
