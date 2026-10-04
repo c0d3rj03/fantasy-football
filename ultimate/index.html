@@ -441,7 +441,7 @@
 
         const priorLabel = priorWeekNum >= 1 && team.priorScore > 0 ? 'W' + priorWeekNum + ' - ' + team.priorScore.toFixed(1) : '';
         const doneLabel = team.doneScore > 0 ? team.doneScore.toFixed(1) : '';
-        const liveLabel = team.liveScore > 0 ? team.liveScore.toFixed(1) + '*' : '';
+        const liveLabel = team.liveScore > 0 ? team.liveScore.toFixed(1) : '';
 
         const choppedBadge = team.isChoppedNow ? '<span class="badge-chopped">CUT</span>' : '';
 
