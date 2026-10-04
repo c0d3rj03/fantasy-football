@@ -46,8 +46,12 @@ on:
     - cron: '7,17,27,37,47,57 13-23 * * 6'
       timezone: 'America/New_York'
 
-  # Allows manual execution anytime from GitHub Actions tab
-  workflow_dispatch:
+  workflow_dispatch:  # Enables manual button in GitHub UI &amp; API triggers
+  push:
+    branches:
+      - main
+    paths:
+      - 'ultimate/**'
 
 permissions:
   contents: write
