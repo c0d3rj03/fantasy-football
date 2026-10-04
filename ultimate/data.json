@@ -1,9 +1,9 @@
 {
   "leagueId": "25918",
   "seasonYear": "2026",
-  "lastUpdated": "2026-10-04T02:45:13.357Z",
-  "currentWeek": 3,
-  "isLive": false,
+  "currentWeek": 4,
+  "isLive": true,
+  "lastUpdated": "2026-10-04T04:04:22.094Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -150,872 +150,6 @@
       "logo": ""
     }
   },
-  "rosters": {
-    "0001": [
-      {
-        "status": "ROSTER",
-        "id": "16185"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16615"
-      },
-      {
-        "id": "14085",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14056"
-      },
-      {
-        "id": "14136",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16222",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14073"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16212"
-      },
-      {
-        "id": "16604",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15708",
-        "status": "INJURED_RESERVE"
-      }
-    ],
-    "0002": [
-      {
-        "id": "14832",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13593",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13299",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13133",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15710"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14109"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16211"
-      },
-      {
-        "id": "15712",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16165",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17254"
-      },
-      {
-        "status": "INJURED_RESERVE",
-        "id": "17544"
-      }
-    ],
-    "0003": [],
-    "0004": [
-      {
-        "id": "13589",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17042",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15799"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17081"
-      },
-      {
-        "status": "ROSTER",
-        "id": "11671"
-      },
-      {
-        "id": "17075",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14080"
-      },
-      {
-        "id": "16778",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16193"
-      },
-      {
-        "id": "15751",
-        "status": "ROSTER"
-      }
-    ],
-    "0005": [
-      {
-        "status": "ROSTER",
-        "id": "13130"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15753"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16579"
-      },
-      {
-        "id": "16614",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16618"
-      },
-      {
-        "id": "14871",
-        "status": "ROSTER"
-      },
-      {
-        "id": "12263",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "11150"
-      },
-      {
-        "id": "17059",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16580"
-      }
-    ],
-    "0006": [
-      {
-        "id": "15329",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16598"
-      },
-      {
-        "id": "16206",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17043",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17066"
-      },
-      {
-        "id": "16788",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14782"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17500"
-      }
-    ],
-    "0007": [],
-    "0008": [],
-    "0009": [
-      {
-        "status": "ROSTER",
-        "id": "14802"
-      },
-      {
-        "id": "14777",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17473"
-      },
-      {
-        "status": "ROSTER",
-        "id": "12676"
-      },
-      {
-        "id": "13630",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16620",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17543",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13066",
-        "status": "ROSTER"
-      },
-      {
-        "id": "14239",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17482",
-        "status": "ROSTER"
-      }
-    ],
-    "0010": [
-      {
-        "id": "17472",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17045",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15237",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16269"
-      },
-      {
-        "id": "15761",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16195",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16641"
-      },
-      {
-        "id": "17512",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16213"
-      },
-      {
-        "id": "17071",
-        "status": "ROSTER"
-      }
-    ],
-    "0011": [
-      {
-        "status": "ROSTER",
-        "id": "16162"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14861"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17052"
-      },
-      {
-        "id": "16192",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13672",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15319",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13592"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15293"
-      },
-      {
-        "id": "15796",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16752"
-      },
-      {
-        "id": "15972",
-        "status": "INJURED_RESERVE"
-      }
-    ],
-    "0012": [
-      {
-        "id": "17044",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "11244"
-      },
-      {
-        "id": "9431",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14138"
-      },
-      {
-        "status": "ROSTER",
-        "id": "12186"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14127"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16214"
-      },
-      {
-        "id": "16593",
-        "status": "ROSTER"
-      },
-      {
-        "id": "14102",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16174",
-        "status": "ROSTER"
-      }
-    ],
-    "0013": [
-      {
-        "status": "ROSTER",
-        "id": "12626"
-      },
-      {
-        "id": "17102",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14797"
-      },
-      {
-        "id": "16616",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16809",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16148"
-      },
-      {
-        "status": "ROSTER",
-        "id": "11247"
-      },
-      {
-        "id": "17068",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15797"
-      },
-      {
-        "status": "INJURED_RESERVE",
-        "id": "15282"
-      }
-    ],
-    "0014": [
-      {
-        "status": "ROSTER",
-        "id": "15281"
-      },
-      {
-        "id": "16194",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17051",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13189"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13604"
-      },
-      {
-        "id": "16150",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16164",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17107"
-      },
-      {
-        "id": "13164",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15779",
-        "status": "ROSTER"
-      },
-      {
-        "status": "INJURED_RESERVE",
-        "id": "16597"
-      }
-    ],
-    "0015": [
-      {
-        "id": "16181",
-        "status": "ROSTER"
-      },
-      {
-        "id": "12620",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15789",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13163"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16187"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14137"
-      },
-      {
-        "id": "16171",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15716",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15766",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15254",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15253",
-        "status": "INJURED_RESERVE"
-      }
-    ],
-    "0016": [
-      {
-        "id": "15715",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17103",
-        "status": "ROSTER"
-      },
-      {
-        "id": "11675",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15259",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16186"
-      },
-      {
-        "id": "14059",
-        "status": "ROSTER"
-      },
-      {
-        "id": "14143",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17053",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17499"
-      },
-      {
-        "id": "17099",
-        "status": "ROSTER"
-      }
-    ],
-    "0017": [
-      {
-        "status": "ROSTER",
-        "id": "17104"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15256"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14835"
-      },
-      {
-        "id": "15698",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15721"
-      },
-      {
-        "id": "15757",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16287",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17485"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17082"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13132"
-      }
-    ],
-    "0018": [
-      {
-        "id": "15754",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14071"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15742"
-      },
-      {
-        "id": "13116",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16723",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16178"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17072"
-      },
-      {
-        "id": "16080",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14823"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16188"
-      },
-      {
-        "id": "14104",
-        "status": "INJURED_RESERVE"
-      }
-    ],
-    "0019": [
-      {
-        "status": "ROSTER",
-        "id": "15287"
-      },
-      {
-        "id": "16627",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13671",
-        "status": "ROSTER"
-      },
-      {
-        "id": "12611",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16596",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17506"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16610"
-      },
-      {
-        "status": "ROSTER",
-        "id": "12141"
-      },
-      {
-        "id": "13289",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15255",
-        "status": "ROSTER"
-      }
-    ],
-    "0020": [
-      {
-        "status": "ROSTER",
-        "id": "16161"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13635"
-      },
-      {
-        "id": "14779",
-        "status": "ROSTER"
-      },
-      {
-        "id": "13772",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17256",
-        "status": "ROSTER"
-      },
-      {
-        "id": "17501",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16629",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16216",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16581",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17469"
-      },
-      {
-        "status": "INJURED_RESERVE",
-        "id": "16169"
-      }
-    ],
-    "0021": [
-      {
-        "id": "14836",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15284"
-      },
-      {
-        "id": "15798",
-        "status": "ROSTER"
-      },
-      {
-        "id": "16582",
-        "status": "ROSTER"
-      },
-      {
-        "id": "15802",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13319"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16432"
-      },
-      {
-        "id": "11222",
-        "status": "ROSTER"
-      },
-      {
-        "id": "14842",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15889"
-      },
-      {
-        "status": "INJURED_RESERVE",
-        "id": "17498"
-      }
-    ],
-    "0022": [
-      {
-        "id": "15794",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16190"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14783"
-      },
-      {
-        "status": "ROSTER",
-        "id": "14800"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15261"
-      },
-      {
-        "id": "17105",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16684"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15332"
-      },
-      {
-        "status": "ROSTER",
-        "id": "16201"
-      },
-      {
-        "status": "ROSTER",
-        "id": "13674"
-      }
-    ],
-    "0023": [],
-    "0024": [
-      {
-        "status": "ROSTER",
-        "id": "15711"
-      },
-      {
-        "id": "17070",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15756"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17497"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15331"
-      },
-      {
-        "id": "15762",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17039"
-      },
-      {
-        "id": "12678",
-        "status": "ROSTER"
-      },
-      {
-        "status": "ROSTER",
-        "id": "15290"
-      },
-      {
-        "status": "ROSTER",
-        "id": "17474"
-      }
-    ]
-  },
   "weeklySingleScores": {
     "1": {
       "0001": 119.34,
@@ -1072,11 +206,9 @@
     "3": {
       "0001": 145.86,
       "0002": 150.63,
-      "0003": 0,
       "0004": 112.07,
       "0005": 121.63,
       "0006": 91.56,
-      "0007": 0,
       "0008": 82.47,
       "0009": 116.26,
       "0010": 143.01,
@@ -1110,362 +242,174 @@
     "16": {},
     "17": {}
   },
-  "rollingScores": {
-    "1": {
-      "0001": {
-        "single": 119.34,
-        "prior": 0,
-        "rollingTotal": 119.34
-      },
-      "0002": {
-        "single": 89.27,
-        "prior": 0,
-        "rollingTotal": 89.27
-      },
-      "0003": {
-        "single": 97.45,
-        "prior": 0,
-        "rollingTotal": 97.45
-      },
-      "0004": {
-        "single": 134.77,
-        "prior": 0,
-        "rollingTotal": 134.77
-      },
-      "0005": {
-        "single": 100.77,
-        "prior": 0,
-        "rollingTotal": 100.77
-      },
-      "0006": {
-        "single": 112.46,
-        "prior": 0,
-        "rollingTotal": 112.46
-      },
-      "0007": {
-        "single": 81.83,
-        "prior": 0,
-        "rollingTotal": 81.83
-      },
-      "0008": {
-        "single": 87.24,
-        "prior": 0,
-        "rollingTotal": 87.24
-      },
-      "0009": {
-        "single": 103.17,
-        "prior": 0,
-        "rollingTotal": 103.17
-      },
-      "0010": {
-        "single": 125.3,
-        "prior": 0,
-        "rollingTotal": 125.3
-      },
-      "0011": {
-        "single": 176.71,
-        "prior": 0,
-        "rollingTotal": 176.71
-      },
-      "0012": {
-        "single": 126.35,
-        "prior": 0,
-        "rollingTotal": 126.35
-      },
-      "0013": {
-        "single": 178.83,
-        "prior": 0,
-        "rollingTotal": 178.83
-      },
-      "0014": {
-        "single": 86.97,
-        "prior": 0,
-        "rollingTotal": 86.97
-      },
-      "0015": {
-        "single": 108.95,
-        "prior": 0,
-        "rollingTotal": 108.95
-      },
-      "0016": {
-        "single": 64.18,
-        "prior": 0,
-        "rollingTotal": 64.18
-      },
-      "0017": {
-        "single": 91.85,
-        "prior": 0,
-        "rollingTotal": 91.85
-      },
-      "0018": {
-        "single": 122.67,
-        "prior": 0,
-        "rollingTotal": 122.67
-      },
-      "0019": {
-        "single": 113.03,
-        "prior": 0,
-        "rollingTotal": 113.03
-      },
-      "0020": {
-        "single": 124.12,
-        "prior": 0,
-        "rollingTotal": 124.12
-      },
-      "0021": {
-        "single": 120.33,
-        "prior": 0,
-        "rollingTotal": 120.33
-      },
-      "0022": {
-        "single": 171.34,
-        "prior": 0,
-        "rollingTotal": 171.34
-      },
-      "0023": {
-        "single": 76.85,
-        "prior": 0,
-        "rollingTotal": 76.85
-      },
-      "0024": {
-        "single": 152.9,
-        "prior": 0,
-        "rollingTotal": 152.9
-      }
+  "liveDetails": {
+    "0001": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
     },
-    "2": {
-      "0001": {
-        "single": 111.49,
-        "prior": 119.34,
-        "rollingTotal": 230.83
-      },
-      "0002": {
-        "single": 99.35,
-        "prior": 89.27,
-        "rollingTotal": 188.62
-      },
-      "0003": {
-        "single": 68.9,
-        "prior": 97.45,
-        "rollingTotal": 166.35
-      },
-      "0004": {
-        "single": 123.09,
-        "prior": 134.77,
-        "rollingTotal": 257.86
-      },
-      "0005": {
-        "single": 107.14,
-        "prior": 100.77,
-        "rollingTotal": 207.91
-      },
-      "0006": {
-        "single": 107.2,
-        "prior": 112.46,
-        "rollingTotal": 219.66
-      },
-      "0007": {
-        "single": 83.74,
-        "prior": 81.83,
-        "rollingTotal": 165.57
-      },
-      "0008": {
-        "single": 92.54,
-        "prior": 87.24,
-        "rollingTotal": 179.78
-      },
-      "0009": {
-        "single": 119.11,
-        "prior": 103.17,
-        "rollingTotal": 222.28
-      },
-      "0010": {
-        "single": 82.22,
-        "prior": 125.3,
-        "rollingTotal": 207.52
-      },
-      "0011": {
-        "single": 99.35,
-        "prior": 176.71,
-        "rollingTotal": 276.06
-      },
-      "0012": {
-        "single": 139.66,
-        "prior": 126.35,
-        "rollingTotal": 266.01
-      },
-      "0013": {
-        "single": 136.36,
-        "prior": 178.83,
-        "rollingTotal": 315.19
-      },
-      "0014": {
-        "single": 86.68,
-        "prior": 86.97,
-        "rollingTotal": 173.65
-      },
-      "0015": {
-        "single": 100.02,
-        "prior": 108.95,
-        "rollingTotal": 208.97
-      },
-      "0016": {
-        "single": 128.15,
-        "prior": 64.18,
-        "rollingTotal": 192.33
-      },
-      "0017": {
-        "single": 119.71,
-        "prior": 91.85,
-        "rollingTotal": 211.56
-      },
-      "0018": {
-        "single": 103.61,
-        "prior": 122.67,
-        "rollingTotal": 226.28
-      },
-      "0019": {
-        "single": 121.51,
-        "prior": 113.03,
-        "rollingTotal": 234.54
-      },
-      "0020": {
-        "single": 102.01,
-        "prior": 124.12,
-        "rollingTotal": 226.13
-      },
-      "0021": {
-        "single": 119.79,
-        "prior": 120.33,
-        "rollingTotal": 240.12
-      },
-      "0022": {
-        "single": 102.32,
-        "prior": 171.34,
-        "rollingTotal": 273.66
-      },
-      "0023": {
-        "single": 123.16,
-        "prior": 76.85,
-        "rollingTotal": 200.01
-      },
-      "0024": {
-        "single": 108.06,
-        "prior": 152.9,
-        "rollingTotal": 260.96
-      }
+    "0002": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
     },
-    "3": {
-      "0001": {
-        "single": 145.86,
-        "prior": 111.49,
-        "rollingTotal": 257.35
-      },
-      "0002": {
-        "single": 150.63,
-        "prior": 99.35,
-        "rollingTotal": 249.98
-      },
-      "0004": {
-        "single": 112.07,
-        "prior": 123.09,
-        "rollingTotal": 235.16
-      },
-      "0005": {
-        "single": 121.63,
-        "prior": 107.14,
-        "rollingTotal": 228.77
-      },
-      "0006": {
-        "single": 91.56,
-        "prior": 107.2,
-        "rollingTotal": 198.76
-      },
-      "0008": {
-        "single": 82.47,
-        "prior": 92.54,
-        "rollingTotal": 175.01
-      },
-      "0009": {
-        "single": 116.26,
-        "prior": 119.11,
-        "rollingTotal": 235.37
-      },
-      "0010": {
-        "single": 143.01,
-        "prior": 82.22,
-        "rollingTotal": 225.23
-      },
-      "0011": {
-        "single": 168.27,
-        "prior": 99.35,
-        "rollingTotal": 267.62
-      },
-      "0012": {
-        "single": 97.45,
-        "prior": 139.66,
-        "rollingTotal": 237.11
-      },
-      "0013": {
-        "single": 119.18,
-        "prior": 136.36,
-        "rollingTotal": 255.54
-      },
-      "0014": {
-        "single": 91.46,
-        "prior": 86.68,
-        "rollingTotal": 178.14
-      },
-      "0015": {
-        "single": 124.33,
-        "prior": 100.02,
-        "rollingTotal": 224.35
-      },
-      "0016": {
-        "single": 141.65,
-        "prior": 128.15,
-        "rollingTotal": 269.8
-      },
-      "0017": {
-        "single": 153.96,
-        "prior": 119.71,
-        "rollingTotal": 273.67
-      },
-      "0018": {
-        "single": 124.13,
-        "prior": 103.61,
-        "rollingTotal": 227.74
-      },
-      "0019": {
-        "single": 102.07,
-        "prior": 121.51,
-        "rollingTotal": 223.58
-      },
-      "0020": {
-        "single": 117.78,
-        "prior": 102.01,
-        "rollingTotal": 219.79
-      },
-      "0021": {
-        "single": 105.33,
-        "prior": 119.79,
-        "rollingTotal": 225.12
-      },
-      "0022": {
-        "single": 124.19,
-        "prior": 102.32,
-        "rollingTotal": 226.51
-      },
-      "0023": {
-        "single": 52.76,
-        "prior": 123.16,
-        "rollingTotal": 175.92
-      },
-      "0024": {
-        "single": 131.05,
-        "prior": 108.06,
-        "rollingTotal": 239.11
-      }
+    "0003": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 0,
+      "inGame": 0,
+      "finished": 8
+    },
+    "0004": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0005": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0006": {
+      "doneScore": 14.9,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0007": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 0,
+      "inGame": 0,
+      "finished": 8
+    },
+    "0008": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 0,
+      "inGame": 0,
+      "finished": 8
+    },
+    "0009": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0010": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0011": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0012": {
+      "doneScore": 22,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0013": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0014": {
+      "doneScore": 25.85,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0015": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0016": {
+      "doneScore": 20.7,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0017": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0018": {
+      "doneScore": 19.85,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0019": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0020": {
+      "doneScore": 52.5,
+      "liveScore": 0,
+      "ytp": 5,
+      "inGame": 0,
+      "finished": 3
+    },
+    "0021": {
+      "doneScore": 4.5,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
+    },
+    "0022": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 8,
+      "inGame": 0,
+      "finished": 0
+    },
+    "0023": {
+      "doneScore": 0,
+      "liveScore": 0,
+      "ytp": 0,
+      "inGame": 0,
+      "finished": 8
+    },
+    "0024": {
+      "doneScore": 18.8,
+      "liveScore": 0,
+      "ytp": 7,
+      "inGame": 0,
+      "finished": 1
     }
   },
   "eliminatedTeams": {
@@ -1522,27 +466,5 @@
         "amount": 10
       }
     }
-  },
-  "aliveFranchiseIds": [
-    "0001",
-    "0002",
-    "0004",
-    "0005",
-    "0006",
-    "0009",
-    "0010",
-    "0011",
-    "0012",
-    "0013",
-    "0014",
-    "0015",
-    "0016",
-    "0017",
-    "0018",
-    "0019",
-    "0020",
-    "0021",
-    "0022",
-    "0024"
-  ]
+  }
 }
