@@ -1,0 +1,245 @@
+{
+  "last_updated": "2026-10-02T19:15:00Z",
+  "teams": {
+    "0001": {
+      "name": "Orcan Terror",
+      "start_tokens": 15,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 27
+    },
+    "0002": {
+      "name": "Battlebots",
+      "start_tokens": 84,
+      "trade_tokens": 4,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 88
+    },
+    "0003": {
+      "name": "Shankly's Ghost",
+      "start_tokens": 0,
+      "trade_tokens": 0,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 0
+    },
+    "0004": {
+      "name": "Hamsterdam",
+      "start_tokens": 13,
+      "trade_tokens": 8,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 21
+    },
+    "0005": {
+      "name": "Peaky Fookin Blinders",
+      "start_tokens": 0,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 12
+    },
+    "0006": {
+      "name": "Ted Lasso",
+      "start_tokens": 3,
+      "trade_tokens": 2,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 5
+    },
+    "0007": {
+      "name": "Norsemen",
+      "start_tokens": 15,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 27
+    },
+    "0008": {
+      "name": "The Two Tones",
+      "start_tokens": 11,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 23
+    },
+    "0009": {
+      "name": "Springfield Isotopes",
+      "start_tokens": 20,
+      "trade_tokens": 10,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 30
+    },
+    "0010": {
+      "name": "The Meaty Ogres",
+      "start_tokens": 13,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 25
+    },
+    "0011": {
+      "name": "The Wild Cards",
+      "start_tokens": 11,
+      "trade_tokens": 0,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 11
+    },
+    "0012": {
+      "name": "2 Roops, 1 Silva",
+      "start_tokens": 9,
+      "trade_tokens": 12,
+      "waiver_tokens": 0,
+      "promo_tokens": 0,
+      "total": 21
+    }
+  },
+  "trades": [
+    {
+      "date": "2026-08-29",
+      "team1": "BattleBots",
+      "team2": "Peaky Fookin Blinders",
+      "team1_assets": "Year 2026 Draft Pick 5.11 (1,201)",
+      "team2_assets": "Year 2026 Draft Pick 5.09 (1,201)",
+      "total_value": 2401,
+      "tokens_earned": 2
+    },
+    {
+      "date": "2026-05-19",
+      "team1": "BattleBots",
+      "team2": "Ted Lasso",
+      "team1_assets": "RB Alvin Kamara, NOS (2,045), Year 2027 4th Round Draft Pick (1,746)",
+      "team2_assets": "WR Jalen Royals, KCC (1,820), Year 2026 Draft Pick 3.14 (1,796)",
+      "total_value": 7407,
+      "tokens_earned": 2
+    },
+    {
+      "date": "2026-05-13",
+      "team1": "Hamsterdam",
+      "team2": "Peaky Fookin Blinders",
+      "team1_assets": "Year 2026 Draft Pick 4.01 (1,720), Year 2026 Draft Pick 2.14 (2,390)",
+      "team2_assets": "Year 2026 Draft Pick 2.13 (2,515), Year 2026 Draft Pick 4.09 (1,518)",
+      "total_value": 8143,
+      "tokens_earned": 4
+    },
+    {
+      "date": "2026-05-13",
+      "team1": "BattleBots",
+      "team2": "Norsemen",
+      "team1_assets": "Year 2026 Draft Pick 2.10 (2,765), Year 2026 Draft Pick 2.11 (2,765), Year 2027 5th Round Draft Pick (1,264)",
+      "team2_assets": "Year 2026 Draft Pick 3.03 (2,265), Year 2026 Draft Pick 3.04 (2,265), Year 2026 Draft Pick 3.05 (2,116), Year 2027 4th Round Draft Pick (1,746)",
+      "total_value": 15187,
+      "tokens_earned": 6
+    },
+    {
+      "date": "2026-05-12",
+      "team1": "Norsemen",
+      "team2": "Orcan Terror",
+      "team1_assets": "Year 2027 1st Round Draft Pick (5,831)",
+      "team2_assets": "WR Matthew Golden, GBP (3,707), WR Cedric Tillman, CLE (1,980), Year 2027 2nd Round Draft Pick (3,499)",
+      "total_value": 15017,
+      "tokens_earned": 6
+    },
+    {
+      "date": "2026-05-12",
+      "team1": "Hamsterdam",
+      "team2": "The Meaty Ogres",
+      "team1_assets": "Year 2026 Draft Pick 2.02 (3,259), Year 2026 Draft Pick 5.01 (1,218)",
+      "team2_assets": "Year 2026 Draft Pick 2.07 (3,033), Year 2026 Draft Pick 3.07 (2,116)",
+      "total_value": 9626,
+      "tokens_earned": 4
+    },
+    {
+      "date": "2026-05-11",
+      "team1": "Orcan Terror",
+      "team2": "Norsemen",
+      "team1_assets": "Year 2026 Draft Pick 1.10 (3,862), Year 2026 Draft Pick 1.11 (3,862), Year 2026 Draft Pick 3.03 (2,265)",
+      "team2_assets": "TE Harold Fannin, CLE (5,477), Year 2027 2nd Round Draft Pick (3,499)",
+      "total_value": 18965,
+      "tokens_earned": 6
+    },
+    {
+      "date": "2026-05-11",
+      "team1": "Norsemen",
+      "team2": "Springfield Isotopes",
+      "team1_assets": "RB Dylan Sampson, CLE (2,740)",
+      "team2_assets": "Year 2026 Draft Pick 3.05 (2,116), Year 2026 Draft Pick 5.05 (1,218)",
+      "total_value": 6074,
+      "tokens_earned": 2
+    },
+    {
+      "date": "2026-05-11",
+      "team1": "2 Roops, 1 Silva",
+      "team2": "Springfield Isotopes",
+      "team1_assets": "RB Quinshon Judkins, CLE (5,458)",
+      "team2_assets": "RB TreVeyon Henderson, NEP (5,477)",
+      "total_value": 10935,
+      "tokens_earned": 4
+    },
+    {
+      "date": "2026-05-10",
+      "team1": "The Two Tones",
+      "team2": "Hamsterdam",
+      "team1_assets": "Year 2026 Draft Pick 2.02 (3,259), Year 2026 Draft Pick 2.14 (2,390)",
+      "team2_assets": "WR Keon Coleman, BUF (2,538), TE Jake Ferguson, DAL (3,740)",
+      "total_value": 11927,
+      "tokens_earned": 4
+    },
+    {
+      "date": "2026-05-10",
+      "team1": "Springfield Isotopes",
+      "team2": "The Two Tones",
+      "team1_assets": "QB Kyler Murray, MIN (4,099), Year 2027 1st Round Draft Pick (5,831), Year 2026 Draft Pick 2.05 (3,033)",
+      "team2_assets": "WR Tetairoa McMillan, CAR (6,627), Year 2027 2nd Round Draft Pick (3,499), WR DK Metcalf, PIT (3,731)",
+      "total_value": 26820,
+      "tokens_earned": 8
+    },
+    {
+      "date": "2026-05-09",
+      "team1": "Peaky Fookin Blinders",
+      "team2": "The Two Tones",
+      "team1_assets": "Year 2026 Draft Pick 1.07 (4,579), Year 2027 1st Round Draft Pick (5,831), Year 2027 3rd Round Draft Pick (2,412)",
+      "team2_assets": "Year 2026 Draft Pick 1.02 (5,668), Year 2027 3rd Round Draft Pick (2,412)",
+      "total_value": 20902,
+      "tokens_earned": 6
+    },
+    {
+      "date": "2026-03-13",
+      "team1": "2 Roops, 1 Silva",
+      "team2": "The Meaty Ogres",
+      "team1_assets": "WR Alec Pierce, IND (3,964), TE Kyle Pitts, ATL (5,103), Year 2027 2nd Round Draft Pick (3,431), Year 2027 3rd Round Draft Pick (2,312)",
+      "team2_assets": "QB Malik Willis, MIA (3,492), WR Jameson Williams, DET (4,740), WR Xavier Worthy, KCC (3,483), Year 2027 4th Round Draft Pick (1,689)",
+      "total_value": 28214,
+      "tokens_earned": 8
+    }
+  ],
+  "waivers": [],
+  "players": {
+    "16161": {
+      "name": "Bijan Robinson",
+      "pos": "RB",
+      "team": "ATL"
+    },
+    "13589": {
+      "name": "Josh Allen",
+      "pos": "QB",
+      "team": "BUF"
+    },
+    "DP_2026_E1": {
+      "name": "2026 Early 1st",
+      "pos": "PICK",
+      "team": "RDP"
+    }
+  },
+  "monthly_player_values": {
+    "2026-10-01": {
+      "16161": 9992,
+      "13589": 9999,
+      "DP_2026_E1": 5602
+    }
+  }
+}

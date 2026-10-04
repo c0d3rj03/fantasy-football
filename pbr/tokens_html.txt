@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premier Battle Royale (PBR) - Tokens & Assets</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            pbrGold: '#f59e0b',
+            pbrDark: '#0f172a',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-amber-500 selection:text-slate-950 pb-12">
+
+  <!-- 🏆 TOP HEADER & NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
+          PBR
+        </div>
+        <div>
+          <h1 class="text-xl font-black tracking-tight text-white flex items-center gap-2">
+            Premier Battle Royale
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30">
+              2026 Token Economy
+            </span>
+          </h1>
+          <p class="text-xs text-slate-400">PBR Tokens, Trades, Waivers & Player Market Values</p>
+        </div>
+      </div>
+
+      <!-- Main Navigation Menu -->
+      <nav class="flex items-center gap-2 text-xs font-bold w-full md:w-auto justify-end">
+        <a href="index.html" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition">
+          🏈 Dashboard
+        </a>
+        <a href="prizes.html" class="px-3.5 py-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700 transition">
+          🏆 Prizes
+        </a>
+        <a href="tokens.html" class="px-3.5 py-2 rounded-xl bg-amber-500 text-slate-950 font-black border border-amber-400 shadow-md">
+          🎟️ Tokens
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- 🎟️ MAIN TOKENS CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
+
+    <!-- SUBPAGE NAVIGATION TABS -->
+    <div class="flex items-center justify-between pb-3 border-b border-slate-800 overflow-x-auto">
+      <div class="flex items-center gap-2">
+        <button id="tab-summary" onclick="switchTab('summary')" class="px-4 py-2 text-xs font-black rounded-xl bg-amber-500 text-slate-950 border border-amber-400 transition cursor-pointer">
+          🎟️ Summary Tracker
+        </button>
+        <button id="tab-trades" onclick="switchTab('trades')" class="px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition cursor-pointer">
+          ⚔️ Trades Log
+        </button>
+        <button id="tab-waivers" onclick="switchTab('waivers')" class="px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition cursor-pointer">
+          ⚡ Waivers ($25+)
+        </button>
+        <button id="tab-values" onclick="switchTab('values')" class="px-4 py-2 text-xs font-black rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800 transition cursor-pointer">
+          📈 Monthly KTC Values
+        </button>
+      </div>
+    </div>
+
+    <!-- DYNAMIC TAB CONTENT RENDER CONTAINER -->
+    <div id="tokens-content" class="min-h-[500px]">
+      <div class="p-8 text-center text-slate-500 italic">
+        Loading token ledger and player values...
+      </div>
+    </div>
+
+  </main>
+
+  <script src="tokens.js"></script>
+</body>
+</html>
