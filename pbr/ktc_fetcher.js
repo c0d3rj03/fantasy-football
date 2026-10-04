@@ -1,27 +1,16 @@
-/**
- * KeepTradeCut Monthly Snapshot Fetcher (ktc_fetcher.js)
- * 
- * Schedule: 1st of every month (or manual execution)
- * 
- * Actions:
- * 1. Fetches live KeepTradeCut rankings from https://keeptradecut.com/dynasty-rankings
- * 2. Saves raw snapshot backup to pbr/ktc-values/KTC-YYYY-MM.json
- * 3. Updates pbr/ktc-YYYY-data.json (or pbr/history/YYYY/ktc-YYYY-data.json)
- */
-
 const fs = require('fs');
 const path = require('path');
 
 const targetDate = process.argv[2] || new Date().toISOString().split('T')[0];
-const [year, month] = targetDate.split('-');
+const [targetYear, targetMonth] = targetDate.split('-');
 
-const isCurrentYear = year === new Date().getFullYear().toString();
-const targetDir = isCurrentYear 
-  ? __dirname 
-  : path.join(__dirname, 'history', year);
+const isHistoryYear = targetYear !== '2026';
+const baseDir = isHistoryYear 
+  ? path.join(__dirname, 'history', targetYear) 
+  : __dirname;
 
-const ktcDir = path.join(targetDir, 'ktc-values');
-const ktcDataFile = path.join(targetDir, `ktc-${year}-data.json`);
+const ktcDir = path.join(baseDir, 'ktc-values');
+const dataPath = path.join(baseDir, `ktc-${targetYear}-data.json`);
 
 function slugify(text) {
   return text
@@ -32,7 +21,7 @@ function slugify(text) {
 
 function parseValuation(p) {
   if (!p) return 0;
-  
+
   if (p.superflexValues) {
     if (p.superflexValues.tep) {
       if (typeof p.superflexValues.tep === 'object' && p.superflexValues.tep.value !== undefined) {
@@ -55,14 +44,14 @@ function parseValuation(p) {
   if (p.value !== undefined) return parseInt(p.value, 10);
   if (p['tep-value'] !== undefined) return parseInt(p['tep-value'], 10);
   if (p.oneQBValue !== undefined) return parseInt(p.oneQBValue, 10);
-  
+
   return 0;
 }
 
 async function fetchUrl(url, isText = false) {
   const res = await fetch(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
     }
   });
@@ -114,60 +103,52 @@ async function run() {
       throw new Error(`KTC extraction yielded only ${rawPlayers ? rawPlayers.length : 0} items (< 100 safety threshold). Aborting save.`);
     }
 
-    console.log(`✅ Successfully extracted ${rawPlayers.length} items (players & draft picks) from KeepTradeCut.`);
+    console.log(`✅ Successfully extracted ${rawPlayers.length} items from KeepTradeCut.`);
 
-    // 1. Save raw snapshot backup
     if (!fs.existsSync(ktcDir)) fs.mkdirSync(ktcDir, { recursive: true });
-    const ktcBackupFile = path.join(ktcDir, `KTC-${year}-${month}.json`);
+    const ktcBackupFile = path.join(ktcDir, `KTC-${targetYear}-${targetMonth}.json`);
     fs.writeFileSync(ktcBackupFile, JSON.stringify(rawPlayers, null, 2));
     console.log(`💾 Saved raw KTC snapshot backup to ${ktcBackupFile}`);
 
-    // 2. Load or initialize ktc-YYYY-data.json
-    let seasonKtcData = {
-      year,
+    let ktcData = {
+      year: targetYear,
       last_updated: new Date().toISOString(),
       players: {},
       monthly_player_values: {}
     };
 
-    if (fs.existsSync(ktcDataFile)) {
+    if (fs.existsSync(dataPath)) {
       try {
-        seasonKtcData = JSON.parse(fs.readFileSync(ktcDataFile, 'utf8'));
+        ktcData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
       } catch (e) {
-        console.warn(`Existing ${ktcDataFile} was empty or invalid. Initializing fresh.`);
+        console.warn('Existing KTC data file was empty or corrupt, creating fresh.');
       }
     }
 
-    if (!seasonKtcData.players) seasonKtcData.players = {};
-    if (!seasonKtcData.monthly_player_values) seasonKtcData.monthly_player_values = {};
-
-    // 3. Process raw players
-    const dateKey = `${year}-${month}-01`;
     const valueMap = {};
-
     rawPlayers.forEach(p => {
       const rawName = (p.playerName || p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() || p.slug || '').trim();
-      if (!rawName || /^\d+$/.test(rawName)) return;
+      if (!rawName) return;
 
       const pos = p.position || p.pos || 'FLEX';
       const team = p.team || 'FA';
       const val = parseValuation(p);
-
       const slug = slugify(`${rawName}_${pos}`);
 
-      seasonKtcData.players[slug] = { name: rawName, pos, team };
+      ktcData.players[slug] = { name: rawName, pos, team };
       valueMap[slug] = val;
     });
 
-    seasonKtcData.monthly_player_values[dateKey] = valueMap;
-    if (seasonKtcData.warnings) delete seasonKtcData.warnings[dateKey];
-    seasonKtcData.last_updated = new Date().toISOString();
+    if (!ktcData.monthly_player_values) ktcData.monthly_player_values = {};
+    ktcData.monthly_player_values[targetDate] = valueMap;
+    ktcData.last_updated = new Date().toISOString();
 
-    fs.writeFileSync(ktcDataFile, JSON.stringify(seasonKtcData, null, 2));
-    console.log(`🎉 Successfully updated ${ktcDataFile} for ${dateKey} (${Object.keys(valueMap).length} items)!`);
+    fs.writeFileSync(dataPath, JSON.stringify(ktcData, null, 2));
+    console.log(`🎉 Successfully updated ${dataPath} for ${targetDate}!`);
 
   } catch (err) {
-    console.error(`⚠️ KTC fetch failed: ${err.message}`);
+    console.error(`❌ KTC fetch failed: ${err.message}`);
+    process.exit(1);
   }
 }
 

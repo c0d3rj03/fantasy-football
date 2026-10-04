@@ -1,67 +1,48 @@
-/**
- * MyFantasyLeague (MFL) Daily/Weekly Fetcher (mfl_fetcher.js)
- * 
- * Schedule: Daily or Weekly (or manual execution)
- * 
- * Actions:
- * 1. Fetches MFL Player Catalog (TYPE=players) -> pbr/mfl_players.json
- * 2. Fetches MFL Completed Trades (TYPE=transactions&TRANS_TYPE=TRADE)
- * 3. Fetches MFL Waiver Claims ($25+) (TYPE=transactions&TRANS_TYPE=BBID_WAIVER)
- * 4. Updates pbr/tokens_data.json
- */
-
 const fs = require('fs');
 const path = require('path');
 
 const LEAGUE_ID = process.env.MFL_LEAGUE_ID || '63213';
 const YEAR = process.env.MFL_YEAR || '2026';
 
-const mflPlayersFile = path.join(__dirname, 'mfl_players.json');
-const tokensDataFile = path.join(__dirname, 'tokens_data.json');
+const playersPath = path.join(__dirname, 'mfl_players.json');
+const dataPath = path.join(__dirname, 'tokens_data.json');
 
-async function fetchUrl(url, isText = false) {
+async function fetchUrl(url) {
   const res = await fetch(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
       'Accept': 'application/json'
     }
   });
   if (!res.ok) throw new Error(`HTTP error ${res.status} from ${url}`);
-  return isText ? await res.text() : await res.json();
+  return await res.json();
 }
 
-/**
- * 1. Sync MFL Master Player Catalog
- */
-async function syncMflPlayerCatalog() {
-  console.log(`🏈 Syncing MFL Master Player Catalog for ${YEAR}...`);
+async function fetchMflPlayers() {
+  console.log(`🏈 Fetching MFL Master Player Catalog for ${YEAR}...`);
   try {
     const url = `https://www42.myfantasyleague.com/${YEAR}/export?TYPE=players&L=${LEAGUE_ID}&DETAILS=1&JSON=1`;
     const data = await fetchUrl(url);
-    const playersList = data?.players?.player || [];
-    
+    const rawList = data?.players?.player || [];
+    const playerArray = Array.isArray(rawList) ? rawList : [rawList];
+
     const catalog = {};
-    playersList.forEach(p => {
+    playerArray.forEach(p => {
       if (!p.id) return;
       catalog[p.id] = {
-        name: p.name,
-        position: p.position,
+        name: p.name || '',
+        position: p.position || '',
         team: p.team || 'FA'
       };
     });
 
-    fs.writeFileSync(mflPlayersFile, JSON.stringify(catalog, null, 2));
-    console.log(`✅ Saved ${Object.keys(catalog).length} MFL players to ${mflPlayersFile}`);
-    return catalog;
+    fs.writeFileSync(playersPath, JSON.stringify(catalog, null, 2));
+    console.log(`✅ Saved ${Object.keys(catalog).length} MFL players to pbr/mfl_players.json`);
   } catch (err) {
-    console.error(`⚠️ MFL Player Catalog sync failed: ${err.message}`);
-    return {};
+    console.error(`⚠️ MFL Player Catalog fetch failed: ${err.message}`);
   }
 }
 
-/**
- * 2. Fetch Completed Trades
- */
 async function fetchMflTrades() {
   console.log(`🏈 Fetching MFL Trades for League ${LEAGUE_ID}...`);
   try {
@@ -95,9 +76,6 @@ async function fetchMflTrades() {
   }
 }
 
-/**
- * 3. Fetch Waiver Claims ($25+)
- */
 async function fetchMflWaivers() {
   console.log(`⚡ Fetching MFL Waiver Claims ($25+) for League ${LEAGUE_ID}...`);
   try {
@@ -123,8 +101,6 @@ async function fetchMflWaivers() {
 }
 
 async function run() {
-  await syncMflPlayerCatalog();
-
   let tokensData = {
     last_updated: new Date().toISOString(),
     teams: {},
@@ -132,13 +108,15 @@ async function run() {
     waivers: []
   };
 
-  if (fs.existsSync(tokensDataFile)) {
+  if (fs.existsSync(dataPath)) {
     try {
-      tokensData = JSON.parse(fs.readFileSync(tokensDataFile, 'utf8'));
+      tokensData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
     } catch (e) {
-      console.warn('Existing tokens_data.json was empty or invalid.');
+      console.warn('Existing tokens_data.json was empty/corrupt.');
     }
   }
+
+  await fetchMflPlayers();
 
   const mflTrades = await fetchMflTrades();
   if (mflTrades.length > 0) tokensData.trades = mflTrades;
@@ -148,8 +126,8 @@ async function run() {
 
   tokensData.last_updated = new Date().toISOString();
 
-  fs.writeFileSync(tokensDataFile, JSON.stringify(tokensData, null, 2));
-  console.log(`🎉 Successfully updated ${tokensDataFile}!`);
+  fs.writeFileSync(dataPath, JSON.stringify(tokensData, null, 2));
+  console.log(`🎉 Successfully updated pbr/tokens_data.json!`);
 }
 
 run();
