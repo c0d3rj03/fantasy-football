@@ -3,7 +3,7 @@
   "seasonYear": "2026",
   "currentWeek": 4,
   "isLive": true,
-  "lastUpdated": "2026-10-04T17:41:35.574Z",
+  "lastUpdated": "2026-10-04T17:46:49.827Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -252,7 +252,7 @@
     },
     "0002": {
       "doneScore": 0,
-      "liveScore": 31.04,
+      "liveScore": 36.81,
       "ytp": 1,
       "inGame": 7,
       "finished": 0
@@ -266,7 +266,7 @@
     },
     "0004": {
       "doneScore": 0,
-      "liveScore": 16.63,
+      "liveScore": 16.75,
       "ytp": 3,
       "inGame": 5,
       "finished": 0
@@ -280,7 +280,7 @@
     },
     "0006": {
       "doneScore": 0,
-      "liveScore": 41.5,
+      "liveScore": 42.15,
       "ytp": 2,
       "inGame": 5,
       "finished": 0
@@ -301,14 +301,14 @@
     },
     "0009": {
       "doneScore": 0,
-      "liveScore": 42.09,
+      "liveScore": 45.76,
       "ytp": 3,
       "inGame": 4,
       "finished": 0
     },
     "0010": {
       "doneScore": 0,
-      "liveScore": 22.84,
+      "liveScore": 25.69,
       "ytp": 2,
       "inGame": 6,
       "finished": 0
@@ -329,35 +329,35 @@
     },
     "0013": {
       "doneScore": 0,
-      "liveScore": 42.25,
+      "liveScore": 43.6,
       "ytp": 4,
       "inGame": 3,
       "finished": 0
     },
     "0014": {
       "doneScore": 0,
-      "liveScore": 51.37,
+      "liveScore": 56.67,
       "ytp": 3,
       "inGame": 4,
       "finished": 0
     },
     "0015": {
       "doneScore": 0,
-      "liveScore": 11.05,
+      "liveScore": 12.98,
       "ytp": 3,
       "inGame": 4,
       "finished": 0
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 48.59,
+      "liveScore": 51.64,
       "ytp": 1,
       "inGame": 5,
       "finished": 0
     },
     "0017": {
       "doneScore": 0,
-      "liveScore": 23.15,
+      "liveScore": 24.7,
       "ytp": 4,
       "inGame": 4,
       "finished": 0
@@ -371,7 +371,7 @@
     },
     "0019": {
       "doneScore": 0,
-      "liveScore": 2.85,
+      "liveScore": 4.55,
       "ytp": 4,
       "inGame": 4,
       "finished": 0
@@ -392,7 +392,7 @@
     },
     "0022": {
       "doneScore": 0,
-      "liveScore": 15.08,
+      "liveScore": 24.87,
       "ytp": 4,
       "inGame": 4,
       "finished": 0
