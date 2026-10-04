@@ -1,0 +1,30 @@
+name: Gemmy Custom League Announcement
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: 'Topic/Prompt for Gemmy (e.g. remind the league about Sunday early Europe game)'
+        required: true
+        default: "remind the league about Sunday's early Europe game to get their lineups started"
+
+jobs:
+  post-gemmy-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Gemmy Custom Post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        run: |
+          cd pbr
+          node gemmy_custom_post.js "${{ github.event.inputs.prompt }}"
