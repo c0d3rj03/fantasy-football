@@ -20,7 +20,7 @@ async function fetchMFL(type, params = {}) {
   const url = `${MFL_BASE_URL}?${query}`;
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'UltimateGuillotineFetcher/2.0 (+https://github.com/c0d3rj03/fantasy-football)'
+      'User-Agent': 'UltimateGuillotineFetcher/1.5 (+https://github.com/c0d3rj03/fantasy-football)'
     }
   });
 
@@ -37,7 +37,7 @@ function normalizeArray(item) {
 }
 
 export async function runFetcher() {
-  console.log(`Starting MFL Data Fetcher (Daily Batch Mode) for League ID: ${LEAGUE_ID}, Year: ${SEASON_YEAR}...`);
+  console.log(`Starting MFL Data Fetcher for League ID: ${LEAGUE_ID}, Year: ${SEASON_YEAR}...`);
 
   // 1. Fetch League Metadata & Franchises
   const leagueDataRaw = await fetchMFL('league');
@@ -116,7 +116,7 @@ export async function runFetcher() {
       if (weekHasScores) {
         weeklySingleScores[w] = {};
 
-        // Calculate single week score:
+        // Single week score calculation:
         // W=1: Single = MFL_Score
         // W>=2: MFL_Score(W) = Single(W-1) + Single(W) => Single(W) = MFL_Score(W) - Single(W-1)
         Object.keys(mflScoresThisWeek).forEach(fid => {
@@ -150,11 +150,10 @@ export async function runFetcher() {
   }
 
   const currentWeek = liveScoringWeek || (latestCompletedWeek + 1);
+  let isLiveGameActive = false;
 
-  // 4. Process Daily Batch Details for the active week
+  // 4. Process Live Details for the active week
   const liveDetails = {};
-  let totalYTPInLeague = 0;
-  let totalFinishedInLeague = 0;
 
   if (rawLiveFranchises.length > 0) {
     const priorWeekNum = currentWeek - 1;
@@ -167,57 +166,86 @@ export async function runFetcher() {
       const currentWeekTotalPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
 
       const players = normalizeArray(lf.player);
+      // MFL liveScoring specifies "starter" or "non-starter"
       const starters = players.filter(p => {
         const st = (p.status || '').toLowerCase();
         return st === 'starter' || st === 's' || !p.status;
       });
 
       let finishedCount = 0;
+      let inGameCount = 0;
       let ytpCount = 0;
+      let doneScore = 0;
+      let liveScore = 0;
 
       if (starters.length > 0) {
         starters.forEach(p => {
+          const pScore = parseFloat(p.score || 0);
           const secsRaw = p.gameSecondsRemaining;
           const secs = (secsRaw !== undefined && secsRaw !== null && secsRaw !== '') ? parseInt(secsRaw, 10) : 3600;
 
-          if (secs < 3600) {
+          // Pure gameSecondsRemaining categorization based on MFL JSON schema:
+          // 0 seconds remaining = Game Finished / Done
+          // 0 < secs < 3600 = Live / In Progress
+          // 3600 seconds remaining = Yet To Play (YTP)
+          if (secs === 0) {
             finishedCount++;
+            doneScore += pScore;
+          } else if (secs > 0 && secs < 3600) {
+            inGameCount++;
+            liveScore += pScore;
           } else {
             ytpCount++;
           }
         });
+
+        doneScore = parseFloat(doneScore.toFixed(2));
+        liveScore = parseFloat(liveScore.toFixed(2));
+
+        // Off-hour safeguard: If no games are active, ensure doneScore matches current week total points
+        if (inGameCount === 0 && finishedCount > 0 && currentWeekTotalPoints > 0 && doneScore === 0) {
+          doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+        }
+
+        // Live-hour safeguard: If games are active but player score array lags total score
+        if (inGameCount > 0 && currentWeekTotalPoints > doneScore) {
+          const calculatedLive = currentWeekTotalPoints - doneScore;
+          if (calculatedLive > liveScore) {
+            liveScore = parseFloat(calculatedLive.toFixed(2));
+          }
+        }
       } else {
         ytpCount = parseInt(lf.playersYetToPlay || 0, 10);
-        finishedCount = parseInt(lf.playersGameFinished || 0, 10) + parseInt(lf.playersCurrentlyPlaying || 0, 10);
+        inGameCount = parseInt(lf.playersCurrentlyPlaying || 0, 10);
+        finishedCount = parseInt(lf.playersGameFinished || 0, 10);
+
+        if (inGameCount > 0) {
+          liveScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+        } else {
+          doneScore = parseFloat(currentWeekTotalPoints.toFixed(2));
+        }
       }
 
-      totalYTPInLeague += ytpCount;
-      totalFinishedInLeague += finishedCount;
-
       liveDetails[fid] = {
-        doneScore: parseFloat(currentWeekTotalPoints.toFixed(2)),
-        liveScore: 0.00,
+        doneScore: doneScore,
+        liveScore: liveScore,
         ytp: ytpCount,
-        inGame: 0,
+        inGame: inGameCount,
         finished: finishedCount
       };
+
+      if (inGameCount > 0 || finishedCount > 0 || doneScore > 0 || liveScore > 0) {
+        isLiveGameActive = true;
+      }
     });
   }
 
-  // 5. Determine "isLive" (In Progress) Week Status
-  let isWeekInProgress = false;
-  if (totalYTPInLeague > 0 || (totalFinishedInLeague > 0 && totalYTPInLeague > 0)) {
-    isWeekInProgress = true;
-  } else if (totalFinishedInLeague > 0 && totalYTPInLeague === 0) {
-    isWeekInProgress = false;
-  }
-
-  // 6. Construct & Save Payload
+  // 5. Construct & Save Payload
   const finalPayload = {
     leagueId: LEAGUE_ID,
     seasonYear: SEASON_YEAR,
     currentWeek: currentWeek,
-    isLive: isWeekInProgress,
+    isLive: isLiveGameActive,
     lastUpdated: new Date().toISOString(),
     franchises: franchises,
     weeklySingleScores: weeklySingleScores,
@@ -227,7 +255,7 @@ export async function runFetcher() {
   };
 
   fs.writeFileSync(existingDataPath, JSON.stringify(finalPayload, null, 2), 'utf-8');
-  console.log(`Updated data.json! Week: ${currentWeek}, In Progress: ${isWeekInProgress}, Total YTP: ${totalYTPInLeague}`);
+  console.log(`Successfully updated data.json! Current Week: ${currentWeek}, Live Mode: ${isLiveGameActive}`);
 }
 
 runFetcher().catch(err => {
