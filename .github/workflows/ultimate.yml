@@ -1,92 +1,41 @@
-name: Ultimate Guillotine Live Score Fetcher
+name: Ultimate Guillotine Live Sync
 
 on:
-  schedule:
-    # --- THURSDAY NIGHT FOOTBALL ---
-    # 1. TNF Live Updates (Thu 8:00 PM - Fri 12:00 AM ET)
-    - cron: '7,17,27,37,47,57 20-23 * * 4'
-      timezone: 'America/New_York'
-
-    # 2. Post-TNF Wrap (Fri 3:00 AM ET)
-    - cron: '0 3 * * 5'
-      timezone: 'America/New_York'
-
-    # --- SUNDAY SLATE ---
-    # 3. Sunday Europe Slate (London/Germany 9:30 AM - 12:30 PM ET)
-    # Triggers every 10 mins (at minute 7) from 9:07 AM to 12:57 PM ET 
-    # Only on Oct 4, Oct 11, Oct 18, Oct 25, Nov 8, and Nov 15
-    - cron: '7,17,27,37,47,57 9,10,11,12 4,11,18,25 10 *'
-      timezone: 'America/New_York'
-    - cron: '7,17,27,37,47,57 9,10,11,12 8,15 11 *'
-      timezone: 'America/New_York'
-      
-    # 4. Sunday Slate (Sun 1:00 PM - 12:00 AM ET Mon)
-    - cron: '7,17,27,37,47,57 13-23 * * 0'
-      timezone: 'America/New_York'
-
-    # 5. Post-SNF Wrap (Mon 3:00 AM ET)
-    - cron: '0 3 * * 1'
-      timezone: 'America/New_York'
-
-    # --- MONDAY NIGHT FOOTBALL ---
-    # 6. MNF Live Updates (Mon 8:15 PM - 12:3000 AM ET)
-    - cron: '7,17,27,37,47,57 20-23 * * 1'
-      timezone: 'America/New_York'
-
-    # 7. Official End-of-Week Final Wrap (Tue 3:00 AM ET)
-    - cron: '0 3 * * 2'
-      timezone: 'America/New_York'
-
-    # --- SPECIAL SLATES (Thanksgiving & Late-Season Saturdays) ---
-    # 8. Thanksgiving Thursday Slate (Thu 12:30 PM - 8:00 PM ET)
-    - cron: '7,17,27,37,47,57 12-19 * * 4'
-      timezone: 'America/New_York'
-
-    # 9. Saturday Late-Season Slate (Sat 1:00 PM - 12:00 AM ET Sun)
-    - cron: '7,17,27,37,47,57 13-23 * * 6'
-      timezone: 'America/New_York'
-
-  workflow_dispatch:  # Enables manual button in GitHub UI &amp; API triggers
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
       - 'ultimate/**'
 
-permissions:
-  contents: write
-
 jobs:
-  update-scores:
+  sync-scores:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Run Ultimate Fetcher
+      - name: Install Dependencies
         run: |
-          cd ultimate
-          node fetcher.js
-        env:
-          LEAGUE_ID: '25918'
-          SEASON_YEAR: '2026'
+          if [ -f "package.json" ]; then npm install; fi
 
-      - name: Commit & Push Changes (Only if data.json changed)
+      - name: Run MFL Scores Fetcher
+        env:
+          LEAGUE_ID: ${{ secrets.LEAGUE_ID || '25918' }}
+          SEASON_YEAR: ${{ secrets.SEASON_YEAR || '2026' }}
+        run: |
+          node ultimate/mfl_scores_fetcher.js
+
+      - name: Commit and Push Updated data.json
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           git add ultimate/data.json
-          
-          if git diff --staged --quiet; then
-            echo "No score changes detected. Skipping commit."
-          else
-            git commit -m "chore(live): update live guillotine scores [skip ci]"
-            git push origin main
-          fi
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): automated score update [skip ci]" && git push)
