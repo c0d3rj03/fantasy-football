@@ -1,15 +1,10 @@
-name: Ultimate Guillotine Daily Score Sync
+name: Ultimate Guillotine End-of-Week Commissioner Actions
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'ultimate/**'
 
 jobs:
-  sync-scores:
+  run-commish-actions:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,17 +16,19 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run MFL Scores Fetcher
+      - name: Run Commissioner Automation
         env:
           LEAGUE_ID: '25918'
           SEASON_YEAR: '2026'
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: |
           cd ultimate
-          node mfl_scores_fetcher.js
+          node commish-automation.js
 
-      - name: Commit and Push Updated data.json
+      - name: Commit and Push Updated League State
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add ultimate/data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: update ultimate guillotine scores in data.json" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: end-of-week commissioner eliminations & state update" && git push)

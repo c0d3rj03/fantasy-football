@@ -2,8 +2,8 @@
   "leagueId": "25918",
   "seasonYear": "2026",
   "currentWeek": 4,
-  "isLive": true,
-  "lastUpdated": "2026-10-04T04:04:22.094Z",
+  "isLive": false,
+  "lastUpdated": "2026-10-06T05:24:22.423Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -227,7 +227,28 @@
       "0023": 52.76,
       "0024": 131.05
     },
-    "4": {},
+    "4": {
+      "0001": 163.66,
+      "0002": 219.31,
+      "0004": 99.94,
+      "0005": 99.37,
+      "0006": 137.41,
+      "0009": 93.54,
+      "0010": 162.06,
+      "0011": 105.44,
+      "0012": 150.46,
+      "0013": 111.27,
+      "0014": 89.66,
+      "0015": 102.2,
+      "0016": 106.59,
+      "0017": 171.79,
+      "0018": 104.85,
+      "0019": 94.01,
+      "0020": 114.42,
+      "0021": 137.77,
+      "0022": 144.39,
+      "0024": 154.43
+    },
     "5": {},
     "6": {},
     "7": {},
@@ -244,16 +265,16 @@
   },
   "liveDetails": {
     "0001": {
-      "doneScore": 0,
+      "doneScore": 163.66,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0002": {
-      "doneScore": 0,
+      "doneScore": 219.31,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
@@ -262,138 +283,138 @@
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 8
+      "finished": 0
     },
     "0004": {
-      "doneScore": 0,
+      "doneScore": 99.94,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0005": {
-      "doneScore": 0,
+      "doneScore": 99.37,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0006": {
-      "doneScore": 14.9,
+      "doneScore": 137.41,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0007": {
       "doneScore": 0,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 8
+      "finished": 0
     },
     "0008": {
       "doneScore": 0,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 8
+      "finished": 0
     },
     "0009": {
-      "doneScore": 0,
+      "doneScore": 93.54,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0010": {
-      "doneScore": 0,
+      "doneScore": 162.06,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0011": {
-      "doneScore": 0,
+      "doneScore": 105.44,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0012": {
-      "doneScore": 22,
+      "doneScore": 150.46,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0013": {
-      "doneScore": 0,
+      "doneScore": 111.27,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0014": {
-      "doneScore": 25.85,
+      "doneScore": 89.66,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0015": {
-      "doneScore": 0,
+      "doneScore": 102.2,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0016": {
-      "doneScore": 20.7,
+      "doneScore": 106.59,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0017": {
-      "doneScore": 0,
+      "doneScore": 171.79,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0018": {
-      "doneScore": 19.85,
+      "doneScore": 104.85,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0019": {
-      "doneScore": 0,
+      "doneScore": 94.01,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
     "0020": {
-      "doneScore": 52.5,
+      "doneScore": 114.42,
       "liveScore": 0,
-      "ytp": 5,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 3
+      "finished": 0
     },
     "0021": {
-      "doneScore": 4.5,
+      "doneScore": 137.77,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     },
     "0022": {
-      "doneScore": 0,
+      "doneScore": 144.39,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 0,
       "inGame": 0,
       "finished": 0
     },
@@ -402,14 +423,14 @@
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
-      "finished": 8
+      "finished": 0
     },
     "0024": {
-      "doneScore": 18.8,
+      "doneScore": 154.43,
       "liveScore": 0,
-      "ytp": 7,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 1
+      "finished": 0
     }
   },
   "eliminatedTeams": {
