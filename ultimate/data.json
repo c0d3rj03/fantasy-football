@@ -2,8 +2,8 @@
   "leagueId": "25918",
   "seasonYear": "2026",
   "currentWeek": 4,
-  "isLive": false,
-  "lastUpdated": "2026-10-06T05:24:22.423Z",
+  "isLive": true,
+  "lastUpdated": "2026-10-06T14:22:34.194Z",
   "franchises": {
     "0001": {
       "id": "0001",
