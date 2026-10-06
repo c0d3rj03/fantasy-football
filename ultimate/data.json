@@ -3,7 +3,7 @@
   "seasonYear": "2026",
   "currentWeek": 4,
   "isLive": true,
-  "lastUpdated": "2026-10-06T02:26:36.830Z",
+  "lastUpdated": "2026-10-06T02:36:39.168Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -266,7 +266,7 @@
     },
     "0004": {
       "doneScore": 0,
-      "liveScore": 97.04,
+      "liveScore": 99.94,
       "ytp": 0,
       "inGame": 1,
       "finished": 0
@@ -343,7 +343,7 @@
     },
     "0015": {
       "doneScore": 0,
-      "liveScore": 84.3,
+      "liveScore": 91.4,
       "ytp": 0,
       "inGame": 3,
       "finished": 0
@@ -378,7 +378,7 @@
     },
     "0020": {
       "doneScore": 0,
-      "liveScore": 107.27,
+      "liveScore": 112.37,
       "ytp": 0,
       "inGame": 1,
       "finished": 0
