@@ -38,8 +38,6 @@ jobs:
         run: |
           if [ -f pbr/mfl_scores_fetcher.js ]; then
             node pbr/mfl_scores_fetcher.js
-          elif [ -f pbr/fetcher.js ]; then
-            node pbr/fetcher.js
           fi
 
       - name: 2. Run Commish League Monitor (Audit Roster Hygiene)
@@ -62,7 +60,81 @@ jobs:
           if [ -f pbr/gemmy_custom_post.js ]; then
             node pbr/gemmy_custom_post.js "$PROMPT"
           fi
+          name: PBR Tuesday Commish Automation
 
+          on:
+            repository_dispatch:
+              types: [pbr-sync-trigger]
+            workflow_dispatch:
+              inputs:
+                custom_prompt:
+                  description: 'Optional custom prompt for Gemmy announcement'
+                  required: false
+                  default: 'Weekly recap and Q1 promotion/relegation update'
+          
+          jobs:
+            pbr-tuesday-sync:
+              runs-on: ubuntu-latest
+              steps:
+                - name: Checkout Repository
+                  uses: actions/checkout@v4
+                  with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+                    fetch-depth: 0
+          
+                - name: Setup Node.js Environment
+                  uses: actions/setup-node@v4
+                  with:
+                    node-version: '20'
+          
+                - name: Install Dependencies
+                  run: |
+                    if [ -f package.json ]; then
+                      npm ci || npm install
+                    fi
+          
+                - name: 1. Sync MFL Scores & Standings
+                  env:
+                    MFL_LEAGUE_ID: ${{ secrets.MFL_LEAGUE_ID || '63213' }}
+                    MFL_YEAR: ${{ secrets.MFL_YEAR || '2026' }}
+                  run: |
+                    if [ -f pbr/mfl_scores_fetcher.js ]; then
+                      node pbr/mfl_scores_fetcher.js
+                    fi
+          
+                - name: 2. Run Commish League Monitor (Audit Roster Hygiene)
+                  env:
+                    MFL_LEAGUE_ID: ${{ secrets.MFL_LEAGUE_ID || '63213' }}
+                    MFL_YEAR: ${{ secrets.MFL_YEAR || '2026' }}
+                  run: |
+                    if [ -f pbr/commish_watch.js ]; then
+                      node pbr/commish_watch.js
+                    fi
+          
+                - name: 3. Broadcast Gemmy Weekly Recap to Slack
+                  env:
+                    GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+                    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                    MFL_LEAGUE_ID: ${{ secrets.MFL_LEAGUE_ID || '63213' }}
+                    MFL_YEAR: ${{ secrets.MFL_YEAR || '2026' }}
+                  run: |
+                    PROMPT="${{ github.event.inputs.custom_prompt || 'Q1 Promotion & Relegation Recap. Maximum snark on Shankly Ghost smallest PP demotion to Lower Division, congratulate promoted managers with +1 token, and announce Q2 stats reset to 0.' }}"
+                    if [ -f pbr/generate_post.js ]; then
+                      node pbr/generate_post.js "$PROMPT"
+                    fi
+          
+                - name: 4. Commit and Push Updated Data
+                  run: |
+                    git config --global user.name "github-actions[bot]"
+                    git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                    git add pbr/ pbr_data.json tokens_data.json || true
+                    if git diff --staged --quiet; then
+                      echo "No changes to commit."
+                    else
+                      git commit -m "auto: Tuesday PBR commish sync & standings update [skip ci]"
+                      git push origin main
+                    fi
+          
       - name: 4. Commit and Push Updated Data
         run: |
           git config --global user.name "github-actions[bot]"
