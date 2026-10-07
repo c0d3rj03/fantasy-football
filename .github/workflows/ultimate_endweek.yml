@@ -4,31 +4,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  run-commish-actions:
+  run-commish-automation:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node.js Environment
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Install Dependencies
+        run: |
+          if [ -f "package.json" ]; then npm install; fi
+
       - name: Run Commissioner Automation
         env:
-          LEAGUE_ID: '25918'
-          SEASON_YEAR: '2026'
+          LEAGUE_ID: ${{ secrets.LEAGUE_ID || '25918' }}
+          SEASON_YEAR: ${{ secrets.SEASON_YEAR || '2026' }}
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: |
           cd ultimate
-          node commish-automation.js
+          node commish_automation.js
 
-      - name: Commit and Push Updated League State
+      - name: Commit and Push Updated data.json
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add ultimate/data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: end-of-week commissioner eliminations & state update" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): end of week commish automation [skip ci]" && git push)
