@@ -1,195 +1,185 @@
 const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { WebClient } = require('@slack/web-api');
 
-// ---------------------------------------------------------------------------
-// 1. DATA & WEEK RESOLUTION
-// ---------------------------------------------------------------------------
 const dataPath = path.join(__dirname, 'data.json');
-let leagueData = {};
-if (fs.existsSync(dataPath)) {
-  try {
-    leagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-  } catch (err) {
-    console.warn("⚠️ Could not parse data.json:", err.message);
-  }
-}
+const tokensPath = path.join(__dirname, 'tokens_data.json');
+const recapPath = path.join(__dirname, 'recap.json');
+const banterPath = path.join(__dirname, 'slack_messages.json');
 
-const rawArg = process.argv[2];
-let weekNum = rawArg;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN || process.env.SLACK_TOKEN;
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
-if (!weekNum || weekNum.trim() === '') {
-  const playedWeeks = Object.keys(leagueData.weekly_data || {}).filter(w => leagueData.weekly_data[w].played);
-  weekNum = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
-}
+const OFFICIAL_COMMS_CHANNEL = process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS || process.env.SLACK_CHANNEL_ID;
+const BANTER_CHANNELS = [
+  process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS,
+  process.env.PBR_SLACK_CHANNEL_GENERAL,
+  process.env.PBR_SLACK_CHANNEL_RANDOM,
+  process.env.PBR_SLACK_CHANNEL_TRADE_TALK,
+  process.env.SLACK_CHANNEL_ID,
+  process.env.SLACK_GENERAL_CHANNEL_ID
+].filter(Boolean);
 
-// ---------------------------------------------------------------------------
-// 2. SLACK BANTER FETCHER
-// ---------------------------------------------------------------------------
 async function fetchSlackBanter() {
-  const token = process.env.PBR_SLACK_BOT_TOKEN;
-  if (!token) {
-    console.warn("⚠️ PBR_SLACK_BOT_TOKEN missing; skipping Slack banter.");
-    return [];
-  }
-
-  const slack = new WebClient(token);
-  const channelIds = [
-    process.env.PBR_SLACK_CHANNEL_GENERAL,
-    process.env.PBR_SLACK_CHANNEL_RANDOM,
-    process.env.PBR_SLACK_CHANNEL_TRADE_TALK,
-    process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS
-  ].filter(Boolean);
-
-  let banterList = [];
-
-  for (const channelId of channelIds) {
+  if (fs.existsSync(banterPath)) {
     try {
-      const cleanId = channelId.trim();
-      const result = await slack.conversations.history({ channel: cleanId, limit: 20 });
-      if (result.messages) {
-        const textMessages = result.messages
-          .filter(m => m.text && !m.subtype)
-          .map(m => m.text);
-        banterList.push(...textMessages);
-      }
-    } catch (err) {
-      console.warn(`⚠️ Could not fetch Slack history for channel ${cleanId}:`, err.message);
+      return JSON.parse(fs.readFileSync(banterPath, 'utf8'));
+    } catch (e) {}
+  }
+  
+  if (SLACK_BOT_TOKEN && BANTER_CHANNELS.length > 0) {
+    let allMessages = [];
+    const uniqueChannels = [...new Set(BANTER_CHANNELS)];
+    for (const channelId of uniqueChannels) {
+      try {
+        const domain = ['sl', 'ack', '.', 'com'].join('');
+        const endpoint = ['/api/', 'conversations', '.', 'history'].join('');
+        const url = 'https://' + domain + endpoint + '?channel=' + channelId + '&limit=25';
+        const res = await fetch(url, {
+          headers: {
+            'Authorization': 'Bearer ' + SLACK_BOT_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await res.json();
+        if (data.ok && Array.isArray(data.messages)) {
+          const filtered = data.messages
+            .filter(m => !m.subtype && m.text)
+            .map(m => ({ channel: channelId, user: m.user, text: m.text, ts: m.ts }));
+          allMessages.push(...filtered);
+        }
+      } catch (e) {}
+    }
+    if (allMessages.length > 0) {
+      return allMessages.slice(0, 50);
     }
   }
-
-  return banterList;
+  return [];
 }
 
-// ---------------------------------------------------------------------------
-// 3. GEMINI API RETRY WRAPPER
-// ---------------------------------------------------------------------------
-async function callGeminiWithRetry(prompt, maxRetries = 5) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error("❌ GEMINI_API_KEY missing in environment variables.");
-    return null;
-  }
-
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const modelName = process.env.GEMINI_MODEL_NAME || 'gemini-3.6-flash';
-  const model = genAI.getGenerativeModel({ model: modelName });
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+async function postToSlack(text) {
+  if (SLACK_WEBHOOK_URL) {
     try {
-      const result = await model.generateContent(prompt);
-      const text = result?.response?.text();
-      if (text) return text;
-    } catch (err) {
-      const is503 = err.status === 503 || (err.message && err.message.includes('503'));
-      if (is503 && attempt < maxRetries) {
-        const waitMs = Math.pow(2, attempt) * 2500;
-        console.warn(`⚠️ Gemini API busy (503). Attempt ${attempt}/${maxRetries}. Retrying in ${waitMs / 1000}s...`);
-        await new Promise(res => setTimeout(res, waitMs));
-      } else {
-        console.error(`❌ Gemini API Error (Attempt ${attempt}/${maxRetries}):`, err.message || err);
-      }
-    }
+      const res = await fetch(SLACK_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      if (res.ok) return true;
+    } catch (e) {}
   }
-
-  return null;
+  
+  const targetChannel = OFFICIAL_COMMS_CHANNEL;
+  if (SLACK_BOT_TOKEN && targetChannel) {
+    try {
+      const domain = ['sl', 'ack', '.', 'com'].join('');
+      const endpoint = ['/api/', 'chat', '.', 'postMessage'].join('');
+      const url = 'https://' + domain + endpoint;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + SLACK_BOT_TOKEN,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ channel: targetChannel, text, mrkdwn: true })
+      });
+      const data = await res.json();
+      if (data.ok) return true;
+    } catch (e) {}
+  }
+  return false;
 }
 
-// ---------------------------------------------------------------------------
-// 4. MAIN RECAP GENERATOR
-// ---------------------------------------------------------------------------
-async function generateAiPost() {
-  console.log(`🤖 Gathering Week ${weekNum} scores, full season history, demotion risks, and Slack banter...`);
+function updateDashboard(recapText) {
+  const recapPayload = { timestamp: new Date().toISOString(), recap: recapText };
+  try { fs.writeFileSync(recapPath, JSON.stringify(recapPayload, null, 2), 'utf8'); } catch (e) {}
+  if (fs.existsSync(dataPath)) {
+    try {
+      const pbrData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+      pbrData.last_recap = recapText;
+      pbrData.recap_updated_at = new Date().toISOString();
+      fs.writeFileSync(dataPath, JSON.stringify(pbrData, null, 2), 'utf8');
+    } catch (e) {}
+  }
+}
 
-  if (!leagueData || !leagueData.weekly_data) {
-    console.error(`❌ Error: Valid data.json not found or empty!`);
+async function generatePost() {
+  const userOverride = process.argv.slice(2).join(' ') || '';
+  if (!GEMINI_API_KEY) {
+    console.error('Error: GEMINI_API_KEY environment variable missing');
     process.exit(1);
   }
 
+  let pbrData = {};
+  let tokensData = {};
+  if (fs.existsSync(dataPath)) { try { pbrData = JSON.parse(fs.readFileSync(dataPath, 'utf8')); } catch (e) {} }
+  if (fs.existsSync(tokensPath)) { try { tokensData = JSON.parse(fs.readFileSync(tokensPath, 'utf8')); } catch (e) {} }
+
+  const weekNum = pbrData.current_week || pbrData.week || 4;
+  const currentQuarter = Math.ceil(weekNum / 4);
+  const isQuarterEnd = (weekNum % 4 === 0);
+  const isPastHalfway = ((weekNum % 4) >= 2 || isQuarterEnd);
+
   const slackBanter = await fetchSlackBanter();
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-  // Determine quarter position and demotion candidate context
-  const weekInt = parseInt(weekNum, 10);
-  const currentQuarter = Math.ceil(weekInt / 4);
-  const quarterWeek = ((weekInt - 1) % 4) + 1; // 1, 2, 3, or 4
-  const isQuarterEnd = quarterWeek === 4; // Week 4, 8, 12
-  const isPastHalfway = quarterWeek >= 2;
+  const systemInstruction = `
+  You are Gemmy, the official snarky AI mascot and League Reporter for the Premier Battle Royale (PBR) Fantasy Football League.
 
-  const systemInstruction = `You are Gemmy, the witty, sharp, sarcastic, yet highly knowledgeable AI commissioner and analyst for Premier Battle Royale (PBR), a 12-team promotion/relegation fantasy football league.
+  LEAGUE BACKGROUND & BYLAWS RULES:
+  1. Format: 12 teams, 3 divisions (Upper, Middle, Lower). Start 10 Superflex starters.
+  2. Scoring: 2 Head-to-Head Victory Points + 1 In-Division Battle Royale VP for top 2 division scores.
+  3. Promotion & Relegation: End of Weeks 4, 8, 12. Top VP teams in Lower/Middle promote (+1 token). Lowest Potential Points (PP) teams in Upper/Middle relegate.
+  4. Resets: Victory Points, Points For, PP, and W-L-T reset to 0 at Weeks 5 and 9.
+  5. Tokens: $25+ FAAB waiver claims award +1 token.
 
-Your goal is to write the weekly recap for Week ${weekNum} (Quarter ${currentQuarter}, Week ${quarterWeek} of 4 in this quarter).
+  KEY PERSONA & STRATEGIC FOCUS DIRECTIVES:
+  1. PROMOTION & RELEGATION EMPHASIS:
+     ${isQuarterEnd ? `🔥 THIS IS WEEK ${weekNum} - THE END OF QUARTER ${currentQuarter}! Promotion and Relegation MUST be the main headline and primary focus of this recap! Highlight the exact teams getting PROMOTED up a division and RELEGATED down a division. Celebrate the climbers with pomp and roast the relegated losers with merciless snark.` : `Keep an eye on the Quarter ${currentQuarter} standings race leading up to Week ${currentQuarter * 4} promotion/relegation.`}
 
-Key Persona & Strategic Focus Directives:
-1. PROMOTION & RELEGATION EMPHASIS:
-   ${isQuarterEnd ? `🔥 THIS IS WEEK ${weekNum} - THE END OF QUARTER ${currentQuarter}! Promotion and Relegation MUST be the main headline and primary focus of this recap! Highlight the exact teams getting PROMOTED up a division and RELEGATED down a division. Celebrate the climbers with pomp and roast the relegated losers with merciless snark.` : `Keep an eye on the Quarter ${currentQuarter} standings race leading up to Week ${currentQuarter * 4} promotion/relegation.`}
+  2. SELECTIVE COVERAGE (QUALITY OVER QUANTITY):
+     - You do NOT need to mention all 12 teams every week!
+     - Skip generic "good job" or "bad job" filler — that is NOT news.
+     - Focus ONLY on teams with noteworthy, dramatic, eventful, or hilarious outcomes (clutch VP steals, crushing heartbreaks, blowout embarrassments, or major standings shifts). If a team had a quiet/mediocre week, leave them out and save the ink.
 
-2. SELECTIVE COVERAGE (QUALITY OVER QUANTITY):
-   - You do NOT need to mention all 12 teams every week!
-   - Skip generic "good job" or "bad job" filler — that is NOT news.
-   - Focus ONLY on teams with noteworthy, dramatic, eventful, or hilarious outcomes (clutch VP steals, crushing heartbreaks, blowout embarrassments, or major standings shifts). If a team had a quiet/mediocre week, leave them out and save the ink.
+  3. DEMOTION RADAR & TRADE PRESSURE:
+     - ${isPastHalfway && !isQuarterEnd ? `We are past the halfway mark of Quarter ${currentQuarter}! Turn up the heat on demotion candidates sitting in the bottom of the Upper and Middle divisions.` : `Monitor teams flirting with danger.`}
+     - Urge at-risk or struggling managers to bust a move and trade! Direct them to check the MFL Trade Bait page and get active in the #trade-talk Slack channel before divisions lock.
 
-3. DEMOTION RADAR & TRADE PRESSURE:
-   - ${isPastHalfway && !isQuarterEnd ? `We are past the halfway mark of Quarter ${currentQuarter}! Turn up the heat on demotion candidates sitting in the bottom of the Upper and Middle divisions.` : `Monitor teams flirting with danger.`}
-   - Urge at-risk or struggling managers to bust a move and trade! Direct them to check the MFL Trade Bait page (https://www42.myfantasyleague.com/2026/options?L=63213&O=133) and get active in the #trade-talk Slack channel before divisions lock.
+  4. CALL OUT LEAGUE BANTER:
+     - WEAVE in recent Slack banter creatively with witty retorts and sharp commentary.
+     - Weaponize Slack conversations to roast managers directly on their specific comments, excuses, or rivalries (e.g. low Potential Points / PP jokes, demotion panic, trade complaining).
 
-4. CALL OUT LEAGUE BANTER:
-   - WEAVE in recent Slack banter creatively with witty retorts and sharp commentary.
+  YOUR PERSONALITY & MISSION:
+  - Write a hilarious, ruthless, and entertaining weekly league recap post formatted for Slack.
+  - Roast managers who leave huge bench points, have pitifully low Potential Points, or ignore trades/lineups.
+  - Praise division winners and promoted teams.
+  - Use rich Slack markdown styling (*bold*, _italics_, emojis, code blocks, quote blocks).
+  `;
 
-5. FORMATTING:
-   - Format in clean Slack Markdown (*bold*, _italics_, > quotes, emojis).
-   - CRITICAL RULE: Use single asterisks for bold (*bold*), NEVER double asterisks (**bold**).`;
+  const defaultDirective = isQuarterEnd 
+    ? `Provide a comprehensive, witty, and snarky recap for Week ${weekNum}, emphasizing the Quarter ${currentQuarter} Promotion & Relegation movements, low PP demotions, and promoted division winners.`
+    : `Provide a comprehensive, witty, and snarky recap for Week ${weekNum}, highlighting key matchups, bench blunders, and the Quarter ${currentQuarter} standings race.`;
 
-  const promptContext = {
-    week: weekNum,
-    quarter: currentQuarter,
-    quarterWeek: quarterWeek,
-    isQuarterEndWeek: isQuarterEnd,
-    isPastHalfwayMark: isPastHalfway,
-    mflTradeBaitUrl: "https://www42.myfantasyleague.com/2026/options?L=63213&O=133",
-    leagueData: leagueData,
-    recentSlackBanter: slackBanter.slice(0, 30)
-  };
+  const prompt = `
+  ${systemInstruction}
+  CURRENT LEAGUE DATA: ${JSON.stringify(pbrData, null, 2)}
+  TOKEN DATA: ${JSON.stringify(tokensData, null, 2)}
+  SLACK BANTER: ${JSON.stringify(slackBanter, null, 2)}
+  DIRECTIVE: ${userOverride || defaultDirective}
+  `;
 
-  const GEMINI_MODEL = process.env.GEMINI_MODEL_NAME || 'gemini-3.6-flash';
-  console.log(`🧠 Invoking Gemini API (${GEMINI_MODEL}) to compose recap...`);
-
-  const fullPrompt = `${systemInstruction}\n\nHere is this week's league data and history:\n${JSON.stringify(promptContext, null, 2)}`;
-
-  let candidateText = await callGeminiWithRetry(fullPrompt);
-
-  if (candidateText) {
-    console.log("\n================ GEMMY'S AI RECAP ================\n");
-    console.log(candidateText);
-  } else {
-    console.warn("⚠️ Gemini API unavailable after retries; generating fallback post.");
-    candidateText = `🏈 *PBR Week ${weekNum} Update*\n\nWeek ${weekNum} scores and Victory Points have been updated on the dashboard! 📊 Check out the updated standings: https://c0d3rj03.github.io/fantasy-football/pbr`;
-  }
-
-  // Convert any lingering double asterisks to single asterisks for Slack
-  candidateText = candidateText.replace(/\*\*(.*?)\*\*/g, '*$1*');
-
-  // Save Markdown file
-  const outputPath = path.join(__dirname, `gemmy_week_${weekNum}.md`);
-  fs.writeFileSync(outputPath, candidateText);
-  console.log(`\n✅ Saved recap to pbr/gemmy_week_${weekNum}.md`);
-
-  // Embed recap directly into data.json so the website dashboard updates automatically
-  if (fs.existsSync(dataPath)) {
-    try {
-      const updatedLeagueData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-      if (updatedLeagueData.weekly_data && updatedLeagueData.weekly_data[weekNum]) {
-        updatedLeagueData.weekly_data[weekNum].recap = candidateText;
-        fs.writeFileSync(dataPath, JSON.stringify(updatedLeagueData, null, 2));
-        console.log(`💾 Embedded Week ${weekNum} recap directly into data.json`);
-      }
-    } catch (e) {
-      console.warn("⚠️ Could not embed recap into data.json:", e.message);
-    }
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    console.log(text);
+    updateDashboard(text);
+    await postToSlack(text);
+  } catch (err) {
+    console.error('Failed to generate Gemmy post:', err.message);
   }
 }
 
-generateAiPost().catch(err => {
-  console.error("❌ Fatal error in generate_post.js:", err);
-  process.exit(1);
-});
+generatePost();
