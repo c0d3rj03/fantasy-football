@@ -2,8 +2,8 @@
   "leagueId": "25918",
   "seasonYear": "2026",
   "currentWeek": 4,
-  "isLive": true,
-  "lastUpdated": "2026-10-06T14:22:34.194Z",
+  "isLive": false,
+  "lastUpdated": "2026-10-07T06:30:47.178Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -457,6 +457,18 @@
       "rollingScore": 175.92,
       "singleScore": 52.76,
       "franchiseName": "Cream Of The Crop"
+    },
+    "0014": {
+      "week": 4,
+      "score": 181.12,
+      "name": "Ultimate Last Man Standing",
+      "eliminatedAt": "2026-10-07T06:30:46.955Z"
+    },
+    "0019": {
+      "week": 4,
+      "score": 196.08,
+      "name": "Purple Reign",
+      "eliminatedAt": "2026-10-07T06:30:47.178Z"
     }
   },
   "weeklyWinners": {
@@ -486,6 +498,11 @@
         "type": "FAAB",
         "amount": 10
       }
+    },
+    "4": {
+      "fid": "0002",
+      "name": "What smells?",
+      "score": 219.31
     }
   }
 }
