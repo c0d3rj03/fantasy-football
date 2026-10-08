@@ -3,7 +3,7 @@
   "seasonYear": "2026",
   "currentWeek": 4,
   "isLive": false,
-  "lastUpdated": "2026-10-07T06:30:47.178Z",
+  "lastUpdated": "2026-10-08T04:06:55.761Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -469,6 +469,18 @@
       "score": 196.08,
       "name": "Purple Reign",
       "eliminatedAt": "2026-10-07T06:30:47.178Z"
+    },
+    "0009": {
+      "week": 4,
+      "score": 209.8,
+      "name": "Team Glen H",
+      "eliminatedAt": "2026-10-08T04:06:55.626Z"
+    },
+    "0004": {
+      "week": 4,
+      "score": 212.01,
+      "name": "Ichabod Crane",
+      "eliminatedAt": "2026-10-08T04:06:55.761Z"
     }
   },
   "weeklyWinners": {
