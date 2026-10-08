@@ -23,8 +23,8 @@ jobs:
 
       - name: Run Commissioner Automation
         env:
-          LEAGUE_ID: ${{ secrets.LEAGUE_ID || '25918' }}
-          SEASON_YEAR: ${{ secrets.SEASON_YEAR || '2026' }}
+          LEAGUE_ID: '25918'
+          SEASON_YEAR: '2026'
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: |
@@ -37,3 +37,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add ultimate/data.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): end of week commish automation [skip ci]" && git push)
+
