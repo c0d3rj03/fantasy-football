@@ -81,6 +81,13 @@ node pbr/mfl_scores_fetcher.js
 ### Google Apps Script properties (outside GitHub)
 The Apps Script that dispatches the workflows on a schedule reads `GITHUB_PAT`, `OWNER` (`'c0d3rj03'`), and `REPO` (`'fantasy-football'`) from `PropertiesService.getScriptProperties()`.
 
+### Scheduling
+* **Don't rely on GitHub `schedule:` cron triggers.** They fired unreliably.
+* All timed runs are started externally by a Google Sheets Apps Script time trigger, which calls the GitHub API (`repository_dispatch` / `workflow_dispatch`).
+* Every workflow must therefore keep a `workflow_dispatch` and/or `repository_dispatch` trigger. Dispatch event types must be league-prefixed and unique (`pbr-…`, `ultimate-…`) so one league's trigger never starts another league's workflow.
+* A Claude scheduled routine may replace the Apps Script later.
+* The workflow YAMLs are known to need cleanup; see each league's `CLAUDE.md` Known Issues.
+
 ### League IDs
 League IDs never change, and each league has its own code, so the ID lives in that league's folder:
 * Ultimate: `25918`. PBR: `63213`.

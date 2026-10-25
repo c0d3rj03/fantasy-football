@@ -48,7 +48,7 @@ MFL computes all player scores (rounded to 2 decimals). For reference:
 | Rushing yards, RB/WR/TE | 1 pt per 10 yds |
 | Receiving yards (all) | 1 pt per 10 yds |
 | Passing TD | 0-39 yds: 2 · 40-59 yds: 4 · 60+ yds: 6 |
-| Rushing TD | 0-14 yds: 4 · 15-39 yds: 5 · 40+ yds: 6 (bylaws table reads "60+"; see Open Questions) |
+| Rushing TD | 0-14 yds: 4 · 15-39 yds: 5 · 40+ yds: 6 (bylaws table typo reads "60+"; MFL `options?L=63213&O=09` confirms 40+) |
 | Receiving TD | 0-39 yds: 4 · 40-59 yds: 5 · 60+ yds: 6 |
 | Receptions | RB 0.75 · WR/QB 1.0 · TE 1.5 for receptions 1-4, then 1.0 |
 | Rushing attempt (all) | 0.10 |
@@ -89,7 +89,7 @@ Standings = VP for the current quarter. MFL tracks W-L-T from H2H games; the in-
 * Forfeited picks are the ones the team actually owns on the day of the token draw. Teams can acquire a pick up to the day before.
 * **No pick in that round next year:** forfeit the following year's pick in that round (within tradeable years). If that's missing too, forfeit the next earlier round, then repeat the check. If nothing is eligible in the next two years, go to year 3 of the original round.
 * **Several picks in that round:** forfeit the most recently acquired one.
-* **Double relegation** (Upper → Middle → Lower in one season): forfeit next year's 2nd instead. (See Open Questions.)
+* There is **no** extra double-relegation penalty. It was removed in 2023 and is struck out in the bylaws.
 * Forfeited picks become token-draw prizes (see §9).
 
 ---
@@ -259,10 +259,16 @@ From `reference/PBR Commish Actions.xlsx`:
 
 ---
 
-## Open Questions (bylaws inconsistencies to confirm with the commish)
+## Bylaws Notes
 
-1. **Rushing TD 40+:** the bylaws table lists 0-14, 15-39, and "60+", which leaves 40-59 undefined. It is probably 40+ = 6 pts; check MFL scoring settings.
-2. **Double-relegation penalty:** the 2023 revision history says it was removed, but the rule is still in the Relegation Penalties section.
-3. **Prize pool split:** the Summary says $700 current / $500 dynasty. The Prize Payouts section says 70/30 of $1,200 but itemizes about $790 + $410.
-4. **"(3)" footnote** on the Middle Division relegation penalty has no matching note.
-5. **Stale years:** the Gift Table (2026/2027 picks), Divisions list, Draft Order table, and League Calendar still show 2025-era data.
+**Reading the bylaws .docx:** struck-through text has been removed from the rules. Plain-text extraction drops the strike formatting, so check run formatting (`w:strike`) before treating a passage as current.
+
+**Resolved (2026-10-25):**
+* Rushing TD tiers are 0-14 / 15-39 / **40+**. The bylaws table's "60+" is a typo.
+* The double-relegation penalty was removed (struck out).
+* The 2025-era tables (Divisions, Draft Order, Gift Table, League Calendar) are historical reference only. The bylaws need a refresh. Live divisions and draft order come from MFL and `data.json`.
+
+**Still open (bylaws cleanup):**
+1. **Prize pool split:** the Summary says $700 current / $500 dynasty. The Prize Payouts section says 70/30 of $1,200 but itemizes about $790 + $410.
+2. **"(3)" footnote** on the Middle Division relegation penalty has no matching note.
+3. **Bylaws typo:** the rushing TD table needs "60+" changed to "40+".
