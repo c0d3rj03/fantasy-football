@@ -14,7 +14,7 @@ Full league rules (scoring, eliminations, roster progression, FAAB, prizes) are 
 
 Automates commissioner administration and provides a web dashboard for a 24-team **Ultimate Guillotine Fantasy Football League** hosted on MyFantasyLeague (MFL).
 
-* **League Commissioner (`c0d3rj03` / Joe):** Uses automated scripts and GitHub Actions to run weekly eliminations, execute mandatory roster drops (`C=MANDROP`) on MFL, and log prize winners.
+* **League Commissioner (`c0d3rj03` / Joe):** Uses automated scripts and GitHub Actions to record weekly eliminations and log prize winners. From Week 7 (2026) MFL makes the guillotine cut and empties the roster itself; the scripts never call `C=MANDROP`.
 * **24 League Contenders:** Use the GitHub Pages dashboard to track live rolling 2-week scores, see weekly high-score prize winners, and view eliminated ("axed") teams in the graveyard UI.
 
 ---
@@ -24,13 +24,15 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 0. **`ultimate/config.js`**: Single source for `LEAGUE_ID`, `SEASON_YEAR` (env `SEASON_YEAR` overrides, default `'2026'`), and `MFL_HOST`. Every script imports from here.
 1. **`ultimate/mfl_commish_client.js`**: Takes `seasonYear` and `leagueId` as constructor parameters (throws if missing). Authenticates via `https://www42.myfantasyleague.com/2026/login`, captures the `MFL_USER_ID` session cookie, and executes API requests (`apiRequest()`) or POST form submissions (`submitCommishForm()`).
 2. **`ultimate/mfl_scores_fetcher.js`**: Fetches live scores from MFL, updates completed player points (`doneScore`) and remaining players (`ytp`), updates single-week scores, and handles live-to-final week transitions.
-3. **`ultimate/commish_automation.js`**:
-   * Reads `data.json`.
-   * Calculates rolling 2-week sums for active teams.
-   * Cuts bottom 2 teams (W2-W6) or bottom 1 team (W7-W16).
-   * Submits `C=MANDROP` to MFL for cut franchise IDs.
-   * Logs the weekly high-score winner to `data.weeklyWinners`.
-   * Sets `isLive = false` and writes updated `data.json`.
+3. **`ultimate/commish_automation.js`** (no MFL writes, no login; only a read-only `rosters` export):
+   * Reads `data.json` and refuses to run if any safeguard fails (see below), without writing anything.
+   * Rolling 2-week score = `weeklySingleScores[W-1] + weeklySingleScores[W]` (MFL final results, never live points).
+   * Cut count: 2 teams (W2–W6), 1 team (W7–W16), none in W17.
+   * Confirms MFL's own cut: the newly emptied rosters must exactly match the lowest rolling score(s).
+   * Records `eliminatedTeams[fid] = {eliminatedWeek, rollingScore, singleScore, franchiseName}` and `weeklyWinners[W] = {franchiseId, franchiseName, score, prize}` (prize tiers from RULES.md; no weekly prize in W17).
+   * Sets `isLive = false` and writes `data.json`.
+   * **Safeguards:** (1) the week was already processed → logs and exits 0 with no write; (2) any active team still has players yet to play or in game → error; (3) `weeklySingleScores[currentWeek]` is missing for an active team → error, run the daily sync first; (4) MFL has not emptied any new roster yet, or emptied a different team → error, rerun later or review.
+   * `processEndOfWeek(data, emptyRosterFids)` is exported and pure, so it can be tested without network access.
 4. **`ultimate/data.json`**: Single source of truth for league state (`currentWeek`, `isLive`, `franchises`, `eliminatedTeams`, `weeklySingleScores`, `weeklyWinners`, `liveDetails`).
 
 ### Automation Trigger Pipeline
@@ -54,7 +56,8 @@ Google Apps Script (Code.gs)
 
 ### Working
 * `mfl_commish_client.js` authenticates cleanly and maintains session cookies.
-* `commish_automation.js` correctly calculates rolling 2-week scores, identifies the bottom team(s), issues `C=MANDROP` roster cuts on MFL, logs high-score winners, and writes `data.json`.
+* `commish_automation.js` (rewritten 2026-10-25) records the cut and weekly winner in the dashboard format, after checking the four safeguards. Tested offline against a copy of `data.json`; not yet run in Actions.
+* `ultimate_endweek.yml` no longer passes `MFL_USERNAME` / `MFL_PASSWORD`, since the script does not log in.
 * `.github/workflows/ultimate_dailyscore.yml` and `.github/workflows/ultimate_endweek.yml` run via `workflow_dispatch`. The repository_dispatch types were added 2026-10-25; the Apps Script must send them (see Known Issues).
 * Google Apps Script correctly fetches properties from `PropertiesService`.
 
@@ -64,21 +67,21 @@ Google Apps Script (Code.gs)
 
 State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-of-week workflow has not committed since 2026-10-08; Weeks 5 and 6 were handled manually.
 
-### Critical: do not run `ultimate_endweek.yml` until #2–#4 and #10 are fixed
+### End-of-week automation (resolved 2026-10-25)
 1. **(Data fixed 2026-10-25.)** `eliminatedTeams` was rebuilt from a read-only MFL `rosters` export (10 empty rosters, 2 per week W2–W6), checked against the commissioner's published results sheet. `weeklyWinners` W4 was converted to the UI format and W5/W6 were added. Original problem: **`data.json` `eliminatedTeams` was out of sync with the league.** It lists 8 teams, all from Weeks 2–4. Four are logged as Week 4 cuts from two separate runs (2026-10-07 and 2026-10-08, both with `currentWeek` still 4). `0004` (Ichabod Crane) is marked eliminated but scored in Weeks 5 and 6, so it is still alive. Teams actually cut after Weeks 5 and 6 (for example `0020`, plus the teams with Week 6 scores but no Week 7 activity) are missing. A Tuesday run would treat eliminated teams as active, likely "cut" one with a 0 score, and MANDROP the wrong franchise. Reconcile before the next run: an eliminated team has 0 players on its MFL roster, so a read-only `export?TYPE=rosters` call identifies who is alive. Rebuild `eliminatedTeams` from that and the Weeks 2–6 results.
-2. **No idempotency guard.** `commish_automation.js` never records which week it processed. Running it twice for the same `currentWeek` cuts again (this is how Week 4 got four cuts in `data.json`). It should refuse to run if `eliminatedTeams` already has entries for `currentWeek`.
-3. **Wrong-week risk.** It uses `data.currentWeek`, which the fetcher sets from MFL `liveScoring.week`. If the fetcher runs after MFL rolls the week over, the commish run processes the new week with no scores.
-4. **MANDROP result is never checked.** `submitCommishForm()` ignores `res.ok` and the HTML response. A MANDROP can legitimately fail when the commissioner already dropped the roster by hand, so failure is not an error by itself. The script should instead confirm the franchise's roster is empty (via `rosters` export) after the drop, and warn only if players remain. The `FRANCHISE_ID` form field name is unverified against MFL's actual form.
+2. **(Fixed: safeguard 1.) No idempotency guard.** `commish_automation.js` never records which week it processed. Running it twice for the same `currentWeek` cuts again (this is how Week 4 got four cuts in `data.json`). It should refuse to run if `eliminatedTeams` already has entries for `currentWeek`.
+3. **(Fixed: safeguards 2 and 3.) Wrong-week risk.** It uses `data.currentWeek`, which the fetcher sets from MFL `liveScoring.week`. If the fetcher runs after MFL rolls the week over, the commish run processes the new week with no scores.
+4. **(Moot: the script no longer calls MANDROP; MFL makes the cut, and safeguard 4 checks it.) MANDROP result is never checked.** `submitCommishForm()` ignores `res.ok` and the HTML response. A MANDROP can legitimately fail when the commissioner already dropped the roster by hand, so failure is not an error by itself. The script should instead confirm the franchise's roster is empty (via `rosters` export) after the drop, and warn only if players remain. The `FRANCHISE_ID` form field name is unverified against MFL's actual form.
 
 ### Rules mismatches
 5. **Week 6 cut count (fixed 2026-10-25).** The code and RULES.md prose cut 2 teams only through Week 5. Confirmed by the commissioner and the rules doc: **2 cuts after Weeks 2–6**, 1 after Weeks 7–16. Both are corrected.
-6. **No elimination tiebreaker.** Ties in rolling score are ordered arbitrarily by `Array.sort`. RULES.md defines none; decide one (for example lower single-week score, then season total).
-7. **Weekly winner.** Ties are not handled (the first franchise seen wins). It also awards a "winner" for Week 17, which has no weekly prize, and it does not record the prize amount or type from RULES.md.
+6. **No elimination tiebreaker.** Ties in rolling score are ordered arbitrarily by `Array.sort`. The script now logs a warning on a tie at the cut line and relies on MFL's choice (safeguard 4 would flag a disagreement). RULES.md defines none; decide one (for example lower single-week score, then season total).
+7. **Weekly winner (mostly fixed).** The prize from RULES.md is now recorded and Week 17 gets no weekly winner. A tie for high score is still not resolved: the script logs a warning and records the first team.
 8. **Week 17 finish not implemented.** Nothing computes 1st/2nd/3rd from the final rolling scores.
 9. **Prize table conflict in the reference docx.** Its weekly table shows $10/$10/$20/$40 and 3rd place $60, while its prose (and RULES.md) say $15/$30/$50 and $85. The prose matches the $1,115 pool, so RULES.md is treated as correct.
 
 ### Data and dashboard
-10. **Schema mismatch between script and UI (existing data fixed 2026-10-25; the script still writes the wrong shape).** `commish_automation.js` writes `eliminatedTeams[fid] = {week, score, name}` and `weeklyWinners[w] = {fid, name, score}`, but `index.html` reads `eliminatedWeek` and `franchiseName`. So Week 4's cuts and winner are broken on the dashboard (Week 4 teams vanish from every week, and the winner name shows `undefined`). Older entries use `{eliminatedWeek, rollingScore, singleScore, franchiseName}` and `{franchiseId, franchiseName, score, prize}`; standardize on that.
+10. **(Fixed 2026-10-25: data repaired and the script now writes the UI shape.) Schema mismatch between script and UI.** `commish_automation.js` writes `eliminatedTeams[fid] = {week, score, name}` and `weeklyWinners[w] = {fid, name, score}`, but `index.html` reads `eliminatedWeek` and `franchiseName`. So Week 4's cuts and winner are broken on the dashboard (Week 4 teams vanish from every week, and the winner name shows `undefined`). Older entries use `{eliminatedWeek, rollingScore, singleScore, franchiseName}` and `{franchiseId, franchiseName, score, prize}`; standardize on that.
 11. **Single-week scores depend on manual MFL adjustments.** The fetcher derives `single(W) = MFL(W) − single(W−1)`, which is only right if the prior week's score was entered as a starting adjustment on MFL. Without it, `Math.max(0, …)` hides the error. This is why the `adjustScores` push (Next Steps #1) matters.
 12. **Fetcher starter filter.** Players with no `status` are counted as starters, which may include bench players if MFL omits the field.
 13. **Fetcher rewrites `data.json` from scratch.** Only `eliminatedTeams` and `weeklyWinners` are carried over; any other top-level key added later is lost.

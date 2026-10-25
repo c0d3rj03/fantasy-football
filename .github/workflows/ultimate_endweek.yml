@@ -32,8 +32,6 @@ jobs:
       - name: Run Commissioner Automation
         env:
           SEASON_YEAR: '2026'
-          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
-          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: |
           cd ultimate
           node commish_automation.js
