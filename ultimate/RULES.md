@@ -40,10 +40,10 @@
 ### Rolling Two-Week Scoring & Eliminations
 * **Elimination Metric:** Every team's elimination score is their **rolling two-week cumulative sum** (e.g., Week 2 Score = W1 + W2; Week 3 = W2 + W3; Week 4 = W3 + W4).
 * **Elimination Schedule (Chop Counts):**
-  * **Weeks 2–5:** Bottom **2 teams** eliminated each week (8 teams cut across W2–W5).
-  * **Weeks 6–16:** Bottom **1 team** eliminated each week (11 teams cut across W6–W16).
+  * **Weeks 2–6:** Bottom **2 teams** eliminated each week (10 teams cut across W2–W6).
+  * **Weeks 7–16:** Bottom **1 team** eliminated each week (10 teams cut across W7–W16).
   * **Week 17:** Final 4 teams compete. No cuts; final rolling scores determine 1st, 2nd, and 3rd place cash finishers.
-* **Roster Drops:** When a team is eliminated, all rostered players are cleared to free agency (`C=MANDROP` on MFL) for Wednesday waivers.
+* **Roster Drops:** When a team is eliminated, all rostered players are cleared to free agency (`C=MANDROP` on MFL) for Wednesday waivers. An eliminated team therefore has **0 players** on its MFL roster; use that (MFL `rosters` export) to confirm who is eliminated.
 
 ### FAAB & Waiver Rules
 * **Budget:** $200 starting FAAB.

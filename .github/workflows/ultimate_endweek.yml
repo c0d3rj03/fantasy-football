@@ -1,7 +1,15 @@
 name: Ultimate Guillotine End-of-Week Commissioner Actions
 
+# Started externally by the Google Apps Script (no push/schedule triggers).
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [ultimate-endweek-trigger]
+
+# Both Ultimate workflows commit ultimate/data.json; never run them at the same time.
+concurrency:
+  group: ultimate-data
+  cancel-in-progress: false
 
 jobs:
   run-commish-automation:
@@ -23,7 +31,6 @@ jobs:
 
       - name: Run Commissioner Automation
         env:
-          LEAGUE_ID: '25918'
           SEASON_YEAR: '2026'
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
@@ -36,5 +43,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add ultimate/data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): end of week commish automation [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): end of week commish automation [skip ci]" && git pull --rebase origin main && git push)
 

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import MflCommishClient from './mfl_commish_client.js';
+import { LEAGUE_ID, SEASON_YEAR } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +15,7 @@ const __dirname = path.dirname(__filename);
 export async function runCommishAutomation() {
   console.log('🏈 Starting Tuesday 5:00 AM ET Commissioner Automation...');
 
-  const client = new MflCommishClient();
+  const client = new MflCommishClient(SEASON_YEAR, LEAGUE_ID);
   await client.login();
 
   // Load current data.json
@@ -32,12 +33,12 @@ export async function runCommishAutomation() {
   if (!data.weeklyWinners) data.weeklyWinners = {};
 
   // 1. Determine Elimination Count based on League Rules
-  // Weeks 2-5: Cut bottom 2 teams
-  // Weeks 6-16: Cut bottom 1 team
+  // Weeks 2-6: Cut bottom 2 teams
+  // Weeks 7-16: Cut bottom 1 team
   let cutCount = 0;
-  if (currentWeek >= 2 && currentWeek <= 5) {
+  if (currentWeek >= 2 && currentWeek <= 6) {
     cutCount = 2;
-  } else if (currentWeek >= 6 && currentWeek <= 16) {
+  } else if (currentWeek >= 7 && currentWeek <= 16) {
     cutCount = 1;
   }
 

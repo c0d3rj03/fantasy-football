@@ -1,13 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { LEAGUE_ID, SEASON_YEAR, MFL_HOST } from './config.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const LEAGUE_ID = process.env.LEAGUE_ID || '25918';
-const SEASON_YEAR = process.env.SEASON_YEAR || '2026';
-const MFL_BASE_URL = `https://www42.myfantasyleague.com/${SEASON_YEAR}/export`;
+const MFL_BASE_URL = `https://${MFL_HOST}/${SEASON_YEAR}/export`;
 
 async function fetchMFL(type, params = {}) {
   const query = new URLSearchParams({

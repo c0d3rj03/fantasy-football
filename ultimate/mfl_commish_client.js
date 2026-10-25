@@ -1,15 +1,15 @@
 import querystring from 'querystring';
+import { MFL_HOST } from './config.js';
 
 /**
  * Universal MFL Commissioner API & Web Form Client
  * Supports standard JSON API imports/exports and authenticated web form POSTs.
  */
 export class MflCommishClient {
-  constructor(
-    seasonYear = process.env.SEASON_YEAR || '2026',
-    leagueId = process.env.LEAGUE_ID || '25918',
-    host = process.env.MFL_HOST || 'www42.myfantasyleague.com'
-  ) {
+  constructor(seasonYear, leagueId, host = MFL_HOST) {
+    if (!seasonYear || !leagueId) {
+      throw new Error('MflCommishClient requires seasonYear and leagueId (import them from config.js).');
+    }
     this.seasonYear = seasonYear;
     this.leagueId = leagueId;
     this.host = host;

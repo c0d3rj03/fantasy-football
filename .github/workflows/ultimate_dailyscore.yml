@@ -1,12 +1,15 @@
 name: Ultimate Guillotine Live Sync
 
+# Started externally by the Google Apps Script (no push/schedule triggers).
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - 'ultimate/**'
+  repository_dispatch:
+    types: [ultimate-sync-trigger]
+
+# Both Ultimate workflows commit ultimate/data.json; never run them at the same time.
+concurrency:
+  group: ultimate-data
+  cancel-in-progress: false
 
 jobs:
   sync-scores:
@@ -28,8 +31,7 @@ jobs:
 
       - name: Run MFL Scores Fetcher
         env:
-          LEAGUE_ID: ${{ secrets.LEAGUE_ID || '25918' }}
-          SEASON_YEAR: ${{ secrets.SEASON_YEAR || '2026' }}
+          SEASON_YEAR: '2026'
         run: |
           node ultimate/mfl_scores_fetcher.js
 
@@ -38,4 +40,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add ultimate/data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): automated score update [skip ci]" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ultimate): automated score update [skip ci]" && git pull --rebase origin main && git push)

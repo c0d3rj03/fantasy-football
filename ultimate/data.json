@@ -495,28 +495,40 @@
       "franchiseName": "Cream Of The Crop"
     },
     "0014": {
-      "week": 4,
-      "score": 181.12,
-      "name": "Ultimate Last Man Standing",
-      "eliminatedAt": "2026-10-07T06:30:46.955Z"
+      "eliminatedWeek": 4,
+      "rollingScore": 181.12,
+      "singleScore": 89.66,
+      "franchiseName": "Ultimate Last Man Standing"
     },
     "0019": {
-      "week": 4,
-      "score": 196.08,
-      "name": "Purple Reign",
-      "eliminatedAt": "2026-10-07T06:30:47.178Z"
+      "eliminatedWeek": 4,
+      "rollingScore": 196.08,
+      "singleScore": 94.01,
+      "franchiseName": "Purple Reign"
     },
     "0009": {
-      "week": 4,
-      "score": 209.8,
-      "name": "Team Glen H",
-      "eliminatedAt": "2026-10-08T04:06:55.626Z"
+      "eliminatedWeek": 5,
+      "rollingScore": 181.34,
+      "singleScore": 87.8,
+      "franchiseName": "Team Glen H"
     },
-    "0004": {
-      "week": 4,
-      "score": 212.01,
-      "name": "Ichabod Crane",
-      "eliminatedAt": "2026-10-08T04:06:55.761Z"
+    "0020": {
+      "eliminatedWeek": 5,
+      "rollingScore": 195.69,
+      "singleScore": 81.27,
+      "franchiseName": "Moore Bijan Mustard, please!"
+    },
+    "0015": {
+      "eliminatedWeek": 6,
+      "rollingScore": 182.87,
+      "singleScore": 85.64,
+      "franchiseName": "Iron Wolves"
+    },
+    "0018": {
+      "eliminatedWeek": 6,
+      "rollingScore": 183.44,
+      "singleScore": 72.31,
+      "franchiseName": "Big Blue Bus"
     }
   },
   "weeklyWinners": {
@@ -548,9 +560,31 @@
       }
     },
     "4": {
-      "fid": "0002",
-      "name": "What smells?",
-      "score": 219.31
+      "franchiseId": "0002",
+      "franchiseName": "What smells?",
+      "score": 219.31,
+      "prize": {
+        "type": "FAAB",
+        "amount": 10
+      }
+    },
+    "5": {
+      "franchiseId": "0021",
+      "franchiseName": "Chico's Bail Bonds",
+      "score": 186.23,
+      "prize": {
+        "type": "cash",
+        "amount": 15
+      }
+    },
+    "6": {
+      "franchiseId": "0001",
+      "franchiseName": "Tight Ends",
+      "score": 200.35,
+      "prize": {
+        "type": "cash",
+        "amount": 15
+      }
     }
   }
 }
