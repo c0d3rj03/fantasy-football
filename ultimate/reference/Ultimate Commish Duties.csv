@@ -1,0 +1,33 @@
+MFL page,Description,,,,,,,,
+https://docs.google.com/spreadsheets/d/1Mw2AkRFFQuVeidCz1WwukDT0aR7tc3rNdakzWKmj1eg/edit#gid=1833636522,"Open Weekly Scoring Sheet. In MFL tab, update week # just finished in A1. Pulls final results. (This will be phased out in lieu of GitHub actions page)",,,,,,,,
+https://www.myfantasyleague.com/2026/options?L=25918&O=93,"Turn off Abilities on eliminated team(s). Turn on ability for commish to "" No, the commissioner will have the ability to view pending owner-initiated transactions.""",,,,,,,,
+,Turn off ability to view pending transactions.,,,,,,,,
+https://www.myfantasyleague.com/2026/select_franchise?L=25918&O=257,"Drop all players from eliminated team(s). If commish still in contest, turn off commish ability above. Remove abilities from eliminated team(s)",,,,,,,,
+https://www42.myfantasyleague.com/2026/csetup?L=25918&C=MANDROP,This replaces rows 3 & 5 now. Each week MFL will automatically cut a team starting week 2. This needs to happen after the double-cut weeks 2 through 6.,,,,,,,,
+https://www.myfantasyleague.com/2026/csetup?L=25918&C=BBIDWAIV,Remove all FAAB from eliminated team(s) - OPTIONAL not doing for 2026,,,,,,,,
+https://www.myfantasyleague.com/2026/csetup?L=25918&C=BBIDWAIV,Award FAAB prize if week 1-4 add to FAAB,,,,,,,,
+https://www.myfantasyleague.com/2026/csetup?L=25918&C=GENERAL,"Check rules, Increase roster sizes if appropriate",,,,,,,,
+https://www.myfantasyleague.com/2026/csetup?L=25918&C=LINEUP,"Check rules, Increase starters if appropriate (remember to also increase max starters)",,,,,,,,
+https://docs.google.com/spreadsheets/d/1D9fu1A9o7_9bnJ9K2T2uDjzr3Ki6UmWHh7oAsZsxsq4/edit#gid=971123009,Add single-week scores from last week to upcoming week,,,,,,,,
+https://www.myfantasyleague.com/2026/csetup?L=25918&C=FSCOREADJ,,,,,,,,,
+https://docs.google.com/spreadsheets/d/1KmPIkhyPNnYcFWjcbgGVszR6a_wGi2eyELbGqvit7uQ/edit?gid=800164005#gid=800164005,"Update ""Current"" week in Weekly Scoring Sheet, in Double and Single-Week tabs",,,,,,,,
+,Send out GroupMe message. Guillotine gif (meme who is out). Comment - last week high score and prize & and roster/starting lineup changes,,,,,,,,
+#REF!,#REF!,,,,,,,,
+,Week,Teams Alive,Roster Size,Starters / Bench,Number of Roster Spots,Min Starters,Min Total Starters,Max Starters,MaxTotal Starters
+,1,24,8,"1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 0 Bench",8,"1 QB, 2 RB, 2 WR, 1 TE",8,"1 QB, 4 RB, 4 WR, 3 TE",8
+,2,24,9,"1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench",9,"1 QB, 2 RB, 2 WR, 1 TE",8,"1 QB, 4 RB, 4 WR, 3 TE",8
+,3,22,9,"1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench",9,"1 QB, 2 RB, 2 WR, 1 TE",8,"1 QB, 4 RB, 4 WR, 3 TE",8
+,4,20,10,"1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 2 Bench",10,"1 QB, 2 RB, 2 WR, 1 TE",8,"1 QB, 4 RB, 4 WR, 3 TE",8
+,5,18,10,"1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 2 Bench",10,"1 QB, 2 RB, 2 WR, 1 TE",8,"1 QB, 4 RB, 4 WR, 3 TE",8
+,6,16,11,"1 QB, 2 RB, 2 WR, 1 TE, 3 FLX, 2 Bench",11,"1 QB, 2 RB, 2 WR, 1 TE",9,"1 QB, 5 RB, 5 WR, 4 TE",9
+,7,14,11,"1 QB, 2 RB, 2 WR, 1 TE, 3 FLX, 2 Bench",11,"1 QB, 2 RB, 2 WR, 1 TE",9,"1 QB, 5 RB, 5 WR, 4 TE",9
+,8,13,12,"1 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",12,"1 QB, 2 RB, 3 WR, 1 TE",10,"1 QB, 5 RB, 6 WR, 4 TE",10
+,9,12,12,"1 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",12,"1 QB, 2 RB, 3 WR, 1 TE",10,"1 QB, 5 RB, 6 WR, 4 TE",10
+,10,11,13,"2 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",13,"2 QB, 2 RB, 3 WR, 1 TE",11,"2 QB, 5 RB, 6 WR, 4 TE",11
+,11,10,13,"2 QB, 2 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",13,"2 QB, 2 RB, 3 WR, 1 TE",11,"2 QB, 5 RB, 6 WR, 4 TE",11
+,12,9,14,"2 QB, 3 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",14,"2 QB, 3 RB, 3 WR, 1 TE",12,"2 QB, 6 RB, 6 WR, 4 TE",12
+,13,8,14,"2 QB, 3 RB, 3 WR, 1 TE, 3 FLX, 2 Bench",14,"2 QB, 3 RB, 3 WR, 1 TE",12,"2 QB, 6 RB, 6 WR, 4 TE",12
+,14,7,15,"2 QB, 3 RB, 3 WR, 2 TE, 3 FLX, 2 Bench",15,"2 QB, 3 RB, 3 WR, 2 TE",13,"2 QB, 6 RB, 6 WR, 5 TE",13
+,15,6,15,"2 QB, 3 RB, 3 WR, 2 TE, 3 FLX, 2 Bench",15,"2 QB, 3 RB, 3 WR, 2 TE",13,"2 QB, 6 RB, 6 WR, 5 TE",13
+,16,5,16,"2 QB, 3 RB, 3 WR, 2 TE, 4 FLX, 2 Bench",16,"2 QB, 3 RB, 3 WR, 2 TE",14,"2 QB, 7 RB, 7 WR, 6 TE",14
+,17,4,16,"2 QB, 3 RB, 3 WR, 2 TE, 4 FLX, 2 Bench",16,"2 QB, 3 RB, 3 WR, 2 TE",14,"2 QB, 7 RB, 7 WR, 6 TE",14
