@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 7,
   "lastCompletedWeek": 7,
-  "lastUpdated": "2026-10-28T00:32:33.069Z",
+  "lastUpdated": "2026-10-28T03:17:54.114Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -547,6 +547,12 @@
       "rollingScore": 183.44,
       "singleScore": 72.31,
       "franchiseName": "Big Blue Bus"
+    },
+    "0013": {
+      "eliminatedWeek": 7,
+      "rollingScore": 228.82,
+      "singleScore": 76.39,
+      "franchiseName": "DMC Gonna Run Thru U"
     }
   },
   "weeklyWinners": {
@@ -599,6 +605,15 @@
       "franchiseId": "0001",
       "franchiseName": "Tight Ends",
       "score": 200.35,
+      "prize": {
+        "type": "cash",
+        "amount": 15
+      }
+    },
+    "7": {
+      "franchiseId": "0001",
+      "franchiseName": "Tight Ends",
+      "score": 212.66,
       "prize": {
         "type": "cash",
         "amount": 15
