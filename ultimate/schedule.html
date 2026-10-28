@@ -64,6 +64,11 @@
     .badge-cut-1 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 6px; border-radius: 3px; font-weight: 800; font-size: 0.72rem; }
     
     .badge-change { background: rgba(255, 255, 255, 0.08); color: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-weight: 700; font-size: 0.72rem; }
+    .change-none { color: #64748b; font-size: 0.72rem; }
+
+    /* Roster / lineup increases (green, distinct from the red/gold cut badges) */
+    .badge-increase { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35); padding: 2px 6px; border-radius: 3px; font-weight: 800; font-size: 0.72rem; white-space: nowrap; }
+    .slot-new { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35); padding: 0 4px; border-radius: 3px; font-weight: 800; }
 
     @media (max-width: 600px) {
       header { flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -86,11 +91,11 @@
       <div class="header-right">
         <div class="metric-item">
           <span class="metric-label">Current:</span>
-          <span class="metric-val" id="hdrCurrentWeek">Week 3</span>
+          <span class="metric-val" id="hdrCurrentWeek">—</span>
         </div>
         <div class="metric-item">
           <span class="metric-label">Teams Remaining:</span>
-          <span class="metric-val" id="hdrTeamsRemaining">22</span>
+          <span class="metric-val" id="hdrTeamsRemaining">—</span>
         </div>
       </div>
     </header>
@@ -116,7 +121,7 @@
           <th>NFL Wk</th>
           <th>Teams Start</th>
           <th>Roster Size</th>
-          <th class="col-starters">Starting Lineup Configuration</th>
+          <th class="col-starters">Lineup Composition</th>
           <th>Post-Week Roster Changes</th>
           <th>Teams Cut</th>
           <th>Teams Left</th>
@@ -132,7 +137,7 @@
 
   <script>
     const SCHEDULE_DATA = [
-      { week: 1, start: 24, roster: 8, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX (0 Bench)", change: "+1 Bench Slot", cut: 0, left: 24 },
+      { week: 1, start: 24, roster: 8, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 0 Bench", change: "+1 Bench Slot", cut: 0, left: 24 },
       { week: 2, start: 24, roster: 9, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench", change: "None", cut: 2, left: 22 },
       { week: 3, start: 22, roster: 9, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 1 Bench", change: "+1 Bench Slot", cut: 2, left: 20 },
       { week: 4, start: 20, roster: 10, starters: "1 QB, 2 RB, 2 WR, 1 TE, 2 FLX, 2 Bench", change: "None", cut: 2, left: 18 },
@@ -152,40 +157,68 @@
     ];
 
     async function init() {
-      let completedWeek = 2;
-      let remainingCount = 22;
-
+      let data = null;
       try {
-        const res = await fetch('data.json');
-        if (res.ok) {
-          const data = await res.json();
-          completedWeek = data.lastCompletedWeek ?? data.currentWeek ?? 2;
-          
-          if (data.aliveFranchiseIds) {
-            remainingCount = data.aliveFranchiseIds.length;
-          } else if (data.eliminatedTeams && data.franchises) {
-            const active = Object.keys(data.franchises).filter(fid => {
-              const elim = data.eliminatedTeams[fid];
-              return !elim || elim.eliminatedWeek >= completedWeek;
-            });
-            remainingCount = active.length;
-          }
-        }
+        const res = await fetch('data.json', { cache: 'no-store' });
+        if (res.ok) data = await res.json();
       } catch (e) {
         console.warn('Could not load data.json');
       }
 
-      // Schedule page highlights the UPCOMING active week
-      const upcomingWeek = Math.min(completedWeek + 1, 17);
+      // Highlight the week whose roster/lineup is in effect next:
+      //   live phase    -> the MFL week being played (currentWeek)
+      //   results phase -> the week after the last final week (Tuesday: the week being set up)
+      // Without data.json, highlight nothing rather than guess.
+      let activeWeek = null;
+      let weekTag = '';
+      let remainingCount = null;
+      if (data) {
+        const completedWeek = data.lastCompletedWeek ?? Math.max(0, (data.currentWeek ?? 1) - 1);
+        if (data.phase === 'live') {
+          activeWeek = data.currentWeek;
+          weekTag = 'LIVE';
+        } else if (completedWeek >= 17) {
+          activeWeek = 17;
+          weekTag = 'FINAL';
+        } else {
+          activeWeek = completedWeek + 1;
+          weekTag = 'UPCOMING';
+        }
 
-      document.getElementById('hdrCurrentWeek').textContent = `Week ${upcomingWeek}`;
-      document.getElementById('hdrTeamsRemaining').textContent = `${remainingCount}`;
+        // Alive going into activeWeek = never cut, or cut in activeWeek or later.
+        if (data.franchises) {
+          const elimTeams = data.eliminatedTeams || {};
+          remainingCount = Object.keys(data.franchises).filter(fid => {
+            const elim = elimTeams[fid];
+            return !elim || elim.eliminatedWeek >= activeWeek;
+          }).length;
+        }
+      }
+
+      document.getElementById('hdrCurrentWeek').textContent = activeWeek ? `Week ${activeWeek}` : '—';
+      document.getElementById('hdrTeamsRemaining').textContent = remainingCount ?? '—';
 
       const tbody = document.getElementById('scheduleTableBody');
       tbody.innerHTML = '';
 
-      SCHEDULE_DATA.forEach(row => {
-        const isUpcomingActive = (row.week === upcomingWeek);
+      SCHEDULE_DATA.forEach((row, i) => {
+        const isUpcomingActive = (row.week === activeWeek);
+        const prev = SCHEDULE_DATA[i - 1];
+
+        // Roster size: badge the week it grows.
+        const rosterCell = (prev && row.roster > prev.roster)
+          ? `<span class="badge-increase">${row.roster} ▲+${row.roster - prev.roster}</span>`
+          : `<strong>${row.roster}</strong>`;
+
+        // Lineup: highlight each slot that differs from the previous week.
+        const prevSlots = prev ? prev.starters.split(', ') : null;
+        const lineupCell = row.starters.split(', ')
+          .map(slot => (prevSlots && !prevSlots.includes(slot)) ? `<span class="slot-new">${slot}</span>` : slot)
+          .join(', ');
+
+        const changeCell = row.change === 'None'
+          ? '<span class="change-none">None</span>'
+          : `<span class="${row.change.startsWith('+') ? 'badge-increase' : 'badge-change'}">${row.change}</span>`;
         const tr = document.createElement('tr');
         if (isUpcomingActive) {
           tr.className = 'current-week-row';
@@ -199,11 +232,11 @@
         }
 
         tr.innerHTML = `
-          <td><strong>Week ${row.week}</strong> ${isUpcomingActive ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 2px; font-weight: 800;">[UPCOMING]</span>' : ''}</td>
+          <td><strong>Week ${row.week}</strong> ${isUpcomingActive ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 2px; font-weight: 800;">[' + weekTag + ']</span>' : ''}</td>
           <td>${row.start}</td>
-          <td><strong>${row.roster}</strong></td>
-          <td class="col-starters">${row.starters}</td>
-          <td><span class="badge-change">${row.change}</span></td>
+          <td>${rosterCell}</td>
+          <td class="col-starters">${lineupCell}</td>
+          <td>${changeCell}</td>
           <td>${cutBadge}</td>
           <td><strong>${row.left}</strong></td>
         `;
