@@ -9,9 +9,9 @@ const { QUARTER_WEEKS, quarterSchedule, scheduleLine, postseasonBonus } = requir
  * Runs after mfl_scores_fetcher.js has written data.json for week W. Compares MFL
  * with what data.json says MFL should hold, and lists each step:
  *   Every week 1-12   In-division top-2 VP                 (csetup C=STANDADJ&VICTORY_POINTS=1)
- *   Weeks 5, 9        W-L-T reset (manual for now)         (csetup C=STANDADJ)
+ *   Weeks 5, 9        W-L-T reset                          (csetup C=STANDADJ)
  *                     VP reset, folded into the VP step    (C=STANDADJ&VICTORY_POINTS=1)
- *                     Division moves (manual for now)      (csetup C=DIVCONF)
+ *                     Division moves                       (csetup C=DIVCONF)
  *   Weeks 4, 8        P&R result, next quarter schedule    (options O=168)
  *   Week 12           P&R result, Week 13 Postseason Bonus (import franchiseScoreAdjustment)
  *
@@ -25,7 +25,8 @@ const { QUARTER_WEEKS, quarterSchedule, scheduleLine, postseasonBonus } = requir
  *                     quarter-change steps stay dry runs until run with --apply.
  * Otherwise it is a dry run: with MFL credentials it still loads each form and logs the
  * exact fields it would change. After writing, it re-reads MFL and fails unless every
- * written step shows as done.
+ * written step shows as done. A step that only becomes possible after another (the VP
+ * step after a W-L-T reset) runs in a second pass of the same run.
  *
  * Usage: node commish_mfl_actions.js [week] [--apply] [--inspect]
  */
@@ -143,12 +144,13 @@ function planVictoryPoints(items, weekObj, mfl, week, quarter, firstWeekOfQuarte
     if (isReset) {
       items.push({
         step: 'W-L-T reset',
-        status: 'manual',
+        status: 'auto',
         scope: 'quarter',
-        detail: `MFL still counts Q${quarter - 1} games. On C=STANDADJ subtract each team's Q${quarter - 1} W-L-T (explanation "Q${quarter} Reset"), then rerun for the VP step.`,
-        lines: wltOff.map(id => `${teamName(mfl, id)} (${id}): W −${prior[id].wins}, L −${prior[id].losses}, T −${prior[id].ties}`)
+        detail: `MFL still counts Q${quarter - 1} games. Subtract each team's Q${quarter - 1} W-L-T on C=STANDADJ (explanation "Q${quarter} Reset").`,
+        lines: wltOff.map(id => `${teamName(mfl, id)} (${id}): W −${prior[id].wins}, L −${prior[id].losses}, T −${prior[id].ties}`),
+        wltChanges: { ids: wltOff, prior, explanation: `Q${quarter} Reset` }
       });
-      items.push({ step: 'In-division VP', status: 'error', scope: 'weekly', detail: 'Waits for the W-L-T reset above.' });
+      items.push({ step: 'In-division VP', status: 'error', scope: 'weekly', detail: 'Waits for the W-L-T reset above (with --apply it runs right after it).' });
     } else {
       items.push({
         step: 'In-division VP',
@@ -162,6 +164,9 @@ function planVictoryPoints(items, weekObj, mfl, week, quarter, firstWeekOfQuarte
       });
     }
     return;
+  }
+  if (firstWeekOfQuarter) {
+    items.push({ step: 'W-L-T reset', status: 'ok', scope: 'quarter', detail: `MFL W-L-T counts only Q${quarter} games.` });
   }
 
   const delta = Object.fromEntries(ids.map(id => [id, Math.round((expected[id].vp - (mfl.standings[id]?.vp ?? 0)) * 10000) / 10000]));
@@ -205,12 +210,17 @@ function planDivisionMoves(items, data, mfl, quarter) {
     return;
   }
   const moves = [];
+  const divChanges = {};
   for (const div of DIVISION_ORDER) {
-    for (const id of slots[div]) if (mfl.divisions[id] !== div) moves.push(`${teamName(mfl, id)} (${id}): ${DIVISION_NAMES[mfl.divisions[id]] || mfl.divisions[id]} → ${DIVISION_NAMES[div]}`);
+    for (const id of slots[div]) {
+      if (mfl.divisions[id] === div) continue;
+      moves.push(`${teamName(mfl, id)} (${id}): ${DIVISION_NAMES[mfl.divisions[id]] || mfl.divisions[id]} → ${DIVISION_NAMES[div]}`);
+      divChanges[id] = div;
+    }
   }
   items.push(moves.length === 0
     ? { step: 'Division moves', status: 'ok', scope: 'quarter', detail: `MFL divisions match Q${quarter}.` }
-    : { step: 'Division moves', status: 'manual', scope: 'quarter', detail: 'Move these teams on C=DIVCONF (field names not inspected yet).', lines: moves });
+    : { step: 'Division moves', status: 'auto', scope: 'quarter', detail: `Move these teams on C=DIVCONF to their Q${quarter} divisions.`, lines: moves, divChanges });
 }
 
 function planPromotionRelegation(items, data, mfl, quarter) {
@@ -245,19 +255,13 @@ function planScheduleUpload(items, data, mfl, nextQuarter) {
     items.push({ step: `Q${nextQuarter} schedule`, status: 'ok', scope: 'quarter', detail: `MFL Weeks ${weeks[0]}-${weeks[3]} match the Q${nextQuarter} slots.` });
     return;
   }
-  // The import box holds the whole season: keep every other week exactly as MFL has it.
-  const lines = [];
-  for (let w = 1; w <= 12; w++) {
-    if (weeks.includes(w)) lines.push(...games.filter(g => g.week === w).map(scheduleLine));
-    else lines.push(...(mfl.schedule[w] || []).map(([a, b]) => scheduleLine({ week: w, home: a, away: b })));
-  }
   items.push({
     step: `Q${nextQuarter} schedule`,
     status: 'auto',
     scope: 'quarter',
-    detail: `Upload the season schedule (options O=168, ${lines.length} lines) with Weeks ${weeks[0]}-${weeks[3]} from the Q${nextQuarter} slots; MFL differs in Week(s) ${differs.join(', ')}.`,
+    detail: `In the season schedule box (options O=168), replace the Weeks ${weeks[0]}-${weeks[3]} lines with the Q${nextQuarter} games; every other line stays as MFL has it. MFL differs in Week(s) ${differs.join(', ')}.`,
     lines: games.map(g => `${scheduleLine(g)}  ${teamName(mfl, g.home)} vs ${teamName(mfl, g.away)}`),
-    schedule: { text: lines.join('\n'), weeks, games }
+    schedule: { weeks, games }
   });
 }
 
@@ -301,7 +305,7 @@ function printChecklist(title, plan, modeFor) {
   if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, text + '\n\n');
 }
 
-// STANDADJ VP fields per franchise. These names come from the old mfl_updater.js;
+// STANDADJ VP fields per franchise (confirmed by --inspect 2026-10-27).
 // requireExisting makes the run fail if the live form names them differently.
 function vpFormChanges(plan, vpChanges) {
   const changes = {};
@@ -311,6 +315,40 @@ function vpFormChanges(plan, vpChanges) {
     changes[`EXP${id}`] = vpChanges.explanation;
   }
   return changes;
+}
+
+// STANDADJ W-L-T fields per franchise (W<fid>, L<fid>, T<fid>; --inspect 2026-10-27).
+function wltFormChanges(plan, wltChanges) {
+  const changes = {};
+  const minus = n => (n ? String(-n) : '');
+  for (const id of wltChanges.ids) {
+    const p = wltChanges.prior[id];
+    changes[`WEEK${id}`] = String(plan.week);
+    changes[`W${id}`] = minus(p.wins);
+    changes[`L${id}`] = minus(p.losses);
+    changes[`T${id}`] = minus(p.ties);
+    changes[`EXP${id}`] = wltChanges.explanation;
+  }
+  return changes;
+}
+
+/**
+ * The schedule box holds the whole season as "WW,FFFF,FFFF" lines (192 on 2026-10-27,
+ * Weeks 13-16 as BYE lines). Replaces only the given weeks' lines and keeps every
+ * other line, in week order. Returns the new text and the lines it removed.
+ */
+function replaceScheduleWeeks(current, weeks, games) {
+  const eol = current.includes('\r\n') ? '\r\n' : '\n';
+  const weekOf = line => Number(line.split(',')[0]);
+  const old = current.split(/\r?\n/).filter(line => line.trim() !== '');
+  const removed = old.filter(line => weeks.includes(weekOf(line)));
+  const kept = old.filter(line => !weeks.includes(weekOf(line)));
+  // Stable sort by week keeps MFL's order within each week.
+  const merged = [...kept, ...games.map(scheduleLine)]
+    .map((line, i) => ({ line, i, week: Number.isFinite(weekOf(line)) ? weekOf(line) : 99 }))
+    .sort((a, b) => a.week - b.week || a.i - b.i)
+    .map(x => x.line);
+  return { text: merged.join(eol), removed, before: old.length, after: merged.length };
 }
 
 // The schedule box is the only textarea on options O=168; its name is read from the page.
@@ -326,21 +364,41 @@ function textareaName(html) {
  * Runs each 'auto' item. Items outside the write scope (or all, on a dry run) only load
  * their forms and record the field changes.
  */
-async function runAutoItems(client, plan, canWrite) {
-  for (const item of plan.items.filter(i => i.status === 'auto')) {
+async function runAutoItems(client, plan, canWrite, items = plan.items.filter(i => i.status === 'auto')) {
+  for (const item of items) {
     const dryRun = !canWrite(item);
     item.formChanges = [];
+    // STANDADJ pages also have a "Delete Selected Standings Adjustments" button (DSUBMIT).
+    if (item.wltChanges) {
+      const changed = await client.submitCsetupForm('STANDADJ', wltFormChanges(plan, item.wltChanges), {
+        dryRun, requireExisting: true, submit: 'ASUBMIT'
+      });
+      item.formChanges.push(...changed.map(line => `C=STANDADJ: ${line}`));
+    }
     if (item.vpChanges) {
       const changed = await client.submitCsetupForm('STANDADJ', vpFormChanges(plan, item.vpChanges), {
-        dryRun, params: { VICTORY_POINTS: '1' }, requireExisting: true
+        dryRun, params: { VICTORY_POINTS: '1' }, requireExisting: true, submit: 'ASUBMIT'
       });
       item.formChanges.push(...changed.map(line => `C=STANDADJ&VICTORY_POINTS=1: ${line}`));
     }
+    if (item.divChanges) {
+      const changes = Object.fromEntries(Object.entries(item.divChanges).map(([id, div]) => [`FRANCHISE_DIVISION${id}`, div]));
+      const changed = await client.submitCsetupForm('DIVCONF', changes, { dryRun, requireExisting: true });
+      item.formChanges.push(...changed.map(line => `C=DIVCONF: ${line}`));
+    }
     if (item.schedule) {
-      const name = textareaName(await client.fetchPage('options', { O: '168' }));
-      const changed = await client.submitPageForm('options', { O: '168' }, hasTextarea, { [name]: item.schedule.text }, { dryRun, requireExisting: true });
-      // The full box is long; show its size instead of every line.
-      item.formChanges.push(...changed.map(line => line.startsWith(`${name} `) ? `O=168: ${name} replaced (${item.schedule.text.split('\n').length} lines)` : `O=168: ${line}`));
+      const { parseMflForm } = await import(pathToFileURL(path.join(__dirname, '..', 'common', 'mfl_csetup_form.js')).href);
+      const html = await client.fetchPage('options', { O: '168' });
+      const name = textareaName(html);
+      const current = parseMflForm(html, hasTextarea, 'options O=168').fields.find(f => f[0] === name)?.[1] ?? '';
+      const next = replaceScheduleWeeks(current, item.schedule.weeks, item.schedule.games);
+      const changed = await client.submitPageForm('options', { O: '168' }, hasTextarea, { [name]: next.text }, { dryRun, requireExisting: true });
+      // The box is long; summarize instead of printing every line.
+      const removedSummary = Object.entries(next.removed.reduce((acc, l) => ({ ...acc, [l]: (acc[l] || 0) + 1 }), {}))
+        .slice(0, 6).map(([l, n]) => (n > 1 ? `${n}× ${l}` : l)).join(', ');
+      item.formChanges.push(...changed.map(line => line.startsWith(`${name} `)
+        ? `O=168: ${name}: ${next.removed.length} lines for Weeks ${item.schedule.weeks.join('/')} replaced by ${item.schedule.games.length} (${next.before} → ${next.after} lines). Removed: ${removedSummary || 'none'}${next.removed.length > 6 ? ', …' : ''}`
+        : `O=168: ${line}`));
     }
     if (item.bonus) {
       for (const { id, points } of item.bonus) {
@@ -383,33 +441,47 @@ function targetWeek(data, arg) {
 async function runCommishMflActions({ week, apply, weeklyWrites, syncVp }) {
   const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data.json'), 'utf8'));
   const w = targetWeek(data, week);
-  const plan = planWeekActions(data, await fetchMflState(), w);
-  if (syncVp) {
-    // --sync-vp: push the whole VP difference even when it is more than this week's.
-    for (const item of plan.items) if (item.step === 'In-division VP' && item.vpChanges && item.status === 'error') item.status = 'auto';
-  }
+  const planNow = async () => {
+    const plan = planWeekActions(data, await fetchMflState(), w);
+    if (syncVp) {
+      // --sync-vp: push the whole VP difference even when it is more than this week's.
+      for (const item of plan.items) if (item.step === 'In-division VP' && item.vpChanges && item.status === 'error') item.status = 'auto';
+    }
+    return plan;
+  };
   const canWrite = item => apply || (weeklyWrites && item.scope === 'weekly');
-  const hasAuto = plan.items.some(i => i.status === 'auto');
   const hasCredentials = Boolean(process.env.MFL_USERNAME && process.env.MFL_PASSWORD);
-
-  if (hasAuto && hasCredentials) {
-    const client = await loadClient();
-    await client.login();
-    // Errors in the auto items are not caught: the run stops and the job fails.
-    await runAutoItems(client, plan, canWrite);
-  }
   const modeFor = item => canWrite(item) && hasCredentials ? 'applied'
     : hasCredentials ? 'dry run: not posted'
     : 'dry run: no MFL login, form changes not checked';
-  printChecklist('PBR commissioner checklist', plan, modeFor);
 
-  const written = plan.items.filter(i => i.status === 'auto' && canWrite(i) && hasCredentials).map(i => i.step);
-  if (written.length > 0) {
+  let plan = await planNow();
+  let client = null;
+  const attempted = new Set();
+  // Pass 1 writes what it can; a later pass picks up steps that were waiting on it
+  // (the VP step after a W-L-T reset). Each step is written at most once per run.
+  for (let pass = 1; pass <= 3; pass++) {
+    const auto = plan.items.filter(i => i.status === 'auto');
+    const toWrite = hasCredentials ? auto.filter(i => canWrite(i) && !attempted.has(i.step)) : [];
+    if (pass > 1 && toWrite.length === 0) break;
+    if (hasCredentials && auto.length > 0) {
+      if (!client) {
+        client = await loadClient();
+        await client.login();
+      }
+      // Errors in the auto items are not caught: the run stops and the job fails.
+      await runAutoItems(client, plan, canWrite, pass === 1 ? auto : toWrite);
+    }
+    printChecklist(pass === 1 ? 'PBR commissioner checklist' : `PBR commissioner checklist, pass ${pass}`, plan, modeFor);
+    if (toWrite.length === 0) break;
+
     // Confirm on MFL: every written step must now read as done. Exports can lag a few seconds.
+    const written = toWrite.map(i => i.step);
+    written.forEach(step => attempted.add(step));
     let after;
     for (let attempt = 1; attempt <= 3; attempt++) {
       await sleep(5000);
-      after = planWeekActions(data, await fetchMflState(), w);
+      after = await planNow();
       if (after.items.filter(i => written.includes(i.step)).every(i => i.status === 'ok')) break;
     }
     printChecklist('After applying (MFL re-read)', after, () => 'still not done on MFL');
@@ -417,13 +489,14 @@ async function runCommishMflActions({ week, apply, weeklyWrites, syncVp }) {
     if (notDone.length > 0) {
       throw new Error(`MFL does not show ${notDone.map(i => i.step).join(', ')} as done. Check MFL before rerunning.`);
     }
+    plan = after;
   }
   if (plan.items.some(i => i.status === 'error')) {
     throw new Error('Checklist has errors. Review the ❌ items.');
   }
 }
 
-module.exports = { planWeekActions, fetchMflState };
+module.exports = { planWeekActions, fetchMflState, replaceScheduleWeeks };
 
 if (require.main === module) {
   const args = process.argv.slice(2);

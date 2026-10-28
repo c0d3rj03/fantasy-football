@@ -162,13 +162,14 @@ export class MflCommishClient {
    * applyFormChanges), and POSTs the whole form back. With dryRun, only reports.
    * Options: params (extra query for the GET, e.g. { VICTORY_POINTS: '1' }),
    * requireExisting (fail if a changed field is not on the live form, so a
-   * wrong field name can never be posted silently).
+   * wrong field name can never be posted silently), submit (the button to
+   * "click" by name; default the form's first submit button).
    * Returns the changed fields as "NAME old → new".
    */
-  async submitCsetupForm(c, changes, { dryRun = false, params = {}, requireExisting = false } = {}) {
+  async submitCsetupForm(c, changes, { dryRun = false, params = {}, requireExisting = false, submit } = {}) {
     const html = await this.fetchCommishPage(c, params);
     return await this.submitParsedForm(parseCsetupForm(html, c), changes, {
-      dryRun, requireExisting, label: `csetup C=${c}`, postUrl: `${this.baseUrl}/csetup`, referer: `${this.baseUrl}/csetup?${new URLSearchParams({ L: this.leagueId, C: c, ...params })}`
+      dryRun, requireExisting, submit, label: `csetup C=${c}`, postUrl: `${this.baseUrl}/csetup`, referer: `${this.baseUrl}/csetup?${new URLSearchParams({ L: this.leagueId, C: c, ...params })}`
     });
   }
 
@@ -177,15 +178,21 @@ export class MflCommishClient {
    * the form where matches(formHtml) is true, applies changes, POSTs it to the
    * form's own action.
    */
-  async submitPageForm(page, params, matches, changes, { dryRun = false, requireExisting = false } = {}) {
+  async submitPageForm(page, params, matches, changes, { dryRun = false, requireExisting = false, submit } = {}) {
     const label = `${page} ${new URLSearchParams(params)}`;
     const parsed = parseMflForm(await this.fetchPage(page, params), matches, label);
     return await this.submitParsedForm(parsed, changes, {
-      dryRun, requireExisting, label, referer: `${this.baseUrl}/${page}?${new URLSearchParams({ L: this.leagueId, ...params })}`
+      dryRun, requireExisting, submit, label, referer: `${this.baseUrl}/${page}?${new URLSearchParams({ L: this.leagueId, ...params })}`
     });
   }
 
-  async submitParsedForm(parsed, changes, { dryRun, requireExisting, label, referer, postUrl }) {
+  async submitParsedForm(parsed, changes, { dryRun, requireExisting, submit, label, referer, postUrl }) {
+    if (submit) {
+      const button = parsed.submits.find(([name]) => name === submit);
+      if (!button) throw new Error(`${label}: no submit button named ${submit}.`);
+      const sent = new Set(parsed.submits.map(([name]) => name));
+      parsed = { ...parsed, fields: [...parsed.fields.filter(([name]) => !sent.has(name)), button] };
+    }
     if (requireExisting) {
       const known = new Set([...parsed.fields.map(f => f[0]), ...Object.keys(parsed.checkboxValues)]);
       const missing = Object.keys(changes).filter(n => !known.has(n));
@@ -198,16 +205,17 @@ export class MflCommishClient {
     if (dryRun || changed.length === 0) return changed;
 
     const target = postUrl || (parsed.action ? new URL(parsed.action, `${this.baseUrl}/`).toString() : `${this.baseUrl}/csetup`);
-    const res = await fetch(target, {
-      method: 'POST',
-      headers: {
-        'Cookie': this.cookie,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Referer': referer,
-        'User-Agent': this.userAgent
-      },
-      body: new URLSearchParams(fields).toString()
-    });
+    const headers = { 'Cookie': this.cookie, 'Referer': referer, 'User-Agent': this.userAgent };
+    let body;
+    if (parsed.enctype === 'multipart/form-data') {
+      // fetch sets the multipart Content-Type with its boundary.
+      body = new FormData();
+      for (const [name, value] of fields) body.append(name, value);
+    } else {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      body = new URLSearchParams(fields).toString();
+    }
+    const res = await fetch(target, { method: 'POST', headers, body });
     if (!res.ok) {
       throw new Error(`MFL POST failed [${label}]: ${res.status} ${res.statusText}`);
     }

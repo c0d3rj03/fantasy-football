@@ -39,7 +39,10 @@ export function parseCsetupForm(html, c) {
 
 /**
  * Same as parseCsetupForm for the first form where matches(formHtml) is true.
- * Also returns the form's action (absolute or relative URL, '' if none).
+ * Also returns the form's action (absolute or relative URL, '' if none), its
+ * enctype, and submits: every submit button as [name, value]. A browser sends
+ * only the button that was clicked, so fields holds just the first one (some
+ * MFL forms also have a "Delete Selected" button).
  */
 export function parseMflForm(html, matches, label = 'MFL form') {
   const forms = html.match(/<form\b[\s\S]*?<\/form>/gi) || [];
@@ -51,6 +54,7 @@ export function parseMflForm(html, matches, label = 'MFL form') {
   const fields = [];
   const checkboxValues = {};
   const selectOptions = {};
+  const submits = [];
   const controls = /<input\b[^>]*>|<select\b[^>]*>[\s\S]*?<\/select>|<textarea\b[^>]*>[\s\S]*?<\/textarea>/gi;
   for (const control of form.match(controls) || []) {
     const openTag = control.match(/^<\w+\b[^>]*>/)[0];
@@ -75,7 +79,10 @@ export function parseMflForm(html, matches, label = 'MFL form') {
       const type = (attr(openTag, 'type') || 'text').toLowerCase();
       if (['button', 'reset', 'image', 'file'].includes(type)) continue;
       const value = attr(openTag, 'value');
-      if (type === 'checkbox' || type === 'radio') {
+      if (type === 'submit') {
+        submits.push([name, value ?? '']);
+        if (submits.length === 1) fields.push([name, value ?? '']);
+      } else if (type === 'checkbox' || type === 'radio') {
         if (type === 'checkbox') checkboxValues[name] = value ?? 'on';
         if (attr(openTag, 'checked') !== undefined) fields.push([name, value ?? 'on']);
       } else {
@@ -83,8 +90,10 @@ export function parseMflForm(html, matches, label = 'MFL form') {
       }
     }
   }
-  const action = attr(form.match(/^<form\b[^>]*>/i)[0], 'action') ?? '';
-  return { fields, checkboxValues, selectOptions, action };
+  const formTag = form.match(/^<form\b[^>]*>/i)[0];
+  const action = attr(formTag, 'action') ?? '';
+  const enctype = (attr(formTag, 'enctype') ?? '').toLowerCase();
+  return { fields, checkboxValues, selectOptions, submits, action, enctype };
 }
 
 /**
@@ -97,7 +106,7 @@ export function describeForms(html) {
   const out = [];
   for (const form of html.match(/<form\b[\s\S]*?<\/form>/gi) || []) {
     const openTag = form.match(/^<form\b[^>]*>/i)[0];
-    out.push(`FORM method=${attr(openTag, 'method') ?? ''} action=${attr(openTag, 'action') ?? ''}`);
+    out.push(`FORM method=${attr(openTag, 'method') ?? ''} action=${attr(openTag, 'action') ?? ''}${attr(openTag, 'enctype') ? ` enctype=${attr(openTag, 'enctype')}` : ''}`);
     const controls = /<input\b[^>]*>|<select\b[^>]*>[\s\S]*?<\/select>|<textarea\b[^>]*>[\s\S]*?<\/textarea>/gi;
     for (const control of form.match(controls) || []) {
       const tag = control.match(/^<\w+\b[^>]*>/)[0];

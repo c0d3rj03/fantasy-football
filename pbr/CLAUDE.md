@@ -108,24 +108,24 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 | Week | Step | How |
 | --- | --- | --- |
 | 1-12 (latest played) | In-division VP 🤖 | Compares MFL `leagueStandings` with the `data.json` quarter standings. W-L-T must match first. Then it adds `data.json VP − MFL VP` per team on `C=STANDADJ&VICTORY_POINTS=1` (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>` = "In-Division Top 2 Score"). In a normal week that difference must equal this week's in-division VP, or the step stops (`--sync-vp` pushes it anyway). A rerun finds no difference. Older weeks are skipped, since MFL only shows the current total. |
-| 5, 9 | W-L-T reset ✋ | Detected when MFL W-L-T is exactly this quarter plus last quarter. Lists the W-L-T to subtract on `C=STANDADJ` ("Q2 Reset"). Field names not inspected yet. |
+| 5, 9 | W-L-T reset 🤖 | Detected when MFL W-L-T is exactly this quarter plus last quarter. Subtracts each team's prior-quarter W-L-T on `C=STANDADJ` (`WEEK<fid>`, `W<fid>`, `L<fid>`, `T<fid>` as negatives, `EXP<fid>` = "Q2 Reset"). With `--apply`, the VP step then runs in a second pass of the same run. |
 | 5, 9 | VP reset 🤖 | Part of the VP step once the W-L-T reset is done: the difference then also removes last quarter's in-division VP (explanation "Q2 Reset + In-Division Top 2 Score"). |
-| 5, 9 | Division moves ✋ | Compares MFL divisions with `data.json` `quarter_slots` and lists the moves for `C=DIVCONF`. Field names not inspected yet. |
+| 5, 9 | Division moves 🤖 | Compares MFL divisions with `data.json` `quarter_slots` and sets `FRANCHISE_DIVISION<fid>` (`00`/`01`/`02`) on `C=DIVCONF` for the teams that moved; re-reads the `league` export. |
 | 4, 8, 12 | P&R ✅ | From `data.json` `promotion_relegation[q]` and `quarter_slots[q+1]` (`"4"` = postseason). Printed for the announcement. An exact tie is ❌ (coin flip). |
-| 4, 8 | Next quarter schedule 🤖 | Builds the quarter's 48 games from the new slots and compares them with MFL's `schedule` export. If they differ, posts the season (Weeks 1-12, other weeks copied from MFL) into the only textarea on `options?O=168`, then re-reads the export. |
+| 4, 8 | Next quarter schedule 🤖 | Builds the quarter's 48 games from the new slots and compares them with MFL's `schedule` export. If they differ, it takes the live `SCHEDULE` textarea on `options?O=168` (the whole season, 192 lines on 2026-10-27, Weeks 13-16 as `BYE,BYE` lines), replaces only that quarter's lines, posts it, and re-reads the export. |
 | 12 | Week 13 Postseason Bonus 🤖 | `postseasonBonus` from season standings and postseason divisions. Checks `weeklyResults W=13` `adj_score`, then uses `import?TYPE=franchiseScoreAdjustment` ("Postseason Bonus"). |
 | 12 | Postseason schedule, `DIVCONF` ✋ | Not automated. |
 
-**Verified offline (2026-10-27):**
-* Q1 → Q2 P&R and slots reproduce the importer sheet.
-* The generated Q2 schedule matches MFL Weeks 5-8 exactly.
-* The Week 7 dry run (no login) gives +1 VP to 0001, 0002, 0004, 0006, 0007 and 0009.
+**STANDADJ forms have two submit buttons:** `ASUBMIT` (Adjust Standings) and `DSUBMIT` (Delete Selected Standings Adjustments, with `D_<week>_<fid>` checkboxes for existing adjustments). A browser sends only the clicked button, so `common/mfl_csetup_form.js` keeps only the first submit and the PBR script names `ASUBMIT` explicitly.
 
-**Not yet verified live.** This needs an `inspect` run and then an `apply` run in Actions, because there are no MFL credentials outside Actions:
-* The STANDADJ VP field names (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>`) came from the old `mfl_updater.js`. `requireExisting` stops the run if the live form differs.
+**Verified (2026-10-27):**
+* Offline: Q1 → Q2 P&R and slots reproduce the importer sheet; the generated Q2 schedule matches MFL Weeks 5-8 exactly; the Week 7 dry run gives +1 VP to 0001, 0002, 0004, 0006, 0007 and 0009.
+* Live `--inspect`: field names for STANDADJ (VP and W-L-T), DIVCONF and `options?O=168` as listed above.
+
+**Not yet verified live:**
+* A STANDADJ VP write (first `apply` run, Week 7).
 * Whether STANDADJ accepts fractional VP (a tie for 2nd gives 0.5, a three-way tie 0.6667).
-* The `options?O=168` form: textarea name, any other fields, and whether posting replaces the whole season.
-* `C=STANDADJ` W-L-T fields and `C=DIVCONF` fields, needed to automate the ✋ steps.
+* The W-L-T reset, DIVCONF and schedule writes (first used after Week 8 and in Week 9). Review their dry run first. DIVCONF has file inputs (division logos), so it may be a multipart form; the client posts multipart when the form says so, and the inspect output now shows `enctype`.
 
 ### Lessons from Ultimate MFL automation
 
@@ -160,6 +160,5 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 6. **Gemini model is set in two places:** `generate_post.js` (`GEMINI_MODEL`, default `gemini-2.5-flash`) and `gemmy_custom_post.js` (hardcoded `gemini-2.5-flash`). Define it in one place.
 7. **Q1 slots are hardcoded** in `config.js` (2026). Later quarters come from the fetcher's P&R. Next season's Q1 slots must be set from the postseason finish.
 8. **Manual steps not yet automated** (`commish_mfl_actions.js` lists them with exact numbers):
-   * Quarter W-L-T reset (Weeks 5 and 9) and `DIVCONF` division moves: inspect the forms, then automate.
    * Postseason schedule (after Week 12) and postseason guillotine tracking.
 9. ~~`mfl_updater.js` VP push~~ (rebuilt as `commish_mfl_actions.js` 2026-10-27; see "Not yet verified live" above).
