@@ -164,7 +164,8 @@ export async function runFetcher() {
       const priorScoreCarryover = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
       const currentWeekTotalPoints = Math.max(0, totalLiveScore - priorScoreCarryover);
 
-      const players = normalizeArray(lf.player);
+      // MFL nests players under lf.players.player (older responses used lf.player).
+      const players = normalizeArray(lf.players?.player ?? lf.player);
       // MFL liveScoring specifies "starter" or "non-starter"
       const starters = players.filter(p => {
         const st = (p.status || '').toLowerCase();
@@ -233,28 +234,49 @@ export async function runFetcher() {
         finished: finishedCount
       };
 
-      if (inGameCount > 0 || finishedCount > 0 || doneScore > 0 || liveScore > 0) {
-        isLiveGameActive = true;
-      }
     });
   }
 
-  // 5. Construct & Save Payload
+  // 5. Work out the dashboard phase for the MFL week.
+  // live:    some active team has a starter who has played and some starter still to play.
+  // results: nobody has played yet (show last week's results), or every game is final.
+  const eliminatedTeams = existingData.eliminatedTeams || {};
+  const activeLive = Object.entries(liveDetails)
+    .filter(([fid]) => !eliminatedTeams[fid] || eliminatedTeams[fid].eliminatedWeek >= currentWeek)
+    .map(([, d]) => d);
+  const anyStarted = activeLive.some(d => d.finished > 0 || d.inGame > 0 || d.doneScore > 0 || d.liveScore > 0);
+  const anyPending = activeLive.some(d => d.ytp > 0 || d.inGame > 0);
+
+  let phase = 'results';
+  let lastCompletedWeek = currentWeek - 1;
+  if (anyStarted && anyPending) {
+    phase = 'live';
+    isLiveGameActive = true;
+  } else if (anyStarted) {
+    // Every game is final but MFL has not rolled the week over yet.
+    lastCompletedWeek = currentWeek;
+  }
+  const displayWeek = phase === 'live' ? currentWeek : Math.max(1, lastCompletedWeek);
+
+  // 6. Construct & Save Payload
   const finalPayload = {
     leagueId: LEAGUE_ID,
     seasonYear: SEASON_YEAR,
     currentWeek: currentWeek,
     isLive: isLiveGameActive,
+    phase: phase,
+    displayWeek: displayWeek,
+    lastCompletedWeek: lastCompletedWeek,
     lastUpdated: new Date().toISOString(),
     franchises: franchises,
     weeklySingleScores: weeklySingleScores,
     liveDetails: liveDetails,
-    eliminatedTeams: existingData.eliminatedTeams || {},
+    eliminatedTeams: eliminatedTeams,
     weeklyWinners: existingData.weeklyWinners || {}
   };
 
   fs.writeFileSync(existingDataPath, JSON.stringify(finalPayload, null, 2), 'utf-8');
-  console.log(`Successfully updated data.json! Current Week: ${currentWeek}, Live Mode: ${isLiveGameActive}`);
+  console.log(`Successfully updated data.json! MFL Week: ${currentWeek}, Phase: ${phase}, Display Week: ${displayWeek}`);
 }
 
 runFetcher().catch(err => {

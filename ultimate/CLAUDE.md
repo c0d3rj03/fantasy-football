@@ -23,7 +23,12 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 
 0. **`ultimate/config.js`**: Single source for `LEAGUE_ID`, `SEASON_YEAR` (env `SEASON_YEAR` overrides, default `'2026'`), and `MFL_HOST`. Every script imports from here.
 1. **`ultimate/mfl_commish_client.js`**: Takes `seasonYear` and `leagueId` as constructor parameters (throws if missing). Authenticates via `https://www42.myfantasyleague.com/2026/login`, captures the `MFL_USER_ID` session cookie, and executes API requests (`apiRequest()`) or POST form submissions (`submitCommishForm()`).
-2. **`ultimate/mfl_scores_fetcher.js`**: Fetches live scores from MFL, updates completed player points (`doneScore`) and remaining players (`ytp`), updates single-week scores, and handles live-to-final week transitions.
+2. **`ultimate/mfl_scores_fetcher.js`**: Fetches live scores from MFL, updates completed player points (`doneScore`) and remaining players (`ytp`), updates single-week scores, and sets the dashboard phase:
+   * `currentWeek`: MFL's `liveScoring.week` (MFL is still on the old week on Tuesday; it rolls over later in the week).
+   * `phase: 'live'` when some active starter has played and some has not (Wed/Thu game through MNF). `displayWeek = currentWeek`.
+   * `phase: 'results'` when nobody has played yet, or every game is final. `displayWeek = lastCompletedWeek`.
+   * `lastCompletedWeek`: `currentWeek` if every game is final, else `currentWeek - 1`. `prizes.html` and `schedule.html` use it.
+   * Players are read from `lf.players.player` (MFL's actual shape). Before 2026-10-27 the fetcher read `lf.player`, so Done/Live per-player counts never worked.
 3. **`ultimate/commish_automation.js`** (no MFL writes, no login; only a read-only `rosters` export):
    * Reads `data.json` and refuses to run if any safeguard fails (see below), without writing anything.
    * Rolling 2-week score = `weeklySingleScores[W-1] + weeklySingleScores[W]` (MFL final results, never live points).
@@ -38,17 +43,22 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 ### Automation Trigger Pipeline
 
 ```text
-Google Apps Script (Code.gs)
+Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:00 AM PT
   │
-  ├── 2:00 AM ET (Game Nights)  ──> ultimate_dailyscore.yml ──> Runs mfl_scores_fetcher.js
-  │                                  (repository_dispatch type: ultimate-sync-trigger)
+  ├── Wed–Mon  ──> ultimate-dailyscore-trigger ──> ultimate_dailyscore.yml ──> mfl_scores_fetcher.js
   │
-  └── 5:00 AM ET (Tuesdays)     ──> ultimate_endweek.yml    ──> Runs commish_automation.js
-                                     (repository_dispatch type: ultimate-endweek-trigger)
+  └── Tuesday  ──> ultimate-endweek-trigger    ──> ultimate_endweek.yml    ──> mfl_scores_fetcher.js, then commish_automation.js
 ```
+* The end-of-week job commits `data.json` even if a commish safeguard fails, so the fresh scores still publish; the job still shows as failed. Safeguard 1 makes a manual rerun safe.
+* `ultimate/apps_script_triggers.gs` is a copy of the Apps Script code (no secrets). Run `installUltimateDailyTrigger()` once to create the trigger.
 * Both workflows also keep `workflow_dispatch` for manual runs. Neither has `push` or `schedule` triggers.
 * Both share the `ultimate-data` concurrency group (they both commit `data.json`) and `git pull --rebase` before pushing.
 * **Apps Script settings:** Tokens are loaded via `PropertiesService.getScriptProperties()` (`GITHUB_PAT`, `OWNER`, `REPO`).
+
+### Dashboard views (`index.html`)
+* **Results phase (Tue–Thu):** opens on the last finished week (`Week N Results`); bar = Week N−1 + Week N single scores, cut teams badged. `Week N+1 →` previews next week (bar = Week N only, cut teams removed).
+* **Live phase (first game through MNF):** opens on `Week N Live`; bar = Week N−1 + finished players + in-game players, with YTP / LIVE / DONE counts. `← Week N−1` shows last week's results.
+* Header shows `lastUpdated` in the viewer's local time.
 
 ---
 
@@ -88,8 +98,8 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 14. `ultimate/index_html.txt` is an empty stray file.
 
 ### Workflows and scheduling
-15. **`ultimate-sync-trigger` is listed in `.github/workflows/pbr_endweek.yml`.** If the Apps Script sends that event, it starts the PBR end-of-week workflow. The Ultimate live sync now listens on the same type, so remove it from the PBR workflow (a PBR-side change).
-16. **Apps Script triggers are deleted (2026-10-25) and will be rebuilt.** The old functions (`triggerUltimateDailyScoreUpdate`, `triggerUltimateEndOfWeekCommishActions`) called `workflow_dispatch` on `ultimate.yml` / `commish.yml`, which no longer exist, so they would have returned 404. The rebuild should either call `workflow_dispatch` on `ultimate_dailyscore.yml` / `ultimate_endweek.yml`, or send `repository_dispatch` with `ultimate-sync-trigger` / `ultimate-endweek-trigger`. The old helper read script properties `GITHUB_PAT`, `GITHUB_OWNER`, `GITHUB_REPO` (the root `CLAUDE.md` says `OWNER`/`REPO`); pick one set.
+15. **`ultimate-sync-trigger` is listed in `.github/workflows/pbr_endweek.yml`.** Sending that event starts the PBR end-of-week workflow. On 2026-10-27 the Ultimate daily sync moved to its own type, `ultimate-dailyscore-trigger`, so Ultimate never sends `ultimate-sync-trigger`. Still remove it from the PBR workflow once confirmed nothing on the PBR side relies on it (a PBR-side change).
+16. **(Rebuilt 2026-10-27 as `ultimate/apps_script_triggers.gs`: daily 2 AM PT, repository_dispatch, properties `GITHUB_PAT`/`OWNER`/`REPO`.) Apps Script triggers were deleted (2026-10-25).** The old functions (`triggerUltimateDailyScoreUpdate`, `triggerUltimateEndOfWeekCommishActions`) called `workflow_dispatch` on `ultimate.yml` / `commish.yml`, which no longer exist, so they would have returned 404. The rebuild should either call `workflow_dispatch` on `ultimate_dailyscore.yml` / `ultimate_endweek.yml`, or send `repository_dispatch` with `ultimate-sync-trigger` / `ultimate-endweek-trigger`. The old helper read script properties `GITHUB_PAT`, `GITHUB_OWNER`, `GITHUB_REPO` (the root `CLAUDE.md` says `OWNER`/`REPO`); pick one set.
 17. **Push trigger removed (2026-10-25).** `ultimate_dailyscore.yml` used to run on every push to `ultimate/**`, so doc edits started live syncs and raced local pushes. Scheduling is external, so it was dropped.
 
 ### Missing MFL Score Adjustments (`TYPE=adjustScores`)
@@ -122,4 +132,4 @@ Heavy metal / blood-red guillotine styling, dark metallic progress bars, split 2
 1. **[High priority] Add the MFL score adjustment loop to `commish_automation.js`:** Insert an `import?TYPE=adjustScores` POST loop targeting `W: currentWeek + 1` for surviving teams, so single-week carryover scores populate natively on MFL for the upcoming week.
 2. **GroupMe bot integration:** Use the GroupMe Bot API (`dev.groupme.com`) to post weekly elimination announcements and high-score prize callouts after the Tuesday 5:00 AM ET commissioner run.
 3. **Finalize the GitHub Pages frontend:** Complete the dashboard (`c0d3rj03.github.io/fantasy-football/ultimate`) with split 2-part progress bars, weekly winner callout cards, and graveyard elimination visuals.
-4. **Validation:** Monitor the automated 2:00 AM ET and 5:00 AM ET GitHub Action runs during active game weeks to confirm zero-error execution.
+4. **Validation:** Monitor the automated daily 2:00 AM PT GitHub Action runs during active game weeks to confirm zero-error execution.

@@ -29,6 +29,13 @@ jobs:
         run: |
           if [ -f "package.json" ]; then npm install; fi
 
+      # Refresh final scores first so the commish run never works from stale data.json.
+      - name: Run MFL Scores Fetcher
+        env:
+          SEASON_YEAR: '2026'
+        run: |
+          node ultimate/mfl_scores_fetcher.js
+
       - name: Run Commissioner Automation
         env:
           SEASON_YEAR: '2026'
@@ -36,7 +43,10 @@ jobs:
           cd ultimate
           node commish_automation.js
 
+      # Runs even if a commish safeguard stopped the job, so the fresh scores still reach the dashboard.
+      # (The commish script writes nothing when a safeguard fails.)
       - name: Commit and Push Updated data.json
+        if: always()
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

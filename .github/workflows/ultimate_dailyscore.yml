@@ -4,7 +4,7 @@ name: Ultimate Guillotine Live Sync
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [ultimate-sync-trigger]
+    types: [ultimate-dailyscore-trigger]
 
 # Both Ultimate workflows commit ultimate/data.json; never run them at the same time.
 concurrency:

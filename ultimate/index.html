@@ -39,6 +39,7 @@
     .metric-item { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
     .metric-label { color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; }
     .metric-val { color: #fff; font-weight: 800; }
+    .metric-updated { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
     
     /* Live Indicator */
     .live-indicator { display: inline-flex; align-items: center; gap: 5px; color: #ef4444; font-weight: 800; font-size: 0.8rem; background: rgba(239, 68, 68, 0.12); padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(239, 68, 68, 0.3); }
@@ -181,6 +182,10 @@
           <span class="metric-label">Teams Remaining:</span>
           <span class="metric-val" id="hdrTeamsRemaining">22</span>
         </div>
+        <div class="metric-item">
+          <span class="metric-label">Updated:</span>
+          <span class="metric-updated" id="hdrUpdated">--</span>
+        </div>
       </div>
     </header>
 
@@ -189,8 +194,8 @@
         <select id="weekDropdown">
           <option value="" disabled selected>Select Week...</option>
         </select>
-        <button id="btnCurrentWeek" class="week-btn active">Week 3</button>
-        <button id="btnNextWeek" class="week-btn">Week 4</button>
+        <button id="btnPrimaryWeek" class="week-btn active">Week 3</button>
+        <button id="btnOtherWeek" class="week-btn">Week 4</button>
       </div>
 
       <div class="nav-links">
@@ -236,56 +241,81 @@
     <div class="team-list" id="teamList"></div>
 
     <footer>
-      MFL League 25918 • Automated Real-Time Updates
+      MFL League 25918 • Scores update daily at 2:00 AM PT
     </footer>
   </div>
 
   <script>
     let leagueData = null;
-    let selectedWeek = 3;
-    let activeLeagueWeek = 3;
+    let selectedWeek = 1;
+    // phase 'results': displayWeek is the last finished week; the other button previews the next week.
+    // phase 'live':    displayWeek is the week in progress; the other button shows last week's results.
+    let phase = 'results';
+    let displayWeek = 1;
+    let liveWeek = 1;
+    let lastCompletedWeek = 0;
 
     async function init() {
       try {
-        const res = await fetch('data.json');
+        const res = await fetch('data.json', { cache: 'no-store' });
         if (res.ok) {
           leagueData = await res.json();
-          activeLeagueWeek = leagueData.currentWeek || 3;
+          liveWeek = leagueData.currentWeek || 1;
+          if (leagueData.phase) {
+            phase = leagueData.phase;
+            displayWeek = leagueData.displayWeek || liveWeek;
+            lastCompletedWeek = leagueData.lastCompletedWeek ?? (liveWeek - 1);
+          } else {
+            // Older data.json without phase fields.
+            phase = leagueData.isLive ? 'live' : 'results';
+            displayWeek = liveWeek;
+            lastCompletedWeek = leagueData.isLive ? liveWeek - 1 : liveWeek;
+          }
         }
       } catch (e) {
         console.warn('Using default fallback structure');
       }
 
-      selectedWeek = activeLeagueWeek;
+      selectedWeek = displayWeek;
       setupControls();
       renderWeek(selectedWeek);
     }
 
-    function setupControls() {
-      const btnCurrent = document.getElementById('btnCurrentWeek');
-      const btnNext = document.getElementById('btnNextWeek');
-      const dropdown = document.getElementById('weekDropdown');
+    function formatUpdated(iso) {
+      if (!iso) return '--';
+      const d = new Date(iso);
+      if (isNaN(d)) return '--';
+      return d.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+    }
 
-      const isLiveWeek = leagueData && leagueData.isLive;
+    function setupControls() {
+      const btnPrimary = document.getElementById('btnPrimaryWeek');
+      const btnOther = document.getElementById('btnOtherWeek');
+      const dropdown = document.getElementById('weekDropdown');
       const hdrStatusEl = document.getElementById('hdrStatus');
-      
-      if (isLiveWeek) {
+
+      document.getElementById('hdrUpdated').textContent = formatUpdated(leagueData && leagueData.lastUpdated);
+
+      if (phase === 'live') {
         hdrStatusEl.className = 'live-indicator';
-        hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${activeLeagueWeek}`;
+        hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${displayWeek}`;
       } else {
         hdrStatusEl.className = 'week-indicator';
-        hdrStatusEl.textContent = `Week ${activeLeagueWeek}`;
+        hdrStatusEl.textContent = `Week ${displayWeek} Final`;
       }
 
-      btnCurrent.textContent = `Week ${activeLeagueWeek}`;
-
-      if (activeLeagueWeek >= 17) {
-        btnNext.style.display = 'none';
+      // Results: [Week W Results] [Week W+1 →]. Live: [← Week W-1] [Week W Live]; the primary button stays on the right.
+      const otherWeek = phase === 'live' ? displayWeek - 1 : displayWeek + 1;
+      const showOther = otherWeek >= 1 && otherWeek <= 17;
+      if (phase === 'live') {
+        btnPrimary.textContent = `Week ${displayWeek} Live`;
+        btnOther.textContent = `← Week ${otherWeek}`;
+        btnPrimary.parentNode.insertBefore(btnOther, btnPrimary);
       } else {
-        const nextWeek = activeLeagueWeek + 1;
-        btnNext.textContent = `Week ${nextWeek}`;
-        btnNext.style.display = 'inline-block';
+        btnPrimary.textContent = `Week ${displayWeek} Results`;
+        btnOther.textContent = `Week ${otherWeek} →`;
       }
+      btnOther.style.display = showOther ? 'inline-block' : 'none';
 
       dropdown.innerHTML = '<option value="" disabled selected>Select Week...</option>';
       for (let w = 1; w <= 17; w++) {
@@ -295,28 +325,27 @@
         dropdown.appendChild(opt);
       }
 
-      btnCurrent.addEventListener('click', () => {
-        selectedWeek = activeLeagueWeek;
-        btnCurrent.classList.add('active');
-        btnNext.classList.remove('active');
+      btnPrimary.addEventListener('click', () => {
+        selectedWeek = displayWeek;
+        btnPrimary.classList.add('active');
+        btnOther.classList.remove('active');
         dropdown.value = '';
         renderWeek(selectedWeek);
       });
 
-      btnNext.addEventListener('click', () => {
-        if (activeLeagueWeek < 17) {
-          selectedWeek = activeLeagueWeek + 1;
-          btnNext.classList.add('active');
-          btnCurrent.classList.remove('active');
-          dropdown.value = '';
-          renderWeek(selectedWeek);
-        }
+      btnOther.addEventListener('click', () => {
+        if (!showOther) return;
+        selectedWeek = otherWeek;
+        btnOther.classList.add('active');
+        btnPrimary.classList.remove('active');
+        dropdown.value = '';
+        renderWeek(selectedWeek);
       });
 
       dropdown.addEventListener('change', (e) => {
         selectedWeek = parseInt(e.target.value);
-        btnCurrent.classList.remove('active');
-        btnNext.classList.remove('active');
+        btnPrimary.classList.toggle('active', selectedWeek === displayWeek);
+        btnOther.classList.toggle('active', showOther && selectedWeek === otherWeek);
         renderWeek(selectedWeek);
       });
     }
@@ -324,10 +353,9 @@
     function renderWeek(week) {
       if (!leagueData) return;
 
-      const rolling = leagueData.rollingScores ? leagueData.rollingScores[week] || {} : {};
       const eliminated = leagueData.eliminatedTeams || {};
       const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
-      const isLiveNow = (week === activeLeagueWeek && leagueData.isLive);
+      const isLiveNow = (phase === 'live' && week === liveWeek);
 
       // Toggle Header Status Columns (YTP, LIVE, DONE)
       const statusColHeadersEl = document.getElementById('statusColHeaders');
@@ -366,19 +394,25 @@
         elimEl.textContent = choppedThisWeek.join(', ');
       } else if (week === 1) {
         elimEl.textContent = 'None (Safe Week)';
-      } else if (week > activeLeagueWeek) {
+      } else if (isLiveNow) {
+        elimEl.textContent = 'In Progress';
+      } else if (week > lastCompletedWeek) {
         elimEl.textContent = 'Upcoming / TBD';
       } else {
-        elimEl.textContent = 'In Progress';
+        elimEl.textContent = 'Pending commissioner update';
       }
 
       const winnerEl = document.getElementById('winnerText');
       if (weeklyWinner) {
         winnerEl.textContent = `${weeklyWinner.franchiseName} (${weeklyWinner.score.toFixed(2)} pts)`;
-      } else if (week > activeLeagueWeek) {
+      } else if (week >= 17) {
+        winnerEl.textContent = 'No weekly prize (final week)';
+      } else if (isLiveNow) {
+        winnerEl.textContent = 'In Progress...';
+      } else if (week > lastCompletedWeek) {
         winnerEl.textContent = 'Upcoming / TBD';
       } else {
-        winnerEl.textContent = 'In Progress...';
+        winnerEl.textContent = 'Pending commissioner update';
       }
 
       const teamListEl = document.getElementById('teamList');

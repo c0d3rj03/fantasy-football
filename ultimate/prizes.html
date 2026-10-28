@@ -145,7 +145,7 @@
         if (res.ok) {
           const data = await res.json();
           winners = data.weeklyWinners || {};
-          activeLeagueWeek = data.currentWeek || 2;
+          activeLeagueWeek = data.lastCompletedWeek ?? data.currentWeek ?? 2;
           
           if (data.aliveFranchiseIds) {
             remainingCount = data.aliveFranchiseIds.length;
