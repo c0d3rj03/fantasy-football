@@ -21,14 +21,15 @@ const SLACK_EMOJI_MAP = {
 
 function parseSlackMarkdown(text) {
   if (!text) return '<p class="italic text-slate-400">No recap recorded for this week yet.</p>';
-  let cleanText = text.replace(/:[a-zA-Z0-9_\+\-]+:/g, (match) => SLACK_EMOJI_MAP[match] || match);
+  let cleanText = text.replace(/\r/g, '').replace(/:[a-zA-Z0-9_\+\-]+:/g, (match) => SLACK_EMOJI_MAP[match] || match);
+  // Block lines (quotes, bullets) take their own line break; otherwise the \n → <br> below adds a blank line after each.
   return cleanText
     .replace(/^###\s?(.*)$/gm, '<h3 class="text-sm font-extrabold text-amber-400 mt-3 mb-1">$1</h3>')
     .replace(/^##\s?(.*)$/gm, '<h2 class="text-base font-black text-amber-300 mt-4 mb-2 border-b border-slate-800 pb-1">$1</h2>')
     .replace(/\*(.*?)\*/g, '<strong class="text-white font-bold">$1</strong>')
     .replace(/_(.*?)_/g, '<em class="text-slate-300 italic">$1</em>')
-    .replace(/^>\s?(.*)$/gm, '<blockquote class="border-l-4 border-amber-500/70 bg-slate-800/40 px-3 py-1.5 rounded-r italic text-slate-300 my-2">$1</blockquote>')
-    .replace(/^[•\-]\s?(.*)$/gm, '<div class="flex items-start gap-2 ml-1 my-1"><span class="text-amber-400">•</span><span>$1</span></div>')
+    .replace(/^>\s?(.*)\n?/gm, '<blockquote class="border-l-4 border-amber-500/70 bg-slate-800/40 px-3 py-1.5 rounded-r italic text-slate-300 my-2">$1</blockquote>')
+    .replace(/^[•\-]\s?(.*)\n?/gm, '<div class="flex items-start gap-2 ml-1 my-1"><span class="text-amber-400">•</span><span>$1</span></div>')
     .replace(/\n/g, '<br>');
 }
 
