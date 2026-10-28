@@ -1,0 +1,35 @@
+{
+  "_notes": [
+    "Hand-edited inputs for token_tracker.js (RULES.md §8). Everything else comes from MFL, KTC and data.json.",
+    "starting_balances: tokens each franchise carried into the season (Token Tracker sheet, Start of Year, 2026-01-15).",
+    "voided_trades / voided_waivers: no tokens (reverse, chained or conditional moves). Match on the MFL timestamp.",
+    "adjustments: tokens traded in trade comments, commish rulings, token draw results. tokens may be negative.",
+    "ktc_names: MFL player ID -> KTC spelling, for the older snapshots that have no MFL IDs."
+  ],
+  "season": "2026",
+  "waiver_min_bid": 25,
+  "waiver_quarter_cap": 5,
+  "starting_balances": {
+    "0001": 15,
+    "0002": 84,
+    "0003": 0,
+    "0004": 13,
+    "0005": 0,
+    "0006": 3,
+    "0007": 15,
+    "0008": 11,
+    "0009": 20,
+    "0010": 13,
+    "0011": 11,
+    "0012": 9
+  },
+  "voided_trades": [
+    {
+      "timestamp": "1788043374",
+      "reason": "BattleBots used its right to swap 2026 5th-round picks with Peaky Fookin Blinders (conditional trade resolved 8/29); the sheet took the 2 tokens back from each team"
+    }
+  ],
+  "voided_waivers": [],
+  "adjustments": [],
+  "ktc_names": {}
+}

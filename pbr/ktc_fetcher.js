@@ -1,155 +1,101 @@
+/**
+ * Saves this month's KeepTradeCut dynasty values to pbr/ktc-values/KTC-YYYY-MM.json (RULES.md §8:
+ * trade tokens use KTC values at the time of the trade; the league uses the 1st-of-month snapshot).
+ *
+ *   node ktc_fetcher.js            # this month (Eastern time); does nothing if the file already exists
+ *   node ktc_fetcher.js 2026-11    # a given month's file name
+ *   node ktc_fetcher.js --force    # overwrite an existing file
+ *
+ * Source: the keeptradecut.com/dynasty-rankings page (its playersArray has MFL IDs and SF/TEP values).
+ * Fallback: Kushan's feed (the sheet's old source), which has no MFL IDs.
+ * The file is normalized to { name, position, team, mflid, "sf-tep-value" } (see ktc_snapshots.js).
+ */
 const fs = require('fs');
-const path = require('path');
+const { KTC_DIR, normalizeKtc, fileFor } = require('./ktc_snapshots.js');
 
-const targetDate = process.argv[2] || new Date().toISOString().split('T')[0];
-const [targetYear, targetMonth] = targetDate.split('-');
+const KTC_URL = 'https://keeptradecut.com/dynasty-rankings';
+const KUSHAN_URL = 'http://173.230.138.125/ktc_values.json';
+const MIN_PLAYERS = 300;
+const MIN_PICKS = 12;
 
-const isHistoryYear = targetYear !== '2026';
-const baseDir = isHistoryYear 
-  ? path.join(__dirname, 'history', targetYear) 
-  : __dirname;
+const args = process.argv.slice(2);
+const force = args.includes('--force');
+const thisMonth = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit' })
+  .format(new Date()).slice(0, 7);
+const month = args.find(a => /^\d{4}-\d{2}$/.test(a)) || thisMonth;
 
-const ktcDir = path.join(baseDir, 'ktc-values');
-const dataPath = path.join(baseDir, `ktc-${targetYear}-data.json`);
-
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-}
-
-function parseValuation(p) {
-  if (!p) return 0;
-
-  if (p.superflexValues) {
-    if (p.superflexValues.tep) {
-      if (typeof p.superflexValues.tep === 'object' && p.superflexValues.tep.value !== undefined) {
-        return parseInt(p.superflexValues.tep.value, 10);
-      }
-      if (typeof p.superflexValues.tep === 'number' || typeof p.superflexValues.tep === 'string') {
-        return parseInt(p.superflexValues.tep, 10);
-      }
-    }
-    if (p.superflexValues.value !== undefined) {
-      return parseInt(p.superflexValues.value, 10);
-    }
-  }
-
-  if (p['sf-tep-value'] !== undefined) return parseInt(p['sf-tep-value'], 10);
-  if (p.sfTepValue !== undefined) return parseInt(p.sfTepValue, 10);
-  if (p.superflexValue !== undefined) return parseInt(p.superflexValue, 10);
-  if (p['sf-value'] !== undefined) return parseInt(p['sf-value'], 10);
-  if (p.sfValue !== undefined) return parseInt(p.sfValue, 10);
-  if (p.value !== undefined) return parseInt(p.value, 10);
-  if (p['tep-value'] !== undefined) return parseInt(p['tep-value'], 10);
-  if (p.oneQBValue !== undefined) return parseInt(p.oneQBValue, 10);
-
-  return 0;
-}
-
-async function fetchUrl(url, isText = false) {
+async function fetchText(url) {
   const res = await fetch(url, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-    }
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': 'text/html,application/json;q=0.9,*/*;q=0.8'
+    },
+    signal: AbortSignal.timeout(30000)
   });
-  if (!res.ok) throw new Error(`HTTP error ${res.status} from ${url}`);
-  return isText ? await res.text() : await res.json();
+  if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
+  return res.text();
 }
 
-async function run() {
-  console.log(`🌐 Fetching KeepTradeCut rankings for snapshot date: ${targetDate}...`);
-  try {
-    const html = await fetchUrl('https://keeptradecut.com/dynasty-rankings', true);
-    
-    const scriptMatch = html.match(/<script[^>]*id=["']ktc-players["'][^>]*>(.*?)<\/script>/s);
-    let rawPlayers = [];
-
-    if (scriptMatch && scriptMatch[1]) {
-      rawPlayers = JSON.parse(scriptMatch[1]);
-    } else {
-      const arrayIdx = html.indexOf('playersArray');
-      if (arrayIdx !== -1) {
-        const startBracket = html.indexOf('[', arrayIdx);
-        if (startBracket !== -1) {
-          let openBrackets = 0;
-          let endBracket = -1;
-          let inString = false;
-          let stringChar = '';
-
-          for (let i = startBracket; i < html.length; i++) {
-            const char = html[i];
-            if (inString) {
-              if (char === stringChar && html[i - 1] !== '\\') inString = false;
-            } else {
-              if (char === '"' || char === "'") { inString = true; stringChar = char; }
-              else if (char === '[') openBrackets++;
-              else if (char === ']') {
-                openBrackets--;
-                if (openBrackets === 0) { endBracket = i; break; }
-              }
-            }
-          }
-          if (endBracket !== -1) {
-            rawPlayers = JSON.parse(html.substring(startBracket, endBracket + 1));
-          }
-        }
-      }
+// The rankings page carries its players as JSON in <script id="ktc-players">; older pages had a
+// `playersArray = [...]` literal instead.
+function extractPlayersArray(html) {
+  const tag = html.match(/<script[^>]*id=["']ktc-players["'][^>]*>([\s\S]*?)<\/script>/);
+  if (tag) return JSON.parse(tag[1]);
+  const at = html.indexOf('playersArray = [');
+  const start = at === -1 ? -1 : html.indexOf('[', at);
+  if (start === -1) throw new Error('playersArray not found on the KTC page');
+  let depth = 0, inString = false, quote = '';
+  for (let i = start; i < html.length; i++) {
+    const c = html[i];
+    if (inString) {
+      if (c === '\\') i++;
+      else if (c === quote) inString = false;
+    } else if (c === '"' || c === "'") {
+      inString = true; quote = c;
+    } else if (c === '[') {
+      depth++;
+    } else if (c === ']' && --depth === 0) {
+      return JSON.parse(html.slice(start, i + 1));
     }
-
-    if (!rawPlayers || rawPlayers.length < 100) {
-      throw new Error(`KTC extraction yielded only ${rawPlayers ? rawPlayers.length : 0} items (< 100 safety threshold). Aborting save.`);
-    }
-
-    console.log(`✅ Successfully extracted ${rawPlayers.length} items from KeepTradeCut.`);
-
-    if (!fs.existsSync(ktcDir)) fs.mkdirSync(ktcDir, { recursive: true });
-    const ktcBackupFile = path.join(ktcDir, `KTC-${targetYear}-${targetMonth}.json`);
-    fs.writeFileSync(ktcBackupFile, JSON.stringify(rawPlayers, null, 2));
-    console.log(`💾 Saved raw KTC snapshot backup to ${ktcBackupFile}`);
-
-    let ktcData = {
-      year: targetYear,
-      last_updated: new Date().toISOString(),
-      players: {},
-      monthly_player_values: {}
-    };
-
-    if (fs.existsSync(dataPath)) {
-      try {
-        ktcData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-      } catch (e) {
-        console.warn('Existing KTC data file was empty or corrupt, creating fresh.');
-      }
-    }
-
-    const valueMap = {};
-    rawPlayers.forEach(p => {
-      const rawName = (p.playerName || p.name || `${p.firstName || ''} ${p.lastName || ''}`.trim() || p.slug || '').trim();
-      if (!rawName) return;
-
-      const pos = p.position || p.pos || 'FLEX';
-      const team = p.team || 'FA';
-      const val = parseValuation(p);
-      const slug = slugify(`${rawName}_${pos}`);
-
-      ktcData.players[slug] = { name: rawName, pos, team };
-      valueMap[slug] = val;
-    });
-
-    if (!ktcData.monthly_player_values) ktcData.monthly_player_values = {};
-    ktcData.monthly_player_values[targetDate] = valueMap;
-    ktcData.last_updated = new Date().toISOString();
-
-    fs.writeFileSync(dataPath, JSON.stringify(ktcData, null, 2));
-    console.log(`🎉 Successfully updated ${dataPath} for ${targetDate}!`);
-
-  } catch (err) {
-    console.error(`❌ KTC fetch failed: ${err.message}`);
-    process.exit(1);
   }
+  throw new Error('playersArray on the KTC page is not closed');
 }
 
-run();
+function check(rows, source) {
+  const picks = rows.filter(r => r.position === 'RDP').length;
+  const players = rows.length - picks;
+  if (players < MIN_PLAYERS || picks < MIN_PICKS) {
+    throw new Error(`${source} gave ${players} players and ${picks} picks (need ${MIN_PLAYERS}+ and ${MIN_PICKS}+)`);
+  }
+  return { players, picks };
+}
+
+async function main() {
+  const out = fileFor(month);
+  if (fs.existsSync(out) && !force) {
+    console.log(`KTC-${month}.json already exists; nothing to do (--force to refetch).`);
+    return;
+  }
+
+  let rows, source;
+  try {
+    rows = normalizeKtc(extractPlayersArray(await fetchText(KTC_URL)));
+    source = 'keeptradecut.com';
+    check(rows, source);
+  } catch (err) {
+    console.warn(`⚠️ KTC page failed: ${err.message}. Trying Kushan's feed.`);
+    rows = normalizeKtc(JSON.parse(await fetchText(KUSHAN_URL)));
+    source = "Kushan's feed";
+    check(rows, source);
+  }
+
+  const { players, picks } = check(rows, source);
+  fs.mkdirSync(KTC_DIR, { recursive: true });
+  fs.writeFileSync(out, `[\n${rows.map(r => JSON.stringify(r)).join(',\n')}\n]\n`);
+  console.log(`✅ Saved KTC-${month}.json from ${source}: ${players} players, ${picks} draft picks.`);
+}
+
+main().catch(err => {
+  console.error(`❌ KTC fetch failed: ${err.message}`);
+  process.exit(1);
+});

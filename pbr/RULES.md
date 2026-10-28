@@ -159,7 +159,7 @@ Tokens are distributed at the end of each quarter, including after the postseaso
 | Promoted Middle → Upper | after Q1: 1 · Q2: 2 · Q3: 3 |
 | Promoted Lower → Middle | after Q1: 1 · Q2: 3 · Q3: 5 |
 
-Trade value uses KeepTradeCut (KTC) dynasty values at the time of the trade.
+Trade value uses KeepTradeCut (KTC) dynasty values at the time of the trade: the Superflex TE-premium value from the snapshot taken at the start of the trade's month. How picks and FAAB are valued is in `token_rules.js` (it matches the Token Tracker sheet). A quarter's tokens cover transactions through Monday Night Football of Week 4, 8 or 12.
 
 **No tokens are awarded for gaming the system:**
 * Reverse trades (the same or nearly the same trade undone).

@@ -8,13 +8,17 @@
  * Can live in the same Apps Script project as ultimate/apps_script_triggers.gs (add it as a second
  * file); every name here is pbr-prefixed so nothing clashes.
  *
- * Setup: paste this file, run installPbrWeeklyTrigger() once, and approve the permissions.
- * Delete any old PBR triggers/functions (for example ones that dispatch pbr-sync-trigger).
+ * Setup: paste this file, run installPbrWeeklyTrigger() and installPbrDailyTokenTrigger() once, and
+ * approve the permissions. Delete any old PBR triggers/functions (for example ones that dispatch
+ * pbr-sync-trigger, or the Token Tracker sheet's grabDailyMFLTransactions / updateMonthlyTradeValues).
  *
  * Every Tuesday at about 6:00 AM Pacific (after Monday Night Football):
  *   pbr-endweek-trigger -> pbr_endweek.yml: fetch MFL results into data.json, push in-division VPs
  *   to MFL, Gemmy recap (PBR_RECAP_MODE below), commit data.json for the dashboard.
- * Reruns are safe, so pbrEndweekRun() can also be run by hand.
+ * Every day at about 9:00 AM Pacific (after the 11 AM ET waiver run):
+ *   pbr-tokens-trigger -> pbr_tokens.yml: save this month's KTC values if not saved yet (so the 1st
+ *   of the month takes the new snapshot), rebuild the token ledger (tokens_data.json).
+ * Reruns are safe, so pbrEndweekRun() and pbrTokensRun() can also be run by hand.
  */
 
 const PBR_TZ = 'America/Los_Angeles';
@@ -41,6 +45,28 @@ function installPbrWeeklyTrigger() {
 /** Called by the time trigger. Safe to run by hand too. */
 function pbrEndweekRun() {
   pbrDispatchRepositoryEvent('pbr-endweek-trigger', { recap_mode: PBR_RECAP_MODE });
+}
+
+const PBR_TOKENS_HOUR = 9; // fires somewhere within 9:00-10:00 AM Pacific
+
+/** Run once by hand. Replaces any earlier daily token trigger so there is exactly one. */
+function installPbrDailyTokenTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === 'pbrTokensRun')
+    .forEach(t => ScriptApp.deleteTrigger(t));
+
+  ScriptApp.newTrigger('pbrTokensRun')
+    .timeBased()
+    .everyDays(1)
+    .atHour(PBR_TOKENS_HOUR)
+    .inTimezone(PBR_TZ)
+    .create();
+  Logger.log(`Installed daily ${PBR_TOKENS_HOUR} AM Pacific trigger for pbrTokensRun.`);
+}
+
+/** Called by the daily trigger. Safe to run by hand too. */
+function pbrTokensRun() {
+  pbrDispatchRepositoryEvent('pbr-tokens-trigger', {});
 }
 
 /** Sends a repository_dispatch event. Event types are league-prefixed so they never start Ultimate workflows. */

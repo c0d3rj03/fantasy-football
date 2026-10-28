@@ -1,0 +1,378 @@
+function grabDailyMFLTransactions() {
+
+  // Refresh Waiver Claims
+  let pbrSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var pbrSheet = pbrSpreadsheet.getSheetByName("Waivers");
+
+  var cell = pbrSheet.getRange("E1");
+ 
+  var refresh = parseInt(cell.getValue().toString());
+  var increment = refresh + 1;
+ 
+  cell.setValue(increment);
+  
+  // getTrades()
+  // Read transactions page (trades only) from league site and convert to array
+
+  var rawFetch = UrlFetchApp.fetch("https://www.myfantasyleague.com/2026/export?TYPE=transactions&L=63213&APIKEY=PBRreader&W=&TRANS_TYPE=TRADE&JSON=1");
+  let tradesJsonString = rawFetch.getContentText();
+  let tradesJson = JSON.parse(tradesJsonString);
+  var tradesList = tradesJson["transactions"]["transaction"];
+  // Now have an object array of trades
+
+
+  // If only one transaction, it is not an array of objects, just one object
+  // Will need to put that object into array by itself
+  // Also confirm there hasn't been any trades
+  if (tradesList !== undefined && !Array.isArray(tradesList))
+  {
+    let oneTrade = tradesList;
+    tradesList = [];
+    tradesList.push(oneTrade);
+  }
+  // Read league summary from league site and convert to array
+  rawFetch = UrlFetchApp.fetch("https://www.myfantasyleague.com/2026/export?TYPE=league&L=63213&JSON=1");
+  let leagueInfoJsonString = rawFetch.getContentText();
+  let leagueInfoJson = JSON.parse(leagueInfoJsonString);
+  var leagueInfo = leagueInfoJson.league;
+  var franchiseInfo = leagueInfo["franchises"]["franchise"];
+  // Now have an object array of franchise information
+
+  // Extract trade details:
+  // - Date of Trade
+  // - Team #1 Name
+  // - Team #1 Assets Sent
+  // - Team #2 Name
+  // - Team #2 Assets Sent
+  // Will have format of:
+  // franchise2_gave_up: "14847,FP_0004_2022_2,FP_0003_2023_2,FP_0003_2023_3,"
+  // franchise2:"0003",
+  // timestamp:"1607277246"
+  // franchise1_gave_up:"14136,FP_0006_2021_5,FP_0004_2021_6,"
+  // franchise:"0004"
+  // type:"TRADE"
+  // comments:""
+  // expires:"1607878800"
+
+  // Establish trade asset values
+  let tradeValues = new Object();
+
+  // Create object with 2 arrays with trade values
+  // Read values for player-traded assets
+  pbrSheet = pbrSpreadsheet.getSheetByName("PlayerValues");
+  tradeValues.players = pbrSheet.getRange("A2:Q").getValues();
+
+  // Read values for draft pick-traded assets
+  pbrSheet = pbrSpreadsheet.getSheetByName("DraftPickValues");
+  tradeValues.picks = pbrSheet.getRange("A9:N").getValues();
+
+  // Navigate to Trades sheet.
+  pbrSheet = pbrSpreadsheet.getSheetByName("Trades");
+  var totalRange = pbrSheet.getRange("A:J")
+  totalRange.clear().clearFormat().setFontFamily("Arial Narrow").setFontWeight(10);
+
+  // Create trade sheet header row
+  // var tradesValues = pbrSheet.getRange("A1:J1").getValues();
+  var tradeSheetDetails = [["Date","Team #1","Assets Sent","Value","","Team #2","Assets Sent","Value","Trade Total Value","Token Each Team"]];
+
+  if (tradesList !== undefined) {
+
+    tradesList.forEach(trade => {
+
+      // Create trade header row
+      // Column A - date, Column B - team 1 name, Column F - team 2 name
+      tradeRow = ["","","","","","","","","",""];
+      var tradeDate = new Date(trade.timestamp*1000);
+      var tradeMonth = tradeDate.getMonth()+1;
+      tradeRow[0]=tradeDate.toLocaleDateString();
+      tradeRow[1]=franchiseInfo[Number(trade.franchise)-1].name;
+      tradeRow[5]=franchiseInfo[Number(trade.franchise2)-1].name;
+      tradeSheetDetails.push(tradeRow);
+
+      // Format the trade header row
+      var topLeft = pbrSheet.getRange("A1");
+      var headerRange = topLeft.offset(tradeSheetDetails.length-1,0,1,8);
+      headerRange.setBackground("burlywood").setFontWeight("bold");
+      headerRange = topLeft.offset(tradeSheetDetails.length-1,8,1,2);
+      headerRange.setBackground("lightgreen").setFontWeight("bold");
+
+      // Create assets rows
+      // Break up assets from both teams into array 
+      var trades1 = trade.franchise1_gave_up.split(",");
+      var trades2 = trade.franchise2_gave_up.split(",");
+
+      // length of arrays are one higher than the number of assets
+      // starting with asset #1, create trade row and continue until max assets reached
+      let assetNo = 0;
+
+      // Accumulate total value from both teams
+      totalValue1 = 0;
+      totalValue2 = 0;
+
+      while (assetNo < Math.max(trades1.length-1,trades2.length-1)) {
+      // Column C - team 1 asset name
+      // Column D - team 1 asset value
+      // Column G - team 2 asset name
+      // Column H - team 2 asset name
+        tradeRow = ["","","","","","","","","",""];
+        if (assetNo < trades1.length-1) {
+          assetInfo = fetchAsset(tradeValues,tradeMonth,trades1[assetNo]);
+          tradeRow[2] = assetInfo.name;
+          totalValue1 += assetInfo.value;
+          tradeRow[3] = assetInfo.value.toFixed(2);
+        }
+        if (assetNo < trades2.length-1){
+          assetInfo = fetchAsset(tradeValues,tradeMonth,trades2[assetNo]);
+          tradeRow[6]= assetInfo.name;
+          totalValue2 += assetInfo.value;
+          tradeRow[7]= assetInfo.value.toFixed(2);
+        }
+        tradeSheetDetails.push(tradeRow);
+        assetNo++;
+      }
+      // put total value for both teams back on header row for trade
+      let tradeHeaderRow = tradeSheetDetails.length-Math.max(trades1.length-1,trades2.length-1)-1;
+      tradeSheetDetails[tradeHeaderRow][3]=totalValue1;
+      tradeSheetDetails[tradeHeaderRow][7]=totalValue2;
+      // and total trade value for both teams
+      tradeSheetDetails[tradeHeaderRow][8]=totalValue1+totalValue2;
+      // and token count
+      tradeSheetDetails[tradeHeaderRow][9]=(Math.floor((totalValue1+totalValue2)/7500)+1)*2;
+
+    });
+
+  };
+
+  // Navigate to Trades sheet. Dump values
+  pbrSheet = pbrSpreadsheet.getSheetByName("Trades");
+  let sheetTradeRange = pbrSheet.getRange(1, 1, tradeSheetDetails.length, 10);
+  sheetTradeRange.setValues(tradeSheetDetails);
+
+  // Format cells
+  // Header row
+  var range = pbrSheet.getRange("A1:H1");
+  range.setBackground("lightsteelblue").setFontWeight("bold");
+  var range = pbrSheet.getRange("I1:J1");
+  range.setBackground("plum").setFontWeight("bold");
+
+}
+
+function fetchAsset(values,month,asset) {
+  // function will return an object that contains a string and value of the asset
+  // a. "14847" - Player. 
+  //   - From player-value table, look up player number, Return "pos, name, team" and value 
+  // b. DP_4_9 - (current) draft pick (5.09) ** zero-based for draft round 
+  //   - From DPV table, look up draft pick asset, Return name (Year-current pick) and value  
+  // c. FP_0001_2021_2 - FP-future (draft) pick _ team # _ year _ round
+  //   - From draftpick-value table, look up draft pick asset, Return name (Year, Round) and value  
+  // d. BB_350 - (blind bid) FAAB $350
+  //   - From FAAB table, Return "(dollar amount) FAAB" and value
+  //   - Asset detail cell: "Blind Bid" and amount
+  //   - Asset value cell: Divide amount by 50. Integer.
+  //   - Remember amount (and location) in case other side has traded FAAB. Higher and difference is listed
+
+  // Check for type of asset. Return info in object
+  let assetDetail = new Object();
+  let assetType=asset.substring(0,2);
+
+  if (assetType=="DP") { // DP_2_12
+    var pickInfo = values.picks.find(pick => pick[0]==asset);
+    assetDetail.name = "Year " + (new Date().getFullYear()) + " Draft Pick " + pickInfo[1];
+    assetDetail.value = pickInfo[month+1]; 
+  }
+  else if (assetType=="FP") { //FP_0007_2023_3
+    pickInfo = values.picks.find(pick => pick[0]==(asset.substring(8,12)+" FP_"+asset.slice(-1)));
+    assetDetail.name = "Year " + asset.substring(8,12) + " " + pickInfo[1] + " Draft Pick";
+    assetDetail.value = pickInfo[month+1]; 
+  } 
+  else if (assetType=="BB") {
+    assetDetail.name = "FAAB $"+asset.substring(3);
+    // Make $100 FAAB be 1000 value - like a late 3rd
+    assetDetail.value = Math.floor(asset.substring(3)*10);
+  }
+  else {
+    var pickInfo = values.players.find(pick => pick[0]==asset);
+    assetDetail.name = pickInfo[2]+" "+pickInfo[4]+", "+pickInfo[3];
+    assetDetail.value = pickInfo[month+4]; 
+  }
+  return assetDetail;
+}
+
+/*
+
+league page for pulling trades (last 3000 days)
+https://www42.myfantasyleague.com/2020/export?TYPE=transactions&L=52319&APIKEY=MfLBestLineup-GAS-1.0&JSON=1&O=03&TRANS_TYPE=TRADE&FRANCHISE=0000&DAYS=3000
+
+Json:
+{"version":"1.0","transactions":{"transaction":[{"franchise2_gave_up":"14847,FP_0004_2022_2,FP_0003_2023_2,FP_0003_2023_3,","franchise2":"0003","timestamp":"1607277246","franchise1_gave_up":"14136,FP_0006_2021_5,FP_0004_2021_6,","franchise":"0004","type":"TRADE","comments":"","expires":"1607878800"},{"franchise2_gave_up":"9831,FP_0005_2021_4,FP_0002_2023_3,","franchise2":"0002","timestamp":"1606008187","franchise1_gave_up":"13621,","franchise":"0005","type":"TRADE","comments":"","expires":"1606604400"},{"franchise2_gave_up":"FP_0007_2022_5,","franchise2":"0007","timestamp":"1605819590","franchise1_gave_up":"14125,","franchise":"0001","type":"TRADE","comments":"","expires":"1606410000"},{"franchise2_gave_up":"13135,11248,","franchise2":"0005","timestamp":"1605726683","franchise1_gave_up":"13849,14592,FP_0003_2021_5,FP_0006_2022_3,","franchise":"0003","type":"TRADE","comments":"","expires":"1606262400"},
+{"franchise2_gave_up":"DP_1_5,","franchise2":"0012","timestamp":"1588681958","franchise1_gave_up":"14063,","franchise":"0008","type":"TRADE","comments":"","expires":"1589241600"},{"franchise2_gave_up":"14079,BB_350,","franchise2":"0012","timestamp":"1588641506","franchise1_gave_up":"DP_1_3,DP_1_5,FP_0001_2021_2,FP_0010_2021_2,","franchise":"0001","type":"TRADE","comments":"","expires":"1589245200"},
+{"franchise2_gave_up":"14801,","franchise2":"0004","timestamp":"1599374264","franchise1_gave_up":"FP_0009_2022_5,","franchise":"0009","type":"TRADE","comments":"","expires":"1599973200"},{"franchise2_gave_up":"BB_100,","franchise2":"0005","timestamp":"1598874242","franchise1_gave_up":"DP_5_0,DP_5_9,","franchise":"0006","type":"TRADE","comments":"","expires":"1599465600"},{"franchise2_gave_up":"DP_4_10,","franchise2":"0003","timestamp":"1598836857","franchise1_gave_up":"FP_0011_2021_5,FP_0011_2021_6,","franchise":"0011","type":"TRADE","comments":"","expires":"1599440400"},{"franchise2_gave_up":"DP_4_9,DP_5_2,","franchise2":"0007","timestamp":"1598831728","franchise1_gave_up":"BB_120,","franchise":"0001","type":"TRADE","comments":"","expires":"1599433200"},
+{"timestamp":"1607533200","franchise":"0002","transaction":"14095,|170|12628,","type":"BBID_WAIVER"},{"franchise2_gave_up":"14847,FP_0004_2022_2,FP_0003_2023_2,FP_0003_2023_3,","franchise2":"0003","timestamp":"1607277246","franchise1_gave_up":"14136,FP_0006_2021_5,FP_0004_2021_6,","franchise":"0004","type":"TRADE","comments":"","expires":"1607878800"},{"timestamp":"1606958700","franchise":"0004","transaction":"13605,|21|12912,","type":"BBID_WAIVER"},{"timestamp":"1606958700","franchise":"0012","transaction":"13662,|100|14284,","type":"BBID_WAIVER"},{"timestamp":"1606958700","franchise":"0002","transaction":"11152,|508|9706,","type":"BBID_WAIVER"},{"timestamp":"1606323600","franchise":"0005","transaction":"12621,|1|14793,","type":"BBID_WAIVER"},{"timestamp":"1606323600","franchise":"0005","transaction":"13809,|1|9831,","type":"BBID_WAIVER"},
+
+https://www42.myfantasyleague.com/2020/export?TYPE=transactions&L=52319&O=03&TRANS_TYPE=TRADE,BBID_WAIVER&FRANCHISE=0000&DAYS=3000&APIKEY=MfLBestLineup-GAS-1.0&JSON=bre
+
+MVP:
+- Read completed trades for season from api as JSON
+- Read PlayerValueTradeTable (PVTT) from sheet into array
+- Read DraftPickTradeValue (DPTV) from sheet into array
+- Loop through all trades. For each trade:
+  - Print header row (see example)
+  - Note timestamp 3. timestamp (unix)
+    - note google date/time=unixtimestamp/86400+date(1970,1,1)
+  - For each franchise (franchise2, then 1):
+    - Cycle through each asset sent. Save each on next row. One of:
+      - assets = transaction.franchise2_gave_up.split(",") returns array of all assets
+      a. "14847" - Player. Find player in PVTT.
+        - Asset detail cell: name, pos, team
+        - Asset value cell: Find asset in PVTT from same timestamp month
+      b. DP_4_9 - (current) draft pick (4.09)
+        - Asset detail cell: Year "draft pick" - x.xx
+        - Asset value cell: Find asset in DPTV from same timestamp month
+      c. FP_0001_2021_2 - FP-future (draft) pick _ team # _ year _ round
+        - Asset detail cell: Year "draft pick" - Round x
+        - Asset value cell: Find asset in DPTV from same timestamp month
+      d. BB_350 - (blind bid) FAAB $350
+        - Asset detail cell: "Blind Bid" and amount
+        - Asset value cell: Divide amount by 50. Integer.
+        - Remember amount (and location) in case other side has traded FAAB. Higher and difference is listed
+    - Sum value cells into header
+    - Repeat for 2nd team
+  - On header row, sum both team's value
+
+
+Psudeocode:   
+
+On spreadsheet Open, 
+- create Update button on Menu
+- grab the latest trade timestamp from spreadsheet cell
+- Download latest MFL transactions (Trades, Waivers) via API
+- Check first timestamp. If the same as latest update, then exit
+- read token matrix into array
+- Check/Update Adds
+- Check Trades
+
+{"franchise2_gave_up":"14847,FP_0004_2022_2,FP_0003_2023_2,FP_0003_2023_3,","franchise2":"0003","timestamp":"1607277246","franchise1_gave_up":"14136,FP_0006_2021_5,FP_0004_2021_6,","franchise":"0004","type":"TRADE","comments":"","expires":"1607878800"},
+
+Trades decomposed:
+1. franchise 2 gave up:
+   a. 14847 - player # from MFL player list
+        {"position":"RB","name":"Blount, LeGarrette","id":"9898","team":"FA"}
+   b. DP_4_9 - (current) draft pick (4.09)
+   c. FP_0001_2021_2 - FP-future (draft) pick _ team # _ year _ round
+   d. BB_350 - (blind bid) FAAB $350
+2. franchise 2 team number
+3. timestamp (unix)
+--- note google date/time=unixtimestamp/86400+date(1970,1,1)
+4. franchise 1 gave up (same as above)
+5. franchise 1 team number
+6. type (TRADE)
+7. comments
+8. expires (unix timestamp)
+
+
+*/
+
+// function onOpen() {
+//   // Get the UI object
+//   var ui = SpreadsheetApp.getUi();
+  
+//   // Create Import Stats menu to menu bar
+//   ui.createMenu('Trade Value')
+//   .addItem('Import Values','importValues')
+//   .addToUi();
+
+// }
+
+function updateMonthlyTradeValues() {
+  // Call function to return imported Kushan's page of player values from KTC
+  var players = grabPlayerValues(players);
+
+  // Create sheet (if not already) and dump player name values
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  const today = new Date();
+  const month = (today.getMonth()+1).toString().padStart(2,'0');
+  var sheet = ss.getSheetByName("TVC-"+month);
+  if (sheet == null) {
+    sheet = ss.insertSheet("TVC-"+month);
+  }
+
+  // Populate range of cells of players
+  var playerRange = [];
+  // the first column contains a formula used in the spreadsheet
+  var columnOne = "";
+  var playerCount = 1;
+
+/* This is the old before 2025-05 format
+  players.forEach(player => {
+    columnOne = "=IFNA(index(PlayerValues!A:A,match(IFNA(vlookup(B" + playerCount + ",'Special Names'!A:B,2,FALSE),B" + playerCount + '),PlayerValues!E:E,0)),"N/A")';
+    playerCount++;
+    playerRange.push([columnOne,player.name,player.position.substring(0,2),player.value])
+  });
+*/
+
+// This is the 2025-05 new format
+  players.forEach(player => {
+    columnOne = "=IFNA(index(PlayerValues!A:A,match(IFNA(vlookup(B" + playerCount + ",'Special Names'!A:B,2,FALSE),B" + playerCount + '),PlayerValues!E:E,0)),"N/A")';
+    playerCount++;
+    playerRange.push([columnOne, player.name, player.position, player["sf-tep-value"]]);
+  });
+
+
+  // Put on sheet
+  var sheetRange = sheet.getRange(1, 1, playerRange.length, 4);
+  sheetRange.setValues(playerRange);
+
+}
+
+// Purpose: 
+// Open page http://arcusweather.com/trade_value_parser.php
+// 2025-May: Kushan redirected to this URL instead http://73.230.138.125/ktc_values.json
+// Save content to a file (e.g. "KTC-2023-06.json"
+// In this Google Drive folder https://drive.google.com/drive/u/0/folders/15LMuxt65LRdce419p8VbGxa9xsH5tdso
+// Then set a trigger to execute this function the 1st of every month
+
+function grabPlayerValues(playerValues) {
+
+  // Manually grabbing file from KTC
+  // Fetch content of trade value page
+  // var rawFetch = UrlFetchApp.fetch("http://arcusweather.com/trade_value_parser.php");
+  
+  /* Read file from Kushan's site */
+  var rawFetch = UrlFetchApp.fetch("http://173.230.138.125/ktc_values.json");
+  let jsonString = rawFetch.getContentText();
+
+  // Save raw page content to file in Google folder
+  // Format of file is "KTC-2023-06.json"
+  // Store @ Google Drive folder https://drive.google.com/drive/u/0/folders/15LMuxt65LRdce419p8VbGxa9xsH5tdso
+  const today = new Date();
+  var filename = "KTC-" + today.getFullYear() + "-" + (today.getMonth()+1).toString().padStart(2,'0') + ".json";
+  DriveApp.getFolderById("15LMuxt65LRdce419p8VbGxa9xsH5tdso").createFile(filename,jsonString);
+
+  let jsonParsed = JSON.parse('{"players":'+jsonString+"}");
+  var playerValues = jsonParsed["players"];
+  return(playerValues);
+
+/*
+  // A backup when Kushan's site isn't working.
+  // This was used to open a manually created/saved file from Google Drive folder
+  const today = new Date();
+  var filename = "KTC-" + today.getFullYear() + "-" + (today.getMonth()+1).toString().padStart(2,'0') + ".json";
+  // var filename = "KTC-2025-04.json"
+  var allFiles = DriveApp.getFilesByName(filename);
+
+  // If can't find file, exit with null
+  if (!allFiles.hasNext()) {
+    return null;
+  }
+
+  // Read json file
+  var jsonString = allFiles.next().getAs('application/json').getDataAsString();
+
+  // Return array of player values
+  let jsonParsed = JSON.parse('{"players":'+jsonString+"}");
+  var playerValues = jsonParsed["players"];
+  return(playerValues);
+*/
+  
+}
+

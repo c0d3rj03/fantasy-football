@@ -19,6 +19,7 @@ fantasy-football/ (Repo Root)
 │   ├── ultimate_dailyscore.yml   # Ultimate: live score sync (dispatch, or push to ultimate/**)
 │   ├── ultimate_endweek.yml      # Ultimate: Tuesday eliminations & MANDROP
 │   ├── pbr_endweek.yml           # PBR: scores → MFL commish actions (VP push, quarter changes) → Gemmy recap
+│   ├── pbr_tokens.yml            # PBR: daily token ledger + monthly KTC values
 │   ├── pbr_sync.yml              # PBR: Tuesday sync + custom Gemmy announcement
 │   └── gemmy_alerts.yml          # PBR: ad-hoc Gemmy Slack announcement
 ├── common/                       # Shared MFL client + csetup form helper (ES Modules, own package.json)
