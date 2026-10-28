@@ -121,9 +121,10 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 **Verified (2026-10-27):**
 * Offline: Q1 → Q2 P&R and slots reproduce the importer sheet; the generated Q2 schedule matches MFL Weeks 5-8 exactly; the Week 7 dry run gives +1 VP to 0001, 0002, 0004, 0006, 0007 and 0009.
 * Live `--inspect`: field names for STANDADJ (VP and W-L-T), DIVCONF and `options?O=168` as listed above.
+* Live `apply`, Week 7 (2026-10-28): six +1 VP adjustments posted on STANDADJ, MFL re-read matched `data.json` for all 12 teams, and the commissioner checked MFL against the spreadsheet.
 
 **Not yet verified live:**
-* A STANDADJ VP write (first `apply` run, Week 7).
+* Repo variable `PBR_MFL_WRITES` is not set yet, so the Tuesday dispatch only dry-runs the VP step. Set it to `1` to let it write.
 * Whether STANDADJ accepts fractional VP (a tie for 2nd gives 0.5, a three-way tie 0.6667).
 * The W-L-T reset, DIVCONF and schedule writes (first used after Week 8 and in Week 9). Review their dry run first. DIVCONF has file inputs (division logos), so it may be a multipart form; the client posts multipart when the form says so, and the inspect output now shows `enctype`.
 
