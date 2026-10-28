@@ -34,9 +34,12 @@ Automates commissioner administration and provides a web dashboard for a 24-team
    * Rolling 2-week score = `weeklySingleScores[W-1] + weeklySingleScores[W]` (MFL final results, never live points).
    * Cut count: 2 teams (W2–W6), 1 team (W7–W16), none in W17.
    * Confirms MFL's own cut: the newly emptied rosters must exactly match the lowest rolling score(s).
-   * Records `eliminatedTeams[fid] = {eliminatedWeek, rollingScore, singleScore, franchiseName}` and `weeklyWinners[W] = {franchiseId, franchiseName, score, prize}` (prize tiers from RULES.md; no weekly prize in W17).
+   * Two independent, idempotent steps, prize first:
+     * `recordWeeklyWinner()`: `weeklyWinners[W] = {franchiseId, franchiseName, score, prize}`, the highest single-week score among teams alive in Week W (prize tiers from RULES.md; no weekly prize in W17). Needs only final scores (safeguards 2–3), not MFL's cut.
+     * `recordCuts()`: `eliminatedTeams[fid] = {eliminatedWeek, rollingScore, singleScore, franchiseName}` (safeguards 1–4).
+   * If the cut step fails (for example MFL has not cut yet), the weekly winner is still saved to `data.json` and the run then exits 1. A rerun skips whichever step is already recorded.
    * Sets `isLive = false` and writes `data.json`.
-   * **Safeguards:** (1) the week was already processed → logs and exits 0 with no write; (2) any active team still has players yet to play or in game → error; (3) `weeklySingleScores[currentWeek]` is missing for an active team → error, run the daily sync first; (4) MFL has not emptied any new roster yet, or emptied a different team → error, rerun later or review.
+   * **Safeguards:** (1) the week's cut was already recorded → that step is skipped (both steps recorded → logs and exits 0 with no write); (2) any active team still has players yet to play or in game → error; (3) `weeklySingleScores[currentWeek]` is missing for an active team → error, run the daily sync first; (4) MFL has not emptied any new roster yet, or emptied a different team → error, rerun later or review.
    * `processEndOfWeek(data, emptyRosterFids)` is exported and pure, so it can be tested without network access.
 4. **`ultimate/data.json`**: Single source of truth for league state (`currentWeek`, `isLive`, `franchises`, `eliminatedTeams`, `weeklySingleScores`, `weeklyWinners`, `liveDetails`).
 
@@ -56,6 +59,7 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
 * **Apps Script settings:** Tokens are loaded via `PropertiesService.getScriptProperties()` (`GITHUB_PAT`, `OWNER`, `REPO`).
 
 ### Dashboard views (`index.html`)
+* **`prizes.html`:** one row per week for the single-week high score. A finished week the Tuesday run has not recorded yet shows the derived high scorer marked "(unofficial)"; the recorded `weeklyWinners` entry replaces it.
 * **Results phase (Tue–Thu):** opens on the last finished week (`Week N Results`); bar = Week N−1 + Week N single scores, cut teams badged. MFL makes the cut itself, so for a finished week with no recorded cut the page shows the lowest rolling score(s) per the cut schedule as cut, and the highest single score as the weekly winner; recorded entries in `data.json` take priority. `Week N+1 →` previews next week (bar = Week N only, cut teams removed).
 * **Live phase (first game through MNF):** opens on `Week N Live`; bar = Week N−1 + finished players + in-game players, with YTP / LIVE / DONE counts. `← Week N−1` shows last week's results.
 * Header shows `lastUpdated` in the viewer's local time.
@@ -88,7 +92,7 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 6. **No elimination tiebreaker.** Ties in rolling score are ordered arbitrarily by `Array.sort`. The script now logs a warning on a tie at the cut line and relies on MFL's choice (safeguard 4 would flag a disagreement). RULES.md defines none; decide one (for example lower single-week score, then season total).
 7. **Weekly winner (mostly fixed).** The prize from RULES.md is now recorded and Week 17 gets no weekly winner. A tie for high score is still not resolved: the script logs a warning and records the first team.
 8. **Week 17 finish not implemented.** Nothing computes 1st/2nd/3rd from the final rolling scores.
-9. **Prize table conflict in the reference docx.** Its weekly table shows $10/$10/$20/$40 and 3rd place $60, while its prose (and RULES.md) say $15/$30/$50 and $85. The prose matches the $1,115 pool, so RULES.md is treated as correct.
+9. **(Fixed 2026-10-27: `prizes.html` now shows $85/$200/$450.) Prize table conflict in the reference docx.** Its weekly table shows $10/$10/$20/$40 and 3rd place $60, while its prose (and RULES.md) say $15/$30/$50 and $85. The prose matches the $1,115 pool, so RULES.md is treated as correct.
 
 ### Data and dashboard
 10. **(Fixed 2026-10-25: data repaired and the script now writes the UI shape.) Schema mismatch between script and UI.** `commish_automation.js` writes `eliminatedTeams[fid] = {week, score, name}` and `weeklyWinners[w] = {fid, name, score}`, but `index.html` reads `eliminatedWeek` and `franchiseName`. So Week 4's cuts and winner are broken on the dashboard (Week 4 teams vanish from every week, and the winner name shows `undefined`). Older entries use `{eliminatedWeek, rollingScore, singleScore, franchiseName}` and `{franchiseId, franchiseName, score, prize}`; standardize on that.

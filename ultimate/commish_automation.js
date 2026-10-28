@@ -53,107 +53,145 @@ async function fetchEmptyRosterFids() {
     .map(f => f.id);
 }
 
-/**
- * Applies end-of-week results to data (mutates it). Throws, without changing
- * anything, if any safeguard fails. Returns null if the week was already processed.
- */
-export function processEndOfWeek(data, emptyRosterFids) {
-  const currentWeek = data.currentWeek || 1;
-  if (!data.eliminatedTeams) data.eliminatedTeams = {};
-  if (!data.weeklyWinners) data.weeklyWinners = {};
+// Teams alive during the week: not eliminated, or eliminated by this week's own cut.
+function teamsAliveInWeek(data, week) {
+  const eliminated = data.eliminatedTeams || {};
+  return Object.keys(data.franchises || {}).filter(fid => {
+    const cutWeek = eliminated[fid]?.eliminatedWeek ?? eliminated[fid]?.week;
+    return !eliminated[fid] || cutWeek >= week;
+  });
+}
 
-  // Safeguard 1: never process the same week twice.
-  const alreadyCut = Object.values(data.eliminatedTeams).some(e => e.eliminatedWeek === currentWeek || e.week === currentWeek);
-  if (alreadyCut || data.weeklyWinners[currentWeek]) {
-    console.log(`⏭️ Week ${currentWeek} was already processed. Nothing to do.`);
-    return null;
-  }
+// Safeguards 2 and 3: the week must be final and use MFL's final weekly results.
+// Returns each alive team's single and rolling score for the week.
+function getFinalTeamScores(data, week) {
+  const alive = teamsAliveInWeek(data, week);
 
-  const eliminated = data.eliminatedTeams;
-  const activeFranchises = Object.keys(data.franchises || {}).filter(fid => !eliminated[fid]);
-  console.log(`Active teams remaining: ${activeFranchises.length}`);
-
-  // Safeguard 2: every active team's games for this week must be final.
+  // Safeguard 2: every alive team's games for this week must be final.
   // This also catches a currentWeek that MFL has already rolled over.
-  const unfinished = activeFranchises.filter(fid => {
+  const unfinished = alive.filter(fid => {
     const live = data.liveDetails?.[fid];
     return live && (live.ytp > 0 || live.inGame > 0);
   });
   if (unfinished.length > 0) {
-    throw new Error(`Week ${currentWeek} is not final: ${unfinished.length} active team(s) still have players yet to play or in game (${unfinished.join(', ')}).`);
+    throw new Error(`Week ${week} is not final: ${unfinished.length} active team(s) still have players yet to play or in game (${unfinished.join(', ')}).`);
   }
 
   // Safeguard 3: use MFL's final weekly results, never live points. Once MFL empties the
   // cut team's roster, its live points can read 0. Run the daily score sync first.
   const weeklySingleScores = data.weeklySingleScores || {};
-  const missingFinal = activeFranchises.filter(fid => weeklySingleScores[currentWeek]?.[fid] === undefined);
+  const missingFinal = alive.filter(fid => weeklySingleScores[week]?.[fid] === undefined);
   if (missingFinal.length > 0) {
-    throw new Error(`Week ${currentWeek} final results are missing in data.json for ${missingFinal.length} active team(s) (${missingFinal.join(', ')}). Run the daily score sync first.`);
+    throw new Error(`Week ${week} final results are missing in data.json for ${missingFinal.length} active team(s) (${missingFinal.join(', ')}). Run the daily score sync first.`);
   }
 
-  const priorWeekNum = currentWeek - 1;
-  const teamScores = activeFranchises.map(fid => {
-    const priorScore = priorWeekNum >= 1 ? (weeklySingleScores[priorWeekNum]?.[fid] || 0) : 0;
-    const singleScore = weeklySingleScores[currentWeek][fid];
+  return alive.map(fid => {
+    const priorScore = week > 1 ? (weeklySingleScores[week - 1]?.[fid] || 0) : 0;
+    const singleScore = weeklySingleScores[week][fid];
     const rollingScore = parseFloat((priorScore + singleScore).toFixed(2));
     return { fid, name: data.franchises[fid]?.name || fid, singleScore, rollingScore };
   });
+}
 
-  // Rolling 2-week elimination (lowest first)
-  const cutCount = getCutCount(currentWeek);
-  const cutTeams = [...teamScores].sort((a, b) => a.rollingScore - b.rollingScore).slice(0, cutCount);
+/**
+ * Records the week's single-week high score as its prize item (mutates data).
+ * Needs only final scores, not MFL's cut. Returns the winner, or null if the week
+ * was already recorded or has no weekly prize.
+ */
+export function recordWeeklyWinner(data, week = data.currentWeek || 1) {
+  if (!data.weeklyWinners) data.weeklyWinners = {};
+  if (data.weeklyWinners[week]) {
+    console.log(`⏭️ Week ${week} high score already recorded.`);
+    return null;
+  }
+  const prize = getWeeklyPrize(week);
+  if (!prize) return null;
 
-  // Safeguard 4: MFL makes the cut. Its newly emptied rosters must match ours exactly.
-  if (cutCount > 0) {
-    const mflCut = emptyRosterFids.filter(fid => !eliminated[fid]).sort();
-    const ourCut = cutTeams.map(t => t.fid).sort();
-    if (mflCut.length === 0) {
-      throw new Error(`MFL has not made the Week ${currentWeek} cut yet (no newly empty rosters). Expected: ${ourCut.join(', ')}. Rerun later.`);
-    }
-    if (mflCut.join(',') !== ourCut.join(',')) {
-      throw new Error(`Cut mismatch for Week ${currentWeek}: MFL emptied [${mflCut.join(', ')}], rolling scores say [${ourCut.join(', ')}]. Review manually.`);
-    }
+  const ranked = getFinalTeamScores(data, week).sort((a, b) => b.singleScore - a.singleScore);
+  const winner = ranked[0];
+  if (!winner || winner.singleScore <= 0) return null;
+  if (ranked[1] && ranked[1].singleScore === winner.singleScore) {
+    console.warn(`⚠️ Tie for Week ${week} high score (${winner.singleScore} pts). Recorded ${winner.name}; review manually.`);
+  }
+  console.log(`🏆 Week ${week} Single-Week Winner: ${winner.name} (${winner.singleScore} pts)`);
+  data.weeklyWinners[week] = {
+    franchiseId: winner.fid,
+    franchiseName: winner.name,
+    score: winner.singleScore,
+    prize
+  };
+  return data.weeklyWinners[week];
+}
 
-    // Warn on a tie at the cut line (RULES.md defines no elimination tiebreaker)
-    const sorted = [...teamScores].sort((a, b) => a.rollingScore - b.rollingScore);
-    if (sorted[cutCount] && sorted[cutCount].rollingScore === sorted[cutCount - 1].rollingScore) {
-      console.warn(`⚠️ Tie at the cut line (${sorted[cutCount].rollingScore} pts). MFL's choice was used.`);
-    }
+/**
+ * Records the week's guillotine cut(s) (mutates data). Throws, without changing
+ * anything, if a safeguard fails. Returns null if the cut was already recorded.
+ */
+export function recordCuts(data, emptyRosterFids, week = data.currentWeek || 1) {
+  if (!data.eliminatedTeams) data.eliminatedTeams = {};
+  const eliminated = data.eliminatedTeams;
+
+  // Safeguard 1: never cut for the same week twice.
+  if (Object.values(eliminated).some(e => e.eliminatedWeek === week || e.week === week)) {
+    console.log(`⏭️ Week ${week} cut already recorded.`);
+    return null;
   }
 
-  console.log(`✂️ Week ${currentWeek} cut(s):`, cutTeams.map(t => `${t.name} (${t.rollingScore} pts)`).join(', ') || 'none');
+  const cutCount = getCutCount(week);
+  if (cutCount === 0) return [];
+
+  const sorted = getFinalTeamScores(data, week).sort((a, b) => a.rollingScore - b.rollingScore);
+  const cutTeams = sorted.slice(0, cutCount);
+
+  // Safeguard 4: MFL makes the cut. Its newly emptied rosters must match ours exactly.
+  const mflCut = emptyRosterFids.filter(fid => !eliminated[fid]).sort();
+  const ourCut = cutTeams.map(t => t.fid).sort();
+  if (mflCut.length === 0) {
+    throw new Error(`MFL has not made the Week ${week} cut yet (no newly empty rosters). Expected: ${ourCut.join(', ')}. Rerun later.`);
+  }
+  if (mflCut.join(',') !== ourCut.join(',')) {
+    throw new Error(`Cut mismatch for Week ${week}: MFL emptied [${mflCut.join(', ')}], rolling scores say [${ourCut.join(', ')}]. Review manually.`);
+  }
+
+  // Warn on a tie at the cut line (RULES.md defines no elimination tiebreaker)
+  if (sorted[cutCount] && sorted[cutCount].rollingScore === sorted[cutCount - 1].rollingScore) {
+    console.warn(`⚠️ Tie at the cut line (${sorted[cutCount].rollingScore} pts). MFL's choice was used.`);
+  }
+
+  console.log(`✂️ Week ${week} cut(s):`, cutTeams.map(t => `${t.name} (${t.rollingScore} pts)`).join(', '));
   for (const victim of cutTeams) {
-    data.eliminatedTeams[victim.fid] = {
-      eliminatedWeek: currentWeek,
+    eliminated[victim.fid] = {
+      eliminatedWeek: week,
       rollingScore: victim.rollingScore,
       singleScore: victim.singleScore,
       franchiseName: victim.name
     };
   }
+  return cutTeams;
+}
 
-  // Weekly high-score prize (single week, all teams active this week)
-  const prize = getWeeklyPrize(currentWeek);
-  if (prize) {
-    const ranked = [...teamScores].sort((a, b) => b.singleScore - a.singleScore);
-    const winner = ranked[0];
-    if (winner && winner.singleScore > 0) {
-      if (ranked[1] && ranked[1].singleScore === winner.singleScore) {
-        console.warn(`⚠️ Tie for Week ${currentWeek} high score (${winner.singleScore} pts). Recorded ${winner.name}; review manually.`);
-      }
-      console.log(`🏆 Week ${currentWeek} Single-Week Winner: ${winner.name} (${winner.singleScore} pts)`);
-      data.weeklyWinners[currentWeek] = {
-        franchiseId: winner.fid,
-        franchiseName: winner.name,
-        score: winner.singleScore,
-        prize
-      };
-    }
+/**
+ * Applies end-of-week results to data (mutates it). The weekly high score is
+ * recorded first, so a cut safeguard failure (MFL not done yet) never holds up
+ * the prize. On a cut failure, data keeps the winner and the error is returned.
+ * Returns null if the week was already fully processed.
+ */
+export function processEndOfWeek(data, emptyRosterFids) {
+  const winner = recordWeeklyWinner(data);
+  let cutTeams = null;
+  let cutError = null;
+  try {
+    cutTeams = recordCuts(data, emptyRosterFids);
+  } catch (err) {
+    cutError = err;
   }
-
-  // Mark live mode as false for the finished week
-  data.isLive = false;
+  if (!winner && !cutTeams && !cutError) {
+    console.log(`⏭️ Week ${data.currentWeek || 1} was already processed. Nothing to do.`);
+    return null;
+  }
+  if (!cutError) data.isLive = false;
   data.lastUpdated = new Date().toISOString();
-  return { cutTeams };
+  return { winner, cutTeams, cutError };
 }
 
 export async function runCommishAutomation() {
@@ -172,7 +210,9 @@ export async function runCommishAutomation() {
   const result = processEndOfWeek(data, emptyRosterFids);
   if (!result) return;
 
+  // Save whatever was recorded (the weekly high score survives a cut safeguard failure).
   fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), 'utf-8');
+  if (result.cutError) throw result.cutError;
   console.log(`🎉 Commissioner Automation complete for Week ${data.currentWeek}! Updated data.json saved.`);
 }
 

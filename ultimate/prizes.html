@@ -97,7 +97,7 @@
     </header>
 
     <div class="controls-bar">
-      <div class="page-title">Weekly High Scores & Grand Championship Payoffs (\$1,115 Pool)</div>
+      <div class="page-title">Weekly High Scores & Grand Championship Payoffs ($1,115 Pool)</div>
       <div class="nav-links">
         <a href="index.html" class="nav-link">Results</a>
         <a href="prizes.html" class="nav-link active">Prizes</a>
@@ -119,7 +119,7 @@
     </table>
 
     <footer>
-      MFL League 25918 • Total Entry Fees: \$1,200 - \$85 MFL Fee = \$1,115 Prize Pool
+      MFL League 25918 • Total Entry Fees: $1,200 - $85 MFL Fee = $1,115 Prize Pool
     </footer>
   </div>
 
@@ -135,7 +135,24 @@
       15: { amount: '\$50 Cash' }, 16: { amount: '\$50 Cash' }
     };
 
+    // Recorded winner, or for a finished week not yet recorded by the Tuesday run,
+    // the highest single-week score among teams alive that week (same as index.html).
+    function getWeeklyWinner(data, week, lastCompletedWeek) {
+      const recorded = data.weeklyWinners ? data.weeklyWinners[week] : null;
+      if (recorded) return { franchiseName: recorded.franchiseName, score: recorded.score, pending: false };
+      if (week > lastCompletedWeek) return null;
+      const singles = data.weeklySingleScores?.[week] || {};
+      const eliminated = data.eliminatedTeams || {};
+      let best = null;
+      Object.keys(singles).forEach(fid => {
+        if (eliminated[fid] && eliminated[fid].eliminatedWeek < week) return;
+        if (!best || singles[fid] > best.score) best = { franchiseName: data.franchises?.[fid]?.name || fid, score: singles[fid], pending: true };
+      });
+      return best && best.score > 0 ? best : null;
+    }
+
     async function init() {
+      let leagueData = {};
       let winners = {};
       let activeLeagueWeek = 2;
       let remainingCount = 22;
@@ -144,6 +161,7 @@
         const res = await fetch('data.json');
         if (res.ok) {
           const data = await res.json();
+          leagueData = data;
           winners = data.weeklyWinners || {};
           activeLeagueWeek = data.lastCompletedWeek ?? data.currentWeek ?? 2;
           
@@ -169,7 +187,7 @@
 
       for (let w = 1; w <= 16; w++) {
         const sch = WEEKLY_SCHEDULE[w];
-        const wInfo = winners[w];
+        const wInfo = getWeeklyWinner(leagueData, w, activeLeagueWeek);
         const isCurrentFinished = (w === activeLeagueWeek);
 
         const tr = document.createElement('tr');
@@ -180,7 +198,7 @@
         tr.innerHTML = `
           <td><strong>Week ${w}</strong> ${isCurrentFinished ? '<span style="color: var(--accent-red); font-size: 0.68rem; margin-left: 4px; font-weight: 800;">[CURRENT]</span>' : ''}</td>
           <td><span class="badge-prize">${sch.amount}</span></td>
-          <td>${wInfo ? wInfo.franchiseName : '<span style="color: #64748b;">Pending...</span>'}</td>
+          <td>${wInfo ? wInfo.franchiseName + (wInfo.pending ? ' <span style="color: #64748b; font-size: 0.68rem;">(unofficial)</span>' : '') : '<span style="color: #64748b;">Pending...</span>'}</td>
           <td>${wInfo ? '<strong>' + wInfo.score.toFixed(2) + ' pts</strong>' : '-'}</td>
         `;
         tbody.appendChild(tr);
@@ -194,7 +212,7 @@
       r3.className = 'mega-row-bronze';
       r3.innerHTML = `
         <td><strong style="color: var(--accent-bronze);">Week 17</strong> (Final 4)</td>
-        <td><span class="badge-bronze">$60 CASH</span></td>
+        <td><span class="badge-bronze">$85 CASH</span></td>
         <td><strong style="color: var(--accent-bronze);">🥉 3rd Place: ${w17Data.third ? w17Data.third.franchiseName : 'TBD'}</strong></td>
         <td><strong>${w17Data.third ? w17Data.third.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
@@ -205,7 +223,7 @@
       r2.className = 'mega-row-silver';
       r2.innerHTML = `
         <td><strong style="color: var(--accent-silver);">Week 17</strong> (Final 4)</td>
-        <td><span class="badge-silver">$120 CASH</span></td>
+        <td><span class="badge-silver">$200 CASH</span></td>
         <td><strong style="color: var(--accent-silver);">🥈 2nd Place: ${w17Data.second ? w17Data.second.franchiseName : 'TBD'}</strong></td>
         <td><strong>${w17Data.second ? w17Data.second.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
@@ -216,7 +234,7 @@
       r1.className = 'mega-row-gold';
       r1.innerHTML = `
         <td><strong style="color: var(--accent-gold);">Week 17</strong> (Final 4)</td>
-        <td><span class="badge-gold">$430 CASH</span></td>
+        <td><span class="badge-gold">$450 CASH</span></td>
         <td><strong style="color: var(--accent-gold);">🥇 1st Place Champion: ${w17Data.first ? w17Data.first.franchiseName : 'TBD'}</strong></td>
         <td><strong>${w17Data.first ? w17Data.first.score.toFixed(2) + ' pts' : '-'}</strong></td>
       `;
