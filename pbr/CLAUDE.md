@@ -28,11 +28,11 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 * **`mfl_updater.js`**: Logs into MFL with `MFL_USERNAME`/`MFL_PASSWORD` (cookie accumulation, hidden-field scraping). POSTs in-division VPs to `csetup?C=STANDADJ&VICTORY_POINTS=1`. Writes debug HTML (`csetup_form.html`, `mfl_response.html`).
 
 ### Recaps ("Gemmy") and Slack
-* **`generate_post.js`**: Builds the weekly recap.
-  * Pulls recent Slack banter from the PBR channels.
-  * Prompts Gemini (`@google/generative-ai`) for a creative league post.
-  * Posts it to `#officialcomms` (bot token, falling back to the webhook).
-  * Saves the recap into `data.json` / `recap.json` for the dashboard.
+* **`generate_post.js`**: Builds the weekly recap (rewritten 2026-10-27; it had been a syntax error since 2026-10-07, so Weeks 5-6 got no recap).
+  * Targets the latest played week (or `node generate_post.js <week>`).
+  * Sends Gemini (`@google/generative-ai`, `GEMINI_MODEL`, default `gemini-2.5-flash`) a compact week summary plus the last 7 days of Slack banter from the PBR channels.
+  * Posts to `#officialcomms` (bot token, falling back to the webhook), then saves the recap to `data.json` `weekly_data[week].recap`, which the dashboard shows.
+  * Skips a week that already has a recap (`GEMMY_FORCE=1` to redo). `GEMMY_SLACK=0` saves without posting. Exits 1 on any failure.
 * **`gemmy_custom_post.js`**: One-off Gemmy announcement from a free-text prompt (REST call to Gemini, posted to Slack).
 * **`sync_recaps.js`**: Pulls posted recaps back from Slack `#officialcomms` into `data.json` and `gemmy_week_N.md`.
 * **`save_recap.js`, `embed_recaps.js`**: Helpers that write or merge recap text into `data.json`.
@@ -61,11 +61,13 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 
 | Workflow | Trigger | What it runs |
 | --- | --- | --- |
-| `pbr_endweek.yml` | `workflow_dispatch`, `repository_dispatch: pbr-endweek-trigger` | `mfl_scores_fetcher.js` → `mfl_updater.js` → `generate_post.js`, then commits `data.json`, `recap.json`, `tokens_data.json` |
+| `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` | `mfl_scores_fetcher.js` → `mfl_updater.js` → `generate_post.js`, then commits `data.json` (even if the recap step failed) |
 | `pbr_sync.yml` | `workflow_dispatch`, `repository_dispatch: pbr-sync-trigger` | Scores fetch → (`commish_watch.js`, which doesn't exist yet) → `gemmy_custom_post.js` with a prompt, then commits `pbr/` |
 | `gemmy_alerts.yml` | `workflow_dispatch` (prompt input) | `gemmy_custom_post.js "<prompt>"` |
 
-External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate).
+External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate). The code is `apps_script_triggers.gs`: every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger`. Nothing should dispatch `pbr-sync-trigger` (see Known Issues).
+
+`pbr_endweek.yml` is rerun-safe: `mfl_updater.js` skips the VP push when MFL's `leagueStandings` VP already equals the computed quarter VP through that week, and `generate_post.js` skips weeks that have a recap. Step 1 gets no MFL credentials on purpose, because `mfl_scores_fetcher.js` still contains an older VP push (`TYPE=adjustScores`) that runs whenever they are set.
 
 Secrets used by PBR: `MFL_USERNAME`, `MFL_PASSWORD`, `GEMINI_API_KEY`, `SLACK_PBR_BOT_TOKEN`, `SLACK_WEBHOOK_URL`, and the four `PBR_SLACK_CHANNEL_*` IDs. See the root `CLAUDE.md` for what each one is.
 
@@ -101,10 +103,10 @@ Ultimate's end-of-week MFL writes were rebuilt and verified live. Their code is 
    * `gemmy_alerts.yml` passes `secrets.SLACK_BOT_TOKEN`, which doesn't exist (the secret is `SLACK_PBR_BOT_TOKEN`).
    * `sync_recaps.js` reads `process.env.PBR_SLACK_BOT_TOKEN`, but the workflows export the token as `SLACK_BOT_TOKEN`.
 2. **`pbr_sync.yml` references files that don't exist:** `pbr/commish_watch.js`, `pbr/fetcher.js`, and a root `pbr_data.json`. The steps skip silently. Its default prompt is hardcoded to Q1 events.
-3. **`pbr_endweek.yml` also listens for `ultimate-sync-trigger`,** so an Ultimate dispatch would run the PBR pipeline. Remove it unless that's intentional.
+3. ~~`pbr_endweek.yml` also listened for `ultimate-sync-trigger`~~ (removed 2026-10-27).
 4. **League ID and year are repeated** in `mfl_scores_fetcher.js`, `mfl_updater.js`, `mfl_tx_fetcher.js`, `process_waivers.js`, and every PBR workflow. Consolidate them into `pbr/config.js`.
 5. **Module system:** PBR scripts use CommonJS while the repo convention (and `ultimate/`) is ES Modules. Migrate before sharing code with `common/`.
-6. **Gemini model names differ:** `generate_post.js` uses `gemini-3.8-flash` (SDK) and `gemmy_custom_post.js` uses `gemini-2.5-flash` (REST). Define the model in one place.
+6. **Gemini model is set in two places:** `generate_post.js` (`GEMINI_MODEL`, default `gemini-2.5-flash`) and `gemmy_custom_post.js` (hardcoded `gemini-2.5-flash`). Define it in one place.
 7. **Default division map is hardcoded** in `mfl_scores_fetcher.js` (2026 Q1). Later quarters must come from MFL or `data.json`, not this map.
 8. **Manual steps not yet automated:**
    * Quarter W-L-T/VP resets (Weeks 5 and 9).
@@ -112,3 +114,4 @@ Ultimate's end-of-week MFL writes were rebuilt and verified live. Their code is 
    * Quarterly schedule upload.
    * Postseason Week 13 bonus adjustment.
    * Postseason guillotine tracking.
+9. **`mfl_updater.js` VP push** still hand-builds the STANDADJ payload, only logs errors, and gives tied top-2 scores a full VP instead of splitting it. Rebuild it on the Ultimate csetup pattern (next session). The rerun guard does not cover reset weeks (5, 9), where MFL still carries the prior quarter until the manual reset.

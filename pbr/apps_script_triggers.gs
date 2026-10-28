@@ -1,0 +1,73 @@
+/**
+ * PBR: Google Apps Script trigger (copy of the code that runs in Apps Script).
+ * No secrets in this file. Set these in Project Settings > Script properties:
+ *   GITHUB_PAT  fine-grained token for c0d3rj03/fantasy-football with "Contents: Read and write"
+ *   OWNER       c0d3rj03
+ *   REPO        fantasy-football
+ *
+ * Can live in the same Apps Script project as ultimate/apps_script_triggers.gs (add it as a second
+ * file); every name here is pbr-prefixed so nothing clashes.
+ *
+ * Setup: paste this file, run installPbrWeeklyTrigger() once, and approve the permissions.
+ * Delete any old PBR triggers/functions (for example ones that dispatch pbr-sync-trigger).
+ *
+ * Every Tuesday at about 6:00 AM Pacific (after Monday Night Football):
+ *   pbr-endweek-trigger -> pbr_endweek.yml: fetch MFL results into data.json, push in-division VPs
+ *   to MFL, post the Gemmy recap to Slack #officialcomms, commit data.json for the dashboard.
+ * Reruns are safe, so pbrEndweekRun() can also be run by hand.
+ */
+
+const PBR_TZ = 'America/Los_Angeles';
+const PBR_TRIGGER_HOUR = 6; // Apps Script fires somewhere within 6:00-7:00 AM
+
+/** Run once by hand. Replaces any earlier PBR end-of-week trigger so there is exactly one. */
+function installPbrWeeklyTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === 'pbrEndweekRun')
+    .forEach(t => ScriptApp.deleteTrigger(t));
+
+  ScriptApp.newTrigger('pbrEndweekRun')
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.TUESDAY)
+    .atHour(PBR_TRIGGER_HOUR)
+    .inTimezone(PBR_TZ) // follows PST/PDT automatically
+    .create();
+  Logger.log(`Installed Tuesday ${PBR_TRIGGER_HOUR} AM Pacific trigger for pbrEndweekRun.`);
+}
+
+/** Called by the time trigger. Safe to run by hand too. */
+function pbrEndweekRun() {
+  pbrDispatchRepositoryEvent('pbr-endweek-trigger');
+}
+
+/** Sends a repository_dispatch event. Event types are league-prefixed so they never start Ultimate workflows. */
+function pbrDispatchRepositoryEvent(eventType) {
+  const props = PropertiesService.getScriptProperties();
+  const pat = props.getProperty('GITHUB_PAT');
+  const owner = props.getProperty('OWNER');
+  const repo = props.getProperty('REPO');
+  if (!pat || !owner || !repo) {
+    throw new Error('Missing script property: GITHUB_PAT, OWNER, and REPO are required.');
+  }
+
+  const response = UrlFetchApp.fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
+    method: 'post',
+    headers: {
+      'Authorization': `Bearer ${pat}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28',
+      'User-Agent': 'GoogleAppsScript-PbrTrigger'
+    },
+    contentType: 'application/json',
+    payload: JSON.stringify({ event_type: eventType }),
+    muteHttpExceptions: true
+  });
+
+  const status = response.getResponseCode();
+  if (status === 204) {
+    Logger.log(`Dispatched ${eventType}.`);
+  } else {
+    // Throwing makes Apps Script email the failure to the script owner.
+    throw new Error(`Dispatch ${eventType} failed (${status}): ${response.getContentText()}`);
+  }
+}

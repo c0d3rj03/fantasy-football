@@ -247,6 +247,20 @@ async function pushInDivisionVPs(cookie, weekNum, vpWinners) {
   }
 }
 
+async function vpAlreadyApplied(weekObj) {
+  try {
+    const res = await fetch(`${BASE_URL}/export?TYPE=leagueStandings&L=${LEAGUE_ID}&JSON=1`);
+    const franchises = (await res.json())?.leagueStandings?.franchise || [];
+    const expected = {};
+    Object.values(weekObj.quarter_standings || {}).flat().forEach(t => { expected[t.id] = t.vp; });
+    if (franchises.length === 0 || Object.keys(expected).length === 0) return false;
+    return franchises.every(f => Number(f.vp) === expected[f.id]);
+  } catch (err) {
+    console.warn("⚠️ Could not read MFL standings for the rerun check:", err.message);
+    return false;
+  }
+}
+
 async function main() {
   console.log("🏈 --- PBR MFL Victory Point Sync Tool --- 🏈\n");
 
@@ -295,6 +309,13 @@ async function main() {
 
   if (vpWinners.length === 0) {
     console.log("⚠️ No in-division VP winners identified for this week.");
+    return;
+  }
+
+  // Rerun guard: the STANDADJ form adds VP, so a second push would double this week's in-division VP.
+  // If MFL's VP already equals our quarter VP through this week for every team, it has been applied.
+  if (await vpAlreadyApplied(weekObj)) {
+    console.log(`\n✅ MFL standings already include Week ${targetWeekKey} in-division VPs. Nothing to push.`);
     return;
   }
 

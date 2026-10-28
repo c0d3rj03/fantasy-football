@@ -1,23 +1,46 @@
-name: PBR End-of-Week Commish Actions Pipeline
+name: PBR End-of-Week Results & Gemmy Recap
 
+# Started every Tuesday morning by the Google Apps Script trigger (pbr/apps_script_triggers.gs),
+# or by hand from the Actions tab. Safe to rerun: the VP push skips if MFL already has this week,
+# and the Gemmy step skips if this week already has a recap.
 on:
   workflow_dispatch:
+    inputs:
+      week:
+        description: 'Week to push VPs / recap (blank = latest played week)'
+        required: false
+        default: ''
+      post_to_slack:
+        description: 'Post the Gemmy recap to Slack'
+        type: boolean
+        default: true
+      force_recap:
+        description: 'Regenerate the recap even if this week already has one'
+        type: boolean
+        default: false
   repository_dispatch:
-    types: [pbr-endweek-trigger, ultimate-sync-trigger]
+    types: [pbr-endweek-trigger]
+
+concurrency:
+  group: pbr-endweek
+  cancel-in-progress: false
 
 jobs:
   run-endweek-commish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     defaults:
       run:
         working-directory: pbr
+    env:
+      WEEK: ${{ github.event.inputs.week }}
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,46 +48,44 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
-        run: |
-          if [ -f package.json ]; then
-            npm install
-          elif [ -f ../package.json ]; then
-            cd .. && npm install
-          fi
+        working-directory: .
+        run: npm install --no-audit --no-fund
 
-      - name: 1. Calculate Standings & Victory Points
-        env:
-          MFL_LEAGUE_ID: '63213'
-          MFL_YEAR: '2026'
+      # No MFL credentials here on purpose: mfl_scores_fetcher.js has its own (old) VP push that runs
+      # whenever MFL_USERNAME is set, and step 2 is the one that should write.
+      - name: 1. Fetch MFL results, compute VP & standings (data.json)
         run: node mfl_scores_fetcher.js
 
-      - name: 2. Push Victory Points & Adjustments to MFL
+      - name: 2. Push in-division VPs to MFL
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
-          MFL_LEAGUE_ID: '63213'
-          MFL_YEAR: '2026'
-        run: node mfl_updater.js
+        run: node mfl_updater.js $WEEK
 
-      - name: 3. Generate and Post Gemmy Weekly Recap
+      - name: 3. Generate Gemmy recap and post to Slack
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
           PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
           PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
           PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: node generate_post.js
+          GEMMY_SLACK: ${{ github.event.inputs.post_to_slack == 'false' && '0' || '1' }}
+          GEMMY_FORCE: ${{ github.event.inputs.force_recap == 'true' && '1' || '0' }}
+        run: node generate_post.js $WEEK
 
-      - name: 4. Commit and Push Updated Data Files
+      # Runs even if the recap failed, so the dashboard still gets the new scores.
+      - name: 4. Commit updated data.json
+        if: ${{ !cancelled() }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.json recap.json tokens_data.json || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "chore(auto): update PBR standings, VPs, and Gemmy recap [skip ci]"
+            git commit -m "chore(pbr): end of week results and Gemmy recap [skip ci]"
+            git pull --rebase origin main
             git push origin main
           fi
