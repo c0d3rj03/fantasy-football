@@ -350,11 +350,53 @@
       });
     }
 
+    // Cut count per RULES.md: 2 after Weeks 2-6, 1 after Weeks 7-16, none in Week 17.
+    function getCutCount(week) {
+      if (week >= 2 && week <= 6) return 2;
+      if (week >= 7 && week <= 16) return 1;
+      return 0;
+    }
+
+    // fid -> week cut. Recorded cuts come from data.json; MFL makes the cut itself once a week
+    // is final, so a finished week with no recorded cut uses the lowest rolling score(s).
+    function getCutWeeks() {
+      const recorded = leagueData.eliminatedTeams || {};
+      const singles = leagueData.weeklySingleScores || {};
+      const cutWeek = {};
+      Object.keys(recorded).forEach(fid => { cutWeek[fid] = recorded[fid].eliminatedWeek; });
+
+      for (let w = 2; w <= lastCompletedWeek; w++) {
+        const count = getCutCount(w);
+        if (count === 0 || Object.values(cutWeek).includes(w)) continue;
+        const rolling = fid => (singles[w - 1]?.[fid] || 0) + singles[w][fid];
+        Object.keys(leagueData.franchises)
+          .filter(fid => !(fid in cutWeek) && singles[w]?.[fid] !== undefined)
+          .sort((a, b) => rolling(a) - rolling(b))
+          .slice(0, count)
+          .forEach(fid => { cutWeek[fid] = w; });
+      }
+      return cutWeek;
+    }
+
+    // Recorded winner, or for a finished week the highest single-week score among teams alive that week.
+    function getWeeklyWinner(week, cutWeek) {
+      const recorded = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
+      if (recorded) return { name: recorded.franchiseName, score: recorded.score };
+      if (week > lastCompletedWeek || week >= 17) return null;
+      const singles = leagueData.weeklySingleScores?.[week] || {};
+      let best = null;
+      Object.keys(singles).forEach(fid => {
+        if (fid in cutWeek && cutWeek[fid] < week) return;
+        if (!best || singles[fid] > best.score) best = { name: leagueData.franchises[fid]?.name || fid, score: singles[fid] };
+      });
+      return best;
+    }
+
     function renderWeek(week) {
       if (!leagueData) return;
 
-      const eliminated = leagueData.eliminatedTeams || {};
-      const weeklyWinner = leagueData.weeklyWinners ? leagueData.weeklyWinners[week] : null;
+      const cutWeek = getCutWeeks();
+      const weeklyWinner = getWeeklyWinner(week, cutWeek);
       const isLiveNow = (phase === 'live' && week === liveWeek);
 
       // Toggle Header Status Columns (YTP, LIVE, DONE)
@@ -379,15 +421,14 @@
       }
 
       const activeTeams = Object.keys(leagueData.franchises).filter(fid => {
-        const elimInfo = eliminated[fid];
-        return !elimInfo || elimInfo.eliminatedWeek >= week;
+        return !(fid in cutWeek) || cutWeek[fid] >= week;
       });
 
       document.getElementById('hdrTeamsRemaining').textContent = `${activeTeams.length}`;
 
-      const choppedThisWeek = Object.entries(eliminated)
-        .filter(([_, info]) => info.eliminatedWeek === week)
-        .map(([_, info]) => info.franchiseName);
+      const choppedThisWeek = Object.keys(cutWeek)
+        .filter(fid => cutWeek[fid] === week)
+        .map(fid => leagueData.franchises[fid]?.name || fid);
 
       const elimEl = document.getElementById('eliminatedText');
       if (choppedThisWeek.length > 0) {
@@ -396,23 +437,21 @@
         elimEl.textContent = 'None (Safe Week)';
       } else if (isLiveNow) {
         elimEl.textContent = 'In Progress';
-      } else if (week > lastCompletedWeek) {
-        elimEl.textContent = 'Upcoming / TBD';
+      } else if (week >= 17) {
+        elimEl.textContent = 'None (Final Week)';
       } else {
-        elimEl.textContent = 'Pending commissioner update';
+        elimEl.textContent = 'Upcoming / TBD';
       }
 
       const winnerEl = document.getElementById('winnerText');
       if (weeklyWinner) {
-        winnerEl.textContent = `${weeklyWinner.franchiseName} (${weeklyWinner.score.toFixed(2)} pts)`;
+        winnerEl.textContent = `${weeklyWinner.name} (${weeklyWinner.score.toFixed(2)} pts)`;
       } else if (week >= 17) {
         winnerEl.textContent = 'No weekly prize (final week)';
       } else if (isLiveNow) {
         winnerEl.textContent = 'In Progress...';
-      } else if (week > lastCompletedWeek) {
-        winnerEl.textContent = 'Upcoming / TBD';
       } else {
-        winnerEl.textContent = 'Pending commissioner update';
+        winnerEl.textContent = 'Upcoming / TBD';
       }
 
       const teamListEl = document.getElementById('teamList');
@@ -444,7 +483,7 @@
         }
 
         const totalScore = priorScore + doneScore + liveScore;
-        const isChoppedNow = eliminated[fid] && eliminated[fid].eliminatedWeek === week;
+        const isChoppedNow = cutWeek[fid] === week;
 
         return {
           id: fid,

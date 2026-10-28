@@ -56,7 +56,7 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
 * **Apps Script settings:** Tokens are loaded via `PropertiesService.getScriptProperties()` (`GITHUB_PAT`, `OWNER`, `REPO`).
 
 ### Dashboard views (`index.html`)
-* **Results phase (Tue–Thu):** opens on the last finished week (`Week N Results`); bar = Week N−1 + Week N single scores, cut teams badged. `Week N+1 →` previews next week (bar = Week N only, cut teams removed).
+* **Results phase (Tue–Thu):** opens on the last finished week (`Week N Results`); bar = Week N−1 + Week N single scores, cut teams badged. MFL makes the cut itself, so for a finished week with no recorded cut the page shows the lowest rolling score(s) per the cut schedule as cut, and the highest single score as the weekly winner; recorded entries in `data.json` take priority. `Week N+1 →` previews next week (bar = Week N only, cut teams removed).
 * **Live phase (first game through MNF):** opens on `Week N Live`; bar = Week N−1 + finished players + in-game players, with YTP / LIVE / DONE counts. `← Week N−1` shows last week's results.
 * Header shows `lastUpdated` in the viewer's local time.
 
