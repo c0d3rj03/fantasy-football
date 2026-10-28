@@ -131,13 +131,18 @@ export function recordCuts(data, emptyRosterFids, week = data.currentWeek || 1) 
   const sorted = getFinalTeamScores(data, week).sort((a, b) => a.rollingScore - b.rollingScore);
   const cutTeams = sorted.slice(0, cutCount);
 
-  // Safeguard 4: MFL makes the cut. Its newly emptied rosters must match ours exactly.
+  // Safeguard 4: MFL makes the cut. Its newly emptied rosters must match ours exactly,
+  // except in two-cut weeks (W2-W6): MFL empties only one, and commish_mfl_actions.js
+  // chops the other (C=MANDROP). There MFL's cut must be one of ours.
   const mflCut = emptyRosterFids.filter(fid => !eliminated[fid]).sort();
   const ourCut = cutTeams.map(t => t.fid).sort();
   if (mflCut.length === 0) {
     throw new Error(`MFL has not made the Week ${week} cut yet (no newly empty rosters). Expected: ${ourCut.join(', ')}. Rerun later.`);
   }
-  if (mflCut.join(',') !== ourCut.join(',')) {
+  const partialTwoCut = cutCount === 2 && mflCut.length === 1 && ourCut.includes(mflCut[0]);
+  if (partialTwoCut) {
+    console.log(`ℹ️ MFL cut ${mflCut[0]}; ${ourCut.find(fid => fid !== mflCut[0])} is the second cut (MANDROP by commish_mfl_actions.js).`);
+  } else if (mflCut.join(',') !== ourCut.join(',')) {
     throw new Error(`Cut mismatch for Week ${week}: MFL emptied [${mflCut.join(', ')}], rolling scores say [${ourCut.join(', ')}]. Review manually.`);
   }
 

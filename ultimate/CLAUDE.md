@@ -14,7 +14,7 @@ Full league rules (scoring, eliminations, roster progression, FAAB, prizes) are 
 
 Automates commissioner administration and provides a web dashboard for a 24-team **Ultimate Guillotine Fantasy Football League** hosted on MyFantasyLeague (MFL).
 
-* **League Commissioner (`c0d3rj03` / Joe):** Uses automated scripts and GitHub Actions to record weekly eliminations and log prize winners. From Week 7 (2026) MFL makes the guillotine cut and empties the roster itself; the scripts never call `C=MANDROP`.
+* **League Commissioner (`c0d3rj03` / Joe):** Uses automated scripts and GitHub Actions to record weekly eliminations and log prize winners. MFL makes one guillotine cut itself each week and empties that roster; in the two-cut weeks (W2–W6) `commish_mfl_actions.js` chops the second team with `C=MANDROP`.
 * **24 League Contenders:** Use the GitHub Pages dashboard to track live rolling 2-week scores, see weekly high-score prize winners, and view eliminated ("axed") teams in the graveyard UI.
 
 ---
@@ -34,7 +34,7 @@ Automates commissioner administration and provides a web dashboard for a 24-team
    * Reads `data.json` and refuses to run if any safeguard fails (see below), without writing anything.
    * Rolling 2-week score = `weeklySingleScores[W-1] + weeklySingleScores[W]` (MFL final results, never live points).
    * Cut count: 2 teams (W2–W6), 1 team (W7–W16), none in W17.
-   * Confirms MFL's own cut: the newly emptied rosters must exactly match the lowest rolling score(s).
+   * Confirms MFL's own cut: the newly emptied rosters must exactly match the lowest rolling score(s). In two-cut weeks (W2–W6) MFL empties only one, so one emptied roster that is one of the two lowest is accepted and both are recorded; `commish_mfl_actions.js` then chops the other.
    * Two independent, idempotent steps, prize first:
      * `recordWeeklyWinner()`: `weeklyWinners[W] = {franchiseId, franchiseName, score, prize}`, the highest single-week score among teams alive in Week W (prize tiers from RULES.md; no weekly prize in W17). Needs only final scores (safeguards 2–3), not MFL's cut.
      * `recordCuts()`: `eliminatedTeams[fid] = {eliminatedWeek, rollingScore, singleScore, franchiseName}` (safeguards 1–4).
@@ -45,9 +45,18 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 4. **`ultimate/commish_mfl_actions.js`** (runs after `commish_automation.js`; Week W just finished, W+1 being set up):
    * Reads MFL (`league`, `rosters`, `weeklyResults&W=W+1`) and prints the commissioner checklist, also to the Actions run summary. Each step compares MFL with the target, so a done step shows ✅ and is never repeated.
    * Refuses to run unless `data.json` has `phase: 'results'`, `lastCompletedWeek === currentWeek`, and Week W's cut recorded.
-   * **Automated:** score carryover. Each survivor's Week W single score becomes its Week W+1 starting adjustment via `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). MFL reports the existing adjustment as `adj_score` in `weeklyResults`; a missing one is added, a matching one is skipped, a different one is an error (never stacked). After writing, it re-reads MFL to confirm. Writes only with `--apply` or `MFL_WRITES=1`; otherwise a dry run.
-   * **Checklist only (📝, done by hand):** second cut W2–W6 (`C=MANDROP`, cut teams still rostered), clear eliminated teams' FAAB (`bbidAvailableBalance` > 0, `C=BBIDWAIV`), W1–W4 $10 FAAB prize (`C=BBIDWAIV`; mark `weeklyWinners[W].faabAwarded = true` afterwards, since MFL keeps no record), roster size (`league.rosterSize`, `C=GENERAL`), lineup limits (`league.starters`, `C=LINEUP`). MFL has no import API for these; they need form POSTs to `csetup`. Do not use `import?TYPE=accounting` for FAAB: it is the league money ledger, not blind-bid balances (confirmed by the commissioner 2026-10-27).
-   * `--inspect` logs in and prints the field names of the `MANDROP`, `BBIDWAIV`, `GENERAL`, `LINEUP` forms (emails masked, password fields skipped; Action logs may be public). Use it to build the form automation.
+   * **Every step is automated** (🤖 in the checklist, ✅ once MFL shows it done):
+     * Second cut: any recorded cut team still rostered is chopped via `C=MANDROP` (`FRANCHISE`, `VERIFY`, `VERIFY2`), which also disables its abilities.
+     * Clear eliminated teams' FAAB: `C=BBIDWAIV` with `ADJUST_FRANCHISE_BBID` checked and `BBID_ADJUSTMENT<fid>` = −balance (an adjustment is added to `bbidAvailableBalance`), `BBID_COMMENT<fid>`.
+     * W1–W4 $10 FAAB prize: same form, `BBID_ADJUSTMENT<fid>` = +10. MFL keeps no record, so after the balance is confirmed it sets `weeklyWinners[W].faabAwarded = true` in `data.json`.
+     * Roster size: `C=GENERAL` `ROSTER_SIZE` (checked via `league.rosterSize`).
+     * Lineup: `C=LINEUP` `USE_/MIN_/MAX_` for QB, RB, WR, TE and `MIN_STARTERS`/`MAX_STARTERS` (checked via `league.starters`).
+     * Score carryover: each survivor's Week W single score becomes its Week W+1 starting adjustment via `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). MFL reports the existing adjustment as `adj_score` in `weeklyResults`; a missing one is added, a matching one is skipped, a different one is an error (never stacked).
+   * **Forms** (`mfl_csetup_form.js`, `client.submitCsetupForm()`): each csetup page holds many settings, so the form is loaded fresh (for its `input_expires` token and current values), only our fields are changed, and every field is posted back as a browser would. A dropdown value MFL does not offer is an error. MFL answers 200 even when it rejects a form, so success is judged only by re-reading the exports.
+   * **Writes** only with `--apply` or `MFL_WRITES=1`. In a dry run with MFL credentials it still logs in, loads each form and logs the exact field changes (`NAME old → new`) without posting. After applying, it re-reads MFL (up to 3 tries, 5 s apart) and fails unless every step shows ✅.
+   * Do not use `import?TYPE=accounting` for FAAB: it is the league money ledger, not blind-bid balances (confirmed by the commissioner 2026-10-27).
+   * `--inspect` logs in and prints the fields of the `MANDROP`, `BBIDWAIV`, `GENERAL`, `LINEUP` forms (emails masked, password fields skipped; Action logs may be public).
+   * Login must switch to commissioner mode (`logout?L=…&BECOME=0000`, cookie `MFL_IS_COMMISH`), or csetup pages render with no forms.
    * `planEndOfWeekActions(data, mflState)` is exported and pure.
 5. **`ultimate/data.json`**: Single source of truth for league state (`currentWeek`, `isLive`, `franchises`, `eliminatedTeams`, `weeklySingleScores`, `weeklyWinners`, `liveDetails`).
 
@@ -62,7 +71,7 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
 ```
 * The end-of-week job commits `data.json` even if a commish safeguard fails, so the fresh scores still publish; the job still shows as failed. Safeguard 1 makes a manual rerun safe.
 * `ultimate/apps_script_triggers.gs` is a copy of the Apps Script code (no secrets). Run `installUltimateDailyTrigger()` once to create the trigger.
-* **MFL writes are off by default.** `commish_mfl_actions.js` writes the score carryover only when the manual run's `apply` box is checked or the repo variable `ULTIMATE_MFL_WRITES` is `1` (Settings → Secrets and variables → Actions → Variables). The manual run's `mode: inspect` only prints the commish form fields and commits nothing.
+* **MFL writes are off by default.** `commish_mfl_actions.js` writes only when the manual run's `apply` box is checked or the repo variable `ULTIMATE_MFL_WRITES` is `1` (Settings → Secrets and variables → Actions → Variables). Otherwise the run shows the planned field changes on the run page. The manual run's `mode: inspect` only prints the commish form fields and commits nothing.
 * Both workflows also keep `workflow_dispatch` for manual runs. Neither has `push` or `schedule` triggers.
 * Both share the `ultimate-data` concurrency group (they both commit `data.json`) and `git pull --rebase` before pushing.
 * **Apps Script settings:** Tokens are loaded via `PropertiesService.getScriptProperties()` (`GITHUB_PAT`, `OWNER`, `REPO`).
@@ -94,7 +103,7 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 1. **(Data fixed 2026-10-25.)** `eliminatedTeams` was rebuilt from a read-only MFL `rosters` export (10 empty rosters, 2 per week W2–W6), checked against the commissioner's published results sheet. `weeklyWinners` W4 was converted to the UI format and W5/W6 were added. Original problem: **`data.json` `eliminatedTeams` was out of sync with the league.** It lists 8 teams, all from Weeks 2–4. Four are logged as Week 4 cuts from two separate runs (2026-10-07 and 2026-10-08, both with `currentWeek` still 4). `0004` (Ichabod Crane) is marked eliminated but scored in Weeks 5 and 6, so it is still alive. Teams actually cut after Weeks 5 and 6 (for example `0020`, plus the teams with Week 6 scores but no Week 7 activity) are missing. A Tuesday run would treat eliminated teams as active, likely "cut" one with a 0 score, and MANDROP the wrong franchise. Reconcile before the next run: an eliminated team has 0 players on its MFL roster, so a read-only `export?TYPE=rosters` call identifies who is alive. Rebuild `eliminatedTeams` from that and the Weeks 2–6 results.
 2. **(Fixed: safeguard 1.) No idempotency guard.** `commish_automation.js` never records which week it processed. Running it twice for the same `currentWeek` cuts again (this is how Week 4 got four cuts in `data.json`). It should refuse to run if `eliminatedTeams` already has entries for `currentWeek`.
 3. **(Fixed: safeguards 2 and 3.) Wrong-week risk.** It uses `data.currentWeek`, which the fetcher sets from MFL `liveScoring.week`. If the fetcher runs after MFL rolls the week over, the commish run processes the new week with no scores.
-4. **(Moot: the script no longer calls MANDROP; MFL makes the cut, and safeguard 4 checks it.) MANDROP result is never checked.** `submitCommishForm()` ignores `res.ok` and the HTML response. A MANDROP can legitimately fail when the commissioner already dropped the roster by hand, so failure is not an error by itself. The script should instead confirm the franchise's roster is empty (via `rosters` export) after the drop, and warn only if players remain. The `FRANCHISE_ID` form field name is unverified against MFL's actual form.
+4. **(Fixed 2026-10-27.) MANDROP result is never checked.** `commish_mfl_actions.js` now chops with the verified field names and confirms the roster is empty via the `rosters` export.
 
 ### Rules mismatches
 5. **Week 6 cut count (fixed 2026-10-25).** The code and RULES.md prose cut 2 teams only through Week 5. Confirmed by the commissioner and the rules doc: **2 cuts after Weeks 2–6**, 1 after Weeks 7–16. Both are corrected.
@@ -117,10 +126,11 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 
 ### MFL score adjustments (built 2026-10-27, writes off until enabled)
 * `commish_mfl_actions.js` pushes the carryover with the documented `import?TYPE=franchiseScoreAdjustment`. `TYPE=adjustScores` is not in MFL's API docs (`api_info`); `pbr/` uses it, so check that it works there.
+* None of the MFL writes (carryover, MANDROP, BBIDWAIV, GENERAL, LINEUP) has run with writes on yet. The FAAB sign (adjustment added to the balance) is an assumption; the post-write check catches it if wrong.
 * Not yet run against MFL with writes on. Weeks 2–7 adjustments were entered by hand.
 
-### Second cut in Weeks 2–6 (needed again in 2027)
-* MFL cuts only one team. `commish_automation.js` safeguard 4 expects MFL's emptied rosters to match both cuts, so in W2–W6 it will fail until the second team is emptied by hand, then a rerun records both. Fix before 2027: accept MFL's cut when it is the lowest of the expected pair, and automate the drop of the other (`C=MANDROP`, see `--inspect`).
+### Second cut in Weeks 2–6 (built 2026-10-27, first used in 2027)
+* MFL cuts only one team. Safeguard 4 accepts that one when it is one of the two lowest, records both, and `commish_mfl_actions.js` chops the other. Tested offline only.
 
 ---
 
@@ -129,7 +139,7 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 From `mfl_commish_client.js` (`pbr/mfl_updater.js` has its own copy of most of this):
 * **Login and cookie capture** (`login()`): `Set-Cookie` header with the XML `cookie_value` fallback. Add re-login when the cookie expires.
 * **`apiRequest()`**: `export`/`import` GET/POST with `L` and `JSON=1`, plus the `!res.ok` error.
-* **`submitCommishForm()`**: `csetup` form POSTs (`MANDROP`, `STANDADJ`, `DIVCONF`, `FSCOREADJ`). Add response validation (detect MFL error HTML) before sharing it.
+* **`submitCsetupForm()`** + `mfl_csetup_form.js`: GET the csetup form, change named fields, POST the full form back. PBR's `STANDADJ`/`DIVCONF` could reuse it.
 * **Retry / rate-limit wrapper** (none exists today).
 * **User-Agent**: make it a parameter (currently hardcoded `UltimateGuillotineCommish`).
 * From `mfl_scores_fetcher.js`: `fetchMFL()` (unauthenticated export GET), `normalizeArray()`, and the `weeklyResults` / `liveScoring` fetches.
@@ -146,7 +156,7 @@ Heavy metal / blood-red guillotine styling, dark metallic progress bars, split 2
 
 ## Next Steps
 
-1. **Turn on and automate the end-of-week MFL actions:** enable the score carryover (`ULTIMATE_MFL_WRITES=1`) after a supervised run; run `mode: inspect` and automate roster size and lineup (`C=GENERAL`, `C=LINEUP`, next change sets up Week 10) and FAAB (`C=BBIDWAIV`) as GET-form → change fields → POST → verify via the `league` export.
+1. **Turn on the end-of-week MFL writes:** review a dry run's planned field changes on the run page, do one supervised run with `apply` checked, then set `ULTIMATE_MFL_WRITES=1`. The next roster/lineup change sets up Week 10 (after Week 9).
 2. **GroupMe bot integration:** Use the GroupMe Bot API (`dev.groupme.com`) to post weekly elimination announcements and high-score prize callouts after the Tuesday 5:00 AM ET commissioner run.
 3. **Finalize the GitHub Pages frontend:** Complete the dashboard (`c0d3rj03.github.io/fantasy-football/ultimate`) with split 2-part progress bars, weekly winner callout cards, and graveyard elimination visuals.
 4. **Validation:** Monitor the automated daily 2:00 AM PT GitHub Action runs during active game weeks to confirm zero-error execution.

@@ -1,4 +1,5 @@
 import querystring from 'querystring';
+import { parseCsetupForm, applyFormChanges, describeFormChanges } from './mfl_csetup_form.js';
 import { MFL_HOST } from './config.js';
 
 const USER_AGENT = 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)';
@@ -144,28 +145,33 @@ export class MflCommishClient {
   }
 
   /**
-   * Direct Web Form POST (For non-API Commish Setup Forms like C=STANDADJ, C=DIVCONF, C=MANDROP)
+   * Changes fields on a csetup form and saves it: GETs the page fresh (for its
+   * input_expires token and every current setting), applies changes (see
+   * applyFormChanges), and POSTs the whole form back. With dryRun, only reports.
+   * Returns the changed fields as "NAME old → new".
    */
-  async submitCommishForm(endpoint, formData) {
-    if (!this.cookie) {
-      await this.login();
-    }
+  async submitCsetupForm(c, changes, { dryRun = false } = {}) {
+    const parsed = parseCsetupForm(await this.fetchCommishPage(c), c);
+    const fields = applyFormChanges(parsed, changes);
+    const changed = describeFormChanges(parsed.fields, fields);
+    if (dryRun || changed.length === 0) return changed;
 
-    const targetUrl = `${this.baseUrl}/${endpoint}?L=${this.leagueId}`;
-    const payload = querystring.stringify(formData);
-
-    const res = await fetch(targetUrl, {
+    const res = await fetch(`${this.baseUrl}/csetup`, {
       method: 'POST',
       headers: {
         'Cookie': this.cookie,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': String(Buffer.byteLength(payload)),
+        'Referer': `${this.baseUrl}/csetup?L=${this.leagueId}&C=${c}`,
         'User-Agent': USER_AGENT
       },
-      body: payload
+      body: new URLSearchParams(fields).toString()
     });
-
-    return await res.text(); // Returns MFL HTML response string
+    if (!res.ok) {
+      throw new Error(`MFL csetup POST failed [${c}]: ${res.status} ${res.statusText}`);
+    }
+    // MFL answers 200 even when it rejects a form; callers confirm through an export.
+    await res.text();
+    return changed;
   }
 }
 

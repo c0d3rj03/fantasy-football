@@ -10,7 +10,7 @@ on:
         options: [run, inspect]
         default: run
       apply:
-        description: 'Write the score carryover to MFL (otherwise dry run, unless repo variable ULTIMATE_MFL_WRITES is 1)'
+        description: 'Write to MFL: chop, FAAB, roster size, lineup, score carryover (otherwise dry run, unless repo variable ULTIMATE_MFL_WRITES is 1)'
         type: boolean
         default: false
   repository_dispatch:
@@ -66,7 +66,7 @@ jobs:
           cd ultimate
           node commish_automation.js
 
-      # Checklist for next week (roster size, lineup, FAAB, second cut) and the score carryover.
+      # Next-week setup: second cut, FAAB, roster size, lineup, score carryover.
       # Writes to MFL only when apply is checked or repo variable ULTIMATE_MFL_WRITES is '1'.
       - name: Run End-of-Week MFL Actions
         if: inputs.mode != 'inspect'
