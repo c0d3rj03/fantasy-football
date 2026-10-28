@@ -106,6 +106,8 @@ Logic that every MFL league needs belongs in one shared module so the leagues ca
 
 Today this logic is duplicated: `ultimate/mfl_commish_client.js` and `pbr/mfl_updater.js` each implement their own MFL login.
 
+Best starting point (verified live on Ultimate 2026-10-27): `ultimate/mfl_commish_client.js` (login with the `BECOME=0000` commissioner switch, `apiRequest`, `submitCsetupForm`) and `ultimate/mfl_csetup_form.js` (GET a csetup form, change named fields, POST the full form back). Neither takes a default league ID. The pattern and its pitfalls are in `pbr/CLAUDE.md`, "Lessons from Ultimate MFL automation".
+
 Rules for shared code:
 * Shared modules take the league ID (and year) as a **parameter**. They never define, default, or read a league ID themselves.
 * Each league's `config.js` passes its own ID in, so one league's scripts can never pick up another league's ID.

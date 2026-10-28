@@ -71,6 +71,20 @@ Secrets used by PBR: `MFL_USERNAME`, `MFL_PASSWORD`, `GEMINI_API_KEY`, `SLACK_PB
 
 ---
 
+## Lessons from Ultimate MFL automation (2026-10-27)
+
+Ultimate's end-of-week MFL writes were rebuilt and verified live. Their code is `ultimate/mfl_commish_client.js`, `ultimate/mfl_csetup_form.js` and `ultimate/commish_mfl_actions.js`; see `ultimate/CLAUDE.md`. Apply the same pattern here, ideally by moving the login and form helper into `common/`.
+
+* **Commissioner mode:** after login, GET `logout?L=…&BECOME=0000` and keep the `MFL_IS_COMMISH` cookie. `mfl_updater.js` already does this.
+* **Post the whole csetup form.** GET the form fresh (it has an `input_expires` token), parse every field a browser would send, change only ours, and POST everything back. `mfl_csetup_form.js` does this and takes no league ID. `pushInDivisionVPs()` instead builds its payload by hand from the hidden fields plus guessed names (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>`, `PREFIX`, `ASUBMIT`), so any other field on the STANDADJ form is dropped.
+* **Get field names from the live form.** Use an inspect mode that prints the form's fields (emails masked, password fields skipped; Action logs may be public). Never guess them.
+* **Check before writing; verify after.** MFL answers 200 even when it ignores a form. Each step should read MFL first and skip work already done, so reruns are safe, then re-read MFL afterwards and fail if the change isn't there. Today `pushInDivisionVPs()` adds +1 VP on every run (a rerun doubles it) and only logs errors, so the job still passes.
+* **Gate writes.** Ultimate writes only with the dispatch input `apply` or repo variable `ULTIMATE_MFL_WRITES=1`. A dry run logs the exact field changes. A PBR equivalent would be `PBR_MFL_WRITES`.
+* **Score adjustments:** use the documented `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). `weeklyResults&W=N` shows an existing adjustment as `adj_score`, so you can check before adding. `mfl_scores_fetcher.js` uses `TYPE=adjustScores`, which is not in MFL's API docs. Relevant for the Week 13 "Postseason Bonus".
+* **`import?TYPE=accounting` is the league money ledger, not FAAB.** FAAB changes go through `C=BBIDWAIV` (`ADJUST_FRANCHISE_BBID`, `BBID_ADJUSTMENT<fid>` as a +/− delta).
+
+---
+
 ## Reference Material (`reference/`)
 
 * `2026 PBR Bylaws.docx`: authoritative rules (condensed into `RULES.md`).
