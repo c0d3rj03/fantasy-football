@@ -126,7 +126,7 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 
 ### MFL score adjustments (built 2026-10-27, writes off until enabled)
 * `commish_mfl_actions.js` pushes the carryover with the documented `import?TYPE=franchiseScoreAdjustment`. `TYPE=adjustScores` is not in MFL's API docs (`api_info`); `pbr/` uses it, so check that it works there.
-* None of the MFL writes (carryover, MANDROP, BBIDWAIV, GENERAL, LINEUP) has run with writes on yet. The FAAB sign (adjustment added to the balance) is an assumption; the post-write check catches it if wrong.
+* None of the MFL writes (carryover, MANDROP, BBIDWAIV, GENERAL, LINEUP) has run with writes on yet. The FAAB sign is confirmed by MFL's page hint and the commissioner's practice: a positive `BBID_ADJUSTMENT` adds to the balance, a negative one subtracts.
 * Not yet run against MFL with writes on. Weeks 2–7 adjustments were entered by hand.
 
 ### Second cut in Weeks 2–6 (built 2026-10-27, first used in 2027)
