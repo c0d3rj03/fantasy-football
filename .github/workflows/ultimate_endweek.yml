@@ -3,6 +3,16 @@ name: Ultimate Guillotine End-of-Week Commissioner Actions
 # Started externally by the Google Apps Script (no push/schedule triggers).
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'run = normal end-of-week run; inspect = only print MFL commish form fields (read-only)'
+        type: choice
+        options: [run, inspect]
+        default: run
+      apply:
+        description: 'Write the score carryover to MFL (otherwise dry run, unless repo variable ULTIMATE_MFL_WRITES is 1)'
+        type: boolean
+        default: false
   repository_dispatch:
     types: [ultimate-endweek-trigger]
 
@@ -30,23 +40,49 @@ jobs:
           if [ -f "package.json" ]; then npm install; fi
 
       # Refresh final scores first so the commish run never works from stale data.json.
+      # Read-only: prints the csetup form fields needed to automate the manual checklist steps.
+      - name: Inspect MFL Commish Forms
+        if: inputs.mode == 'inspect'
+        env:
+          SEASON_YEAR: '2026'
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+        run: |
+          cd ultimate
+          node commish_mfl_actions.js --inspect
+
       - name: Run MFL Scores Fetcher
+        if: inputs.mode != 'inspect'
         env:
           SEASON_YEAR: '2026'
         run: |
           node ultimate/mfl_scores_fetcher.js
 
       - name: Run Commissioner Automation
+        if: inputs.mode != 'inspect'
         env:
           SEASON_YEAR: '2026'
         run: |
           cd ultimate
           node commish_automation.js
 
+      # Checklist for next week (roster size, lineup, FAAB, second cut) and the score carryover.
+      # Writes to MFL only when apply is checked or repo variable ULTIMATE_MFL_WRITES is '1'.
+      - name: Run End-of-Week MFL Actions
+        if: inputs.mode != 'inspect'
+        env:
+          SEASON_YEAR: '2026'
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+          MFL_WRITES: ${{ (inputs.apply || vars.ULTIMATE_MFL_WRITES == '1') && '1' || '0' }}
+        run: |
+          cd ultimate
+          node commish_mfl_actions.js
+
       # Runs even if a commish safeguard stopped the job, so the fresh scores still reach the dashboard.
       # (The commish script writes nothing when a safeguard fails.)
       - name: Commit and Push Updated data.json
-        if: always()
+        if: always() && inputs.mode != 'inspect'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

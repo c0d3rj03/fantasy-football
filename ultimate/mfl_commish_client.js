@@ -83,7 +83,38 @@ export class MflCommishClient {
     if (!res.ok) {
       throw new Error(`MFL API Error [${command}]: ${res.status} ${res.statusText}`);
     }
-    return await res.json();
+    // Imports can answer in XML even with JSON=1, and report failures with a 200 status.
+    const text = await res.text();
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      if (/<error/i.test(text)) throw new Error(`MFL API Error [${command} ${params.TYPE || ''}]: ${text.slice(0, 300)}`);
+      return { raw: text };
+    }
+    if (json.error) {
+      throw new Error(`MFL API Error [${command} ${params.TYPE || ''}]: ${JSON.stringify(json.error)}`);
+    }
+    return json;
+  }
+
+  /**
+   * GET a commissioner setup page (csetup?C=...) as HTML. Read-only.
+   */
+  async fetchCommishPage(c) {
+    if (!this.cookie) {
+      await this.login();
+    }
+    const res = await fetch(`${this.baseUrl}/csetup?L=${this.leagueId}&C=${encodeURIComponent(c)}`, {
+      headers: {
+        'Cookie': this.cookie,
+        'User-Agent': 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)'
+      }
+    });
+    if (!res.ok) {
+      throw new Error(`MFL csetup error [${c}]: ${res.status} ${res.statusText}`);
+    }
+    return await res.text();
   }
 
   /**

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { LEAGUE_ID, SEASON_YEAR, MFL_HOST } from './config.js';
+import { getCutCount, getWeeklyPrize } from './league_schedule.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,21 +14,8 @@ const __dirname = path.dirname(__filename);
  * writes to MFL. It only reads the rosters export to confirm MFL's cut.
  */
 
-// Weeks 2-6: Cut bottom 2 teams. Weeks 7-16: Cut bottom 1 team. Week 17: none.
-export function getCutCount(week) {
-  if (week >= 2 && week <= 6) return 2;
-  if (week >= 7 && week <= 16) return 1;
-  return 0;
-}
-
-// Weekly high-score prize (single-week score). Week 17 has no weekly prize.
-export function getWeeklyPrize(week) {
-  if (week >= 1 && week <= 4) return { type: 'FAAB', amount: 10 };
-  if (week >= 5 && week <= 8) return { type: 'cash', amount: 15 };
-  if (week >= 9 && week <= 12) return { type: 'cash', amount: 30 };
-  if (week >= 13 && week <= 16) return { type: 'cash', amount: 50 };
-  return null;
-}
+// Cut counts and prize tiers live in league_schedule.js; re-exported for existing callers.
+export { getCutCount, getWeeklyPrize };
 
 function normalizeArray(item) {
   if (!item) return [];

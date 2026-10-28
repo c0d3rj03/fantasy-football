@@ -22,6 +22,7 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 ## Module Responsibilities & Data Flow
 
 0. **`ultimate/config.js`**: Single source for `LEAGUE_ID`, `SEASON_YEAR` (env `SEASON_YEAR` overrides, default `'2026'`), and `MFL_HOST`. Every script imports from here.
+0. **`ultimate/league_schedule.js`**: Per-week roster size and starting lineup limits (min/max per position, total starters) from RULES.md and `reference/Ultimate Commish Duties.csv`, plus `getCutCount()` and `getWeeklyPrize()`. `schedule.html` still has its own copy (`SCHEDULE_DATA`); keep them in sync.
 1. **`ultimate/mfl_commish_client.js`**: Takes `seasonYear` and `leagueId` as constructor parameters (throws if missing). Authenticates via `https://www42.myfantasyleague.com/2026/login`, captures the `MFL_USER_ID` session cookie, and executes API requests (`apiRequest()`) or POST form submissions (`submitCommishForm()`).
 2. **`ultimate/mfl_scores_fetcher.js`**: Fetches live scores from MFL, updates completed player points (`doneScore`) and remaining players (`ytp`), updates single-week scores, and sets the dashboard phase:
    * `currentWeek`: MFL's `liveScoring.week` (MFL is still on the old week on Tuesday; it rolls over later in the week).
@@ -41,7 +42,14 @@ Automates commissioner administration and provides a web dashboard for a 24-team
    * Sets `isLive = false` and writes `data.json`.
    * **Safeguards:** (1) the week's cut was already recorded → that step is skipped (both steps recorded → logs and exits 0 with no write); (2) any active team still has players yet to play or in game → error; (3) `weeklySingleScores[currentWeek]` is missing for an active team → error, run the daily sync first; (4) MFL has not emptied any new roster yet, or emptied a different team → error, rerun later or review.
    * `processEndOfWeek(data, emptyRosterFids)` is exported and pure, so it can be tested without network access.
-4. **`ultimate/data.json`**: Single source of truth for league state (`currentWeek`, `isLive`, `franchises`, `eliminatedTeams`, `weeklySingleScores`, `weeklyWinners`, `liveDetails`).
+4. **`ultimate/commish_mfl_actions.js`** (runs after `commish_automation.js`; Week W just finished, W+1 being set up):
+   * Reads MFL (`league`, `rosters`, `weeklyResults&W=W+1`) and prints the commissioner checklist, also to the Actions run summary. Each step compares MFL with the target, so a done step shows ✅ and is never repeated.
+   * Refuses to run unless `data.json` has `phase: 'results'`, `lastCompletedWeek === currentWeek`, and Week W's cut recorded.
+   * **Automated:** score carryover. Each survivor's Week W single score becomes its Week W+1 starting adjustment via `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). MFL reports the existing adjustment as `adj_score` in `weeklyResults`; a missing one is added, a matching one is skipped, a different one is an error (never stacked). After writing, it re-reads MFL to confirm. Writes only with `--apply` or `MFL_WRITES=1`; otherwise a dry run.
+   * **Checklist only (📝, done by hand):** second cut W2–W6 (`C=MANDROP`, cut teams still rostered), clear eliminated teams' FAAB (`bbidAvailableBalance` > 0, `C=BBIDWAIV`), W1–W4 $10 FAAB prize (`C=BBIDWAIV`; mark `weeklyWinners[W].faabAwarded = true` afterwards, since MFL keeps no record), roster size (`league.rosterSize`, `C=GENERAL`), lineup limits (`league.starters`, `C=LINEUP`). MFL has no import API for these; they need form POSTs to `csetup`. Do not use `import?TYPE=accounting` for FAAB: it is the league money ledger, not blind-bid balances (confirmed by the commissioner 2026-10-27).
+   * `--inspect` logs in and prints the field names of the `MANDROP`, `BBIDWAIV`, `GENERAL`, `LINEUP` forms (emails masked, password fields skipped; Action logs may be public). Use it to build the form automation.
+   * `planEndOfWeekActions(data, mflState)` is exported and pure.
+5. **`ultimate/data.json`**: Single source of truth for league state (`currentWeek`, `isLive`, `franchises`, `eliminatedTeams`, `weeklySingleScores`, `weeklyWinners`, `liveDetails`).
 
 ### Automation Trigger Pipeline
 
@@ -50,10 +58,11 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
   │
   ├── Wed–Mon  ──> ultimate-dailyscore-trigger ──> ultimate_dailyscore.yml ──> mfl_scores_fetcher.js
   │
-  └── Tuesday  ──> ultimate-endweek-trigger    ──> ultimate_endweek.yml    ──> mfl_scores_fetcher.js, then commish_automation.js
+  └── Tuesday  ──> ultimate-endweek-trigger    ──> ultimate_endweek.yml    ──> mfl_scores_fetcher.js, commish_automation.js, then commish_mfl_actions.js
 ```
 * The end-of-week job commits `data.json` even if a commish safeguard fails, so the fresh scores still publish; the job still shows as failed. Safeguard 1 makes a manual rerun safe.
 * `ultimate/apps_script_triggers.gs` is a copy of the Apps Script code (no secrets). Run `installUltimateDailyTrigger()` once to create the trigger.
+* **MFL writes are off by default.** `commish_mfl_actions.js` writes the score carryover only when the manual run's `apply` box is checked or the repo variable `ULTIMATE_MFL_WRITES` is `1` (Settings → Secrets and variables → Actions → Variables). The manual run's `mode: inspect` only prints the commish form fields and commits nothing.
 * Both workflows also keep `workflow_dispatch` for manual runs. Neither has `push` or `schedule` triggers.
 * Both share the `ultimate-data` concurrency group (they both commit `data.json`) and `git pull --rebase` before pushing.
 * **Apps Script settings:** Tokens are loaded via `PropertiesService.getScriptProperties()` (`GITHUB_PAT`, `OWNER`, `REPO`).
@@ -71,7 +80,7 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
 ### Working
 * `mfl_commish_client.js` authenticates cleanly and maintains session cookies.
 * `commish_automation.js` (rewritten 2026-10-25) records the cut and weekly winner in the dashboard format, after checking the four safeguards. Tested offline against a copy of `data.json`; not yet run in Actions.
-* `ultimate_endweek.yml` no longer passes `MFL_USERNAME` / `MFL_PASSWORD`, since the script does not log in.
+* `ultimate_endweek.yml` passes `MFL_USERNAME` / `MFL_PASSWORD` only to the `commish_mfl_actions.js` step (and inspect mode).
 * `.github/workflows/ultimate_dailyscore.yml` and `.github/workflows/ultimate_endweek.yml` run via `workflow_dispatch`. The repository_dispatch types were added 2026-10-25; the Apps Script must send them (see Known Issues).
 * Google Apps Script correctly fetches properties from `PropertiesService`.
 
@@ -106,8 +115,12 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 16. **(Rebuilt 2026-10-27 as `ultimate/apps_script_triggers.gs`: daily 2 AM PT, repository_dispatch, properties `GITHUB_PAT`/`OWNER`/`REPO`.) Apps Script triggers were deleted (2026-10-25).** The old functions (`triggerUltimateDailyScoreUpdate`, `triggerUltimateEndOfWeekCommishActions`) called `workflow_dispatch` on `ultimate.yml` / `commish.yml`, which no longer exist, so they would have returned 404. The rebuild should either call `workflow_dispatch` on `ultimate_dailyscore.yml` / `ultimate_endweek.yml`, or send `repository_dispatch` with `ultimate-sync-trigger` / `ultimate-endweek-trigger`. The old helper read script properties `GITHUB_PAT`, `GITHUB_OWNER`, `GITHUB_REPO` (the root `CLAUDE.md` says `OWNER`/`REPO`); pick one set.
 17. **Push trigger removed (2026-10-25).** `ultimate_dailyscore.yml` used to run on every push to `ultimate/**`, so doc edits started live syncs and raced local pushes. Scheduling is external, so it was dropped.
 
-### Missing MFL Score Adjustments (`TYPE=adjustScores`)
-* **Symptom:** `commish_automation.js` updates rolling scores locally in `data.json`, but does NOT push the prior week's single-scores to MFL as starting adjustments (`import?TYPE=adjustScores&W={currentWeek+1}`). Starting scores are therefore missing on MFL's website unless entered manually in `csetup?C=FSCOREADJ`.
+### MFL score adjustments (built 2026-10-27, writes off until enabled)
+* `commish_mfl_actions.js` pushes the carryover with the documented `import?TYPE=franchiseScoreAdjustment`. `TYPE=adjustScores` is not in MFL's API docs (`api_info`); `pbr/` uses it, so check that it works there.
+* Not yet run against MFL with writes on. Weeks 2–7 adjustments were entered by hand.
+
+### Second cut in Weeks 2–6 (needed again in 2027)
+* MFL cuts only one team. `commish_automation.js` safeguard 4 expects MFL's emptied rosters to match both cuts, so in W2–W6 it will fail until the second team is emptied by hand, then a rerun records both. Fix before 2027: accept MFL's cut when it is the lowest of the expected pair, and automate the drop of the other (`C=MANDROP`, see `--inspect`).
 
 ---
 
@@ -133,7 +146,7 @@ Heavy metal / blood-red guillotine styling, dark metallic progress bars, split 2
 
 ## Next Steps
 
-1. **[High priority] Add the MFL score adjustment loop to `commish_automation.js`:** Insert an `import?TYPE=adjustScores` POST loop targeting `W: currentWeek + 1` for surviving teams, so single-week carryover scores populate natively on MFL for the upcoming week.
+1. **Turn on and automate the end-of-week MFL actions:** enable the score carryover (`ULTIMATE_MFL_WRITES=1`) after a supervised run; run `mode: inspect` and automate roster size and lineup (`C=GENERAL`, `C=LINEUP`, next change sets up Week 10) and FAAB (`C=BBIDWAIV`) as GET-form → change fields → POST → verify via the `league` export.
 2. **GroupMe bot integration:** Use the GroupMe Bot API (`dev.groupme.com`) to post weekly elimination announcements and high-score prize callouts after the Tuesday 5:00 AM ET commissioner run.
 3. **Finalize the GitHub Pages frontend:** Complete the dashboard (`c0d3rj03.github.io/fantasy-football/ultimate`) with split 2-part progress bars, weekly winner callout cards, and graveyard elimination visuals.
 4. **Validation:** Monitor the automated daily 2:00 AM PT GitHub Action runs during active game weeks to confirm zero-error execution.
