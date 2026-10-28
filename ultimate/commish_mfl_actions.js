@@ -264,9 +264,13 @@ function describeForms(html) {
 
 async function inspectCommishForms() {
   const client = new MflCommishClient(SEASON_YEAR, LEAGUE_ID);
+  await client.login();
   for (const c of CSETUP_PAGES) {
     const html = await client.fetchCommishPage(c);
-    console.log(`\n===== csetup C=${c} =====\n${describeForms(html)}`);
+    // Page title and size help tell a login or error page from a settings page.
+    const title = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || '').trim().replace(/\s+/g, ' ');
+    const hint = /name=["']?PASSWORD/i.test(html) ? ', has a login form' : '';
+    console.log(`\n===== csetup C=${c} (title "${title}", ${html.length} chars${hint}) =====\n${describeForms(html)}`);
   }
 }
 

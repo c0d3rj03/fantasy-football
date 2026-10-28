@@ -1,6 +1,8 @@
 import querystring from 'querystring';
 import { MFL_HOST } from './config.js';
 
+const USER_AGENT = 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)';
+
 /**
  * Universal MFL Commissioner API & Web Form Client
  * Supports standard JSON API imports/exports and authenticated web form POSTs.
@@ -18,7 +20,8 @@ export class MflCommishClient {
   }
 
   /**
-   * Log in as Commissioner and capture the MFL_USER_ID session cookie.
+   * Log in, capture the MFL_USER_ID session cookie, then switch the session to
+   * commissioner mode. Without that switch, csetup pages render with no forms.
    */
   async login(
     username = process.env.MFL_USERNAME,
@@ -30,28 +33,51 @@ export class MflCommishClient {
 
     const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&PASSWORD=${encodeURIComponent(password)}&XML=1`;
     const res = await fetch(loginUrl);
-    
-    // 1. Try Set-Cookie header
-    const setCookie = res.headers.get('set-cookie');
-    if (setCookie) {
-      const match = setCookie.match(/MFL_USER_ID=([^;]+)/);
-      if (match) {
-        this.cookie = `MFL_USER_ID=${match[1]}`;
-        console.log('🔒 MFL Commissioner authenticated successfully (via header).');
-        return true;
-      }
-    }
 
-    // 2. Try XML body fallback if cookie header wasn't exposed
-    const text = await res.text();
-    const xmlMatch = text.match(/cookie_value="([^"]+)"/);
-    if (xmlMatch) {
-      this.cookie = `MFL_USER_ID=${xmlMatch[1]}`;
-      console.log('🔒 MFL Commissioner authenticated successfully (via XML body).');
-      return true;
+    // 1. Try Set-Cookie header, 2. then the XML body if the header wasn't exposed
+    let userId = (res.headers.get('set-cookie') || '').match(/MFL_USER_ID=([^;]+)/)?.[1];
+    if (!userId) {
+      userId = (await res.text()).match(/cookie_value="([^"]+)"/)?.[1];
     }
+    if (!userId) {
+      throw new Error('MFL Login failed: MFL_USER_ID cookie not returned.');
+    }
+    this.cookie = `MFL_USER_ID=${userId}`;
+    console.log('🔒 MFL user authenticated.');
 
-    throw new Error('MFL Login failed: MFL_USER_ID cookie not returned.');
+    // 3. Become commissioner (franchise 0000), as pbr/mfl_updater.js does. MFL answers
+    // with redirects that set MFL_IS_COMMISH; follow them by hand to keep every cookie.
+    let url = `${this.baseUrl}/logout?L=${this.leagueId}&BECOME=0000`;
+    for (let hop = 0; hop < 5 && url; hop++) {
+      const step = await fetch(url, {
+        headers: { 'Cookie': this.cookie, 'User-Agent': USER_AGENT },
+        redirect: 'manual'
+      });
+      this.mergeCookies(step.headers.getSetCookie?.() || []);
+      const location = step.headers.get('location');
+      url = (step.status >= 300 && step.status < 400 && location) ? new URL(location, url).toString() : null;
+    }
+    if (this.cookie.includes('MFL_IS_COMMISH')) {
+      console.log(`👑 Commissioner mode active (cookies: ${this.cookieNames().join(', ')}).`);
+    } else {
+      console.warn(`⚠️ No MFL_IS_COMMISH cookie after BECOME=0000 (cookies: ${this.cookieNames().join(', ')}).`);
+    }
+    return true;
+  }
+
+  // Adds or replaces cookies from Set-Cookie headers.
+  mergeCookies(setCookies) {
+    const jar = new Map(this.cookie.split('; ').map(c => [c.split('=')[0], c]));
+    for (const sc of setCookies) {
+      const pair = sc.split(';')[0].trim();
+      if (pair.includes('=')) jar.set(pair.split('=')[0], pair);
+    }
+    this.cookie = [...jar.values()].join('; ');
+  }
+
+  // Cookie names only (never values), safe to log.
+  cookieNames() {
+    return (this.cookie || '').split('; ').map(c => c.split('=')[0]);
   }
 
   /**
@@ -67,7 +93,7 @@ export class MflCommishClient {
     const url = `${this.baseUrl}/${command}?${queryParams}`;
 
     const headers = {
-      'User-Agent': 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)'
+      'User-Agent': USER_AGENT
     };
     if (this.cookie) {
       headers['Cookie'] = this.cookie;
@@ -108,7 +134,7 @@ export class MflCommishClient {
     const res = await fetch(`${this.baseUrl}/csetup?L=${this.leagueId}&C=${encodeURIComponent(c)}`, {
       headers: {
         'Cookie': this.cookie,
-        'User-Agent': 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)'
+        'User-Agent': USER_AGENT
       }
     });
     if (!res.ok) {
@@ -134,7 +160,7 @@ export class MflCommishClient {
         'Cookie': this.cookie,
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': String(Buffer.byteLength(payload)),
-        'User-Agent': 'UltimateGuillotineCommish/1.0 (+https://github.com/c0d3rj03/fantasy-football)'
+        'User-Agent': USER_AGENT
       },
       body: payload
     });
