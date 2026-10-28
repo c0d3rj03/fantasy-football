@@ -23,7 +23,7 @@ Automates commissioner administration and provides a web dashboard for a 24-team
 
 0. **`ultimate/config.js`**: Single source for `LEAGUE_ID`, `SEASON_YEAR` (env `SEASON_YEAR` overrides, default `'2026'`), and `MFL_HOST`. Every script imports from here.
 0. **`ultimate/league_schedule.js`**: Per-week roster size and starting lineup limits (min/max per position, total starters) from RULES.md and `reference/Ultimate Commish Duties.csv`, plus `getCutCount()` and `getWeeklyPrize()`. `schedule.html` still has its own copy (`SCHEDULE_DATA`); keep them in sync.
-1. **`ultimate/mfl_commish_client.js`**: Takes `seasonYear` and `leagueId` as constructor parameters (throws if missing). Authenticates via `https://www42.myfantasyleague.com/2026/login`, captures the `MFL_USER_ID` session cookie, and executes API requests (`apiRequest()`) or POST form submissions (`submitCommishForm()`).
+1. **`ultimate/mfl_commish_client.js`** (wrapper over `common/mfl_commish_client.js`, adds Ultimate's host and User-Agent): Takes `seasonYear` and `leagueId` as constructor parameters (throws if missing). Authenticates via `https://www42.myfantasyleague.com/2026/login`, captures the `MFL_USER_ID` session cookie, and executes API requests (`apiRequest()`) or POST form submissions (`submitCommishForm()`).
 2. **`ultimate/mfl_scores_fetcher.js`**: Fetches live scores from MFL, updates completed player points (`doneScore`) and remaining players (`ytp`), updates single-week scores, and sets the dashboard phase:
    * `currentWeek`: MFL's `liveScoring.week` (MFL is still on the old week on Tuesday; it rolls over later in the week).
    * `phase: 'live'` when some active starter has played and some has not (Wed/Thu game through MNF). `displayWeek = currentWeek`.
@@ -134,14 +134,13 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 
 ---
 
-## Candidates for shared `common/` (not built yet)
+## Shared `common/` (2026-10-27)
 
-From `mfl_commish_client.js` (`pbr/mfl_updater.js` has its own copy of most of this):
+The client and form helper now live in `common/` (`ultimate/mfl_commish_client.js` and `ultimate/mfl_csetup_form.js` are wrappers), and PBR uses them too. Changing them affects both leagues. Still candidates:
 * **Login and cookie capture** (`login()`): `Set-Cookie` header with the XML `cookie_value` fallback. Add re-login when the cookie expires.
 * **`apiRequest()`**: `export`/`import` GET/POST with `L` and `JSON=1`, plus the `!res.ok` error.
-* **`submitCsetupForm()`** + `mfl_csetup_form.js`: GET the csetup form, change named fields, POST the full form back. PBR's `STANDADJ`/`DIVCONF` could reuse it.
+* **`describeForms()`**: `commish_mfl_actions.js` still has its own copy; `common/mfl_csetup_form.js` exports one.
 * **Retry / rate-limit wrapper** (none exists today).
-* **User-Agent**: make it a parameter (currently hardcoded `UltimateGuillotineCommish`).
 * From `mfl_scores_fetcher.js`: `fetchMFL()` (unauthenticated export GET), `normalizeArray()`, and the `weeklyResults` / `liveScoring` fetches.
 
 Stays in `ultimate/`: `config.js`, rolling-score math, the cut schedule, prize tiers, and the `data.json` shape. The client constructor already takes `seasonYear`/`leagueId` as parameters with no league defaults, so it is ready to move.

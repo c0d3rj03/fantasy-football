@@ -2,30 +2,16 @@ const fs = require('fs');
 const https = require('https');
 const path = require('path');
 
-const LEAGUE_ID = '63213';
-const YEAR = '2026';
-const BASE_URL = `https://www42.myfantasyleague.com/${YEAR}/export`;
+const { LEAGUE_ID, YEAR, MFL_HOST, DIVISION_NAMES: divisionNames, Q1_SLOTS } = require('./config.js');
+const { inDivisionVPs, promotionRelegation, nextQuarterSlots } = require('./pbr_rules.js');
+const BASE_URL = `https://${MFL_HOST}/${YEAR}/export`;
 
-const divisionNames = {
-  "00": "Upper Division",
-  "01": "Middle Division",
-  "02": "Lower Division"
-};
-
-let activeDivisions = {
-  "0003": "00", // Shankly's Ghost (Upper)
-  "0002": "00", // BattleBots (Upper)
-  "0001": "00", // Orcan Terror (Upper)
-  "0005": "00", // Peaky Fookin Blinders (Upper)
-  "0009": "01", // Springfield Isotopes (Middle)
-  "0012": "01", // 2 Roops, 1 Silva (Middle)
-  "0010": "01", // The Meaty Ogres (Middle)
-  "0006": "01", // Ted Lasso (Middle)
-  "0004": "02", // Hamsterdam (Lower)
-  "0008": "02", // The Two Tones (Lower)
-  "0011": "02", // The Wild Cards (Lower)
-  "0007": "02"  // Norsemen (Lower)
-};
+// Scheduling slots #1-#4 per division for the current quarter; P&R after Weeks 4/8/12 replaces them.
+let quarterSlots = Q1_SLOTS;
+const divisionsFromSlots = slots => Object.fromEntries(
+  Object.entries(slots).flatMap(([div, ids]) => ids.map(id => [id, div]))
+);
+let activeDivisions = divisionsFromSlots(quarterSlots);
 
 function fetchAPI(command, params = {}) {
   return new Promise((resolve, reject) => {
@@ -59,101 +45,6 @@ async function fetchFranchises() {
   return map;
 }
 
-function evaluatePromotionRelegation(quarterStandings) {
-  const nextDivisions = { ...activeDivisions };
-  const upperTeams = quarterStandings["Upper Division"] || [];
-  const middleTeams = quarterStandings["Middle Division"] || [];
-  const lowerTeams = quarterStandings["Lower Division"] || [];
-
-  const [promotedFromMiddle] = middleTeams;
-  const [promotedFromLower] = lowerTeams;
-
-  const promotedFromMiddleId = promotedFromMiddle?.id;
-  const promotedFromLowerId = promotedFromLower?.id;
-
-  const upperRelegatedId = upperTeams.length > 0 ? upperTeams.reduce((min, t) => (t.pp < min.pp ? t : min))?.id : null;
-  const eligibleMiddle = middleTeams.slice(1);
-  const middleRelegatedId = eligibleMiddle.length > 0 ? eligibleMiddle.reduce((min, t) => (t.pp < min.pp ? t : min))?.id : null;
-
-  if (promotedFromMiddleId && upperRelegatedId) {
-    nextDivisions[promotedFromMiddleId] = "00";
-    nextDivisions[upperRelegatedId] = "01";
-  }
-  if (promotedFromLowerId && middleRelegatedId) {
-    nextDivisions[promotedFromLowerId] = "01";
-    nextDivisions[middleRelegatedId] = "02";
-  }
-
-  return nextDivisions;
-}
-
-// ---------------------------------------------------------------------------
-// MFL COMMISSIONER WRITE-BACK CLIENT
-// ---------------------------------------------------------------------------
-class MflAdminClient {
-  constructor(seasonYear = '2026', leagueId = '63213') {
-    this.baseUrl = `https://www42.myfantasyleague.com/${seasonYear}`;
-    this.leagueId = leagueId;
-    this.cookie = null;
-  }
-
-  async login() {
-    const username = process.env.MFL_USERNAME;
-    const password = process.env.MFL_PASSWORD;
-
-    if (!username || !password) {
-      console.warn("⚠️ MFL_USERNAME or MFL_PASSWORD missing. Skipping MFL VP write-back.");
-      return false;
-    }
-
-    try {
-      const loginUrl = `${this.baseUrl}/login?USERNAME=${encodeURIComponent(username)}&PASSWORD=${encodeURIComponent(password)}&XML=1`;
-      const res = await fetch(loginUrl);
-      const setCookie = res.headers.get('set-cookie');
-
-      if (setCookie) {
-        const match = setCookie.match(/MFL_USER_ID=([^;]+)/);
-        if (match) {
-          this.cookie = `MFL_USER_ID=${match[1]}`;
-          console.log("🔒 MFL Commissioner Authentication successful.");
-          return true;
-        }
-      }
-      console.warn("⚠️ MFL Login failed: MFL_USER_ID cookie not returned.");
-      return false;
-    } catch (err) {
-      console.warn("⚠️ Error logging into MFL:", err.message);
-      return false;
-    }
-  }
-
-  async pushVictoryPoints(week, franchiseVps) {
-    if (!this.cookie) {
-      const loggedIn = await this.login();
-      if (!loggedIn) return;
-    }
-
-    console.log(`🚀 Pushing Week ${week} In-Division Battle Royale VPs to MFL...`);
-
-    for (const [franchiseId, vp] of Object.entries(franchiseVps)) {
-      if (vp <= 0) continue; // Only push for +1 VP winners
-
-      try {
-        const comments = encodeURIComponent(`Week ${week} PBR In-Division Battle Royale VP`);
-        const url = `${this.baseUrl}/import?TYPE=adjustScores&L=${this.leagueId}&W=${week}&FRANCHISE=${franchiseId}&SCORE=${vp}&COMMENTS=${comments}&JSON=1`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Cookie': this.cookie }
-        });
-        const result = await res.json();
-        console.log(`  ✅ Franchise ${franchiseId}: +${vp} VP -> MFL status: ${result?.status || 'OK'}`);
-      } catch (err) {
-        console.warn(`  ⚠️ Failed to push VP for Franchise ${franchiseId}:`, err.message);
-      }
-    }
-  }
-}
-
 async function main() {
   const franchises = await fetchFranchises();
 
@@ -173,7 +64,8 @@ async function main() {
     }
   }
 
-  const leagueData = { weekly_data: {}, postseason_matrix: {} };
+  // quarter_slots["4"] is the postseason (after Q3 P&R); promotion_relegation[q] is the P&R after quarter q.
+  const leagueData = { weekly_data: {}, postseason_matrix: {}, quarter_slots: { '1': Q1_SLOTS }, promotion_relegation: {} };
 
   let quarterAccumulators = {};
   const seasonAccumulators = {};
@@ -281,9 +173,11 @@ async function main() {
       Object.keys(divScoresMap).forEach(divId => {
         const divName = divisionNames[divId];
         const sortedTeams = divScoresMap[divId].sort((a, b) => b.score - a.score);
+        // Top 2 earn 1 VP each; ties across a slot split it (pbr_rules.js).
+        const battleVps = inDivisionVPs(sortedTeams);
 
-        sortedTeams.forEach((team, index) => {
-          const battle_vp = index < 2 ? 1 : 0;
+        sortedTeams.forEach(team => {
+          const battle_vp = battleVps[team.id];
           const total_weekly_vp = team.h2h_vp + battle_vp;
 
           battleRoyale[divName].push({
@@ -380,42 +274,20 @@ async function main() {
 
     if (isPlayed && (week === 4 || week === 8 || week === 12)) {
       console.log(`Evaluating Promotion/Relegation after Week ${week}...`);
-      activeDivisions = evaluatePromotionRelegation(quarterStandings);
+      const byCode = {};
+      Object.values(quarterStandings).flat().forEach(t => { (byCode[t.division] = byCode[t.division] || []).push(t); });
+      const pr = promotionRelegation(byCode, seasonAccumulators);
+      pr.coinFlips.forEach(text => console.warn(`⚠️ ${text}: the bylaws call for a coin flip.`));
+      quarterSlots = nextQuarterSlots(pr);
+      activeDivisions = divisionsFromSlots(quarterSlots);
+      leagueData.promotion_relegation[String(quarter)] = { promoted: pr.promoted, relegated: pr.relegated, coin_flips: pr.coinFlips };
+      leagueData.quarter_slots[String(quarter + 1)] = quarterSlots;
     }
   }
 
   fs.writeFileSync(dataPath, JSON.stringify(leagueData, null, 2));
   console.log(`Successfully generated complete data.json at ${dataPath}`);
-
-  // ---------------------------------------------------------------------------
-  // AUTOMATED MFL WRITE-BACK TRIGGER
-  // ---------------------------------------------------------------------------
-  const rawArg = process.argv[2];
-  const playedWeeks = Object.keys(leagueData.weekly_data).filter(w => leagueData.weekly_data[w].played);
-  const latestPlayedWeek = playedWeeks.length > 0 ? Math.max(...playedWeeks.map(Number)).toString() : '1';
-  const targetWeek = (rawArg && rawArg.trim() !== '') ? rawArg : latestPlayedWeek;
-
-  if (process.env.MFL_USERNAME && process.env.MFL_PASSWORD) {
-    const battleVpMap = {};
-
-    if (leagueData?.weekly_data?.[targetWeek]?.battle_royale) {
-      Object.values(leagueData.weekly_data[targetWeek].battle_royale).forEach(teams => {
-        teams.forEach(t => {
-          const mflFranchiseId = String(t.id).padStart(4, '0');
-          battleVpMap[mflFranchiseId] = t.battle_vp || 0;
-        });
-      });
-    }
-
-    console.log(`\n🔒 MFL Credentials found. Pushing Week ${targetWeek} In-Division Battle Royale VPs to MFL...`);
-    const mflClient = new MflAdminClient(
-      process.env.SEASON_YEAR || '2026',
-      process.env.LEAGUE_ID || '63213'
-    );
-    await mflClient.pushVictoryPoints(targetWeek, battleVpMap);
-  } else {
-    console.log("\nℹ️ Skipping MFL write-back (MFL_USERNAME / MFL_PASSWORD environment variables not provided).");
-  }
+  // MFL writes (VP push, quarter changes) are in commish_mfl_actions.js.
 }
 
 main().catch(console.error);

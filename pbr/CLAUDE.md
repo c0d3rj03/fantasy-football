@@ -24,8 +24,15 @@ Automation and a GitHub Pages dashboard for the 12-team **PBR Superflex dynasty 
 The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See Known Issues.
 
 ### Scores, standings, MFL admin
-* **`mfl_scores_fetcher.js`**: Reads MFL exports (league, schedule, weekly results). Computes per-week H2H VP, in-division top-2 VP, PF/PP, and quarter standings, and evaluates P&R. Writes `data.json`. Holds the hardcoded `LEAGUE_ID`, `YEAR`, and a default franchise → division map.
-* **`mfl_updater.js`**: Logs into MFL with `MFL_USERNAME`/`MFL_PASSWORD` (cookie accumulation, hidden-field scraping). POSTs in-division VPs to `csetup?C=STANDADJ&VICTORY_POINTS=1`. Writes debug HTML (`csetup_form.html`, `mfl_response.html`).
+* **`config.js`**: `LEAGUE_ID`, `YEAR` (env `MFL_YEAR`/`SEASON_YEAR`, default 2026), `MFL_HOST`, division names, and `Q1_SLOTS` (each division's scheduling slots #1-#4 for Q1, from the importer sheet). New code reads these from here.
+* **`pbr_rules.js`**: League rules as pure functions, shared by the fetcher and the MFL script:
+  * `inDivisionVPs`: top 2 per division; ties across a slot split the VP (a tie for 2nd is 0.5 each).
+  * `promotionRelegation`: RULES.md §5 tiebreakers; an exact tie is reported as a coin flip.
+  * `nextQuarterSlots`: staying teams keep standings order, a relegated team takes #1 of the lower division, a promoted team #4 of the higher one.
+  * `quarterSchedule` / `scheduleLine`: the importer sheet's matrix. In quarter week k, Upper #i plays Middle #(i+k) and Lower #(i+k), and Middle #i plays Lower #(i+k), mod 4. Lines are `WW,FFFF,FFFF`.
+  * `postseasonBonus`: §6.
+* **`mfl_scores_fetcher.js`**: Reads MFL exports (league, weekly results; no login). Computes per-week H2H VP, in-division VP, PF/PP, quarter and season standings, and P&R after Weeks 4/8/12. Writes `data.json`, including `quarter_slots` and `promotion_relegation`. Starts from `Q1_SLOTS`; later quarters' divisions come from its own P&R. Its old `TYPE=adjustScores` VP push was removed 2026-10-27.
+* **`commish_mfl_actions.js`**: The commissioner's MFL steps for week W (RULES.md §10). Reads MFL, compares it with `data.json`, prints a checklist (also to the Actions run summary), writes only what MFL is missing, then re-reads MFL and fails if a written step isn't there. See "MFL commish automation" below. Replaced `mfl_updater.js` (removed 2026-10-27).
 
 ### Recaps ("Gemmy") and Slack
 * **`generate_post.js`**: Builds the weekly recap (rewritten 2026-10-27; it had been a syntax error since 2026-10-07, so Weeks 5-6 got no recap).
@@ -63,34 +70,71 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 
 | Workflow | Trigger | What it runs |
 | --- | --- | --- |
-| `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `push_vps`, `recap_mode` auto/draft/publish/skip, `recap_notes`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` (`client_payload.recap_mode`, default auto) | `mfl_scores_fetcher.js` → `mfl_updater.js` → `generate_post.js`, then commits `data.json` and `gemmy_drafts/` (even if the recap step failed) |
+| `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `mfl_mode` auto/dry-run/apply/inspect/skip, `recap_mode` auto/draft/publish/skip, `recap_notes`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` (`client_payload.recap_mode`, default auto; MFL step runs in auto) | `mfl_scores_fetcher.js` → `commish_mfl_actions.js` → `generate_post.js`, then commits `data.json` and `gemmy_drafts/`. The recap and the commit run even if the MFL step failed; the job still fails. |
 | `pbr_gemini_check.yml` | `workflow_dispatch` (inputs `models`, `timeout_seconds`) | `gemini_check.js`: read-only model list and timing |
 | `pbr_sync.yml` | `workflow_dispatch`, `repository_dispatch: pbr-sync-trigger` | Scores fetch → (`commish_watch.js`, which doesn't exist yet) → `gemmy_custom_post.js` with a prompt, then commits `pbr/` |
 | `gemmy_alerts.yml` | `workflow_dispatch` (prompt input) | `gemmy_custom_post.js "<prompt>"` |
 
 External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate). The code is `apps_script_triggers.gs`: every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger` with `recap_mode` from `PBR_RECAP_MODE`.
 
-**Reviewing a recap before it posts:** run `pbr_endweek.yml` with `recap_mode = draft`, edit the committed `pbr/gemmy_drafts/week_<N>.md` (or rerun draft with `recap_notes`), then run with `recap_mode = publish`. The rerun guards make the second run's fetch and VP steps no-ops.
+**Reviewing a recap before it posts:** run `pbr_endweek.yml` with `recap_mode = draft`, edit the committed `pbr/gemmy_drafts/week_<N>.md` (or rerun draft with `recap_notes`), then run with `recap_mode = publish`. The second run's MFL step finds nothing missing, so it writes nothing.
 
 **Weekly commish checklist** (from `reference/PBR Commish Actions.xlsx`): a normal week (not 4/5/8/9/12) is just confirm results, add In-Division Top 2 VPs (explanation "In-Division Top 2 Score"), and post the recap. Weeks 4/8 add P&R and the next-quarter schedule upload; weeks 5/9 add the W-L-T and VP resets and `DIVCONF` moves; week 12 adds final P&R, the postseason schedule, and the Week 13 bonus. See RULES.md §10. Nothing should dispatch `pbr-sync-trigger` (see Known Issues).
 
-`pbr_endweek.yml` is rerun-safe: `mfl_updater.js` skips the VP push when MFL's `leagueStandings` VP already equals the computed quarter VP through that week, and `generate_post.js` skips weeks that have a recap. Step 1 gets no MFL credentials on purpose, because `mfl_scores_fetcher.js` still contains an older VP push (`TYPE=adjustScores`) that runs whenever they are set.
+`pbr_endweek.yml` is rerun-safe: `commish_mfl_actions.js` pushes only the difference between `data.json` and MFL, and `generate_post.js` skips weeks that have a recap.
 
 Secrets used by PBR: `MFL_USERNAME`, `MFL_PASSWORD`, `GEMINI_API_KEY`, `SLACK_PBR_BOT_TOKEN`, `SLACK_WEBHOOK_URL`, and the four `PBR_SLACK_CHANNEL_*` IDs. See the root `CLAUDE.md` for what each one is.
 
 ---
 
-## Lessons from Ultimate MFL automation (2026-10-27)
+## MFL commish automation (`commish_mfl_actions.js`, 2026-10-27)
 
-Ultimate's end-of-week MFL writes were rebuilt and verified live. Their code is `ultimate/mfl_commish_client.js`, `ultimate/mfl_csetup_form.js` and `ultimate/commish_mfl_actions.js`; see `ultimate/CLAUDE.md`. Apply the same pattern here, ideally by moving the login and form helper into `common/`.
+```bash
+node pbr/mfl_scores_fetcher.js                 # data.json (read-only MFL exports)
+node pbr/commish_mfl_actions.js [week]         # dry run (latest played week by default)
+node pbr/commish_mfl_actions.js [week] --apply # write every automated step
+node pbr/commish_mfl_actions.js --inspect      # print the commish forms' fields (emails masked)
+```
 
-* **Commissioner mode:** after login, GET `logout?L=…&BECOME=0000` and keep the `MFL_IS_COMMISH` cookie. `mfl_updater.js` already does this.
-* **Post the whole csetup form.** GET the form fresh (it has an `input_expires` token), parse every field a browser would send, change only ours, and POST everything back. `mfl_csetup_form.js` does this and takes no league ID. `pushInDivisionVPs()` instead builds its payload by hand from the hidden fields plus guessed names (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>`, `PREFIX`, `ASUBMIT`), so any other field on the STANDADJ form is dropped.
-* **Get field names from the live form.** Use an inspect mode that prints the form's fields (emails masked, password fields skipped; Action logs may be public). Never guess them.
-* **Check before writing; verify after.** MFL answers 200 even when it ignores a form. Each step should read MFL first and skip work already done, so reruns are safe, then re-read MFL afterwards and fail if the change isn't there. Today `pushInDivisionVPs()` adds +1 VP on every run (a rerun doubles it) and only logs errors, so the job still passes.
-* **Gate writes.** Ultimate writes only with the dispatch input `apply` or repo variable `ULTIMATE_MFL_WRITES=1`. A dry run logs the exact field changes. A PBR equivalent would be `PBR_MFL_WRITES`.
-* **Score adjustments:** use the documented `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). `weeklyResults&W=N` shows an existing adjustment as `adj_score`, so you can check before adding. `mfl_scores_fetcher.js` uses `TYPE=adjustScores`, which is not in MFL's API docs. Relevant for the Week 13 "Postseason Bonus".
-* **`import?TYPE=accounting` is the league money ledger, not FAAB.** FAAB changes go through `C=BBIDWAIV` (`ADJUST_FRANCHISE_BBID`, `BBID_ADJUSTMENT<fid>` as a +/− delta).
+Without MFL credentials, a dry run still reads the public exports and prints the plan. With credentials it also logs in, loads each form, and logs the exact field changes. It fails if a field it would post is not on the live form.
+
+**Write gates:**
+* `--apply` (workflow `mfl_mode = apply`) writes every automated step.
+* Repo variable `PBR_MFL_WRITES=1` (workflow `mfl_mode = auto`, used by the Tuesday dispatch) writes only the weekly VP step. Quarter-change steps stay dry runs until someone reads the dry run and runs `apply`.
+* Anything else is a dry run.
+
+**Steps by week** (✅ already done on MFL, 🤖 automated, ✋ manual with exact numbers listed, ❌ needs a person):
+
+| Week | Step | How |
+| --- | --- | --- |
+| 1-12 (latest played) | In-division VP 🤖 | Compares MFL `leagueStandings` with the `data.json` quarter standings. W-L-T must match first. Then it adds `data.json VP − MFL VP` per team on `C=STANDADJ&VICTORY_POINTS=1` (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>` = "In-Division Top 2 Score"). In a normal week that difference must equal this week's in-division VP, or the step stops (`--sync-vp` pushes it anyway). A rerun finds no difference. Older weeks are skipped, since MFL only shows the current total. |
+| 5, 9 | W-L-T reset ✋ | Detected when MFL W-L-T is exactly this quarter plus last quarter. Lists the W-L-T to subtract on `C=STANDADJ` ("Q2 Reset"). Field names not inspected yet. |
+| 5, 9 | VP reset 🤖 | Part of the VP step once the W-L-T reset is done: the difference then also removes last quarter's in-division VP (explanation "Q2 Reset + In-Division Top 2 Score"). |
+| 5, 9 | Division moves ✋ | Compares MFL divisions with `data.json` `quarter_slots` and lists the moves for `C=DIVCONF`. Field names not inspected yet. |
+| 4, 8, 12 | P&R ✅ | From `data.json` `promotion_relegation[q]` and `quarter_slots[q+1]` (`"4"` = postseason). Printed for the announcement. An exact tie is ❌ (coin flip). |
+| 4, 8 | Next quarter schedule 🤖 | Builds the quarter's 48 games from the new slots and compares them with MFL's `schedule` export. If they differ, posts the season (Weeks 1-12, other weeks copied from MFL) into the only textarea on `options?O=168`, then re-reads the export. |
+| 12 | Week 13 Postseason Bonus 🤖 | `postseasonBonus` from season standings and postseason divisions. Checks `weeklyResults W=13` `adj_score`, then uses `import?TYPE=franchiseScoreAdjustment` ("Postseason Bonus"). |
+| 12 | Postseason schedule, `DIVCONF` ✋ | Not automated. |
+
+**Verified offline (2026-10-27):**
+* Q1 → Q2 P&R and slots reproduce the importer sheet.
+* The generated Q2 schedule matches MFL Weeks 5-8 exactly.
+* The Week 7 dry run (no login) gives +1 VP to 0001, 0002, 0004, 0006, 0007 and 0009.
+
+**Not yet verified live.** This needs an `inspect` run and then an `apply` run in Actions, because there are no MFL credentials outside Actions:
+* The STANDADJ VP field names (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>`) came from the old `mfl_updater.js`. `requireExisting` stops the run if the live form differs.
+* Whether STANDADJ accepts fractional VP (a tie for 2nd gives 0.5, a three-way tie 0.6667).
+* The `options?O=168` form: textarea name, any other fields, and whether posting replaces the whole season.
+* `C=STANDADJ` W-L-T fields and `C=DIVCONF` fields, needed to automate the ✋ steps.
+
+### Lessons from Ultimate MFL automation
+
+* **Commissioner mode:** after login, GET `logout?L=…&BECOME=0000` and keep the `MFL_IS_COMMISH` cookie (`common/mfl_commish_client.js`).
+* **Post the whole form.** GET it fresh (it has an `input_expires` token), parse every field a browser would send, change only ours, and POST everything back (`common/mfl_csetup_form.js`).
+* **Get field names from the live form** (`--inspect`). Never guess them.
+* **Check before writing; verify after.** MFL answers 200 even when it ignores a form.
+* **Score adjustments:** use `import?TYPE=franchiseScoreAdjustment` (`FRANCHISE`, `WEEK`, `POINTS`, `EXPLANATION`). `weeklyResults&W=N` shows an existing one as `adj_score`. `TYPE=adjustScores` is not in MFL's API docs.
+* **`import?TYPE=accounting` is the league money ledger, not FAAB.** FAAB changes go through `C=BBIDWAIV`.
 
 ---
 
@@ -111,14 +155,11 @@ Ultimate's end-of-week MFL writes were rebuilt and verified live. Their code is 
    * `sync_recaps.js` reads `process.env.PBR_SLACK_BOT_TOKEN`, but the workflows export the token as `SLACK_BOT_TOKEN`.
 2. **`pbr_sync.yml` references files that don't exist:** `pbr/commish_watch.js`, `pbr/fetcher.js`, and a root `pbr_data.json`. The steps skip silently. Its default prompt is hardcoded to Q1 events.
 3. ~~`pbr_endweek.yml` also listened for `ultimate-sync-trigger`~~ (removed 2026-10-27).
-4. **League ID and year are repeated** in `mfl_scores_fetcher.js`, `mfl_updater.js`, `mfl_tx_fetcher.js`, `process_waivers.js`, and every PBR workflow. Consolidate them into `pbr/config.js`.
-5. **Module system:** PBR scripts use CommonJS while the repo convention (and `ultimate/`) is ES Modules. Migrate before sharing code with `common/`.
+4. **League ID and year are repeated** in `mfl_tx_fetcher.js`, `process_waivers.js`, and every PBR workflow. `config.js` exists (2026-10-27) and `mfl_scores_fetcher.js` and `commish_mfl_actions.js` use it. Move the rest over.
+5. **Module system:** PBR scripts use CommonJS while the repo convention (and `ultimate/`, `common/`) is ES Modules. `commish_mfl_actions.js` loads `common/` with a dynamic `import()` until `pbr/` is migrated.
 6. **Gemini model is set in two places:** `generate_post.js` (`GEMINI_MODEL`, default `gemini-2.5-flash`) and `gemmy_custom_post.js` (hardcoded `gemini-2.5-flash`). Define it in one place.
-7. **Default division map is hardcoded** in `mfl_scores_fetcher.js` (2026 Q1). Later quarters must come from MFL or `data.json`, not this map.
-8. **Manual steps not yet automated:**
-   * Quarter W-L-T/VP resets (Weeks 5 and 9).
-   * `DIVCONF` division moves.
-   * Quarterly schedule upload.
-   * Postseason Week 13 bonus adjustment.
-   * Postseason guillotine tracking.
-9. **`mfl_updater.js` VP push** still hand-builds the STANDADJ payload, only logs errors, and gives tied top-2 scores a full VP instead of splitting it. Rebuild it on the Ultimate csetup pattern (next session). The rerun guard does not cover reset weeks (5, 9), where MFL still carries the prior quarter until the manual reset.
+7. **Q1 slots are hardcoded** in `config.js` (2026). Later quarters come from the fetcher's P&R. Next season's Q1 slots must be set from the postseason finish.
+8. **Manual steps not yet automated** (`commish_mfl_actions.js` lists them with exact numbers):
+   * Quarter W-L-T reset (Weeks 5 and 9) and `DIVCONF` division moves: inspect the forms, then automate.
+   * Postseason schedule (after Week 12) and postseason guillotine tracking.
+9. ~~`mfl_updater.js` VP push~~ (rebuilt as `commish_mfl_actions.js` 2026-10-27; see "Not yet verified live" above).

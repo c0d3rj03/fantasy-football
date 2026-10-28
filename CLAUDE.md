@@ -18,9 +18,10 @@ fantasy-football/ (Repo Root)
 ├── .github/workflows/
 │   ├── ultimate_dailyscore.yml   # Ultimate: live score sync (dispatch, or push to ultimate/**)
 │   ├── ultimate_endweek.yml      # Ultimate: Tuesday eliminations & MANDROP
-│   ├── pbr_endweek.yml           # PBR: scores → VP push to MFL → Gemmy recap to Slack
+│   ├── pbr_endweek.yml           # PBR: scores → MFL commish actions (VP push, quarter changes) → Gemmy recap
 │   ├── pbr_sync.yml              # PBR: Tuesday sync + custom Gemmy announcement
 │   └── gemmy_alerts.yml          # PBR: ad-hoc Gemmy Slack announcement
+├── common/                       # Shared MFL client + csetup form helper (ES Modules, own package.json)
 ├── ultimate/                     # Ultimate league (ES Modules, own package.json)
 ├── pbr/                          # PBR league (currently CommonJS)
 ├── index.html                    # GitHub Pages landing page
@@ -28,7 +29,7 @@ fantasy-football/ (Repo Root)
 └── package.json                  # Root deps: @google/generative-ai, @slack/web-api
 ```
 
-Planned: a `common/` folder for logic shared by all leagues (see Shared Code below).
+`common/` holds logic shared by all leagues (see Shared Code below).
 
 ---
 
@@ -96,7 +97,7 @@ League IDs never change, and each league has its own code, so the ID lives in th
 
 ---
 
-## Shared Code (`common/`, planned)
+## Shared Code (`common/`)
 
 Logic that every MFL league needs belongs in one shared module so the leagues can't drift apart:
 * MFL login and session-cookie handling.
@@ -104,9 +105,13 @@ Logic that every MFL league needs belongs in one shared module so the leagues ca
 * Weekly results and live scoring fetches.
 * Retry and rate-limit logic.
 
-Today this logic is duplicated: `ultimate/mfl_commish_client.js` and `pbr/mfl_updater.js` each implement their own MFL login.
+Built so far (moved from `ultimate/` 2026-10-27; verified live on Ultimate):
+* `common/mfl_commish_client.js`: `new MflCommishClient(year, leagueId, host, { userAgent })`. Login with the `BECOME=0000` commissioner switch, `apiRequest` (export/import), `fetchPage` / `fetchCommishPage`, `submitCsetupForm(c, changes, { dryRun, params, requireExisting })`, and `submitPageForm` for non-csetup pages (e.g. `options?O=168`).
+* `common/mfl_csetup_form.js`: parse a form into what a browser would send, change named fields, POST the full form back; `describeForms()` for masked `--inspect` dumps.
+* `ultimate/mfl_commish_client.js` and `ultimate/mfl_csetup_form.js` are thin wrappers (Ultimate's host and User-Agent). PBR (CommonJS) loads `common/` with a dynamic `import()`.
+* Still duplicated: unauthenticated export fetches and `normalizeArray` in each league's scripts; no retry/rate-limit wrapper yet.
 
-Best starting point (verified live on Ultimate 2026-10-27): `ultimate/mfl_commish_client.js` (login with the `BECOME=0000` commissioner switch, `apiRequest`, `submitCsetupForm`) and `ultimate/mfl_csetup_form.js` (GET a csetup form, change named fields, POST the full form back). Neither takes a default league ID. The pattern and its pitfalls are in `pbr/CLAUDE.md`, "Lessons from Ultimate MFL automation".
+The pattern and its pitfalls are in `pbr/CLAUDE.md`, "MFL commish automation".
 
 Rules for shared code:
 * Shared modules take the league ID (and year) as a **parameter**. They never define, default, or read a league ID themselves.
@@ -119,7 +124,7 @@ Rules for shared code:
 ## Conventions
 
 * **Module system:** ES Modules (`"type": "module"`). All local relative imports MUST include the `.js` extension (e.g., `import MflCommishClient from './mfl_commish_client.js';`).
-  * `ultimate/` follows this. `pbr/` is still CommonJS and should be migrated before it imports from `common/`.
+  * `ultimate/` and `common/` follow this. `pbr/` is still CommonJS; its new scripts load `common/` with `await import(...)` until it is migrated.
   * The root `package.json` has no `"type"` yet.
 * **Filenames:** Use underscores in JavaScript filenames (`commish_automation.js`, `mfl_scores_fetcher.js`), NEVER hyphens.
 * **MFL identifiers:** Franchise IDs MUST always be zero-padded 4-digit strings (e.g., `"0001"`, `"0009"`). Week numbers are integers `1` to `18`.

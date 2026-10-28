@@ -1,8 +1,15 @@
 name: PBR End-of-Week Results & Gemmy Recap
 
 # Started every Tuesday morning by the Google Apps Script trigger (pbr/apps_script_triggers.gs),
-# or by hand from the Actions tab. Safe to rerun: the VP push skips if MFL already has this week,
-# and the Gemmy step skips if this week already has a recap.
+# or by hand from the Actions tab. Safe to rerun: the MFL step pushes only what MFL is missing
+# (commish_mfl_actions.js), and the Gemmy step skips if this week already has a recap.
+#
+# MFL writes (mfl_mode):
+#   auto     = weekly VP push only if repo variable PBR_MFL_WRITES is 1, otherwise a dry run.
+#              Quarter-change steps (schedule upload, Week 13 bonus) are always dry runs here.
+#   dry-run  = log in, load each form and log the exact field changes, post nothing.
+#   apply    = write every automated step (weekly VP and quarter changes), then re-read MFL.
+#   inspect  = print the commissioner forms' field names (emails masked), change nothing.
 #
 # Review the recap before it posts:
 #   1. Run with recap_mode = draft. It commits pbr/gemmy_drafts/week_<N>.md (and shows it in the log).
@@ -15,10 +22,11 @@ on:
         description: 'Week (blank = latest played week)'
         required: false
         default: ''
-      push_vps:
-        description: 'Push in-division top-2 VPs to MFL'
-        type: boolean
-        default: true
+      mfl_mode:
+        description: 'MFL commish step: auto (PBR_MFL_WRITES decides weekly VP), dry-run, apply (all steps), inspect (form fields), skip'
+        type: choice
+        options: [auto, dry-run, apply, inspect, skip]
+        default: auto
       recap_mode:
         description: 'Gemmy recap: auto = generate + post, draft = generate for review, publish = post the edited draft, skip'
         type: choice
@@ -71,20 +79,28 @@ jobs:
         working-directory: .
         run: npm install --no-audit --no-fund
 
-      # No MFL credentials here on purpose: mfl_scores_fetcher.js has its own (old) VP push that runs
-      # whenever MFL_USERNAME is set, and step 2 is the one that should write.
-      - name: 1. Fetch MFL results, compute VP & standings (data.json)
+      # Read-only MFL exports; needs no credentials.
+      - name: 1. Fetch MFL results, compute VP, standings & P&R (data.json)
+        id: fetch
         run: node mfl_scores_fetcher.js
 
-      - name: 2. Push in-division VPs to MFL
-        if: ${{ github.event.inputs.push_vps != 'false' }}
+      - name: 2. MFL commish actions (${{ github.event.inputs.mfl_mode || 'auto' }})
+        if: ${{ github.event.inputs.mfl_mode != 'skip' }}
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
-        run: node mfl_updater.js $WEEK
+          MFL_MODE: ${{ github.event.inputs.mfl_mode || 'auto' }}
+          PBR_MFL_WRITES: ${{ (github.event.inputs.mfl_mode || 'auto') == 'auto' && vars.PBR_MFL_WRITES || '0' }}
+        run: |
+          case "$MFL_MODE" in
+            apply)   node commish_mfl_actions.js $WEEK --apply ;;
+            inspect) node commish_mfl_actions.js --inspect ;;
+            *)       node commish_mfl_actions.js $WEEK ;;
+          esac
 
       - name: 3. Gemmy recap (${{ github.event.inputs.recap_mode || github.event.client_payload.recap_mode || 'auto' }})
-        if: ${{ env.RECAP_MODE != 'skip' }}
+        # Runs even if the MFL step failed (the recap only needs step 1's data.json); the job still fails.
+        if: ${{ !cancelled() && steps.fetch.outcome == 'success' && env.RECAP_MODE != 'skip' }}
         env:
           GEMMY_MODE: ${{ env.RECAP_MODE }}
           GEMMY_NOTES: ${{ github.event.inputs.recap_notes }}
