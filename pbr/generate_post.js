@@ -8,7 +8,8 @@
 //   publish  post gemmy_drafts/week_<N>.md exactly as written, save to data.json, delete the draft
 // Env:
 //   GEMINI_API_KEY (required to generate)
-//   GEMINI_MODEL   comma-separated models to try in order (default below); GEMINI_TIMEOUT_MS per try
+//   GEMINI_MODEL   comma-separated models to try first; then the newest flash models the key lists
+//                  (gemini_models.js). GEMINI_TIMEOUT_MS per try
 //   SLACK_BOT_TOKEN + PBR_SLACK_CHANNEL_OFFICIALCOMMS, falling back to SLACK_WEBHOOK_URL
 //   PBR_SLACK_CHANNEL_GENERAL / _RANDOM / _TRADE_TALK  read for banter
 //   GEMMY_SLACK=0   auto/publish save to data.json without posting to Slack
@@ -17,13 +18,12 @@
 const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { modelCandidates } = require('./gemini_models.js');
 
 const dataPath = path.join(__dirname, 'data.json');
 const draftsDir = path.join(__dirname, 'gemmy_drafts');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-flash-lite')
-  .split(',').map(s => s.trim()).filter(Boolean);
 const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS || 90000);
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const SLACK_CHANNEL_OFFICIALCOMMS = process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS;
@@ -31,12 +31,12 @@ const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 const MODE = process.env.GEMMY_MODE || 'auto';
 const POST_TO_SLACK = process.env.GEMMY_SLACK !== '0';
 const FORCE = process.env.GEMMY_FORCE === '1';
-const BANTER_CHANNELS = [
-  process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS,
-  process.env.PBR_SLACK_CHANNEL_GENERAL,
-  process.env.PBR_SLACK_CHANNEL_RANDOM,
-  process.env.PBR_SLACK_CHANNEL_TRADE_TALK
-].filter(Boolean);
+// Channel ID → the secret it came from, so a log names the channel without printing its ID.
+const BANTER_CHANNELS = new Map(
+  ['PBR_SLACK_CHANNEL_OFFICIALCOMMS', 'PBR_SLACK_CHANNEL_GENERAL', 'PBR_SLACK_CHANNEL_RANDOM', 'PBR_SLACK_CHANNEL_TRADE_TALK']
+    .filter(name => process.env[name])
+    .map(name => [process.env[name], name])
+);
 const BANTER_DAYS = 7;
 
 const DIVISION_NAMES = { '00': 'Upper Division', '01': 'Middle Division', '02': 'Lower Division' };
@@ -61,21 +61,22 @@ async function slackApi(method, params) {
 }
 
 async function fetchSlackBanter() {
-  if (!SLACK_BOT_TOKEN || BANTER_CHANNELS.length === 0) return [];
+  if (!SLACK_BOT_TOKEN || BANTER_CHANNELS.size === 0) return [];
   const oldest = String(Math.floor(Date.now() / 1000) - BANTER_DAYS * 86400);
   const messages = [];
-  for (const channel of new Set(BANTER_CHANNELS)) {
+  for (const [channel, secret] of BANTER_CHANNELS) {
     try {
       const data = await slackApi('conversations.history', { channel, oldest, limit: 40 });
       if (!data.ok) {
-        console.warn(`⚠️ Slack history for ${channel} failed: ${data.error}`);
+        // channel_not_found / not_in_channel: wrong ID in the secret, or the bot isn't in that channel.
+        console.warn(`⚠️ Slack history for ${secret} failed: ${data.error}`);
         continue;
       }
       data.messages
         .filter(m => !m.subtype && !m.bot_id && m.text)
         .forEach(m => messages.push({ user: m.user, text: m.text.slice(0, 300), ts: Number(m.ts) }));
     } catch (e) {
-      console.warn(`⚠️ Slack history for ${channel} failed: ${e.message}`);
+      console.warn(`⚠️ Slack history for ${secret} failed: ${e.message}`);
     }
   }
   // Swap user IDs for display names so Gemmy can roast people by name.
@@ -192,11 +193,13 @@ function buildPrompt(summary, banter, extraDirective) {
   ].filter(line => line !== null).join('\n');
 }
 
-// Tries each model in order, with a timeout per try, so one slow or overloaded model doesn't sink the run.
+// Tries each model in order, with a timeout per try, so one slow, overloaded or retired model doesn't sink the run.
 async function generateWithGemini(prompt) {
   if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY environment variable missing');
   const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  for (const name of GEMINI_MODELS) {
+  const models = await modelCandidates(GEMINI_API_KEY);
+  console.log(`Gemini models to try: ${models.join(', ')}.`);
+  for (const name of models) {
     const started = Date.now();
     try {
       const model = genAI.getGenerativeModel({ model: name }, { timeout: GEMINI_TIMEOUT_MS });
@@ -209,7 +212,7 @@ async function generateWithGemini(prompt) {
       console.warn(`⚠️ Gemini ${name} failed after ${((Date.now() - started) / 1000).toFixed(1)}s: ${err.message}`);
     }
   }
-  throw new Error(`No Gemini model produced a recap (tried ${GEMINI_MODELS.join(', ')})`);
+  throw new Error(`No Gemini model produced a recap (tried ${models.join(', ')})`);
 }
 
 async function publish(pbrData, weekObj, weekNum, recap) {
@@ -252,7 +255,7 @@ async function generatePost() {
   }
 
   const banter = await fetchSlackBanter();
-  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages; models ${GEMINI_MODELS.join(', ')}.`);
+  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages.`);
   const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum), banter, rest.join(' ') || process.env.GEMMY_NOTES || '');
   const recap = await generateWithGemini(prompt);
   console.log(`\n${recap}\n`);

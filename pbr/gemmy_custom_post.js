@@ -1,5 +1,4 @@
-const fs = require('fs');
-const path = require('path');
+const { API, modelCandidates } = require('./gemini_models.js');
 
 const userPrompt = process.argv[2];
 
@@ -19,31 +18,32 @@ async function generateWithGemini(prompt) {
     return fallbackTemplate(prompt);
   }
 
-  console.log("✨ Generating post with Gemini 2.5 Flash...");
   const systemInstruction = `You are Gemmy, the witty, snarky, sarcastic AI assistant commissioner for PBR (Premier Battle Royale fantasy football league). Write a short, punchy 1-2 paragraph Slack post with emojis and Slack bolding based on the user's prompt. Be funny, a little condescending about managers leaving points on the bench or making bad moves, but keep it light and fun. Always end with a coffee or 💅 emoji.`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-  
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [
-          { role: 'user', parts: [{ text: `${systemInstruction}\n\nPrompt: ${prompt}` }] }
-        ]
-      })
-    });
+  // Same model choice as the weekly recap (gemini_models.js); the first model that answers wins.
+  for (const model of await modelCandidates(GEMINI_API_KEY)) {
+    try {
+      console.log(`✨ Generating post with ${model}...`);
+      const res = await fetch(`${API}/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_API_KEY },
+        body: JSON.stringify({
+          contents: [
+            { role: 'user', parts: [{ text: `${systemInstruction}\n\nPrompt: ${prompt}` }] }
+          ]
+        })
+      });
 
-    if (!res.ok) throw new Error(`Gemini API returned HTTP ${res.status}`);
-    const data = await res.json();
-    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (aiText) return aiText.trim();
-    return fallbackTemplate(prompt);
-  } catch (err) {
-    console.warn(`⚠️ Gemini API call failed (${err.message}). Using fallback template.`);
-    return fallbackTemplate(prompt);
+      if (!res.ok) throw new Error(`Gemini API returned HTTP ${res.status}`);
+      const data = await res.json();
+      const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (aiText) return aiText.trim();
+    } catch (err) {
+      console.warn(`⚠️ Gemini ${model} failed (${err.message}).`);
+    }
   }
+  console.warn('⚠️ No Gemini model answered. Using fallback template.');
+  return fallbackTemplate(prompt);
 }
 
 function fallbackTemplate(prompt) {

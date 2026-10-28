@@ -38,10 +38,10 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 * **`generate_post.js`**: Builds the weekly recap (rewritten 2026-10-27; it had been a syntax error since 2026-10-07, so Weeks 5-6 got no recap).
   * Targets the latest played week (or `node generate_post.js <week>`).
   * Sends Gemini a compact week summary plus the last 7 days of Slack banter from the PBR channels.
-  * Models: `GEMINI_MODEL` (repo variable `PBR_GEMINI_MODEL`), comma-separated and tried in order with a `GEMINI_TIMEOUT_MS` timeout each (default `gemini-2.5-flash,gemini-2.5-flash-lite`, 90 s). The 2.5-flash timeouts before were most likely the old prompt, which sent the whole `data.json` (and once `tokens_data.json`, 2.4 MB). The prompt is now about 5 KB.
+  * Models (`gemini_models.js`, shared with `gemmy_custom_post.js` and `gemini_check.js`): `GEMINI_MODEL` (repo variable `PBR_GEMINI_MODEL`, comma-separated, optional) is tried first, then up to 3 of the newest stable flash models the key lists (`models.list`; flash before flash-lite, no preview/dated names). Each try has a `GEMINI_TIMEOUT_MS` timeout (90 s). Google retired `gemini-2.5-flash` and `-lite` for this key on 2026-10-28 (404), which is why the list is discovered instead of hardcoded. The prompt is about 5 KB.
   * `GEMMY_MODE`: `auto` posts to `#officialcomms` (bot token, falling back to the webhook) and saves to `data.json` `weekly_data[week].recap`. `draft` writes `gemmy_drafts/week_<N>.md` only. `publish` posts that file exactly as edited, saves it, and deletes the draft.
   * Skips a week that already has a recap (`GEMMY_FORCE=1` to redo). `GEMMY_SLACK=0` saves without posting. `GEMMY_NOTES` adds an instruction. Exits 1 on any failure.
-* **`gemini_check.js`**: Lists the Gemini models the key can call and times each on the real recap prompt (workflow `pbr_gemini_check.yml`). Use it to pick `PBR_GEMINI_MODEL`.
+* **`gemini_check.js`**: Lists the Gemini models the key can call, shows Gemmy's automatic fallback order, and times each candidate on the real recap prompt (workflow `pbr_gemini_check.yml`). Use it to pick `PBR_GEMINI_MODEL`.
 * **`gemmy_custom_post.js`**: One-off Gemmy announcement from a free-text prompt (REST call to Gemini, posted to Slack).
 * **`sync_recaps.js`**: Pulls posted recaps back from Slack `#officialcomms` into `data.json` and `gemmy_week_N.md`.
 * **`save_recap.js`, `embed_recaps.js`**: Helpers that write or merge recap text into `data.json`.
@@ -158,7 +158,7 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 3. ~~`pbr_endweek.yml` also listened for `ultimate-sync-trigger`~~ (removed 2026-10-27).
 4. **League ID and year are repeated** in `mfl_tx_fetcher.js`, `process_waivers.js`, and every PBR workflow. `config.js` exists (2026-10-27) and `mfl_scores_fetcher.js` and `commish_mfl_actions.js` use it. Move the rest over.
 5. **Module system:** PBR scripts use CommonJS while the repo convention (and `ultimate/`, `common/`) is ES Modules. `commish_mfl_actions.js` loads `common/` with a dynamic `import()` until `pbr/` is migrated.
-6. **Gemini model is set in two places:** `generate_post.js` (`GEMINI_MODEL`, default `gemini-2.5-flash`) and `gemmy_custom_post.js` (hardcoded `gemini-2.5-flash`). Define it in one place.
+6. ~~Gemini model set in two places~~ (one place since 2026-10-28: `gemini_models.js`).
 7. **Q1 slots are hardcoded** in `config.js` (2026). Later quarters come from the fetcher's P&R. Next season's Q1 slots must be set from the postseason finish.
 8. **Manual steps not yet automated** (`commish_mfl_actions.js` lists them with exact numbers):
    * Postseason schedule (after Week 12) and postseason guillotine tracking.

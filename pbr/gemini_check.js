@@ -7,25 +7,10 @@
 const fs = require('fs');
 const path = require('path');
 const { buildWeekSummary, buildPrompt, latestPlayedWeek } = require('./generate_post.js');
+const { API, listGenerateModels, newestFlashModels } = require('./gemini_models.js');
 
 const KEY = process.env.GEMINI_API_KEY;
 const TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS || 90000);
-const API = 'https://generativelanguage.googleapis.com/v1beta';
-
-async function listModels() {
-  const models = [];
-  let pageToken = '';
-  do {
-    const res = await fetch(`${API}/models?pageSize=100${pageToken ? `&pageToken=${pageToken}` : ''}`, { headers: { 'x-goog-api-key': KEY } });
-    if (!res.ok) throw new Error(`models.list HTTP ${res.status}: ${(await res.text()).slice(0, 300)}`);
-    const data = await res.json();
-    models.push(...(data.models || []));
-    pageToken = data.nextPageToken || '';
-  } while (pageToken);
-  return models
-    .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
-    .map(m => m.name.replace(/^models\//, ''));
-}
 
 async function timeModel(model, prompt) {
   const started = Date.now();
@@ -55,9 +40,10 @@ async function timeModel(model, prompt) {
 async function main() {
   if (!KEY) throw new Error('GEMINI_API_KEY environment variable missing');
 
-  const available = await listModels();
+  const available = await listGenerateModels(KEY);
   console.log(`Models this key can call (generateContent): ${available.length}`);
   available.forEach(m => console.log(`  ${m}`));
+  console.log(`Gemmy's automatic fallback order (gemini_models.js): ${newestFlashModels(available).join(', ') || '(none)'}`);
 
   const requested = (process.argv[2] || '').split(',').map(s => s.trim()).filter(Boolean);
   const candidates = requested.length ? requested : available.filter(m => /flash/.test(m) && !/(tts|image|audio|live|embedding)/.test(m));
