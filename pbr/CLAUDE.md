@@ -30,9 +30,11 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 ### Recaps ("Gemmy") and Slack
 * **`generate_post.js`**: Builds the weekly recap (rewritten 2026-10-27; it had been a syntax error since 2026-10-07, so Weeks 5-6 got no recap).
   * Targets the latest played week (or `node generate_post.js <week>`).
-  * Sends Gemini (`@google/generative-ai`, `GEMINI_MODEL`, default `gemini-2.5-flash`) a compact week summary plus the last 7 days of Slack banter from the PBR channels.
-  * Posts to `#officialcomms` (bot token, falling back to the webhook), then saves the recap to `data.json` `weekly_data[week].recap`, which the dashboard shows.
-  * Skips a week that already has a recap (`GEMMY_FORCE=1` to redo). `GEMMY_SLACK=0` saves without posting. Exits 1 on any failure.
+  * Sends Gemini a compact week summary plus the last 7 days of Slack banter from the PBR channels.
+  * Models: `GEMINI_MODEL` (repo variable `PBR_GEMINI_MODEL`), comma-separated and tried in order with a `GEMINI_TIMEOUT_MS` timeout each (default `gemini-2.5-flash,gemini-2.5-flash-lite`, 90 s). The 2.5-flash timeouts before were most likely the old prompt, which sent the whole `data.json` (and once `tokens_data.json`, 2.4 MB). The prompt is now about 5 KB.
+  * `GEMMY_MODE`: `auto` posts to `#officialcomms` (bot token, falling back to the webhook) and saves to `data.json` `weekly_data[week].recap`. `draft` writes `gemmy_drafts/week_<N>.md` only. `publish` posts that file exactly as edited, saves it, and deletes the draft.
+  * Skips a week that already has a recap (`GEMMY_FORCE=1` to redo). `GEMMY_SLACK=0` saves without posting. `GEMMY_NOTES` adds an instruction. Exits 1 on any failure.
+* **`gemini_check.js`**: Lists the Gemini models the key can call and times each on the real recap prompt (workflow `pbr_gemini_check.yml`). Use it to pick `PBR_GEMINI_MODEL`.
 * **`gemmy_custom_post.js`**: One-off Gemmy announcement from a free-text prompt (REST call to Gemini, posted to Slack).
 * **`sync_recaps.js`**: Pulls posted recaps back from Slack `#officialcomms` into `data.json` and `gemmy_week_N.md`.
 * **`save_recap.js`, `embed_recaps.js`**: Helpers that write or merge recap text into `data.json`.
@@ -61,11 +63,16 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 
 | Workflow | Trigger | What it runs |
 | --- | --- | --- |
-| `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` | `mfl_scores_fetcher.js` → `mfl_updater.js` → `generate_post.js`, then commits `data.json` (even if the recap step failed) |
+| `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `push_vps`, `recap_mode` auto/draft/publish/skip, `recap_notes`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` (`client_payload.recap_mode`, default auto) | `mfl_scores_fetcher.js` → `mfl_updater.js` → `generate_post.js`, then commits `data.json` and `gemmy_drafts/` (even if the recap step failed) |
+| `pbr_gemini_check.yml` | `workflow_dispatch` (inputs `models`, `timeout_seconds`) | `gemini_check.js`: read-only model list and timing |
 | `pbr_sync.yml` | `workflow_dispatch`, `repository_dispatch: pbr-sync-trigger` | Scores fetch → (`commish_watch.js`, which doesn't exist yet) → `gemmy_custom_post.js` with a prompt, then commits `pbr/` |
 | `gemmy_alerts.yml` | `workflow_dispatch` (prompt input) | `gemmy_custom_post.js "<prompt>"` |
 
-External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate). The code is `apps_script_triggers.gs`: every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger`. Nothing should dispatch `pbr-sync-trigger` (see Known Issues).
+External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate). The code is `apps_script_triggers.gs`: every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger` with `recap_mode` from `PBR_RECAP_MODE`.
+
+**Reviewing a recap before it posts:** run `pbr_endweek.yml` with `recap_mode = draft`, edit the committed `pbr/gemmy_drafts/week_<N>.md` (or rerun draft with `recap_notes`), then run with `recap_mode = publish`. The rerun guards make the second run's fetch and VP steps no-ops.
+
+**Weekly commish checklist** (from `reference/PBR Commish Actions.xlsx`): a normal week (not 4/5/8/9/12) is just confirm results, add In-Division Top 2 VPs (explanation "In-Division Top 2 Score"), and post the recap. Weeks 4/8 add P&R and the next-quarter schedule upload; weeks 5/9 add the W-L-T and VP resets and `DIVCONF` moves; week 12 adds final P&R, the postseason schedule, and the Week 13 bonus. See RULES.md §10. Nothing should dispatch `pbr-sync-trigger` (see Known Issues).
 
 `pbr_endweek.yml` is rerun-safe: `mfl_updater.js` skips the VP push when MFL's `leagueStandings` VP already equals the computed quarter VP through that week, and `generate_post.js` skips weeks that have a recap. Step 1 gets no MFL credentials on purpose, because `mfl_scores_fetcher.js` still contains an older VP push (`TYPE=adjustScores`) that runs whenever they are set.
 

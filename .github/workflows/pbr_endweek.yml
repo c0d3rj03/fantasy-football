@@ -3,19 +3,37 @@ name: PBR End-of-Week Results & Gemmy Recap
 # Started every Tuesday morning by the Google Apps Script trigger (pbr/apps_script_triggers.gs),
 # or by hand from the Actions tab. Safe to rerun: the VP push skips if MFL already has this week,
 # and the Gemmy step skips if this week already has a recap.
+#
+# Review the recap before it posts:
+#   1. Run with recap_mode = draft. It commits pbr/gemmy_drafts/week_<N>.md (and shows it in the log).
+#   2. Edit that file on GitHub (or rerun draft with recap_notes to steer Gemmy).
+#   3. Run with recap_mode = publish. It posts the file exactly as written and puts it on the dashboard.
 on:
   workflow_dispatch:
     inputs:
       week:
-        description: 'Week to push VPs / recap (blank = latest played week)'
+        description: 'Week (blank = latest played week)'
+        required: false
+        default: ''
+      push_vps:
+        description: 'Push in-division top-2 VPs to MFL'
+        type: boolean
+        default: true
+      recap_mode:
+        description: 'Gemmy recap: auto = generate + post, draft = generate for review, publish = post the edited draft, skip'
+        type: choice
+        options: [auto, draft, publish, skip]
+        default: draft
+      recap_notes:
+        description: 'Extra instruction for Gemmy (optional)'
         required: false
         default: ''
       post_to_slack:
-        description: 'Post the Gemmy recap to Slack'
+        description: 'Post to Slack (auto/publish). Off = dashboard only'
         type: boolean
         default: true
       force_recap:
-        description: 'Regenerate the recap even if this week already has one'
+        description: 'Post even if this week already has a recap'
         type: boolean
         default: false
   repository_dispatch:
@@ -35,6 +53,8 @@ jobs:
         working-directory: pbr
     env:
       WEEK: ${{ github.event.inputs.week }}
+      # Manual runs use the inputs; the Apps Script dispatch can pass client_payload.recap_mode (default auto).
+      RECAP_MODE: ${{ github.event.inputs.recap_mode || github.event.client_payload.recap_mode || 'auto' }}
 
     steps:
       - name: Checkout Repository
@@ -57,13 +77,20 @@ jobs:
         run: node mfl_scores_fetcher.js
 
       - name: 2. Push in-division VPs to MFL
+        if: ${{ github.event.inputs.push_vps != 'false' }}
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
         run: node mfl_updater.js $WEEK
 
-      - name: 3. Generate Gemmy recap and post to Slack
+      - name: 3. Gemmy recap (${{ github.event.inputs.recap_mode || github.event.client_payload.recap_mode || 'auto' }})
+        if: ${{ env.RECAP_MODE != 'skip' }}
         env:
+          GEMMY_MODE: ${{ env.RECAP_MODE }}
+          GEMMY_NOTES: ${{ github.event.inputs.recap_notes }}
+          GEMMY_SLACK: ${{ github.event.inputs.post_to_slack == 'false' && '0' || '1' }}
+          GEMMY_FORCE: ${{ github.event.inputs.force_recap == 'true' && '1' || '0' }}
+          GEMINI_MODEL: ${{ vars.PBR_GEMINI_MODEL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -71,17 +98,16 @@ jobs:
           PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
           PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
           PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
-          GEMMY_SLACK: ${{ github.event.inputs.post_to_slack == 'false' && '0' || '1' }}
-          GEMMY_FORCE: ${{ github.event.inputs.force_recap == 'true' && '1' || '0' }}
         run: node generate_post.js $WEEK
 
       # Runs even if the recap failed, so the dashboard still gets the new scores.
-      - name: 4. Commit updated data.json
+      - name: 4. Commit data.json and Gemmy drafts
         if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data.json
+          git add -A gemmy_drafts 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else

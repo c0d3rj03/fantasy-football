@@ -2,23 +2,33 @@
 // saves it to data.json (weekly_data[week].recap, shown on the dashboard) and posts it to Slack #officialcomms.
 //
 // Usage: node generate_post.js [week] ["extra directive"]
+// GEMMY_MODE:
+//   auto     (default) generate, post to Slack, save to data.json
+//   draft    generate into gemmy_drafts/week_<N>.md only. Edit that file, then publish.
+//   publish  post gemmy_drafts/week_<N>.md exactly as written, save to data.json, delete the draft
 // Env:
-//   GEMINI_API_KEY (required), GEMINI_MODEL (default gemini-2.5-flash)
+//   GEMINI_API_KEY (required to generate)
+//   GEMINI_MODEL   comma-separated models to try in order (default below); GEMINI_TIMEOUT_MS per try
 //   SLACK_BOT_TOKEN + PBR_SLACK_CHANNEL_OFFICIALCOMMS, falling back to SLACK_WEBHOOK_URL
 //   PBR_SLACK_CHANNEL_GENERAL / _RANDOM / _TRADE_TALK  read for banter
-//   GEMMY_SLACK=0   generate and save, but don't post to Slack
-//   GEMMY_FORCE=1   regenerate even if this week already has a recap
+//   GEMMY_SLACK=0   auto/publish save to data.json without posting to Slack
+//   GEMMY_FORCE=1   auto/publish even if this week already has a recap
+//   GEMMY_NOTES     extra instruction for Gemmy (same as the second argument)
 const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const dataPath = path.join(__dirname, 'data.json');
+const draftsDir = path.join(__dirname, 'gemmy_drafts');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_MODELS = (process.env.GEMINI_MODEL || 'gemini-2.5-flash,gemini-2.5-flash-lite')
+  .split(',').map(s => s.trim()).filter(Boolean);
+const GEMINI_TIMEOUT_MS = Number(process.env.GEMINI_TIMEOUT_MS || 90000);
 const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const SLACK_CHANNEL_OFFICIALCOMMS = process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS;
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+const MODE = process.env.GEMMY_MODE || 'auto';
 const POST_TO_SLACK = process.env.GEMMY_SLACK !== '0';
 const FORCE = process.env.GEMMY_FORCE === '1';
 const BANTER_CHANNELS = [
@@ -182,30 +192,27 @@ function buildPrompt(summary, banter, extraDirective) {
   ].filter(line => line !== null).join('\n');
 }
 
-async function generatePost() {
+// Tries each model in order, with a timeout per try, so one slow or overloaded model doesn't sink the run.
+async function generateWithGemini(prompt) {
   if (!GEMINI_API_KEY) throw new Error('GEMINI_API_KEY environment variable missing');
-
-  const pbrData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
-  const [weekArg, ...rest] = process.argv.slice(2);
-  const weekNum = weekArg ? Number(weekArg) : latestPlayedWeek(pbrData);
-  const weekObj = pbrData.weekly_data?.[String(weekNum)];
-  if (!weekObj || !weekObj.played) throw new Error(`Week ${weekNum} has not been played (or is missing from data.json)`);
-
-  if (weekObj.recap && !FORCE) {
-    console.log(`Week ${weekNum} already has a recap. Skipping (set GEMMY_FORCE=1 to regenerate and repost).`);
-    return;
+  const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+  for (const name of GEMINI_MODELS) {
+    const started = Date.now();
+    try {
+      const model = genAI.getGenerativeModel({ model: name }, { timeout: GEMINI_TIMEOUT_MS });
+      const result = await model.generateContent(prompt);
+      const text = toSlackMrkdwn(result.response.text());
+      if (!text) throw new Error('empty response');
+      console.log(`Gemini ${name} answered in ${((Date.now() - started) / 1000).toFixed(1)}s.`);
+      return text;
+    } catch (err) {
+      console.warn(`⚠️ Gemini ${name} failed after ${((Date.now() - started) / 1000).toFixed(1)}s: ${err.message}`);
+    }
   }
+  throw new Error(`No Gemini model produced a recap (tried ${GEMINI_MODELS.join(', ')})`);
+}
 
-  const banter = await fetchSlackBanter();
-  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages, model ${GEMINI_MODEL}.`);
-  const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum), banter, rest.join(' '));
-
-  const model = new GoogleGenerativeAI(GEMINI_API_KEY).getGenerativeModel({ model: GEMINI_MODEL });
-  const result = await model.generateContent(prompt);
-  const recap = toSlackMrkdwn(result.response.text());
-  if (!recap) throw new Error('Gemini returned an empty recap');
-  console.log(`\n${recap}\n`);
-
+async function publish(pbrData, weekObj, weekNum, recap) {
   // Post first, save second: a failed post leaves no recap, so a rerun tries again.
   if (POST_TO_SLACK) {
     const via = await postToSlack(recap);
@@ -214,13 +221,56 @@ async function generatePost() {
   } else {
     console.log('GEMMY_SLACK=0: not posting to Slack.');
   }
-
   weekObj.recap = recap;
   fs.writeFileSync(dataPath, JSON.stringify(pbrData, null, 2));
   console.log(`Saved recap to data.json weekly_data["${weekNum}"].recap.`);
 }
 
-generatePost().catch(err => {
-  console.error('❌ Gemmy recap failed:', err.message);
-  process.exit(1);
-});
+async function generatePost() {
+  if (!['auto', 'draft', 'publish'].includes(MODE)) throw new Error(`Unknown GEMMY_MODE "${MODE}" (auto, draft, publish)`);
+
+  const pbrData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+  const [weekArg, ...rest] = process.argv.slice(2).filter(a => a.trim() !== '');
+  const weekNum = weekArg ? Number(weekArg) : latestPlayedWeek(pbrData);
+  const weekObj = pbrData.weekly_data?.[String(weekNum)];
+  if (!weekObj || !weekObj.played) throw new Error(`Week ${weekNum} has not been played (or is missing from data.json)`);
+  const draftPath = path.join(draftsDir, `week_${weekNum}.md`);
+
+  if (MODE !== 'draft' && weekObj.recap && !FORCE) {
+    console.log(`Week ${weekNum} already has a recap. Skipping (set GEMMY_FORCE=1 to post it again).`);
+    return;
+  }
+
+  if (MODE === 'publish') {
+    if (!fs.existsSync(draftPath)) throw new Error(`No draft at gemmy_drafts/week_${weekNum}.md. Run with GEMMY_MODE=draft first.`);
+    const recap = fs.readFileSync(draftPath, 'utf8').trim();
+    if (!recap) throw new Error(`gemmy_drafts/week_${weekNum}.md is empty`);
+    console.log(`Publishing gemmy_drafts/week_${weekNum}.md:\n\n${recap}\n`);
+    await publish(pbrData, weekObj, weekNum, recap);
+    fs.unlinkSync(draftPath);
+    return;
+  }
+
+  const banter = await fetchSlackBanter();
+  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages; models ${GEMINI_MODELS.join(', ')}.`);
+  const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum), banter, rest.join(' ') || process.env.GEMMY_NOTES || '');
+  const recap = await generateWithGemini(prompt);
+  console.log(`\n${recap}\n`);
+
+  if (MODE === 'draft') {
+    fs.mkdirSync(draftsDir, { recursive: true });
+    fs.writeFileSync(draftPath, recap + '\n');
+    console.log(`Draft saved to gemmy_drafts/week_${weekNum}.md. Edit it, then run with GEMMY_MODE=publish.`);
+    return;
+  }
+  await publish(pbrData, weekObj, weekNum, recap);
+}
+
+if (require.main === module) {
+  generatePost().catch(err => {
+    console.error('❌ Gemmy recap failed:', err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { buildWeekSummary, buildPrompt, latestPlayedWeek };

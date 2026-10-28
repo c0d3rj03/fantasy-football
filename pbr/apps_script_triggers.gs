@@ -13,12 +13,15 @@
  *
  * Every Tuesday at about 6:00 AM Pacific (after Monday Night Football):
  *   pbr-endweek-trigger -> pbr_endweek.yml: fetch MFL results into data.json, push in-division VPs
- *   to MFL, post the Gemmy recap to Slack #officialcomms, commit data.json for the dashboard.
+ *   to MFL, Gemmy recap (PBR_RECAP_MODE below), commit data.json for the dashboard.
  * Reruns are safe, so pbrEndweekRun() can also be run by hand.
  */
 
 const PBR_TZ = 'America/Los_Angeles';
 const PBR_TRIGGER_HOUR = 6; // Apps Script fires somewhere within 6:00-7:00 AM
+// 'auto' posts the Gemmy recap straight to Slack. 'draft' only commits pbr/gemmy_drafts/week_<N>.md
+// for review; then run "PBR End-of-Week" by hand with recap_mode = publish.
+const PBR_RECAP_MODE = 'auto';
 
 /** Run once by hand. Replaces any earlier PBR end-of-week trigger so there is exactly one. */
 function installPbrWeeklyTrigger() {
@@ -37,11 +40,11 @@ function installPbrWeeklyTrigger() {
 
 /** Called by the time trigger. Safe to run by hand too. */
 function pbrEndweekRun() {
-  pbrDispatchRepositoryEvent('pbr-endweek-trigger');
+  pbrDispatchRepositoryEvent('pbr-endweek-trigger', { recap_mode: PBR_RECAP_MODE });
 }
 
 /** Sends a repository_dispatch event. Event types are league-prefixed so they never start Ultimate workflows. */
-function pbrDispatchRepositoryEvent(eventType) {
+function pbrDispatchRepositoryEvent(eventType, clientPayload) {
   const props = PropertiesService.getScriptProperties();
   const pat = props.getProperty('GITHUB_PAT');
   const owner = props.getProperty('OWNER');
@@ -59,7 +62,7 @@ function pbrDispatchRepositoryEvent(eventType) {
       'User-Agent': 'GoogleAppsScript-PbrTrigger'
     },
     contentType: 'application/json',
-    payload: JSON.stringify({ event_type: eventType }),
+    payload: JSON.stringify({ event_type: eventType, client_payload: clientPayload || {} }),
     muteHttpExceptions: true
   });
 

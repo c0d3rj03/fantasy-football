@@ -1,0 +1,43 @@
+name: PBR Gemini Model Check
+
+# Lists the Gemini models the GEMINI_API_KEY secret can call and times each on the real
+# Gemmy recap prompt. Read-only: posts nothing, commits nothing. The log shows only model
+# names, timings and a sample recap, never the key.
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: 'Comma-separated models to time (blank = every flash model the key can use)'
+        required: false
+        default: ''
+      timeout_seconds:
+        description: 'Timeout per model'
+        required: false
+        default: '90'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Fetch latest results so the prompt is current
+        working-directory: pbr
+        run: node mfl_scores_fetcher.js
+
+      - name: List and time Gemini models
+        working-directory: pbr
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TIMEOUT_MS: ${{ github.event.inputs.timeout_seconds }}000
+          MODELS: ${{ github.event.inputs.models }}
+        run: node gemini_check.js "$MODELS"
