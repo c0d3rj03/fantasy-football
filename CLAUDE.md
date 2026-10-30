@@ -81,7 +81,9 @@ node pbr/mfl_scores_fetcher.js
 * **Season year:** set in workflow `env` (`SEASON_YEAR` / `MFL_YEAR`, currently `'2026'`) with a code default.
 
 ### Google Apps Script properties (outside GitHub)
-The Apps Script that dispatches the workflows on a schedule reads `GITHUB_PAT`, `OWNER` (`'c0d3rj03'`), and `REPO` (`'fantasy-football'`) from `PropertiesService.getScriptProperties()`.
+One Apps Script project, "FFL Triggers" (script ID `1O-CjwR7ARmrIIGvR2A9d00uqY3W8JEr00XMD6T5k2C7e1pNfW399fUB-`), dispatches the workflows on a schedule for both leagues. It holds `Ultimate.gs` (= `ultimate/apps_script_triggers.gs`) and `PBR.gs` (= `pbr/apps_script_triggers.gs`) and reads `GITHUB_PAT`, `GITHUB_OWNER` (`'c0d3rj03'`), and `GITHUB_REPO` (`'fantasy-football'`) from `PropertiesService.getScriptProperties()`.
+* `GITHUB_PAT` is a fine-grained token on `c0d3rj03/fantasy-football` with **Contents: Read and write** (needed for `repository_dispatch`; without it GitHub answers 403 "Resource not accessible by personal access token").
+* Update the scripts with clasp (`npx -y @google/clasp@2.4.2 clone <script ID>`, then `pull` before every `push`; push replaces every file). Triggers run the Head code, so a push takes effect at once. Installing triggers and reading the Executions log still happen in the Apps Script editor.
 
 ### Scheduling
 * **Don't rely on GitHub `schedule:` cron triggers.** They fired unreliably.

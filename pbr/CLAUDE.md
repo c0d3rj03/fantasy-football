@@ -97,7 +97,7 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 | `pbr_sync.yml` | `workflow_dispatch`, `repository_dispatch: pbr-sync-trigger` | Scores fetch → (`commish_watch.js`, which doesn't exist yet) → `gemmy_custom_post.js` with a prompt, then commits `pbr/` |
 | `gemmy_alerts.yml` | `workflow_dispatch` (prompt input) | `gemmy_custom_post.js "<prompt>"` |
 
-External dispatches come from Google Apps Script (same `GITHUB_PAT` / `OWNER` / `REPO` properties as Ultimate). The code is `apps_script_triggers.gs`:
+External dispatches come from Google Apps Script (same project and `GITHUB_PAT` / `GITHUB_OWNER` / `GITHUB_REPO` properties as Ultimate; see the root `CLAUDE.md`). The code is `apps_script_triggers.gs`:
 * Every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger` with `recap_mode` from `PBR_RECAP_MODE`.
 * Every day about 9 AM Pacific (`installPbrDailyTokenTrigger`) it sends `pbr-tokens-trigger`.
 

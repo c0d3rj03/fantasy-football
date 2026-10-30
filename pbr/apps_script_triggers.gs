@@ -1,9 +1,9 @@
 /**
  * PBR: Google Apps Script trigger (copy of the code that runs in Apps Script).
  * No secrets in this file. Set these in Project Settings > Script properties:
- *   GITHUB_PAT  fine-grained token for c0d3rj03/fantasy-football with "Contents: Read and write"
- *   OWNER       c0d3rj03
- *   REPO        fantasy-football
+ *   GITHUB_PAT    fine-grained token for c0d3rj03/fantasy-football with "Contents: Read and write"
+ *   GITHUB_OWNER  c0d3rj03
+ *   GITHUB_REPO   fantasy-football
  *
  * Can live in the same Apps Script project as ultimate/apps_script_triggers.gs (add it as a second
  * file); every name here is pbr-prefixed so nothing clashes.
@@ -73,10 +73,10 @@ function pbrTokensRun() {
 function pbrDispatchRepositoryEvent(eventType, clientPayload) {
   const props = PropertiesService.getScriptProperties();
   const pat = props.getProperty('GITHUB_PAT');
-  const owner = props.getProperty('OWNER');
-  const repo = props.getProperty('REPO');
+  const owner = props.getProperty('GITHUB_OWNER');
+  const repo = props.getProperty('GITHUB_REPO');
   if (!pat || !owner || !repo) {
-    throw new Error('Missing script property: GITHUB_PAT, OWNER, and REPO are required.');
+    throw new Error('Missing script property: GITHUB_PAT, GITHUB_OWNER, and GITHUB_REPO are required.');
   }
 
   const response = UrlFetchApp.fetch(`https://api.github.com/repos/${owner}/${repo}/dispatches`, {
