@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-10-28T06:23:40.170Z",
+  "last_updated": "2026-10-31T16:51:36.808Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -49,10 +49,10 @@
       "name": "Orcan Terror",
       "start": 15,
       "trades": 20,
-      "waivers": 3,
+      "waivers": 5,
       "promotions": 0,
       "adjustments": 0,
-      "total": 38,
+      "total": 40,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -68,7 +68,7 @@
         },
         "Q2": {
           "trades": 0,
-          "waivers": 2,
+          "waivers": 4,
           "promotions": 0,
           "adjustments": 0
         },
@@ -336,10 +336,10 @@
       "name": "The Two Tones",
       "start": 11,
       "trades": 18,
-      "waivers": 1,
+      "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 30,
+      "total": 31,
       "by_period": {
         "Offseason": {
           "trades": 18,
@@ -355,7 +355,7 @@
         },
         "Q2": {
           "trades": 0,
-          "waivers": 1,
+          "waivers": 2,
           "promotions": 0,
           "adjustments": 0
         },
@@ -1550,6 +1550,44 @@
     }
   ],
   "waivers": [
+    {
+      "id": "1793458800|0001|12785",
+      "timestamp": 1793458800,
+      "date": "2026-10-31",
+      "franchise": "0001",
+      "name": "Orcan Terror",
+      "player_id": "12785",
+      "player": "Demarcus Robinson (WR, SFO)",
+      "bid": 25,
+      "period": "Q2",
+      "tokens": 1
+    },
+    {
+      "id": "1793199600|0001|14086",
+      "timestamp": 1793199600,
+      "date": "2026-10-28",
+      "franchise": "0001",
+      "name": "Orcan Terror",
+      "player_id": "14086",
+      "player": "Justice Hill (RB, BAL)",
+      "dropped": "Brandin Cooks (WR, SFO)",
+      "bid": 27,
+      "period": "Q2",
+      "tokens": 1
+    },
+    {
+      "id": "1793199600|0008|17478",
+      "timestamp": 1793199600,
+      "date": "2026-10-28",
+      "franchise": "0008",
+      "name": "The Two Tones",
+      "player_id": "17478",
+      "player": "Kaytron Allen (RB, MIA)",
+      "dropped": "Dohnte Meyers (WR, CIN)",
+      "bid": 35,
+      "period": "Q2",
+      "tokens": 1
+    },
     {
       "id": "1792594800|0001|11674",
       "timestamp": 1792594800,
