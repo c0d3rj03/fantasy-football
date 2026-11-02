@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-01T17:51:32.877Z",
+  "last_updated": "2026-11-02T17:51:35.522Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -212,11 +212,11 @@
     "0005": {
       "name": "Peaky Fookin Blinders",
       "start": 0,
-      "trades": 10,
+      "trades": 16,
       "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 12,
+      "total": 18,
       "by_period": {
         "Offseason": {
           "trades": 10,
@@ -231,7 +231,7 @@
           "adjustments": 0
         },
         "Q2": {
-          "trades": 0,
+          "trades": 6,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -417,11 +417,11 @@
     "0010": {
       "name": "The Meaty Ogres",
       "start": 13,
-      "trades": 16,
+      "trades": 22,
       "waivers": 3,
       "promotions": 1,
       "adjustments": 0,
-      "total": 33,
+      "total": 39,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -436,7 +436,7 @@
           "adjustments": 0
         },
         "Q2": {
-          "trades": 2,
+          "trades": 8,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -539,6 +539,51 @@
     }
   },
   "trades": [
+    {
+      "id": "1793589402",
+      "date": "2026-11-01",
+      "period": "Q2",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0005",
+          "name": "Peaky Fookin Blinders",
+          "assets": [
+            {
+              "code": "14802",
+              "name": "Jonathan Taylor (RB, IND)",
+              "value": 6394
+            }
+          ],
+          "value": 6394
+        },
+        {
+          "franchise": "0010",
+          "name": "The Meaty Ogres",
+          "assets": [
+            {
+              "code": "16644",
+              "name": "Ben Sinnott (TE, WAS)",
+              "value": 1680
+            },
+            {
+              "code": "FP_0010_2027_1",
+              "name": "2027 1st Round Pick (The Meaty Ogres)",
+              "value": 5852
+            },
+            {
+              "code": "FP_0012_2027_2",
+              "name": "2027 2nd Round Pick (2 Roops, 1 Silva)",
+              "value": 3524
+            }
+          ],
+          "value": 11056
+        }
+      ],
+      "total_value": 17450,
+      "tokens_each": 6,
+      "tokens_awarded": 6
+    },
     {
       "id": "1793112959",
       "date": "2026-10-27",
