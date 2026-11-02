@@ -8,6 +8,10 @@ const __dirname = path.dirname(__filename);
 
 const MFL_BASE_URL = `https://${MFL_HOST}/${SEASON_YEAR}/export`;
 
+// MFL sometimes answers 503 for a few minutes (the 2026-11-02 run lost Sunday's scores to one).
+// Retry server errors, 429s and network failures; other 4xx errors fail at once.
+const RETRY_DELAYS_MS = [10000, 30000, 60000];
+
 async function fetchMFL(type, params = {}) {
   const query = new URLSearchParams({
     TYPE: type,
@@ -17,17 +21,32 @@ async function fetchMFL(type, params = {}) {
   }).toString();
 
   const url = `${MFL_BASE_URL}?${query}`;
-  const response = await fetch(url, {
-    headers: {
-      'User-Agent': 'UltimateGuillotineFetcher/1.5 (+https://github.com/c0d3rj03/fantasy-football)'
+
+  for (let attempt = 0; ; attempt++) {
+    let error;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'UltimateGuillotineFetcher/1.5 (+https://github.com/c0d3rj03/fantasy-football)'
+        }
+      });
+
+      if (response.ok) {
+        return await response.json();
+      }
+
+      error = new Error(`MFL API error [${type}]: ${response.status} ${response.statusText}`);
+      if (response.status < 500 && response.status !== 429) throw error;
+    } catch (err) {
+      if (err === error) throw err;
+      error = err;
     }
-  });
 
-  if (!response.ok) {
-    throw new Error(`MFL API error [${type}]: ${response.status} ${response.statusText}`);
+    if (attempt >= RETRY_DELAYS_MS.length) throw error;
+    const delay = RETRY_DELAYS_MS[attempt];
+    console.warn(`${error.message}; retrying in ${delay / 1000}s (attempt ${attempt + 2} of ${RETRY_DELAYS_MS.length + 1})`);
+    await new Promise(resolve => setTimeout(resolve, delay));
   }
-
-  return await response.json();
 }
 
 function normalizeArray(item) {

@@ -140,7 +140,7 @@ The client and form helper now live in `common/` (`ultimate/mfl_commish_client.j
 * **Login and cookie capture** (`login()`): `Set-Cookie` header with the XML `cookie_value` fallback. Add re-login when the cookie expires.
 * **`apiRequest()`**: `export`/`import` GET/POST with `L` and `JSON=1`, plus the `!res.ok` error.
 * **`describeForms()`**: `commish_mfl_actions.js` still has its own copy; `common/mfl_csetup_form.js` exports one.
-* **Retry / rate-limit wrapper** (none exists today).
+* **Retry / rate-limit wrapper**: only `fetchMFL()` in `mfl_scores_fetcher.js` retries (since 2026-11-02, after a 503 lost Sunday's Week 8 scores: 4 tries, 10/30/60 s waits, on 5xx, 429 and network errors). `common/` has none.
 * From `mfl_scores_fetcher.js`: `fetchMFL()` (unauthenticated export GET), `normalizeArray()`, and the `weeklyResults` / `liveScoring` fetches.
 
 Stays in `ultimate/`: `config.js`, rolling-score math, the cut schedule, prize tiers, and the `data.json` shape. The client constructor already takes `seasonYear`/`leagueId` as parameters with no league defaults, so it is ready to move.
