@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-03T00:16:43.703Z",
+  "last_updated": "2026-11-03T17:51:41.028Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -255,9 +255,9 @@
       "start": 3,
       "trades": 4,
       "waivers": 0,
-      "promotions": 0,
+      "promotions": 3,
       "adjustments": 0,
-      "total": 7,
+      "total": 10,
       "by_period": {
         "Offseason": {
           "trades": 2,
@@ -274,7 +274,7 @@
         "Q2": {
           "trades": 2,
           "waivers": 0,
-          "promotions": 0,
+          "promotions": 3,
           "adjustments": 0
         },
         "Q3": {
@@ -501,9 +501,9 @@
       "start": 9,
       "trades": 24,
       "waivers": 3,
-      "promotions": 0,
+      "promotions": 2,
       "adjustments": 0,
-      "total": 36,
+      "total": 38,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -520,7 +520,7 @@
         "Q2": {
           "trades": 12,
           "waivers": 0,
-          "promotions": 0,
+          "promotions": 2,
           "adjustments": 0
         },
         "Q3": {
@@ -1877,6 +1877,24 @@
       "from": "Lower",
       "to": "Middle",
       "tokens": 1
+    },
+    {
+      "quarter": 2,
+      "period": "Q2",
+      "franchise": "0012",
+      "name": "2 Roops, 1 Silva",
+      "from": "Middle",
+      "to": "Upper",
+      "tokens": 2
+    },
+    {
+      "quarter": 2,
+      "period": "Q2",
+      "franchise": "0006",
+      "name": "Ted Lasso",
+      "from": "Lower",
+      "to": "Middle",
+      "tokens": 3
     }
   ],
   "adjustments": [],
@@ -1887,9 +1905,11 @@
       "division": "Upper",
       "round": 4,
       "year": "2027",
-      "franchise": null,
-      "name": null,
-      "owned_picks": []
+      "franchise": "0005",
+      "name": "Peaky Fookin Blinders",
+      "owned_picks": [
+        "2027 R4 (own)"
+      ]
     },
     {
       "id": "Q2-01",
@@ -1897,9 +1917,11 @@
       "division": "Middle",
       "round": 4,
       "year": "2027",
-      "franchise": null,
-      "name": null,
-      "owned_picks": []
+      "franchise": "0004",
+      "name": "Hamsterdam",
+      "owned_picks": [
+        "2027 R4 (own)"
+      ]
     },
     {
       "id": "Q3-00",
