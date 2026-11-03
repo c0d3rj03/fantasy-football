@@ -2,11 +2,11 @@
   "leagueId": "25918",
   "seasonYear": "2026",
   "currentWeek": 8,
-  "isLive": true,
-  "phase": "live",
+  "isLive": false,
+  "phase": "results",
   "displayWeek": 8,
-  "lastCompletedWeek": 7,
-  "lastUpdated": "2026-11-02T23:56:35.765Z",
+  "lastCompletedWeek": 8,
+  "lastUpdated": "2026-11-03T10:26:56.183Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -306,7 +306,21 @@
       "0022": 174.94,
       "0024": 136.04
     },
-    "8": {},
+    "8": {
+      "0001": 188.11,
+      "0002": 161.35,
+      "0004": 116.67,
+      "0005": 154.76,
+      "0006": 172.59,
+      "0010": 187.3,
+      "0011": 139.59,
+      "0012": 149.81,
+      "0016": 197.06,
+      "0017": 168.2,
+      "0021": 137.67,
+      "0022": 171.58,
+      "0024": 154.31
+    },
     "9": {},
     "10": {},
     "11": {},
@@ -319,18 +333,18 @@
   },
   "liveDetails": {
     "0001": {
-      "doneScore": 158.31,
+      "doneScore": 188.11,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0002": {
-      "doneScore": 126.7,
+      "doneScore": 161.35,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0003": {
       "doneScore": 0,
@@ -340,18 +354,18 @@
       "finished": 0
     },
     "0004": {
-      "doneScore": 109.27,
+      "doneScore": 116.67,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0005": {
-      "doneScore": 142.75,
+      "doneScore": 154.76,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0006": {
       "doneScore": 172.59,
@@ -389,11 +403,11 @@
       "finished": 10
     },
     "0011": {
-      "doneScore": 124.45,
+      "doneScore": 139.59,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0012": {
       "doneScore": 149.81,
@@ -431,11 +445,11 @@
       "finished": 10
     },
     "0017": {
-      "doneScore": 143.7,
+      "doneScore": 168.2,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0018": {
       "doneScore": 0,
@@ -459,11 +473,11 @@
       "finished": 0
     },
     "0021": {
-      "doneScore": 125.37,
+      "doneScore": 137.67,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     },
     "0022": {
       "doneScore": 171.58,
@@ -480,11 +494,11 @@
       "finished": 0
     },
     "0024": {
-      "doneScore": 132.21,
+      "doneScore": 154.31,
       "liveScore": 0,
-      "ytp": 1,
+      "ytp": 0,
       "inGame": 0,
-      "finished": 9
+      "finished": 10
     }
   },
   "eliminatedTeams": {
@@ -553,6 +567,12 @@
       "rollingScore": 228.82,
       "singleScore": 76.39,
       "franchiseName": "DMC Gonna Run Thru U"
+    },
+    "0004": {
+      "eliminatedWeek": 8,
+      "rollingScore": 254.92,
+      "singleScore": 116.67,
+      "franchiseName": "Ichabod Crane"
     }
   },
   "weeklyWinners": {
@@ -614,6 +634,15 @@
       "franchiseId": "0001",
       "franchiseName": "Tight Ends",
       "score": 212.66,
+      "prize": {
+        "type": "cash",
+        "amount": 15
+      }
+    },
+    "8": {
+      "franchiseId": "0016",
+      "franchiseName": "FantasyDiva ",
+      "score": 197.06,
       "prize": {
         "type": "cash",
         "amount": 15
