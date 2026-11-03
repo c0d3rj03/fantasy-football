@@ -271,7 +271,7 @@ async function pushScoreCarryover(client, plan, item) {
       FRANCHISE: fid,
       WEEK: String(plan.nextWeek),
       POINTS: points.toFixed(2),
-      EXPLANATION: `Week ${plan.week} single-week score carryover`
+      EXPLANATION: `Week ${plan.week} Score`
     }, 'POST');
     console.log(`➕ Week ${plan.nextWeek} adjustment ${points.toFixed(2)} for ${fid}`);
   }
