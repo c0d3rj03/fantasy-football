@@ -3,7 +3,7 @@ const https = require('https');
 const path = require('path');
 
 const { LEAGUE_ID, YEAR, MFL_HOST, DIVISION_NAMES: divisionNames, Q1_SLOTS } = require('./config.js');
-const { inDivisionVPs, promotionRelegation, nextQuarterSlots } = require('./pbr_rules.js');
+const { inDivisionVPs, rankStandings, promotionRelegation, nextQuarterSlots } = require('./pbr_rules.js');
 const BASE_URL = `https://${MFL_HOST}/${YEAR}/export`;
 
 // Scheduling slots #1-#4 per division for the current quarter; P&R after Weeks 4/8/12 replaces them.
@@ -237,11 +237,9 @@ async function main() {
       }
     });
 
+    // Same order as P&R: VP → quarter PF → quarter win % → season PF → season win %.
     Object.keys(quarterStandings).forEach(d => {
-      quarterStandings[d].sort((a, b) => {
-        if (b.vp !== a.vp) return b.vp - a.vp;
-        return b.pf - a.pf;
-      });
+      quarterStandings[d] = rankStandings(quarterStandings[d], seasonAccumulators);
     });
 
     const seasonStandings = { "Upper Division": [], "Middle Division": [], "Lower Division": [] };

@@ -67,6 +67,8 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
   * `voided_trades` / `voided_waivers`, matched by MFL timestamp. The 8/29/2026 BattleBots-Peaky conditional pick swap is voided, as in the sheet.
   * `adjustments`: tokens traded in trade comments, commish rulings, draw results.
   * `ktc_names`: MFL ID → KTC spelling, if an old snapshot name doesn't match.
+  * `relegation_forfeits` (`Q2-00`, `Q2-01`, `Q3-00`, `Q3-01`): the exact pick each relegated team forfeits, recorded on token-draw day. The team comes from `data.json` P&R; `tokens_data.json` `relegation_penalties` also lists the matching next-year picks it owns now (MFL `futureDraftPicks`).
+  * `token_draw`: `committed` tokens per team and `results` (`franchise`, `slot`, `award` id from `token_rules.js` `drawAwards`). Shown on the tokens page's "Draw & Penalties" tab (the sheet's TokenAwards tab).
 * **`ktc_fetcher.js`** (first daily run each month): Saves `ktc-values/KTC-YYYY-MM.json` from the `keeptradecut.com/dynasty-rankings` page (`<script id="ktc-players">`; has `mflid`), normalized to `{name, position, team, mflid, "sf-tep-value"}`.
   * Kushan's feed (`173.230.138.125/ktc_values.json`, the sheet's source) is a fallback. It returned an empty list on 2026-10-27.
   * Does nothing if the month's file exists (`--force` to refetch).
@@ -76,7 +78,7 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 ### Frontend (GitHub Pages)
 * **`index.html` + `pbr.js`**: Standings and weekly results dashboard (reads `data.json`).
 * **`tokens.html` + `tokens.js`**: Token tracker (reads `tokens_data.json`; the values tab loads `ktc-values/KTC-<month>.json`). Until 2026-10-27 the page loaded `pbr/tokens.js` (a 404), so it never rendered.
-* **`prizes.html`**: Prize tracker.
+* **`prizes.html`**: Prize tracker. Quarter division winners are 1st place in `weekly_data[4/8/12].quarter_standings`, which the fetcher ranks with the P&R tiebreakers (`pbr_rules.js` `rankStandings`); the quarter high scorer is the top quarter PF (ties share).
 * The `*_html.txt` / `*_json.txt` files are text copies of the matching files (for pasting into AI tools). They are not used at runtime.
 
 ### Data files

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-02T17:51:35.522Z",
+  "last_updated": "2026-11-03T00:16:43.703Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -1880,6 +1880,103 @@
     }
   ],
   "adjustments": [],
+  "relegation_penalties": [
+    {
+      "id": "Q2-00",
+      "quarter": 2,
+      "division": "Upper",
+      "round": 4,
+      "year": "2027",
+      "franchise": null,
+      "name": null,
+      "owned_picks": []
+    },
+    {
+      "id": "Q2-01",
+      "quarter": 2,
+      "division": "Middle",
+      "round": 4,
+      "year": "2027",
+      "franchise": null,
+      "name": null,
+      "owned_picks": []
+    },
+    {
+      "id": "Q3-00",
+      "quarter": 3,
+      "division": "Upper",
+      "round": 3,
+      "year": "2027",
+      "franchise": null,
+      "name": null,
+      "owned_picks": []
+    },
+    {
+      "id": "Q3-01",
+      "quarter": 3,
+      "division": "Middle",
+      "round": 3,
+      "year": "2027",
+      "franchise": null,
+      "name": null,
+      "owned_picks": []
+    }
+  ],
+  "token_draw": {
+    "draft_year": "2027",
+    "gifts": [
+      {
+        "id": "bonus-1.13",
+        "label": "2027 Draft Pick 1.13"
+      },
+      {
+        "id": "bonus-2.13",
+        "label": "2027 Draft Pick 2.13"
+      },
+      {
+        "id": "bonus-2.14",
+        "label": "2027 Draft Pick 2.14"
+      },
+      {
+        "id": "bonus-3.13",
+        "label": "2027 Draft Pick 3.13"
+      },
+      {
+        "id": "bonus-3.14",
+        "label": "2027 Draft Pick 3.14"
+      },
+      {
+        "id": "forfeit-Q2-00",
+        "label": "2027 4th Rd pick forfeited after Q2 (Upper relegation)"
+      },
+      {
+        "id": "forfeit-Q2-01",
+        "label": "2027 4th Rd pick forfeited after Q2 (Middle relegation)"
+      },
+      {
+        "id": "forfeit-Q3-00",
+        "label": "2027 3rd Rd pick forfeited after Q3 (Upper relegation)"
+      },
+      {
+        "id": "forfeit-Q3-01",
+        "label": "2027 3rd Rd pick forfeited after Q3 (Middle relegation)"
+      },
+      {
+        "id": "fees",
+        "label": "$50 toward next year's fees"
+      },
+      {
+        "id": "refund",
+        "label": "Refund of committed tokens"
+      },
+      {
+        "id": "tokens",
+        "label": "10 Tokens"
+      }
+    ],
+    "committed": {},
+    "slots": {}
+  },
   "ktc_months": [
     "2026-01",
     "2026-02",

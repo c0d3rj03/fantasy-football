@@ -7,15 +7,17 @@
  *   MFL exports: league (team names), transactions (TRADE, BBID_WAIVER), players (names),
  *                nflSchedule (quarter boundaries: Weeks 1, 4, 8, 12).
  *   ktc-values/KTC-YYYY-MM.json: KTC values for the month of each trade (ktc_fetcher.js).
- *   data.json promotion_relegation: promotion tokens.
- *   token_settings.json: starting balances, the $ minimum, voided moves, manual adjustments.
+ *   MFL futureDraftPicks: which next-year picks a relegated team owns (the pick it forfeits).
+ *   data.json promotion_relegation: promotion tokens, relegation pick forfeits.
+ *   token_settings.json: starting balances, the $ minimum, voided moves, manual adjustments,
+ *                        resolved forfeits and token draw results.
  * Rebuilds the whole ledger every run, so it is safe to rerun and picks up edits to the settings file.
  */
 const fs = require('fs');
 const path = require('path');
 
 const { LEAGUE_ID, YEAR, MFL_HOST } = require('./config.js');
-const { PROMOTION_TOKENS, valueTrade, periodOf, scoreWaivers } = require('./token_rules.js');
+const { PROMOTION_TOKENS, RELEGATION_FORFEIT_ROUND, drawAwards, valueTrade, periodOf, scoreWaivers } = require('./token_rules.js');
 const { snapshotFor, playerValue, availableMonths } = require('./ktc_snapshots.js');
 
 const OUT_PATH = path.join(__dirname, 'tokens_data.json');
@@ -193,6 +195,39 @@ async function main() {
     period: periodOf(Date.parse(`${a.date}T12:00:00-05:00`) / 1000, bounds)
   }));
 
+  // ---- Relegation pick forfeits (after Q2 and Q3) and the token draw's gift list
+  const draftYear = String(Number(YEAR) + 1);
+  const futurePicks = {};
+  try {
+    const fdp = await leagueExport('futureDraftPicks');
+    asArray(fdp.futureDraftPicks?.franchise).forEach(f => {
+      futurePicks[f.id] = asArray(f.futureDraftPick).map(p => ({ year: p.year, round: Number(p.round), from: p.originalPickFor }));
+    });
+  } catch (err) {
+    warnings.push(`futureDraftPicks unavailable (${err.message}); the forfeit table shows no owned picks.`);
+  }
+  const relegationPenalties = Object.entries(RELEGATION_FORFEIT_ROUND).flatMap(([q, byDiv]) =>
+    Object.entries(byDiv).map(([div, round]) => {
+      const key = `Q${q}-${div}`;
+      const fid = leagueData.promotion_relegation?.[q]?.relegated?.[div] || null;
+      const owned = fid ? (futurePicks[fid] || []).filter(p => p.year === draftYear && p.round === round) : [];
+      const resolved = settings.relegation_forfeits?.[key] || {};
+      return {
+        id: key, quarter: Number(q), division: div === '00' ? 'Upper' : 'Middle', round, year: draftYear,
+        franchise: fid, name: fid ? names[fid] || fid : null,
+        owned_picks: owned.map(p => (p.from === fid ? `${draftYear} R${round} (own)` : `${draftYear} R${round} (from ${names[p.from] || p.from})`)),
+        ...(resolved.pick ? { forfeited_pick: resolved.pick } : {}),
+        ...(resolved.note ? { note: resolved.note } : {})
+      };
+    }));
+
+  const draw = settings.token_draw || {};
+  const awardOf = Object.fromEntries((draw.results || []).map(r => [r.award, r]));
+  const drawGifts = drawAwards(YEAR).map(a => ({
+    ...a,
+    ...(awardOf[a.id] ? { franchise: awardOf[a.id].franchise, name: names[awardOf[a.id].franchise], slot: awardOf[a.id].slot } : {})
+  }));
+
   // ---- Balances
   const teams = {};
   Object.keys(names).sort().forEach(fid => {
@@ -237,6 +272,13 @@ async function main() {
     waivers,
     promotions,
     adjustments,
+    relegation_penalties: relegationPenalties,
+    token_draw: {
+      draft_year: draftYear,
+      gifts: drawGifts,
+      committed: draw.committed || {},
+      slots: Object.fromEntries((draw.results || []).map(r => [r.franchise, r.slot]))
+    },
     // Snapshot files the dashboard's "Monthly KTC Values" tab can load.
     ktc_months: availableMonths().filter(m => m >= `${YEAR}-01`),
     warnings
@@ -273,6 +315,12 @@ function report(out, previous) {
   Object.values(out.teams).sort((a, b) => b.total - a.total).forEach(t => {
     lines.push(`| ${t.name} | ${t.start} | ${t.trades} | ${t.waivers} | ${t.promotions} | ${t.adjustments} | **${t.total}** |`);
   });
+  const decided = out.relegation_penalties.filter(p => p.franchise);
+  if (decided.length) {
+    lines.push('', '### Relegation pick forfeits', '');
+    decided.forEach(p => lines.push(`- Q${p.quarter} ${p.division}: ${p.name} forfeits its ${p.year} round ${p.round} pick` +
+      (p.forfeited_pick ? ` → ${p.forfeited_pick}` : ` (owns now: ${p.owned_picks.join(', ') || 'none in that round'})`)));
+  }
   if (out.warnings.length) lines.push('', '### Warnings', '', ...out.warnings.map(w => `- ⚠️ ${w}`));
 
   const text = lines.join('\n');

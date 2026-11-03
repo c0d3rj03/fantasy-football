@@ -41,7 +41,7 @@ async function initTokensPage() {
 // ---------------------------------------------------------------------------
 function switchTab(tabName) {
   currentTab = tabName;
-  ['tab-summary', 'tab-trades', 'tab-waivers', 'tab-values'].forEach(id => {
+  ['tab-summary', 'tab-trades', 'tab-waivers', 'tab-draw', 'tab-values'].forEach(id => {
     const btn = document.getElementById(id);
     if (!btn) return;
     const isActive = id === `tab-${tabName}`;
@@ -60,6 +60,7 @@ function renderTokenPage() {
   if (currentTab === 'summary') renderSummary(container);
   else if (currentTab === 'trades') renderTrades(container);
   else if (currentTab === 'waivers') renderWaivers(container);
+  else if (currentTab === 'draw') renderDraw(container);
   else if (currentTab === 'values') renderValues(container);
 }
 
@@ -265,6 +266,92 @@ function renderWaivers(container) {
           <tbody>${rows}</tbody>
         </table>
       </div>
+    </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// 5b. TOKEN DRAW & RELEGATION PENALTIES (the sheet's TokenAwards tab)
+// ---------------------------------------------------------------------------
+function renderDraw(container) {
+  const penalties = tokensData.relegation_penalties || [];
+  const draw = tokensData.token_draw || { gifts: [], committed: {}, slots: {} };
+  const ordinal = r => (r === 3 ? '3rd' : r === 4 ? '4th' : `${r}th`);
+
+  const penaltyRows = penalties.map(p => {
+    const team = p.franchise
+      ? `<span class="font-bold text-rose-300">${esc(p.name)}</span>`
+      : `<span class="italic text-slate-500">Decided after Week ${p.quarter * 4}</span>`;
+    const pick = p.forfeited_pick
+      ? `<span class="font-bold text-amber-300">${esc(p.forfeited_pick)}</span>`
+      : p.franchise
+        ? `<span class="text-slate-300">${p.owned_picks.length ? p.owned_picks.map(esc).join('<br>') : 'None in that round (fallback rule applies)'}</span>
+           <div class="text-[10px] text-slate-500">Owned now; the pick is fixed on draw day</div>`
+        : '<span class="text-slate-600">–</span>';
+    return `
+      <tr class="border-t border-slate-800/80">
+        <td class="py-2.5 px-3 text-xs font-bold text-slate-300">Q${p.quarter}</td>
+        <td class="py-2.5 px-3 text-xs text-slate-300">${esc(p.division)}</td>
+        <td class="py-2.5 px-3 text-xs">${team}</td>
+        <td class="py-2.5 px-3 text-xs font-mono text-slate-300">${esc(p.year)} ${ordinal(p.round)}</td>
+        <td class="py-2.5 px-3 text-xs">${pick}${p.note ? `<div class="text-[10px] text-slate-500">${esc(p.note)}</div>` : ''}</td>
+      </tr>`;
+  }).join('');
+
+  const giftRows = draw.gifts.map((g, i) => `
+    <tr class="border-t border-slate-800/80">
+      <td class="py-2 px-3 text-xs font-mono text-slate-500">${i + 1}</td>
+      <td class="py-2 px-3 text-xs text-slate-200">${esc(g.label)}</td>
+      <td class="py-2 px-3 text-xs text-right ${g.name ? 'font-bold text-amber-300' : 'italic text-slate-600'}">
+        ${g.name ? `${esc(g.name)} <span class="text-slate-500 font-mono">(#${g.slot})</span>` : 'Not drawn yet'}
+      </td>
+    </tr>`).join('');
+
+  // Wheel entries: committed tokens once recorded, otherwise the 50% minimum (at least 1).
+  const teams = Object.entries(tokensData.teams || {}).map(([fid, t]) => {
+    const min = t.total > 0 ? Math.max(1, t.total / 2) : 0;
+    const committed = draw.committed?.[fid];
+    return { fid, name: t.name, total: t.total, min, entries: committed ?? min, recorded: committed !== undefined, slot: draw.slots?.[fid] };
+  }).sort((a, b) => b.entries - a.entries);
+  const wheel = teams.reduce((s, t) => s + t.entries, 0);
+  const anyRecorded = teams.some(t => t.recorded);
+  const entryRows = teams.map(t => `
+    <tr class="border-t border-slate-800/80">
+      <td class="py-2 px-3 text-xs font-bold text-slate-200">${esc(t.name)}</td>
+      <td class="py-2 px-3 text-xs text-right font-mono text-slate-400">${t.total}</td>
+      <td class="py-2 px-3 text-xs text-right font-mono text-slate-300">${t.min}</td>
+      <td class="py-2 px-3 text-xs text-right font-mono ${t.recorded ? 'text-amber-300 font-bold' : 'text-slate-500'}">${t.recorded ? t.entries : '–'}</td>
+      <td class="py-2 px-3 text-xs text-right font-mono text-emerald-300">${wheel ? ((t.entries / wheel) * 100).toFixed(1) : '0.0'}%</td>
+      <td class="py-2 px-3 text-xs text-right font-mono text-slate-300">${t.slot ? `#${t.slot}` : '–'}</td>
+    </tr>`).join('');
+
+  const table = (title, sub, head, body) => `
+    <div class="${card} overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-800">
+        <h2 class="text-sm font-black text-amber-400 uppercase tracking-wide">${title}</h2>
+        <div class="text-[11px] text-slate-500 mt-0.5">${sub}</div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead><tr class="text-[10px] font-extrabold text-slate-400 uppercase bg-slate-950 border-b border-slate-800">${head}</tr></thead>
+          <tbody>${body}</tbody>
+        </table>
+      </div>
+    </div>`;
+
+  container.innerHTML = `
+    <div class="space-y-6">
+      ${table('⬇️ Relegation Penalties (Pick Forfeits)',
+        'After Q2 a relegated Upper or Middle team forfeits next year\'s 4th, after Q3 its 3rd. The forfeited pick is the one it owns on token-draw day (most recently acquired if it has several); the picks become draw gifts.',
+        '<th class="py-2 px-3">After</th><th class="py-2 px-3">Relegated From</th><th class="py-2 px-3">Team</th><th class="py-2 px-3">Penalty</th><th class="py-2 px-3">Pick Forfeited</th>',
+        penaltyRows)}
+      ${table(`🎁 Token Draw Gifts (${esc(draw.draft_year)} Draft)`,
+        'After the postseason, teams pick a gift in wheel order.',
+        '<th class="py-2 px-3">#</th><th class="py-2 px-3">Gift</th><th class="py-2 px-3 text-right">Selected By</th>',
+        giftRows)}
+      ${table('🎡 Wheel Entries',
+        anyRecorded ? 'Odds use the committed tokens.' : 'Each team commits at least 50% of its tokens (minimum 1). Odds assume every team commits the minimum.',
+        '<th class="py-2 px-3">Franchise</th><th class="py-2 px-3 text-right">Tokens</th><th class="py-2 px-3 text-right">Min. Commit</th><th class="py-2 px-3 text-right">Committed</th><th class="py-2 px-3 text-right">Odds for #1</th><th class="py-2 px-3 text-right">Draw Slot</th>',
+        entryRows)}
     </div>`;
 }
 

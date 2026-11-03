@@ -38,6 +38,10 @@
           class="px-4 py-2 text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20">
           <span>💰</span> League Prizes
         </a>
+        <a href="tokens.html"
+          class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5">
+          <span>🎟️</span> Tokens
+        </a>
       </nav>
     </div>
   </header>
@@ -223,7 +227,6 @@
       quarters.forEach(item => {
         // Calculate quarter winners dynamically if quarter week 4, 8, or 12 is played
         const endW = item.q * 4;
-        const startW = (item.q - 1) * 4 + 1;
         let isQuarterComplete = false;
 
         let upperWinner = "TBD";
@@ -231,41 +234,23 @@
         let lowerWinner = "TBD";
         let highScorer = "TBD";
 
-        if (leagueData && leagueData.weekly_data && leagueData.weekly_data[endW.toString()]?.played) {
+        const endWeek = leagueData?.weekly_data?.[endW.toString()];
+        if (endWeek?.played && endWeek.quarter_standings) {
           isQuarterComplete = true;
-          const qStats = {};
-          for (let w = startW; w <= endW; w++) {
-            const wData = leagueData.weekly_data[w.toString()];
-            if (wData && wData.battle_royale) {
-              Object.entries(wData.battle_royale).forEach(([divName, teams]) => {
-                teams.forEach(t => {
-                  if (!qStats[t.id]) {
-                    qStats[t.id] = { name: t.name, division: divName, total_vp: 0, total_pf: 0 };
-                  }
-                  qStats[t.id].total_vp += t.total_weekly_vp || 0;
-                  qStats[t.id].total_pf += t.score || 0;
-                });
-              });
-            }
-          }
-          let divLeaders = { "Upper Division": null, "Middle Division": null, "Lower Division": null };
-          let qTopScore = -1;
-          let qTopTeam = null;
+          // The fetcher ranks quarter standings with the P&R tiebreakers, so 1st place is the division winner.
+          const winner = div => {
+            const t = endWeek.quarter_standings[div]?.[0];
+            return t ? `${t.name} · ${t.vp} VP` : "TBD";
+          };
+          upperWinner = winner("Upper Division");
+          middleWinner = winner("Middle Division");
+          lowerWinner = winner("Lower Division");
 
-          Object.values(qStats).forEach(t => {
-            if (!divLeaders[t.division] || t.total_vp > divLeaders[t.division].total_vp) {
-              divLeaders[t.division] = t;
-            }
-            if (t.total_pf > qTopScore) {
-              qTopScore = t.total_pf;
-              qTopTeam = t;
-            }
-          });
-
-          if (divLeaders["Upper Division"]) upperWinner = divLeaders["Upper Division"].name;
-          if (divLeaders["Middle Division"]) middleWinner = divLeaders["Middle Division"].name;
-          if (divLeaders["Lower Division"]) lowerWinner = divLeaders["Lower Division"].name;
-          if (qTopTeam) highScorer = `${qTopTeam.name} (${qTopScore.toFixed(1)} PF)`;
+          // Highest quarter PF across the league; teams tied on PF share the prize.
+          const all = Object.values(endWeek.quarter_standings).flat();
+          const top = Math.max(...all.map(t => t.pf));
+          const leaders = all.filter(t => Math.abs(t.pf - top) < 0.005);
+          if (leaders.length) highScorer = `${leaders.map(t => t.name).join(' & ')} (${top.toFixed(2)} PF)`;
         }
 
         quarterGrid.innerHTML += `

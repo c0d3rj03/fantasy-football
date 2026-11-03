@@ -20,6 +20,28 @@ const PROMOTION_TOKENS = {
   '02': [1, 3, 5]  // Lower → Middle
 };
 
+// Relegation penalty (RULES.md §5): the round of next year's pick forfeited after quarter q,
+// by the division the team was relegated from. Q1 has none. The picks become token-draw gifts.
+const RELEGATION_FORFEIT_ROUND = {
+  2: { '00': 4, '01': 4 },
+  3: { '00': 3, '01': 3 }
+};
+
+// The 12 token-draw gifts (RULES.md §8) for the draft after `season`. Forfeits are filled in by quarter.
+function drawAwards(season) {
+  const next = Number(season) + 1;
+  return [
+    ...['1.13', '2.13', '2.14', '3.13', '3.14'].map(p => ({ id: `bonus-${p}`, label: `${next} Draft Pick ${p}` })),
+    ...[2, 3].flatMap(q => ['00', '01'].map(div => ({
+      id: `forfeit-Q${q}-${div}`,
+      label: `${next} ${RELEGATION_FORFEIT_ROUND[q][div] === 4 ? '4th' : '3rd'} Rd pick forfeited after Q${q} (${div === '00' ? 'Upper' : 'Middle'} relegation)`
+    }))),
+    { id: 'fees', label: '$50 toward next year\'s fees' },
+    { id: 'refund', label: 'Refund of committed tokens' },
+    { id: 'tokens', label: '10 Tokens' }
+  ];
+}
+
 /**
  * Value of a whole draft round in `year` from a KTC snapshot's pick values
  * (keys like "2027 Early 1st"). Rounds 1-4 average KTC's Early/Mid/Late values.
@@ -161,6 +183,6 @@ function scoreWaivers(claims, bounds, { minBid = 25, cap = 5 } = {}) {
 }
 
 module.exports = {
-  TIER_SIZE, FAAB_VALUE_PER_DOLLAR, PROMOTION_TOKENS,
+  TIER_SIZE, FAAB_VALUE_PER_DOLLAR, PROMOTION_TOKENS, RELEGATION_FORFEIT_ROUND, drawAwards,
   tradeTokens, roundValue, currentPickValue, parseAsset, valueTrade, periodOf, waiverQuarter, scoreWaivers
 };

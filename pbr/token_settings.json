@@ -4,7 +4,9 @@
     "starting_balances: tokens each franchise carried into the season (Token Tracker sheet, Start of Year, 2026-01-15).",
     "voided_trades / voided_waivers: no tokens (reverse, chained or conditional moves). Match on the MFL timestamp.",
     "adjustments: tokens traded in trade comments, commish rulings, token draw results. tokens may be negative.",
-    "ktc_names: MFL player ID -> KTC spelling, for the older snapshots that have no MFL IDs."
+    "ktc_names: MFL player ID -> KTC spelling, for the older snapshots that have no MFL IDs.",
+    "relegation_forfeits: on token-draw day, the exact pick each relegated team forfeits, keyed Q2-00 / Q2-01 / Q3-00 / Q3-01 (00 = Upper, 01 = Middle), e.g. {\"pick\": \"2027 4th (from Norsemen)\", \"note\": \"most recently acquired\"}. The team itself comes from data.json P&R.",
+    "token_draw: committed = tokens each franchise put on the wheel; results = [{\"franchise\": \"0002\", \"slot\": 1, \"award\": \"bonus-1.13\"}] (award ids: bonus-1.13, bonus-2.13, bonus-2.14, bonus-3.13, bonus-3.14, forfeit-Q2-00, forfeit-Q2-01, forfeit-Q3-00, forfeit-Q3-01, fees, refund, tokens). Record a token award or refund in adjustments too."
   ],
   "season": "2026",
   "waiver_min_bid": 25,
@@ -31,5 +33,10 @@
   ],
   "voided_waivers": [],
   "adjustments": [],
-  "ktc_names": {}
+  "ktc_names": {},
+  "relegation_forfeits": {},
+  "token_draw": {
+    "committed": {},
+    "results": []
+  }
 }

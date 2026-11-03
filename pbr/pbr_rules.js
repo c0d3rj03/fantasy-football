@@ -52,6 +52,14 @@ function compareKeys(a, b) {
 }
 
 /**
+ * A division's quarter standings in promotion order (1st place first), so the dashboard,
+ * the quarter prizes and P&R agree on who won a division.
+ */
+function rankStandings(teams, season) {
+  return [...teams].sort((a, b) => compareKeys(promotionKey(b, season), promotionKey(a, season)));
+}
+
+/**
  * Promotion & Relegation after a quarter (RULES.md §5).
  * standings: { divCode: [{ id, vp, pf, pp, wins, losses, ties }] } for the quarter.
  * season: { id: { pf, wins, losses, ties } } season to date.
@@ -64,8 +72,7 @@ function promotionRelegation(standings, season) {
   const relegated = {};
   const coinFlips = [];
   for (const div of DIVISION_ORDER) {
-    const teams = [...(standings[div] || [])];
-    teams.sort((a, b) => compareKeys(promotionKey(b, season), promotionKey(a, season)));
+    const teams = rankStandings(standings[div] || [], season);
     ranked[div] = teams.map(t => t.id);
     const index = DIVISION_ORDER.indexOf(div);
 
@@ -155,6 +162,7 @@ const round2 = n => Math.round(n * 100) / 100;
 module.exports = {
   QUARTER_WEEKS,
   inDivisionVPs,
+  rankStandings,
   promotionRelegation,
   nextQuarterSlots,
   quarterSchedule,
