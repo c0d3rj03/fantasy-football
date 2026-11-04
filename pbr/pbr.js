@@ -69,7 +69,6 @@ function setupModalListeners() {
   document.getElementById('recap-btn')?.addEventListener('click', openRecapModal);
   document.getElementById('close-recap-modal')?.addEventListener('click', closeRecapModal);
   document.getElementById('close-recap-modal-btn')?.addEventListener('click', closeRecapModal);
-  document.getElementById('close-recap-x')?.addEventListener('click', closeRecapModal);
   document.getElementById('recap-modal')?.addEventListener('click', (e) => {
     if (e.target === document.getElementById('recap-modal')) closeRecapModal();
   });
