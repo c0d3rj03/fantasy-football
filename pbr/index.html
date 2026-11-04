@@ -806,6 +806,7 @@
       }
 
       let standingsData = null;
+      let seasonAsOf = null;
       // Final P&R replaces the projection when the table covers the whole, finished quarter.
       let actualPR = null;
       if (standingsMode === 'current') {
@@ -814,10 +815,13 @@
         standingsData = computeQuarterStandings(startW, endW);
         if (endW === selectedQuarter * 4) actualPR = getActualPR(selectedQuarter);
       } else {
-        // Season totals (all weeks), grouped by each team's division as of the latest played week.
+        // Season totals through the selected week, grouped by each team's division in that week.
         // The fetcher writes this as season_standings; summing week by week instead would split a
-        // team that moved across the divisions it played in.
-        const latestKey = getLatestPlayedWeekKey();
+        // team that moved across the divisions it played in. An unplayed week falls back to the
+        // latest played one.
+        const selectedObj = leagueData?.weekly_data?.[String(selectedWeek)];
+        const latestKey = (selectedObj && selectedObj.played) ? String(selectedWeek) : getLatestPlayedWeekKey();
+        seasonAsOf = latestKey;
         const seasonStandings = leagueData?.weekly_data?.[latestKey]?.season_standings;
         if (seasonStandings && Object.values(seasonStandings).some(teams => teams.length)) {
           standingsData = Object.fromEntries(Object.entries(seasonStandings).map(([divName, teams]) => [
@@ -846,6 +850,10 @@
         "Middle Division": { title: "Middle Division ⚔️" },
         "Lower Division": { title: "Lower Division 🐀" }
       };
+
+      if (seasonAsOf) {
+        container.innerHTML += `<p class="text-[10px] text-slate-400">Season totals through Week ${seasonAsOf}, teams grouped by their division that week.</p>`;
+      }
 
       Object.entries(standingsData).forEach(([divName, teams]) => {
         const meta = divMeta[divName] || { title: divName };
