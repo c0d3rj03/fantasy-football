@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-03T17:51:41.028Z",
+  "last_updated": "2026-11-04T17:53:15.464Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -49,10 +49,10 @@
       "name": "Orcan Terror",
       "start": 15,
       "trades": 20,
-      "waivers": 5,
+      "waivers": 6,
       "promotions": 0,
       "adjustments": 0,
-      "total": 40,
+      "total": 41,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -74,7 +74,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 0,
+          "waivers": 1,
           "promotions": 0,
           "adjustments": 0
         },
@@ -90,10 +90,10 @@
       "name": "BattleBots",
       "start": 84,
       "trades": 24,
-      "waivers": 4,
+      "waivers": 5,
       "promotions": 0,
       "adjustments": 0,
-      "total": 112,
+      "total": 113,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -115,7 +115,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 0,
+          "waivers": 1,
           "promotions": 0,
           "adjustments": 0
         },
@@ -1595,6 +1595,31 @@
     }
   ],
   "waivers": [
+    {
+      "id": "1793808000|0001|15263",
+      "timestamp": 1793808000,
+      "date": "2026-11-04",
+      "franchise": "0001",
+      "name": "Orcan Terror",
+      "player_id": "15263",
+      "player": "Elijah Mitchell (RB, PHI)",
+      "bid": 25,
+      "period": "Q3",
+      "tokens": 1
+    },
+    {
+      "id": "1793808000|0002|14067",
+      "timestamp": 1793808000,
+      "date": "2026-11-04",
+      "franchise": "0002",
+      "name": "BattleBots",
+      "player_id": "14067",
+      "player": "Gardner Minshew (QB, ARI)",
+      "dropped": "Joe Mixon (RB, FA)",
+      "bid": 111,
+      "period": "Q3",
+      "tokens": 1
+    },
     {
       "id": "1793458800|0001|12785",
       "timestamp": 1793458800,
