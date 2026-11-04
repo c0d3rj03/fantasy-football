@@ -173,9 +173,10 @@
           <!-- Promotion / Relegation Legend at bottom (Hidden in Season mode) -->
           <div id="standings-legend"
             class="text-[10px] text-slate-400 flex items-center justify-center gap-4 pt-3 border-t border-slate-800/80">
-            <span class="flex items-center gap-1 font-semibold text-amber-400"><span>⬆️</span> Projected
-              Promotion</span>
-            <span class="flex items-center gap-1 font-semibold text-red-400"><span>⬇️</span> Projected Relegation</span>
+            <span class="flex items-center gap-1 font-semibold text-amber-400"><span>⬆️</span> <span
+                id="legend-promotion">Projected Promotion</span></span>
+            <span class="flex items-center gap-1 font-semibold text-red-400"><span>⬇️</span> <span
+                id="legend-relegation">Projected Relegation</span></span>
           </div>
         </section>
 
@@ -268,6 +269,37 @@
     let selectedWeek = "1";
     let standingsMode = "current"; // 'current' or 'season'
     let focusedTeamId = localStorage.getItem('pbr_focused_team') || "";
+
+    // Relegation penalty (RULES.md §5): next season's pick in this round, by quarter. Q1 has none.
+    const SEASON_YEAR = 2026;
+    const RELEGATION_PENALTY_ROUND = { 1: null, 2: 4, 3: 3 };
+    const DIV_CODE_NAMES = { "00": "Upper", "01": "Middle", "02": "Lower" };
+
+    function ordinal(n) {
+      const s = ["th", "st", "nd", "rd"], v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    function teamNameById(fid) {
+      const weeks = (leagueData && leagueData.weekly_data) ? Object.values(leagueData.weekly_data) : [];
+      for (const w of weeks) {
+        for (const group of [w.quarter_standings, w.battle_royale]) {
+          if (!group) continue;
+          for (const teams of Object.values(group)) {
+            const t = teams.find(x => x.id === fid);
+            if (t && t.name) return t.name;
+          }
+        }
+      }
+      return fid;
+    }
+
+    // Final P&R for a quarter, from data.json, once the quarter's last week is played. Null until then.
+    function getActualPR(quarterNum) {
+      const endWeek = leagueData?.weekly_data?.[String(quarterNum * 4)];
+      const pr = leagueData?.promotion_relegation?.[String(quarterNum)];
+      return (endWeek && endWeek.played && pr) ? pr : null;
+    }
 
     const SLACK_EMOJI_MAP = {
       ':toilet:': '🚽', ':trophy:': '🏆', ':fire:': '🔥', ':football:': '🏈', ':crown:': '👑',
@@ -746,36 +778,48 @@
         return;
       }
 
-      title.textContent = `Quarter ${quarterNum} Promotion & Relegation Results`;
-      grid.innerHTML = `
-        <div class="bg-slate-950/80 border border-red-500/30 rounded-lg p-2 flex justify-between items-center text-xs">
-          <div>
-            <div class="text-[9px] text-red-400 font-bold uppercase">Relegated to Middle</div>
-            <div class="font-bold text-slate-200">Upper Lowest PP</div>
+      const pr = getActualPR(quarterNum);
+      const penaltyRound = RELEGATION_PENALTY_ROUND[quarterNum] || null;
+      title.textContent = `Quarter ${quarterNum} Promotion & Relegation ${pr ? 'Results' : '(Pending)'}`;
+
+      // Each move: [division code the team leaves, 'promoted' | 'relegated', label]
+      const moves = [
+        ["00", "relegated", "Relegated to Middle"],
+        ["01", "promoted", "Promoted to Upper"],
+        ["01", "relegated", "Relegated to Lower"],
+        ["02", "promoted", "Promoted to Middle"]
+      ];
+
+      const rows = moves.map(([div, kind, label]) => {
+        const isUp = kind === "promoted";
+        const fid = pr && pr[kind] ? pr[kind][div] : null;
+        const name = fid ? teamNameById(fid) : `Decided after Week ${quarterNum * 4}`;
+        const fromText = `From ${DIV_CODE_NAMES[div]}`;
+        const penaltyMark = (!isUp && penaltyRound && fid) ? '<span class="text-red-400 font-black" title="Forfeits a draft pick">*</span>' : '';
+        const isFocused = fid && fid === focusedTeamId;
+        const color = isUp
+          ? { border: "border-emerald-500/30", text: "text-emerald-400", badge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", tag: "⬆️ Promotion" }
+          : { border: "border-red-500/30", text: "text-red-400", badge: "bg-red-500/10 text-red-400 border-red-500/20", tag: "⬇️ Relegation" };
+        return `
+        <div class="bg-slate-950/80 border ${isFocused ? 'border-sky-400/80 ring-1 ring-sky-400/50' : color.border} rounded-lg p-2 flex justify-between items-center gap-2 text-xs">
+          <div class="min-w-0">
+            <div class="text-[9px] ${color.text} font-bold uppercase">${label}</div>
+            <div class="font-bold ${fid ? (isFocused ? 'text-sky-300' : 'text-slate-100') : 'text-slate-500 italic'} truncate">${name}${penaltyMark}</div>
+            <div class="text-[9px] text-slate-500">${fromText}</div>
           </div>
-          <span class="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded font-bold border border-red-500/20">⬇️ Relegation</span>
-        </div>
-        <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-2 flex justify-between items-center text-xs">
-          <div>
-            <div class="text-[9px] text-emerald-400 font-bold uppercase">Promoted to Upper</div>
-            <div class="font-bold text-slate-200">Middle Highest VP</div>
-          </div>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-bold border border-emerald-500/20">⬆️ Promotion</span>
-        </div>
-        <div class="bg-slate-950/80 border border-red-500/30 rounded-lg p-2 flex justify-between items-center text-xs">
-          <div>
-            <div class="text-[9px] text-red-400 font-bold uppercase">Relegated to Lower</div>
-            <div class="font-bold text-slate-200">Middle Lowest PP</div>
-          </div>
-          <span class="text-[10px] bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded font-bold border border-red-500/20">⬇️ Relegation</span>
-        </div>
-        <div class="bg-slate-950/80 border border-emerald-500/30 rounded-lg p-2 flex justify-between items-center text-xs">
-          <div>
-            <div class="text-[9px] text-emerald-400 font-bold uppercase">Promoted to Middle</div>
-            <div class="font-bold text-slate-200">Lower Highest VP</div>
-          </div>
-          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded font-bold border border-emerald-500/20">⬆️ Promotion</span>
+          <span class="shrink-0 text-[10px] ${color.badge} px-1.5 py-0.5 rounded font-bold border">${color.tag}</span>
         </div>`;
+      }).join('');
+
+      const flips = (pr && pr.coin_flips && pr.coin_flips.length)
+        ? `<p class="text-[10px] text-amber-400 font-semibold">🪙 Coin flip needed: ${pr.coin_flips.map(f => f.replace(/\b\d{4}\b/g, id => teamNameById(id))).join('; ')}</p>`
+        : '';
+
+      const footnote = penaltyRound
+        ? `<p class="text-[10px] text-slate-400 leading-snug"><span class="text-red-400 font-black">*</span> Relegation penalty: each team relegated after Q${quarterNum} forfeits its ${SEASON_YEAR + 1} ${ordinal(penaltyRound)}-round draft pick (the one it owns on token-draw day; the most recently acquired if it has more than one). Forfeited picks become token-draw prizes.</p>`
+        : `<p class="text-[10px] text-slate-400 leading-snug">No draft pick penalty for relegation after Q1. Relegation after Q2 costs next year's 4th-round pick, after Q3 the 3rd.</p>`;
+
+      grid.innerHTML = rows + flips + footnote;
 
       card.classList.remove('hidden');
     }
@@ -829,10 +873,13 @@
       }
 
       let standingsData = null;
+      // Final P&R replaces the projection when the table covers the whole, finished quarter.
+      let actualPR = null;
       if (standingsMode === 'current') {
         const startW = (selectedQuarter - 1) * 4 + 1;
         const endW = Math.min(Number(selectedWeek), selectedQuarter * 4);
         standingsData = computeQuarterStandings(startW, endW);
+        if (endW === selectedQuarter * 4) actualPR = getActualPR(selectedQuarter);
       } else {
         const latestKey = Number(getLatestPlayedWeekKey());
         standingsData = computeQuarterStandings(1, latestKey);
@@ -840,6 +887,13 @@
           standingsData = leagueData.standings;
         }
       }
+
+      const legendPromo = document.getElementById('legend-promotion');
+      const legendReleg = document.getElementById('legend-relegation');
+      if (legendPromo) legendPromo.textContent = actualPR ? 'Promoted' : 'Projected Promotion';
+      if (legendReleg) legendReleg.textContent = actualPR ? 'Relegated' : 'Projected Relegation';
+      const promotedIds = new Set(actualPR ? Object.values(actualPR.promoted || {}) : []);
+      const relegatedIds = new Set(actualPR ? Object.values(actualPR.relegated || {}) : []);
 
       if (!standingsData || Object.keys(standingsData).length === 0) {
         container.innerHTML = `<div class="text-center text-xs text-slate-500 py-6">No standings recorded yet for this selection.</div>`;
@@ -854,13 +908,18 @@
 
       Object.entries(standingsData).forEach(([divName, teams]) => {
         const meta = divMeta[divName] || { title: divName };
-        let maxVP = -1;
-        let minPP = Infinity;
-
-        teams.forEach(t => {
-          if (t.vp > maxVP) maxVP = t.vp;
-          if (t.pp < minPP) minPP = t.pp;
-        });
+        // Projected P&R (RULES.md §5): one team per slot. Teams are already sorted VP, then PF (the promotion
+        // tiebreakers); relegation is lowest PP, then lower VP, then lower PF, and skips the promoted team.
+        let projPromoted = null;
+        let projRelegated = null;
+        if (!actualPR && standingsMode === 'current' && teams.length > 1) {
+          if (divName !== "Upper Division" && teams[0].vp > 0) projPromoted = teams[0].id;
+          if (divName !== "Lower Division") {
+            const candidates = teams.filter(t => t.id !== projPromoted)
+              .sort((a, b) => (a.pp - b.pp) || (a.vp - b.vp) || (a.pf - b.pf));
+            if (candidates.length) projRelegated = candidates[0].id;
+          }
+        }
 
         let rowsHtml = '';
         teams.forEach((t, idx) => {
@@ -869,24 +928,15 @@
           let iconMarker = "";
           const isFocused = (t.id === focusedTeamId);
 
-          if (standingsMode === 'current') {
-            if (divName === "Upper Division" && t.pp === minPP && teams.length > 1) {
-              nameClass = "font-bold text-red-400";
-              ppClass = "font-bold text-red-400 text-right";
-              iconMarker = " ⬇️";
-            } else if (divName === "Middle Division") {
-              if (t.vp === maxVP && maxVP > 0) {
-                nameClass = "font-bold text-amber-400";
-                iconMarker = " ⬆️";
-              } else if (t.pp === minPP && teams.length > 1) {
-                nameClass = "font-bold text-red-400";
-                ppClass = "font-bold text-red-400 text-right";
-                iconMarker = " ⬇️";
-              }
-            } else if (divName === "Lower Division" && t.vp === maxVP && maxVP > 0) {
-              nameClass = "font-bold text-amber-400";
-              iconMarker = " ⬆️";
-            }
+          const isPromoted = actualPR ? promotedIds.has(t.id) : t.id === projPromoted;
+          const isRelegated = actualPR ? relegatedIds.has(t.id) : t.id === projRelegated;
+          if (isPromoted) {
+            nameClass = "font-bold text-amber-400";
+            iconMarker = " ⬆️";
+          } else if (isRelegated) {
+            nameClass = "font-bold text-red-400";
+            ppClass = "font-bold text-red-400 text-right";
+            iconMarker = " ⬇️";
           }
 
           rowsHtml += `
