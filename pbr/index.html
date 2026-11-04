@@ -814,10 +814,18 @@
         standingsData = computeQuarterStandings(startW, endW);
         if (endW === selectedQuarter * 4) actualPR = getActualPR(selectedQuarter);
       } else {
-        const latestKey = Number(getLatestPlayedWeekKey());
-        standingsData = computeQuarterStandings(1, latestKey);
-        if (!standingsData && leagueData) {
-          standingsData = leagueData.standings;
+        // Season totals (all weeks), grouped by each team's division as of the latest played week.
+        // The fetcher writes this as season_standings; summing week by week instead would split a
+        // team that moved across the divisions it played in.
+        const latestKey = getLatestPlayedWeekKey();
+        const seasonStandings = leagueData?.weekly_data?.[latestKey]?.season_standings;
+        if (seasonStandings && Object.values(seasonStandings).some(teams => teams.length)) {
+          standingsData = Object.fromEntries(Object.entries(seasonStandings).map(([divName, teams]) => [
+            divName,
+            [...teams].sort((a, b) => (b.vp - a.vp) || (b.pf - a.pf))
+          ]));
+        } else {
+          standingsData = computeQuarterStandings(1, Number(latestKey));
         }
       }
 
