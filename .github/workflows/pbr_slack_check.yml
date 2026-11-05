@@ -25,4 +25,5 @@ jobs:
           PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
           PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
           PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
+          PBR_SLACK_OWNERS: ${{ vars.PBR_SLACK_OWNERS }}
         run: node slack_check.js

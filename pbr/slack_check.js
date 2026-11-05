@@ -3,6 +3,8 @@
  * scopes and whether the bot is in each PBR channel. Posts nothing; never logs
  * the token or channel IDs.
  */
+const { loadOwners } = require('./slack_mentions.js');
+
 const TOKEN = process.env.SLACK_BOT_TOKEN;
 const CHANNELS = {
   officialcomms: process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS,
@@ -42,6 +44,20 @@ async function main() {
     // Only #officialcomms is posted to, so only it must have the bot as a member.
     if (!member && name === 'officialcomms') problems++;
     console.log(`${member ? '✅' : (name === 'officialcomms' ? '❌' : '⚠️')} #${name}: bot ${member ? 'is' : 'is NOT'} a member`);
+  }
+  // users:read lets Gemmy see banter authors' names (otherwise only IDs) and lets this check name tagged owners.
+  const canReadUsers = have.has('users:read');
+  console.log(`${canReadUsers ? '✅' : '⚠️'} scope users:read${canReadUsers ? '' : ' (optional: banter shows Slack IDs instead of names)'}`);
+
+  // Owner @mentions (slack_mentions.js): PBR_SLACK_OWNERS maps franchise ID → member ID.
+  const owners = loadOwners();
+  const mapped = Object.keys(owners).length;
+  console.log(`${mapped ? '✅' : '⚠️'} PBR_SLACK_OWNERS: ${mapped} of 12 teams mapped for @mentions`);
+  for (const [fid, uid] of Object.entries(owners)) {
+    if (!canReadUsers) break;
+    const { data } = await slack('users.info', { user: uid });
+    if (!data.ok) { problems++; console.log(`❌ ${fid}: member ID not found (${data.error})`); continue; }
+    console.log(`  ${fid} → @${data.user.profile?.display_name || data.user.real_name || data.user.name}`);
   }
   if (problems > 0) throw new Error(`${problems} problem(s) found.`);
   console.log('Slack bot can post to #officialcomms.');

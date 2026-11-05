@@ -114,6 +114,8 @@ jobs:
           PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
           PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
           PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
+          # Franchise ID → Slack member ID JSON; tags owners in the Slack post only.
+          PBR_SLACK_OWNERS: ${{ vars.PBR_SLACK_OWNERS }}
         run: node generate_post.js $WEEK
 
       # Runs even if the recap failed, so the dashboard still gets the new scores.

@@ -20,6 +20,7 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { modelCandidates } = require('./gemini_models.js');
 const { recentTransactions } = require('./recent_transactions.js');
+const { addMentions } = require('./slack_mentions.js');
 
 const dataPath = path.join(__dirname, 'data.json');
 const draftsDir = path.join(__dirname, 'gemmy_drafts');
@@ -114,6 +115,15 @@ async function postToSlack(text) {
   return null;
 }
 
+// { fid: team name } from the weekly matchups.
+function teamNames(pbrData) {
+  const names = {};
+  for (const w of Object.values(pbrData.weekly_data || {})) {
+    for (const m of w.matchups || []) for (const t of [m.team1, m.team2]) if (t?.id && t.name) names[t.id] = t.name;
+  }
+  return names;
+}
+
 function latestPlayedWeek(pbrData) {
   const played = Object.values(pbrData.weekly_data || {}).filter(w => w.played).map(w => Number(w.week));
   return played.length ? Math.max(...played) : null;
@@ -176,7 +186,7 @@ function buildPrompt(summary, banter, extraDirective, transactions = []) {
   const isQuarterEnd = week_of_quarter === 4;
 
   const focus = isQuarterEnd
-    ? `This is Week ${week}, the END of Quarter ${quarter}. Promotion & Relegation is the headline: celebrate the promoted division winners and roast the relegated teams (relegation is decided by lowest Potential Points, i.e. bad lineup-setting).`
+    ? `This is Week ${week}, the END of Quarter ${quarter}. Promotion & Relegation is the headline: celebrate the promoted division winners and roast the relegated teams (relegation is decided by lowest Potential Points, i.e. the shallowest, thinnest roster).`
     : week_of_quarter >= 2
       ? `Week ${week} is past the halfway mark of Quarter ${quarter}. Turn up the heat on relegation candidates: the lowest Potential Points in the Upper and Middle divisions, and who is chasing promotion in Middle and Lower.`
       : `Week ${week} opens Quarter ${quarter}. Everyone's VP was reset to 0, so set the tone for the new quarter's race.`;
@@ -189,6 +199,7 @@ function buildPrompt(summary, banter, extraDirective, transactions = []) {
     '- Each week a team earns up to 3 Victory Points (VP): 1 per win in its two head-to-head games against teams from the other divisions, plus 1 VP if it has a top-2 score in its own division (the "Battle Royale").',
     '- Quarters are Weeks 1-4, 5-8, 9-12. VP, PF, PP and W-L-T reset each quarter.',
     '- After Weeks 4, 8 and 12: the 1st-place (most VP) team in Middle and Lower is promoted; the lowest Potential Points team in Upper and Middle is relegated.',
+    '- Potential Points (PP) is what the best possible lineup from the whole roster would have scored. Low PP means a shallow roster with no depth (injuries and bye weeks drag it down too). It has NOTHING to do with how well a manager set the lineup, so never blame low PP or relegation on bad lineup decisions. Lineup blunders are bench_points_left (potential minus actual score), a separate thing.',
     '- Weekly high score wins $10.',
     '',
     'WRITE a hilarious, ruthless weekly recap for Slack:',
@@ -237,7 +248,8 @@ async function generateWithGemini(prompt) {
 async function publish(pbrData, weekObj, weekNum, recap) {
   // Post first, save second: a failed post leaves no recap, so a rerun tries again.
   if (POST_TO_SLACK) {
-    const via = await postToSlack(recap);
+    // @mentions go only into the Slack copy; data.json (the dashboard) keeps the plain recap.
+    const via = await postToSlack(addMentions(recap, teamNames(pbrData)));
     if (!via) throw new Error('Could not post to Slack (no working bot token/channel or webhook)');
     console.log(`Posted to Slack via ${via}.`);
   } else {

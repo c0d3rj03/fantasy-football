@@ -21,7 +21,8 @@ const SLACK_EMOJI_MAP = {
 
 function parseSlackMarkdown(text) {
   if (!text) return '<p class="italic text-slate-400">No recap recorded for this week yet.</p>';
-  let cleanText = text.replace(/\r/g, '').replace(/:[a-zA-Z0-9_\+\-]+:/g, (match) => SLACK_EMOJI_MAP[match] || match);
+  // Slack owner @mentions (" (<@U…>)") belong to the Slack post only; never show them here.
+  let cleanText = text.replace(/\r/g, '').replace(/ ?\(<@[UW][A-Z0-9]+(\|[^>]*)?>\)|<@[UW][A-Z0-9]+(\|[^>]*)?>/g, '').replace(/:[a-zA-Z0-9_\+\-]+:/g, (match) => SLACK_EMOJI_MAP[match] || match);
   // Block lines (quotes, bullets) take their own line break; otherwise the \n → <br> below adds a blank line after each.
   return cleanText
     .replace(/^###\s?(.*)$/gm, '<h3 class="text-sm font-extrabold text-amber-400 mt-3 mb-1">$1</h3>')
