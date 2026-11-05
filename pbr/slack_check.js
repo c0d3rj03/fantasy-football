@@ -35,12 +35,13 @@ async function main() {
   }
   for (const [name, id] of Object.entries(CHANNELS)) {
     if (!id) { console.log(`⚠️ #${name}: channel secret not set`); continue; }
-    const { data } = await slack('conversations.info', { channel: id });
-    if (!data.ok) { problems++; console.log(`❌ #${name}: ${data.error}`); continue; }
-    const member = data.channel.is_member;
+    // A bot can read a channel's history only as a member (conversations.info would need channels:read).
+    const { data } = await slack('conversations.history', { channel: id, limit: '1' });
+    const member = data.ok;
+    if (!member && data.error !== 'not_in_channel') { problems++; console.log(`❌ #${name}: ${data.error}`); continue; }
     // Only #officialcomms is posted to, so only it must have the bot as a member.
     if (!member && name === 'officialcomms') problems++;
-    console.log(`${member ? '✅' : (name === 'officialcomms' ? '❌' : '⚠️')} #${data.channel.name}: bot ${member ? 'is' : 'is NOT'} a member`);
+    console.log(`${member ? '✅' : (name === 'officialcomms' ? '❌' : '⚠️')} #${name}: bot ${member ? 'is' : 'is NOT'} a member`);
   }
   if (problems > 0) throw new Error(`${problems} problem(s) found.`);
   console.log('Slack bot can post to #officialcomms.');
