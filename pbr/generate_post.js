@@ -19,6 +19,7 @@ const fs = require('fs');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { modelCandidates } = require('./gemini_models.js');
+const { recentTransactions } = require('./recent_transactions.js');
 
 const dataPath = path.join(__dirname, 'data.json');
 const draftsDir = path.join(__dirname, 'gemmy_drafts');
@@ -160,7 +161,17 @@ function buildWeekSummary(pbrData, weekNum) {
   return summary;
 }
 
-function buildPrompt(summary, banter, extraDirective) {
+// Last BANTER_DAYS of MFL transactions (recent_transactions.js). A failed fetch only costs the section.
+async function fetchTransactions() {
+  try {
+    return await recentTransactions(BANTER_DAYS);
+  } catch (e) {
+    console.warn(`⚠️ MFL transactions fetch failed: ${e.message}`);
+    return [];
+  }
+}
+
+function buildPrompt(summary, banter, extraDirective, transactions = []) {
   const { week, quarter, week_of_quarter } = summary;
   const isQuarterEnd = week_of_quarter === 4;
 
@@ -184,13 +195,17 @@ function buildPrompt(summary, banter, extraDirective) {
     `- ${focus}`,
     '- Cover only the noteworthy stuff: blowouts, nail-biters, the high and low scores, big points left on the bench, the standings race. Skip filler.',
     '- Weave in the Slack banter below and roast managers by name for their trash talk and excuses.',
-    '- Use only the numbers given. Do not invent scores, players or trades.',
+    '- Use the recent transactions below for observations: who won or got fleeced in a trade, desperate or overpriced waiver bids, panic drops, a team hoarding QBs, a roster turning into an injury ward. Tie moves to this week\'s results or the standings race where they fit (a contender buying, a relegation candidate selling, a player cut right before he went off). Pick the 2-4 juiciest moves; skip routine ones.',
+    '- Use only the numbers, players and moves given. Do not invent scores, players or trades.',
     '- Slack formatting: *bold* with single asterisks, _italics_, short paragraphs and bullet lines starting with •. No # headings, no tables. Keep it under 2,500 characters.',
     `- Layout: open with a title line like "🎙️ *GEMMY'S WEEKLY DISPATCH: WEEK ${week} RECAP* 🎙️". Each section header is a bold line with a fitting emoji at each end (e.g. "👑 *UPPER DIVISION: ...* 🔪"). Drop a funny emoji on most punchlines (🤑 🗑️ 🪦 🍿 👻 🍼), not just at the end.`,
     '- Write emojis as Unicode characters, not :shortcodes:.',
     extraDirective ? `- Extra instruction from the commissioner: ${extraDirective}` : null,
     '',
     `WEEK ${week} DATA: ${JSON.stringify(summary)}`,
+    '',
+    `RECENT TRANSACTIONS (MFL, last ${BANTER_DAYS} days; trades first, then waiver claims with FAAB bids, free-agent moves, IR moves; newest first in each):`,
+    transactions.length ? transactions.join('\n') : '(no transactions this week)',
     '',
     `SLACK BANTER (last ${BANTER_DAYS} days, newest first):`,
     banter.length ? banter.join('\n') : '(quiet week, nobody said anything)'
@@ -259,8 +274,9 @@ async function generatePost() {
   }
 
   const banter = await fetchSlackBanter();
-  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages.`);
-  const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum), banter, rest.join(' ') || process.env.GEMMY_NOTES || '');
+  const transactions = await fetchTransactions();
+  console.log(`Week ${weekNum}: ${banter.length} Slack banter messages, ${transactions.length} MFL transactions.`);
+  const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum), banter, rest.join(' ') || process.env.GEMMY_NOTES || '', transactions);
   const recap = await generateWithGemini(prompt);
   console.log(`\n${recap}\n`);
 
