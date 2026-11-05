@@ -46,7 +46,9 @@ export class MflCommishClient {
     if (!userId) {
       throw new Error('MFL Login failed: MFL_USER_ID cookie not returned.');
     }
+    // Keep every login cookie (MFL_PW_SEQ appeared by 2026-11-04), not only MFL_USER_ID.
     this.cookie = `MFL_USER_ID=${userId}`;
+    this.mergeCookies((res.headers.getSetCookie?.() || []).filter(sc => !/^\s*MFL_USER_ID=/.test(sc)));
     console.log('🔒 MFL user authenticated.');
 
     // 3. Become commissioner (franchise 0000). MFL answers
@@ -82,7 +84,11 @@ export class MflCommishClient {
     const jar = new Map(this.cookie.split('; ').map(c => [c.split('=')[0], c]));
     for (const sc of setCookies) {
       const pair = sc.split(';')[0].trim();
-      if (pair.includes('=')) jar.set(pair.split('=')[0], pair);
+      if (!pair.includes('=')) continue;
+      const name = pair.split('=')[0];
+      // An empty value is MFL clearing the cookie, as a browser would.
+      if (pair.slice(name.length + 1)) jar.set(name, pair);
+      else jar.delete(name);
     }
     this.cookie = [...jar.values()].join('; ');
   }
@@ -154,16 +160,24 @@ export class MflCommishClient {
       await this.login();
     }
     const query = new URLSearchParams({ L: this.leagueId, ...params }).toString();
-    const res = await fetch(`${this.baseUrl}/${page}?${query}`, {
-      headers: {
-        'Cookie': this.cookie,
-        'User-Agent': this.userAgent
+    for (let attempt = 1; ; attempt++) {
+      const res = await fetch(`${this.baseUrl}/${page}?${query}`, {
+        headers: {
+          'Cookie': this.cookie,
+          'User-Agent': this.userAgent
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`MFL ${page} error [${query}]: ${res.status} ${res.statusText}`);
       }
-    });
-    if (!res.ok) {
-      throw new Error(`MFL ${page} error [${query}]: ${res.status} ${res.statusText}`);
+      const html = await res.text();
+      const denied = accessDenied(html);
+      if (!denied) return html;
+      // MFL sometimes drops the commissioner session (seen 2026-11-03/04); log in again once.
+      if (attempt >= 2) throw new Error(`MFL ${page} [${query}]: ${denied} even after logging in again.`);
+      console.warn(`⚠️ MFL ${page} [${query}]: ${denied}; logging in again.`);
+      await this.login();
     }
-    return await res.text();
   }
 
   /**
@@ -238,9 +252,17 @@ export class MflCommishClient {
       throw new Error(`MFL POST failed [${label}]: ${res.status} ${res.statusText}`);
     }
     // MFL answers 200 even when it rejects a form; callers confirm through an export.
-    await res.text();
+    const denied = accessDenied(await res.text());
+    if (denied) throw new Error(`MFL POST rejected [${label}]: ${denied}.`);
     return changed;
   }
+}
+
+// Why MFL served an access page instead of the commissioner page, or null.
+function accessDenied(html) {
+  if (/Commissioner Access Required/i.test(html)) return 'Commissioner Access Required';
+  if (/<form[^>]*action="?[^" >]*login/i.test(html) && /name="?USERNAME/i.test(html)) return 'MFL login page (session logged out)';
+  return null;
 }
 
 export default MflCommishClient;
