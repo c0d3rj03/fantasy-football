@@ -5090,7 +5090,176 @@
         "0008": "02",
         "0011": "02"
       },
-      "matchups": [],
+      "matchups": [
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        }
+      ],
       "battle_royale": {
         "Upper Division": [
           {
@@ -5555,7 +5724,176 @@
         "0008": "02",
         "0011": "02"
       },
-      "matchups": [],
+      "matchups": [
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        }
+      ],
       "battle_royale": {
         "Upper Division": [
           {
@@ -6020,7 +6358,176 @@
         "0008": "02",
         "0011": "02"
       },
-      "matchups": [],
+      "matchups": [
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        }
+      ],
       "battle_royale": {
         "Upper Division": [
           {
@@ -6485,7 +6992,176 @@
         "0008": "02",
         "0011": "02"
       },
-      "matchups": [],
+      "matchups": [
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0002",
+            "name": "BattleBots",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0012",
+            "name": "2 Roops, 1 Silva",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0005",
+            "name": "Peaky Fookin Blinders",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0011",
+            "name": "The Wild Cards",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0003",
+            "name": "Shankly's Ghost",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0004",
+            "name": "Hamsterdam",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0009",
+            "name": "Springfield Isotopes",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0007",
+            "name": "Norsemen",
+            "score": null,
+            "vp_earned": 0
+          }
+        },
+        {
+          "team1": {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": null,
+            "vp_earned": 0
+          },
+          "team2": {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": null,
+            "vp_earned": 0
+          }
+        }
+      ],
       "battle_royale": {
         "Upper Division": [
           {
