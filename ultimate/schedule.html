@@ -125,9 +125,9 @@
           <li><strong>Teams Start:</strong> teams alive going into the week.</li>
           <li><strong>Roster Size:</strong> most players a team can hold that week, not counting the IR slot.</li>
           <li><strong>Lineup Composition:</strong> starting spots plus bench spots. FLX can be an RB, WR, or TE.</li>
-          <li><strong>Post-Week Roster Changes:</strong> the spot added when the week ends. It takes effect the next week.</li>
           <li><strong>Teams Cut:</strong> teams eliminated when the week ends.</li>
           <li><strong>Teams Left:</strong> teams alive after the cuts.</li>
+          <li><strong>Post-Week Roster Changes:</strong> the spot added when the week ends. It takes effect the next week.</li>
         </ul>
         <p>Green marks what grew from the week before. The red row is the week being played, or the next one up between weeks.</p>
         <p>Cut teams' players go to free agency for Wednesday FAAB waivers ($200 budget). Week 17 has no cuts: the final 4 rolling scores decide 1st, 2nd, and 3rd.</p>
@@ -142,9 +142,9 @@
           <th>Teams Start</th>
           <th>Roster Size</th>
           <th class="col-starters">Lineup Composition</th>
-          <th>Post-Week Roster Changes</th>
           <th>Teams Cut</th>
           <th>Teams Left</th>
+          <th>Post-Week Roster Changes</th>
         </tr>
       </thead>
       <tbody id="scheduleTableBody"></tbody>
@@ -256,9 +256,9 @@
           <td>${row.start}</td>
           <td>${rosterCell}</td>
           <td class="col-starters">${lineupCell}</td>
-          <td>${changeCell}</td>
           <td>${cutBadge}</td>
           <td><strong>${row.left}</strong></td>
+          <td>${changeCell}</td>
         `;
         tbody.appendChild(tr);
       });
