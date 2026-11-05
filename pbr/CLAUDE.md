@@ -95,6 +95,7 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 | `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `mfl_mode` auto/dry-run/apply/inspect/skip, `recap_mode` auto/draft/publish/skip, `recap_notes`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` (`client_payload.recap_mode`, default auto; MFL step runs in auto) | `mfl_scores_fetcher.js` → `commish_mfl_actions.js` → `generate_post.js`, then commits `data.json` and `gemmy_drafts/`. The recap and the commit run even if the MFL step failed; the job still fails. |
 | `pbr_tokens.yml` | `workflow_dispatch` (input `refetch_ktc`), `repository_dispatch: pbr-tokens-trigger` | `ktc_fetcher.js` (only if this month's snapshot is missing) → `token_tracker.js`, then commits `tokens_data.json` and `ktc-values/` |
 | `pbr_gemini_check.yml` | `workflow_dispatch` (inputs `models`, `timeout_seconds`) | `gemini_check.js`: read-only model list and timing |
+| `pbr_slack_check.yml` | `workflow_dispatch` | `slack_check.js`: read-only check of the bot token's scopes and its membership in the four PBR channels |
 | `pbr_sync.yml` | `workflow_dispatch`, `repository_dispatch: pbr-sync-trigger` | Scores fetch → (`commish_watch.js`, which doesn't exist yet) → `gemmy_custom_post.js` with a prompt, then commits `pbr/` |
 | `gemmy_alerts.yml` | `workflow_dispatch` (prompt input) | `gemmy_custom_post.js "<prompt>"` |
 
@@ -176,7 +177,7 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 
 ## Known Issues (found during the 2026-10-25 handoff review)
 
-1. **Slack bot can't post (2026-11-03):** `chat.postMessage` answers `missing_scope`, so recaps go out by the webhook fallback. The Slack app needs the `chat:write` bot scope (OAuth & Permissions, then reinstall; update `SLACK_PBR_BOT_TOKEN` if the token changes) and the bot invited to `#officialcomms`. The log now names the missing scope. The token name mismatches (`gemmy_alerts.yml`, `sync_recaps.js`) were fixed 2026-11-04, and `gemmy_custom_post.js` now posts by bot first and webhook only as a fallback (it had posted by both).
+1. ~~Slack bot can't post~~ (2026-11-03 `missing_scope`; the commissioner added `chat:write` and updated `SLACK_PBR_BOT_TOKEN` 2026-11-04, and `pbr_slack_check.yml` confirmed the scopes and that the bot is in all four channels). The log now names any missing scope. The token name mismatches (`gemmy_alerts.yml`, `sync_recaps.js`) were fixed 2026-11-04, and `gemmy_custom_post.js` now posts by bot first and webhook only as a fallback (it had posted by both).
 2. **`pbr_sync.yml` references files that don't exist:** `pbr/commish_watch.js`, `pbr/fetcher.js`, and a root `pbr_data.json`. The steps skip silently. Its default prompt is hardcoded to Q1 events.
 3. ~~`pbr_endweek.yml` also listened for `ultimate-sync-trigger`~~ (removed 2026-10-27).
 4. **League ID and year are repeated** in every PBR workflow. `config.js` exists (2026-10-27) and `mfl_scores_fetcher.js`, `commish_mfl_actions.js` and `token_tracker.js` use it. Move the rest over.
