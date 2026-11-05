@@ -79,7 +79,6 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 * **`index.html` + `pbr.js`**: Standings and weekly results dashboard (reads `data.json`).
 * **`tokens.html` + `tokens.js`**: Token tracker (reads `tokens_data.json`; the values tab loads `ktc-values/KTC-<month>.json`). Until 2026-10-27 the page loaded `pbr/tokens.js` (a 404), so it never rendered.
 * **`prizes.html`**: Prize tracker. Quarter division winners are 1st place in `weekly_data[4/8/12].quarter_standings`, which the fetcher ranks with the P&R tiebreakers (`pbr_rules.js` `rankStandings`); the quarter high scorer is the top quarter PF (ties share).
-* The `*_html.txt` / `*_json.txt` files are text copies of the matching files (for pasting into AI tools). They are not used at runtime.
 
 ### Data files
 * **`data.json`**: Single source of truth for PBR league state.

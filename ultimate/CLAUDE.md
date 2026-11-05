@@ -117,7 +117,7 @@ State at review time: `data.json` has `currentWeek: 7`, `isLive: true`. The end-
 11. **Single-week scores depend on manual MFL adjustments.** The fetcher derives `single(W) = MFL(W) − single(W−1)`, which is only right if the prior week's score was entered as a starting adjustment on MFL. Without it, `Math.max(0, …)` hides the error. This is why the `adjustScores` push (Next Steps #1) matters.
 12. **Fetcher starter filter.** Players with no `status` are counted as starters, which may include bench players if MFL omits the field.
 13. **Fetcher rewrites `data.json` from scratch.** Only `eliminatedTeams` and `weeklyWinners` are carried over; any other top-level key added later is lost.
-14. `ultimate/index_html.txt` is an empty stray file.
+14. **(Fixed 2026-11-05: file deleted.)** `ultimate/index_html.txt` was an empty stray file.
 
 ### Workflows and scheduling
 15. **`ultimate-sync-trigger` is listed in `.github/workflows/pbr_endweek.yml`.** Sending that event starts the PBR end-of-week workflow. On 2026-10-27 the Ultimate daily sync moved to its own type, `ultimate-dailyscore-trigger`, so Ultimate never sends `ultimate-sync-trigger`. Still remove it from the PBR workflow once confirmed nothing on the PBR side relies on it (a PBR-side change).
