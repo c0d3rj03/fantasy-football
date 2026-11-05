@@ -155,7 +155,7 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 
 ### Lessons from Ultimate MFL automation
 
-* **Commissioner mode:** after login, GET `logout?L=…&BECOME=0000` and keep the `MFL_IS_COMMISH` cookie (`common/mfl_commish_client.js`).
+* **Commissioner mode:** after login, GET `logout?L=…&BECOME=0000` and keep the `MFL_IS_COMMISH` cookie (`common/mfl_commish_client.js`). Keep every login cookie too: MFL added `MFL_PW_SEQ` by 2026-11-03, and without it the Week 8 VP POST was silently ignored and later page loads said "Commissioner Access Required". The client now re-logs in once on such a page and fails a POST answered by one.
 * **Post the whole form.** GET it fresh (it has an `input_expires` token), parse every field a browser would send, change only ours, and POST everything back (`common/mfl_csetup_form.js`).
 * **Get field names from the live form** (`--inspect`). Never guess them.
 * **Check before writing; verify after.** MFL answers 200 even when it ignores a form.
