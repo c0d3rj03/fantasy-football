@@ -1,0 +1,28 @@
+name: PBR Slack Bot Check
+
+# Shows the Slack bot token's scopes and whether the bot is in each PBR channel.
+# Read-only: posts nothing, commits nothing, never logs the token or channel IDs.
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check Slack bot
+        working-directory: pbr
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
+          PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
+          PBR_SLACK_CHANNEL_GENERAL: ${{ secrets.PBR_SLACK_CHANNEL_GENERAL }}
+          PBR_SLACK_CHANNEL_RANDOM: ${{ secrets.PBR_SLACK_CHANNEL_RANDOM }}
+          PBR_SLACK_CHANNEL_TRADE_TALK: ${{ secrets.PBR_SLACK_CHANNEL_TRADE_TALK }}
+        run: node slack_check.js
