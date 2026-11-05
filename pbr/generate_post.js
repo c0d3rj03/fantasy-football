@@ -98,7 +98,9 @@ async function postToSlack(text) {
     try {
       const data = await slackApi('chat.postMessage', { channel: SLACK_CHANNEL_OFFICIALCOMMS, text, mrkdwn: true });
       if (data.ok) return 'bot';
-      console.warn(`⚠️ Slack chat.postMessage failed: ${data.error}`);
+      // missing_scope names the scope the Slack app needs (chat:write to post).
+      const scopes = data.needed ? ` (needs scope ${data.needed}; token has ${data.provided || 'none'})` : '';
+      console.warn(`⚠️ Slack chat.postMessage failed: ${data.error}${scopes}`);
     } catch (e) {
       console.warn(`⚠️ Slack chat.postMessage failed: ${e.message}`);
     }

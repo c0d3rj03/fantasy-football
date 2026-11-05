@@ -24,7 +24,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
+          PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
         run: |
           cd pbr
           node gemmy_custom_post.js "${{ github.event.inputs.prompt }}"

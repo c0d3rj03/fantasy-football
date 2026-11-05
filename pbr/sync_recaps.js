@@ -8,11 +8,12 @@ const { WebClient } = require('@slack/web-api');
 async function syncRecapsFromSlack() {
   console.log("🎙️ Syncing Gemmy's Recaps from Slack #officialcomms...\n");
 
-  const token = process.env.PBR_SLACK_BOT_TOKEN;
+  // The workflows export the bot token as SLACK_BOT_TOKEN.
+  const token = process.env.SLACK_BOT_TOKEN || process.env.PBR_SLACK_BOT_TOKEN;
   const channelId = process.env.PBR_SLACK_CHANNEL_OFFICIALCOMMS;
 
   if (!token || !channelId) {
-    console.error("❌ Missing PBR_SLACK_BOT_TOKEN or PBR_SLACK_CHANNEL_OFFICIALCOMMS environment variables.");
+    console.error("❌ Missing SLACK_BOT_TOKEN or PBR_SLACK_CHANNEL_OFFICIALCOMMS environment variables.");
     process.exit(1);
   }
 
