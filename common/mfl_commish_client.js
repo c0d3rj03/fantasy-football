@@ -38,6 +38,7 @@ export class MflCommishClient {
     const res = await fetch(loginUrl);
 
     // 1. Try Set-Cookie header, 2. then the XML body if the header wasn't exposed
+    console.log(`  login: ${res.status}, sets ${this.describeSetCookies(res.headers.getSetCookie?.() || [])}`);
     let userId = (res.headers.get('set-cookie') || '').match(/MFL_USER_ID=([^;]+)/)?.[1];
     if (!userId) {
       userId = (await res.text()).match(/cookie_value="([^"]+)"/)?.[1];
@@ -56,11 +57,19 @@ export class MflCommishClient {
         headers: { 'Cookie': this.cookie, 'User-Agent': this.userAgent },
         redirect: 'manual'
       });
-      this.mergeCookies(step.headers.getSetCookie?.() || []);
+      const setCookies = step.headers.getSetCookie?.() || [];
+      this.mergeCookies(setCookies);
       const location = step.headers.get('location');
+      // Hop status, redirect path and cookie names (never values), for debugging the switch.
+      console.log(`  become hop ${hop + 1}: ${new URL(url).pathname} → ${step.status}${location ? ` → ${new URL(location, url).pathname}` : ''}, sets ${this.describeSetCookies(setCookies)}`);
       url = (step.status >= 300 && step.status < 400 && location) ? new URL(location, url).toString() : null;
     }
-    if (this.cookie.includes('MFL_IS_COMMISH')) {
+    // A cleared MFL_USER_ID means MFL logged the session out instead of switching it.
+    const hasValue = name => new RegExp(`(^|; )${name}=[^;]`).test(this.cookie);
+    if (!hasValue('MFL_USER_ID')) {
+      console.warn('⚠️ MFL cleared MFL_USER_ID during BECOME=0000: the session was logged out.');
+    }
+    if (hasValue('MFL_IS_COMMISH') && hasValue('MFL_USER_ID')) {
       console.log(`👑 Commissioner mode active (cookies: ${this.cookieNames().join(', ')}).`);
     } else {
       console.warn(`⚠️ No MFL_IS_COMMISH cookie after BECOME=0000 (cookies: ${this.cookieNames().join(', ')}).`);
@@ -76,6 +85,15 @@ export class MflCommishClient {
       if (pair.includes('=')) jar.set(pair.split('=')[0], pair);
     }
     this.cookie = [...jar.values()].join('; ');
+  }
+
+  // Set-Cookie names, marking ones MFL clears (empty value). Never logs values.
+  describeSetCookies(setCookies) {
+    if (setCookies.length === 0) return 'no cookies';
+    return setCookies.map(sc => {
+      const [name, ...rest] = sc.split(';')[0].trim().split('=');
+      return rest.join('=') ? name : `${name} (cleared)`;
+    }).join(', ');
   }
 
   // Cookie names only (never values), safe to log.
