@@ -47,7 +47,15 @@
 
     /* Info Banner */
     .info-banner { background: var(--bg-card); border: 1px solid var(--border-color); border-left: 3px solid var(--accent-red); border-radius: 6px; padding: 10px 14px; font-size: 0.82rem; line-height: 1.4; color: var(--text-main); margin-bottom: 12px; }
-    .info-banner-title { font-size: 0.82rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .info-banner-title { font-size: 0.82rem; font-weight: 800; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .info-banner-title::-webkit-details-marker { display: none; }
+    .info-banner-title::after { content: '▾'; font-size: 0.95rem; line-height: 1; transition: transform 0.15s; }
+    details[open] > .info-banner-title::after { transform: rotate(180deg); }
+    .info-banner-body { margin-top: 8px; }
+    .info-banner-body p { margin-bottom: 8px; }
+    .info-banner-body p:last-child { margin-bottom: 0; }
+    .info-banner-body ul { margin: 0 0 8px 18px; }
+    .info-banner-body li { margin-bottom: 3px; }
 
     /* Table Section */
     .section-header { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
@@ -109,10 +117,22 @@
       </div>
     </div>
 
-    <div class="info-banner">
-      <div class="info-banner-title">Roster Expansion Protocol</div>
-      Teams start draft day with 8 players (8 starters, 0 bench). As teams are eliminated each week based on 2-week rolling scores, roster capacity and starting lineup positions expand (adding bench, flex, WR, QB, RB, and TE spots). Eliminated rosters are automatically locked every Tuesday morning and dropped into free agency for Wednesday FAAB waivers (\$200 budget).
-    </div>
+    <details class="info-banner">
+      <summary class="info-banner-title">What This Table Shows</summary>
+      <div class="info-banner-body">
+        <p>Each row is one NFL week: how many teams are alive, what a roster and lineup look like, and how many teams get cut. Teams start with 8 players and no bench. Rosters grow as teams are cut, and the two lowest rolling 2-week scores (W2&ndash;W6) or the lowest one (W7&ndash;W16) go each week.</p>
+        <ul>
+          <li><strong>Teams Start:</strong> teams alive going into the week.</li>
+          <li><strong>Roster Size:</strong> most players a team can hold that week, not counting the IR slot.</li>
+          <li><strong>Lineup Composition:</strong> starting spots plus bench spots. FLX can be an RB, WR, or TE.</li>
+          <li><strong>Post-Week Roster Changes:</strong> the spot added when the week ends. It takes effect the next week.</li>
+          <li><strong>Teams Cut:</strong> teams eliminated when the week ends.</li>
+          <li><strong>Teams Left:</strong> teams alive after the cuts.</li>
+        </ul>
+        <p>Green marks what grew from the week before. The red row is the week being played, or the next one up between weeks.</p>
+        <p>Cut teams' players go to free agency for Wednesday FAAB waivers ($200 budget). Week 17 has no cuts: the final 4 rolling scores decide 1st, 2nd, and 3rd.</p>
+      </div>
+    </details>
 
     <div class="section-header">Weekly Roster & Elimination Schedule</div>
     <table>
