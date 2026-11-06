@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 9,
   "lastCompletedWeek": 8,
-  "lastUpdated": "2026-11-05T10:26:58.197Z",
+  "lastUpdated": "2026-11-06T10:26:57.417Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -368,11 +368,11 @@
       "finished": 0
     },
     "0006": {
-      "doneScore": 0,
+      "doneScore": 22.55,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 8,
       "inGame": 0,
-      "finished": 0
+      "finished": 2
     },
     "0007": {
       "doneScore": 0,
@@ -396,25 +396,25 @@
       "finished": 0
     },
     "0010": {
-      "doneScore": 0,
+      "doneScore": 22.06,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 8,
       "inGame": 0,
-      "finished": 0
+      "finished": 2
     },
     "0011": {
-      "doneScore": 0,
+      "doneScore": 27,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 8,
       "inGame": 0,
-      "finished": 0
+      "finished": 2
     },
     "0012": {
-      "doneScore": 0,
+      "doneScore": 12.5,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 9,
       "inGame": 0,
-      "finished": 0
+      "finished": 1
     },
     "0013": {
       "doneScore": 0,
@@ -480,11 +480,11 @@
       "finished": 0
     },
     "0022": {
-      "doneScore": 0,
+      "doneScore": 7.55,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 9,
       "inGame": 0,
-      "finished": 0
+      "finished": 1
     },
     "0023": {
       "doneScore": 0,
@@ -494,11 +494,11 @@
       "finished": 0
     },
     "0024": {
-      "doneScore": 0,
+      "doneScore": 12.1,
       "liveScore": 0,
-      "ytp": 8,
+      "ytp": 9,
       "inGame": 0,
-      "finished": 2
+      "finished": 1
     }
   },
   "eliminatedTeams": {
