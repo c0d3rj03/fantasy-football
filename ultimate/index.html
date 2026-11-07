@@ -15,6 +15,7 @@
       --bg-bar-track: #1a202c;
       --bg-bar-prior: #475569; /* Slate 600 - Steel Gray */
       --bg-bar-done: #dc2626;  /* Solid Red - Finished Players */
+      --bg-bar-live: #7c3aed;  /* Purple - Players In Game */
       --border-color: #222938;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -78,15 +79,7 @@
     .legend-color { width: 10px; height: 10px; border-radius: 2px; }
     .color-prior { background-color: var(--bg-bar-prior); }
     .color-done { background-color: var(--bg-bar-done); }
-    .color-live { 
-      background: repeating-linear-gradient(
-        -45deg,
-        #881337,
-        #881337 3px,
-        #ef4444 3px,
-        #ef4444 6px
-      ); 
-    }
+    .color-live { background-color: var(--bg-bar-live); }
 
     /* Column Headers above list */
     .list-col-headers { display: flex; justify-content: space-between; align-items: center; padding: 0 8px 4px; font-size: 0.68rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
@@ -111,20 +104,8 @@
     .bar-seg-prior { background-color: var(--bg-bar-prior); justify-content: flex-start; padding-left: 6px; }
     .bar-seg-done { background-color: var(--bg-bar-done); justify-content: flex-end; padding-right: 6px; }
     
-    /* Slashed / Striped Red Bar for In-Game Scores */
-    .bar-seg-live { 
-      background: repeating-linear-gradient(
-        -45deg,
-        #881337,
-        #881337 4px,
-        #e11d48 4px,
-        #e11d48 8px
-      ); 
-      justify-content: center; 
-      padding: 0 4px;
-      text-shadow: 0 0 3px rgba(0,0,0,0.9);
-      border-left: 1px solid rgba(255,255,255,0.25);
-    }
+    /* Purple bar for points from players whose game is in progress */
+    .bar-seg-live { background-color: var(--bg-bar-live); border-left: 1px solid rgba(255,255,255,0.25); }
 
     /* Right: Total Score + Tight Player Status Columns */
     .row-right-group { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
@@ -144,8 +125,19 @@
     }
     
     .stat-ytp { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.25); }
-    .stat-live { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-    .stat-done { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .stat-live { background: rgba(124, 58, 237, 0.3); color: #c4b5fd; border: 1px solid rgba(124, 58, 237, 0.5); }
+
+    /* Live view: the bar fill leaves room on the right so the live points can sit just past the purple bar */
+    .bar-fill { display: flex; height: 100%; width: 100%; }
+    .bar-fill > .bar-seg { flex-shrink: 0; }
+    .bar-track.with-live-label .bar-fill { width: calc(100% - 40px); }
+    .live-label { flex-shrink: 0; align-self: center; padding-left: 4px; font-size: 0.66rem; font-weight: 800; color: #c4b5fd; white-space: nowrap; }
+
+    /* Live view: teams currently below the cut line */
+    .team-row.danger { background: rgba(220, 38, 38, 0.08); border-color: #7f1d1d; }
+    .chop-line { display: flex; align-items: center; gap: 8px; margin: 2px 0; color: #f87171; font-size: 0.66rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .chop-line::before, .chop-line::after { content: ''; flex: 1; border-top: 1px dashed var(--accent-red); }
+    .stat-done { background: rgba(220, 38, 38, 0.2); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.4); }
 
     .cols-header-group { display: flex; gap: 3px; align-items: center; font-size: 0.65rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
     .hdr-badge { width: 26px; text-align: center; }
@@ -159,6 +151,8 @@
       .bar-seg { font-size: 0.6rem; }
       .bar-seg-prior { padding-left: 3px; }
       .bar-seg-done { padding-right: 3px; }
+      .bar-track.with-live-label .bar-fill { width: calc(100% - 32px); }
+      .live-label { font-size: 0.6rem; padding-left: 3px; }
       header { flex-direction: column; align-items: flex-start; gap: 6px; }
       .header-right { text-align: left; }
     }
@@ -177,6 +171,9 @@
         <div class="metric-item">
           <span class="metric-label">Status:</span>
           <div class="week-indicator" id="hdrStatus">Week 3</div>
+        </div>
+        <div class="metric-item" id="hdrLiveLinkRow" style="display: none;">
+          <a href="https://www42.myfantasyleague.com/2026/live_scoring?L=25918" target="_blank" rel="noopener noreferrer" class="mfl-link">MFL Live Scoring ↗</a>
         </div>
         <div class="metric-item">
           <span class="metric-label">Teams Remaining:</span>
@@ -241,7 +238,7 @@
     <div class="team-list" id="teamList"></div>
 
     <footer>
-      MFL League 25918 • Scores update daily at 2:00 AM PT
+      MFL League 25918 • <span id="footerSchedule">Scores update daily at 2:00 AM PT, and every 10 minutes while games are on</span>
     </footer>
   </div>
 
@@ -279,6 +276,36 @@
       selectedWeek = displayWeek;
       setupControls();
       renderWeek(selectedWeek);
+
+      // While games are on, data.json is rebuilt every 10 minutes; pick up new scores without a reload.
+      if (phase === 'live') {
+        setInterval(refreshLiveData, LIVE_REFRESH_MS);
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') refreshLiveData();
+        });
+      }
+    }
+
+    const LIVE_REFRESH_MS = 2 * 60 * 1000;
+
+    async function refreshLiveData() {
+      try {
+        const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) return;
+        const fresh = await res.json();
+        if (fresh.lastUpdated === leagueData.lastUpdated) return;
+        // A phase or week change rebuilds the buttons, so start over.
+        if (fresh.phase !== phase || fresh.displayWeek !== displayWeek || fresh.currentWeek !== liveWeek) {
+          window.location.reload();
+          return;
+        }
+        leagueData = fresh;
+        document.getElementById('hdrUpdated').textContent = formatUpdated(leagueData.lastUpdated);
+        renderHeaderStatus();
+        renderWeek(selectedWeek);
+      } catch (e) {
+        console.warn('Live refresh failed', e);
+      }
     }
 
     function formatUpdated(iso) {
@@ -286,6 +313,23 @@
       const d = new Date(iso);
       if (isNaN(d)) return '--';
       return d.toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short' });
+    }
+
+    // Glowing LIVE chip only while an NFL game is in progress; between game windows the week
+    // shows as In Progress. Older data.json without gamesInProgress keeps the glowing chip.
+    function renderHeaderStatus(hdrStatusEl = document.getElementById('hdrStatus')) {
+      const gamesOn = leagueData && leagueData.gamesInProgress !== 0;
+      if (phase === 'live' && gamesOn) {
+        hdrStatusEl.className = 'live-indicator';
+        hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${displayWeek}`;
+      } else if (phase === 'live') {
+        hdrStatusEl.className = 'week-indicator';
+        hdrStatusEl.textContent = `Week ${displayWeek} In Progress`;
+      } else {
+        hdrStatusEl.className = 'week-indicator';
+        hdrStatusEl.textContent = `Week ${displayWeek} Final`;
+      }
+      document.getElementById('hdrLiveLinkRow').style.display = phase === 'live' ? 'flex' : 'none';
     }
 
     function setupControls() {
@@ -296,13 +340,7 @@
 
       document.getElementById('hdrUpdated').textContent = formatUpdated(leagueData && leagueData.lastUpdated);
 
-      if (phase === 'live') {
-        hdrStatusEl.className = 'live-indicator';
-        hdrStatusEl.innerHTML = `<div class="live-dot"></div> LIVE - WEEK ${displayWeek}`;
-      } else {
-        hdrStatusEl.className = 'week-indicator';
-        hdrStatusEl.textContent = `Week ${displayWeek} Final`;
-      }
+      renderHeaderStatus(hdrStatusEl);
 
       // Results: [Week W Results] [Week W+1 →]. Live: [← Week W-1] [Week W Live]; the primary button stays on the right.
       const otherWeek = phase === 'live' ? displayWeek - 1 : displayWeek + 1;
@@ -410,8 +448,8 @@
       if (isLiveNow) {
         legendEl.innerHTML = `
           <div class="legend-item"><div class="legend-color color-prior"></div> W${week-1} Total</div>
+          <div class="legend-item"><div class="legend-color color-live"></div> W${week} Live</div>
           <div class="legend-item"><div class="legend-color color-done"></div> W${week} Done</div>
-          <div class="legend-item"><div class="legend-color color-live"></div> W${week} In-Game</div>
         `;
       } else {
         legendEl.innerHTML = `
@@ -502,11 +540,26 @@
       teamData.sort((a, b) => b.totalScore - a.totalScore);
 
       const maxScore = Math.max(...teamData.map(t => t.totalScore), 150);
+      // Live points are labeled just right of the purple bar, so leave room for them at the end of every track.
+      const showLiveLabels = isLiveNow && teamData.some(t => t.liveScore > 0);
+
+      // Live view: draw the cut line above the team(s) that would be chopped if the week ended now.
+      const liveCutCount = isLiveNow ? getCutCount(week) : 0;
+      const firstDangerIdx = liveCutCount > 0 && teamData.length > liveCutCount ? teamData.length - liveCutCount : -1;
 
       teamData.forEach((team, idx) => {
+        if (idx === firstDangerIdx) {
+          const line = document.createElement('div');
+          line.className = 'chop-line';
+          line.textContent = 'Chop line';
+          teamListEl.appendChild(line);
+        }
+
         const row = document.createElement('div');
-        const choppedClass = team.isChoppedNow ? 'chopped' : '';
-        row.className = 'team-row ' + (choppedClass ? ' ' + choppedClass : '');
+        const rowClasses = ['team-row'];
+        if (team.isChoppedNow) rowClasses.push('chopped');
+        if (firstDangerIdx >= 0 && idx >= firstDangerIdx) rowClasses.push('danger');
+        row.className = rowClasses.join(' ');
 
         const priorPct = (team.priorScore / maxScore) * 100;
         const donePct = (team.doneScore / maxScore) * 100;
@@ -520,7 +573,10 @@
 
         const priorBarHtml = priorPct > 0 ? '<div class="bar-seg bar-seg-prior" style="width: ' + priorPct + '%" title="Prior Wk: ' + team.priorScore.toFixed(2) + '">' + priorLabel + '</div>' : '';
         const doneBarHtml = donePct > 0 ? '<div class="bar-seg bar-seg-done" style="width: ' + donePct + '%" title="Current Done: ' + team.doneScore.toFixed(2) + '">' + doneLabel + '</div>' : '';
-        const liveBarHtml = livePct > 0 ? '<div class="bar-seg bar-seg-live" style="width: ' + livePct + '%" title="In-Game Live: ' + team.liveScore.toFixed(2) + '">' + liveLabel + '</div>' : '';
+        const liveBarHtml = livePct > 0
+          ? '<div class="bar-seg bar-seg-live" style="width: ' + livePct + '%" title="Live (in game): ' + team.liveScore.toFixed(2) + '"></div>'
+            + '<span class="live-label" title="Live (in game): ' + team.liveScore.toFixed(2) + '">' + liveLabel + '</span>'
+          : '';
 
         const statusColsHtml = isLiveNow ? `
             <div class="status-cols">
@@ -537,10 +593,12 @@
           </div>
 
           <div class="bar-container">
-            <div class="bar-track">
-              ${priorBarHtml}
-              ${doneBarHtml}
-              ${liveBarHtml}
+            <div class="bar-track${showLiveLabels ? ' with-live-label' : ''}">
+              <div class="bar-fill">
+                ${priorBarHtml}
+                ${doneBarHtml}
+                ${liveBarHtml}
+              </div>
             </div>
           </div>
 

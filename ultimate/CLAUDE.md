@@ -30,6 +30,10 @@ Automates commissioner administration and provides a web dashboard for a 24-team
    * `phase: 'results'` when nobody has played yet, or every game is final. `displayWeek = lastCompletedWeek`.
    * `lastCompletedWeek`: `currentWeek` if every game is final, else `currentWeek - 1`. `prizes.html` and `schedule.html` use it.
    * Players are read from `lf.players.player` (MFL's actual shape). Before 2026-10-27 the fetcher read `lf.player`, so Done/Live per-player counts never worked.
+   * Each starter (`status: "starter"`; `nonstarter` is bench) is classed by `gameSecondsRemaining`: 3600 = YTP, 1–3599 = live, 0 = done. `liveDetails[fid]` = `{doneScore, liveScore, ytp, inGame, finished, byeStarters, emptySlots}`; done and live are each the sum of their own starters' points. `emptySlots` = this week's `starters.total` from `league_schedule.js` minus starters listed (kept in the data, not shown on the page).
+   * **Byes:** a bye starter also reports 0 seconds. Starters with 0 s and 0 pts are looked up in the `players` export and checked against this week's `nflSchedule` (both on `api.myfantasyleague.com`); a team not on the schedule is on bye. A bye player never locks, so bye starters count as YTP until the week's last NFL game kicks off (the owner can bench him for an unlocked bench player or drop him for a free agent whose game hasn't started); after that they are done with 0 pts.
+   * `gamesInProgress`: NFL games in progress right now (from `nflSchedule`). The page glows "LIVE" only while it is above 0. The fetcher warns when the starters' sum differs from MFL's total minus the carryover adjustment.
+   * `FETCH_MODE=live` (the 10-minute game-day runs) refetches only `weeklyResults` for the previous and current week and reuses older weeks from `data.json`; the daily run refetches all 17. Unknown top-level keys in `data.json` are kept.
 3. **`ultimate/commish_automation.js`** (no MFL writes, no login; only a read-only `rosters` export):
    * Reads `data.json` and refuses to run if any safeguard fails (see below), without writing anything.
    * Rolling 2-week score = `weeklySingleScores[W-1] + weeklySingleScores[W]` (MFL final results, never live points).
@@ -68,7 +72,12 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
   ├── Wed–Mon  ──> ultimate-dailyscore-trigger ──> ultimate_dailyscore.yml ──> mfl_scores_fetcher.js
   │
   └── Tuesday  ──> ultimate-endweek-trigger    ──> ultimate_endweek.yml    ──> mfl_scores_fetcher.js, commish_automation.js, then commish_mfl_actions.js
+
+Google Apps Script, every 10 minutes (ultimateLiveTick)
+  │  reads MFL nflSchedule (api.myfantasyleague.com, cached 30 min)
+  └── a game between kickoff and kickoff + 4.5 h ──> ultimate-livescore-trigger ──> ultimate_dailyscore.yml (FETCH_MODE=live)
 ```
+* The live tick has no day-of-week logic: MFL's schedule covers Sun/Mon/Thu, Europe mornings, and Wed/Sat games. Install it once with `installUltimateLiveTrigger()`. Each live run commits `data.json` ("live score update"), so a full Sunday is roughly 60–70 commits.
 * The end-of-week job commits `data.json` even if a commish safeguard fails, so the fresh scores still publish; the job still shows as failed. Safeguard 1 makes a manual rerun safe.
 * `ultimate/apps_script_triggers.gs` is a copy of the Apps Script code (no secrets). Run `installUltimateDailyTrigger()` once to create the trigger.
 * **MFL writes are off by default.** `commish_mfl_actions.js` writes only when the manual run's `apply` box is checked or the repo variable `ULTIMATE_MFL_WRITES` is `1` (Settings → Secrets and variables → Actions → Variables). Otherwise the run shows the planned field changes on the run page. The manual run's `mode: inspect` only prints the commish form fields and commits nothing.
@@ -79,7 +88,7 @@ Google Apps Script (ultimate/apps_script_triggers.gs), one trigger daily at ~2:0
 ### Dashboard views (`index.html`)
 * **`prizes.html`:** one row per week for the single-week high score. A finished week the Tuesday run has not recorded yet shows the derived high scorer marked "(unofficial)"; the recorded `weeklyWinners` entry replaces it.
 * **Results phase (Tue–Thu):** opens on the last finished week (`Week N Results`); bar = Week N−1 + Week N single scores, cut teams badged. MFL makes the cut itself, so for a finished week with no recorded cut the page shows the lowest rolling score(s) per the cut schedule as cut, and the highest single score as the weekly winner; recorded entries in `data.json` take priority. `Week N+1 →` previews next week (bar = Week N only, cut teams removed).
-* **Live phase (first game through MNF):** opens on `Week N Live`; bar = Week N−1 + finished players + in-game players, with YTP / LIVE / DONE counts. `← Week N−1` shows last week's results.
+* **Live phase (first game through MNF):** opens on `Week N Live`; bar = Week N−1 (gray, left label) + done players (red, right label) + in-game players (purple, label just right of the bar; the tracks leave 40 px at the end for it), with YTP / LIVE / DONE counts (done chips red like the done bar), and a dashed chop line above the bottom `getCutCount(N)` team(s). The header chip glows `LIVE - WEEK N` only while `gamesInProgress > 0` and shows `Week N In Progress` between game windows; an "MFL Live Scoring" link (`live_scoring?L=25918`) sits under it for the whole live phase. The page re-reads `data.json` every 2 minutes (and when the tab regains focus) and reloads if the phase or week changed. `← Week N−1` shows last week's results.
 * Header shows `lastUpdated` in the viewer's local time.
 
 ---

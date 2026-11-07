@@ -12,9 +12,19 @@
  *   Other days:  ultimate-dailyscore-trigger (ultimate_dailyscore.yml: score sync only)
  * The sync decides the dashboard phase itself (results vs live), so running it daily also
  * catches Wednesday games.
+ *
+ * Game-day live scores: run installUltimateLiveTrigger() once. Every 10 minutes ultimateLiveTick()
+ * reads MFL's NFL schedule for the current week and, only while a game is in its window
+ * (kickoff to kickoff + 4.5 h), dispatches ultimate-livescore-trigger (ultimate_dailyscore.yml
+ * with FETCH_MODE=live). The schedule covers every slot (Sun, Mon, Thu, Europe mornings,
+ * Wed/Sat/holiday games), so nothing is hardcoded by day. The window runs past the final
+ * whistle so the last run captures final scores.
  */
 
 const ULTIMATE_TZ = 'America/Los_Angeles';
+const ULTIMATE_SEASON = '2026';
+const LIVE_WINDOW_MS = 4.5 * 60 * 60 * 1000;
+const SCHEDULE_CACHE_SECONDS = 30 * 60;
 
 /** Run once by hand. Replaces any earlier Ultimate trigger so there is exactly one. */
 function installUltimateDailyTrigger() {
@@ -42,6 +52,61 @@ function ultimateDailyRun() {
     Logger.log(`Day ${day}: dispatching daily score sync.`);
     dispatchRepositoryEvent('ultimate-dailyscore-trigger');
   }
+}
+
+/** Run once by hand. Replaces any earlier live trigger so there is exactly one. */
+function installUltimateLiveTrigger() {
+  ScriptApp.getProjectTriggers()
+    .filter(t => t.getHandlerFunction() === 'ultimateLiveTick')
+    .forEach(t => ScriptApp.deleteTrigger(t));
+
+  ScriptApp.newTrigger('ultimateLiveTick')
+    .timeBased()
+    .everyMinutes(10)
+    .create();
+  Logger.log('Installed 10-minute trigger for ultimateLiveTick.');
+}
+
+/** Called every 10 minutes. Dispatches a live score sync only while an NFL game is on. */
+function ultimateLiveTick() {
+  const now = Date.now();
+  const games = getUltimateNflSchedule();
+  const live = games.filter(g => g.kickoffMs <= now && now <= g.kickoffMs + LIVE_WINDOW_MS);
+  if (live.length === 0) {
+    Logger.log(`No game in window (${games.length} games on the schedule). Skipping.`);
+    return;
+  }
+  Logger.log(`${live.length} game(s) in window: ${live.map(g => g.teams).join(', ')}. Dispatching live sync.`);
+  dispatchRepositoryEvent('ultimate-livescore-trigger');
+}
+
+/**
+ * This week's NFL games as [{kickoffMs, teams}] from MFL's nflSchedule export (current NFL week
+ * when no W is given). Cached for 30 minutes so most ticks make no MFL call at all.
+ */
+function getUltimateNflSchedule() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get('ultimateNflSchedule');
+  if (cached) return JSON.parse(cached);
+
+  const url = `https://api.myfantasyleague.com/${ULTIMATE_SEASON}/export?TYPE=nflSchedule&JSON=1`;
+  const response = UrlFetchApp.fetch(url, {
+    headers: { 'User-Agent': 'GoogleAppsScript-GuillotineTrigger' },
+    muteHttpExceptions: true
+  });
+  if (response.getResponseCode() !== 200) {
+    throw new Error(`nflSchedule failed (${response.getResponseCode()}): ${response.getContentText().slice(0, 200)}`);
+  }
+  const body = JSON.parse(response.getContentText());
+  const matchups = [].concat((body.nflSchedule && body.nflSchedule.matchup) || []);
+  const games = matchups
+    .filter(m => m.kickoff)
+    .map(m => ({
+      kickoffMs: parseInt(m.kickoff, 10) * 1000,
+      teams: [].concat(m.team || []).map(t => t.id).join('@')
+    }));
+  cache.put('ultimateNflSchedule', JSON.stringify(games), SCHEDULE_CACHE_SECONDS);
+  return games;
 }
 
 /** Sends a repository_dispatch event. Event types are league-prefixed so they never start PBR workflows. */
