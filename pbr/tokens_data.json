@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-04T17:53:15.464Z",
+  "last_updated": "2026-11-07T17:51:35.655Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -1703,7 +1703,7 @@
       "franchise": "0001",
       "name": "Orcan Terror",
       "player_id": "15717",
-      "player": "Dameon Pierce (RB, PHI)",
+      "player": "Dameon Pierce (RB, FA)",
       "dropped": "Spencer Rattler (QB, NOS)",
       "bid": 28,
       "period": "Q2",
