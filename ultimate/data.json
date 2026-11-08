@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 9,
   "lastCompletedWeek": 8,
-  "lastUpdated": "2026-11-08T22:06:06.083Z",
+  "lastUpdated": "2026-11-08T22:16:08.396Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -343,7 +343,7 @@
     },
     "0002": {
       "doneScore": 122.55,
-      "liveScore": 15.54,
+      "liveScore": 21.99,
       "ytp": 1,
       "inGame": 3,
       "finished": 6,
@@ -370,7 +370,7 @@
     },
     "0005": {
       "doneScore": 96,
-      "liveScore": 17,
+      "liveScore": 18.4,
       "ytp": 3,
       "inGame": 2,
       "finished": 5,
@@ -379,7 +379,7 @@
     },
     "0006": {
       "doneScore": 98.65,
-      "liveScore": 23.98,
+      "liveScore": 26.09,
       "ytp": 1,
       "inGame": 3,
       "finished": 6,
@@ -469,7 +469,7 @@
     },
     "0016": {
       "doneScore": 111.63,
-      "liveScore": 3.45,
+      "liveScore": 4.9,
       "ytp": 1,
       "inGame": 2,
       "finished": 7,
@@ -478,7 +478,7 @@
     },
     "0017": {
       "doneScore": 84.15,
-      "liveScore": 17.7,
+      "liveScore": 19.31,
       "ytp": 1,
       "inGame": 4,
       "finished": 5,
@@ -514,7 +514,7 @@
     },
     "0021": {
       "doneScore": 120.5,
-      "liveScore": 5.42,
+      "liveScore": 3.42,
       "ytp": 1,
       "inGame": 3,
       "finished": 6,
@@ -698,5 +698,5 @@
     }
   },
   "fetchMode": "live",
-  "gamesInProgress": 4
+  "gamesInProgress": 6
 }
