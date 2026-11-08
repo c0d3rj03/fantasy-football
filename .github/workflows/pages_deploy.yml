@@ -1,0 +1,87 @@
+name: Deploy GitHub Pages
+
+# Publishes the repo root (index.html, ultimate/, pbr/, ...) to GitHub Pages.
+# Pages source must be "GitHub Actions" (Settings > Pages); set 2026-11-07. Unlike the old
+# "Deploy from a branch" build, a custom workflow has no 10-builds-per-hour soft limit,
+# which game-day live syncs from both leagues (~12 commits/hour) would exceed.
+#
+# Triggers:
+#   push to main:  commits pushed by people (pushes made with GITHUB_TOKEN never start workflows).
+#   workflow_run:  after any workflow that commits data (the bot's commits); deploys only if that
+#                  run moved main, so a sync that found nothing new deploys nothing.
+#   workflow_dispatch: by hand.
+# Add any new workflow that pushes to main to the workflow_run list below.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Ultimate Guillotine Live Sync
+      - Ultimate Guillotine End-of-Week Commissioner Actions
+      - PBR Score Sync (daily + live)
+      - PBR End-of-Week Results & Gemmy Recap
+      - PBR Daily Token Tracker
+      - PBR Tuesday Commish Automation
+    types: [completed]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer pending deploy replaces an older pending one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.check.outputs.deploy }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          RAN_ON: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          if [ "$EVENT" != "workflow_run" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          MAIN=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
+          if [ "$MAIN" = "$RAN_ON" ]; then
+            echo "main is still at $RAN_ON: that run committed nothing. Skipping deploy."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "main moved $RAN_ON -> $MAIN. Deploying."
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: check
+    if: needs.check.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Static files as-is (no Jekyll). .git and .github are left out of the artifact.
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
