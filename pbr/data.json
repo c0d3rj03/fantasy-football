@@ -5079,8 +5079,8 @@
       "live": {
         "games_total": 15,
         "games_final": 1,
-        "games_in_progress": 0,
-        "updated": "2026-11-08T15:15:34.324Z"
+        "games_in_progress": 1,
+        "updated": "2026-11-08T15:25:36.775Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5110,7 +5110,7 @@
           "team2": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 7.8,
+            "score": 12.49,
             "vp_earned": 1,
             "ytp": 9,
             "in_game": 1,
@@ -5121,7 +5121,7 @@
           "team1": {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "score": 0,
+            "score": 2.3,
             "vp_earned": 0,
             "ytp": 9,
             "in_game": 1,
@@ -5130,7 +5130,7 @@
           "team2": {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 24.75,
+            "score": 27.15,
             "vp_earned": 1,
             "ytp": 7,
             "in_game": 2,
@@ -5201,8 +5201,8 @@
           "team1": {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "score": 0,
-            "vp_earned": 0.5,
+            "score": 2.3,
+            "vp_earned": 1,
             "ytp": 9,
             "in_game": 1,
             "done": 0
@@ -5211,7 +5211,7 @@
             "id": "0007",
             "name": "Norsemen",
             "score": 0,
-            "vp_earned": 0.5,
+            "vp_earned": 0,
             "ytp": 10,
             "in_game": 0,
             "done": 0
@@ -5230,7 +5230,7 @@
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 6.23,
+            "score": 6.59,
             "vp_earned": 0,
             "ytp": 9,
             "in_game": 1,
@@ -5261,7 +5261,7 @@
           "team1": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 7.8,
+            "score": 12.49,
             "vp_earned": 0,
             "ytp": 9,
             "in_game": 1,
@@ -5281,7 +5281,7 @@
           "team1": {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 24.75,
+            "score": 27.15,
             "vp_earned": 1,
             "ytp": 7,
             "in_game": 2,
@@ -5310,7 +5310,7 @@
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 6.23,
+            "score": 6.59,
             "vp_earned": 1,
             "ytp": 9,
             "in_game": 1,
@@ -5365,6 +5365,18 @@
             "done": 0
           },
           {
+            "id": "0010",
+            "name": "The Meaty Ogres",
+            "score": 2.3,
+            "pp": 9,
+            "h2h_vp": 1,
+            "battle_vp": 0,
+            "total_weekly_vp": 1,
+            "ytp": 9,
+            "in_game": 1,
+            "done": 0
+          },
+          {
             "id": "0002",
             "name": "BattleBots",
             "score": 0,
@@ -5375,26 +5387,14 @@
             "ytp": 10,
             "in_game": 0,
             "done": 0
-          },
-          {
-            "id": "0010",
-            "name": "The Meaty Ogres",
-            "score": 0,
-            "pp": 6.7,
-            "h2h_vp": 0.5,
-            "battle_vp": 0,
-            "total_weekly_vp": 0.5,
-            "ytp": 9,
-            "in_game": 1,
-            "done": 0
           }
         ],
         "Middle Division": [
           {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 24.75,
-            "pp": 24.75,
+            "score": 27.15,
+            "pp": 27.15,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -5405,8 +5405,8 @@
           {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 7.8,
-            "pp": 7.8,
+            "score": 12.49,
+            "pp": 12.49,
             "h2h_vp": 1,
             "battle_vp": 1,
             "total_weekly_vp": 2,
@@ -5467,8 +5467,8 @@
           {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 6.23,
-            "pp": 6.23,
+            "score": 6.59,
+            "pp": 6.59,
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
@@ -5481,9 +5481,9 @@
             "name": "Norsemen",
             "score": 0,
             "pp": 0,
-            "h2h_vp": 0.5,
+            "h2h_vp": 0,
             "battle_vp": 0,
-            "total_weekly_vp": 0.5,
+            "total_weekly_vp": 0,
             "ytp": 10,
             "in_game": 0,
             "done": 0
@@ -5521,14 +5521,14 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 0.5,
+            "h2h_vp": 1,
             "battle_vp": 0,
-            "vp": 0.5,
-            "pf": 0,
-            "pp": 6.7,
-            "wins": 0,
+            "vp": 1,
+            "pf": 2.3,
+            "pp": 9,
+            "wins": 1,
             "losses": 1,
-            "ties": 1,
+            "ties": 0,
             "division": "00"
           },
           {
@@ -5552,8 +5552,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 24.75,
-            "pp": 24.75,
+            "pf": 27.15,
+            "pp": 27.15,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5565,8 +5565,8 @@
             "h2h_vp": 1,
             "battle_vp": 1,
             "vp": 2,
-            "pf": 7.8,
-            "pp": 7.8,
+            "pf": 12.49,
+            "pp": 12.49,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5632,8 +5632,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "vp": 1,
-            "pf": 6.23,
-            "pp": 6.23,
+            "pf": 6.59,
+            "pp": 6.59,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5642,14 +5642,14 @@
           {
             "id": "0007",
             "name": "Norsemen",
-            "h2h_vp": 0.5,
+            "h2h_vp": 0,
             "battle_vp": 0,
-            "vp": 0.5,
+            "vp": 0,
             "pf": 0,
             "pp": 0,
             "wins": 0,
-            "losses": 1,
-            "ties": 1,
+            "losses": 2,
+            "ties": 0,
             "division": "02"
           }
         ]
@@ -5685,14 +5685,14 @@
           {
             "id": "0010",
             "name": "The Meaty Ogres",
-            "h2h_vp": 12.5,
+            "h2h_vp": 13,
             "battle_vp": 5,
-            "vp": 17.5,
-            "pf": 1109.84,
-            "pp": 1237.9600000000003,
-            "wins": 12,
+            "vp": 18,
+            "pf": 1112.1399999999999,
+            "pp": 1240.2600000000002,
+            "wins": 13,
             "losses": 5,
-            "ties": 1,
+            "ties": 0,
             "division": "00"
           },
           {
@@ -5716,8 +5716,8 @@
             "h2h_vp": 12,
             "battle_vp": 4,
             "vp": 16,
-            "pf": 1063.1,
-            "pp": 1180.6100000000001,
+            "pf": 1065.5,
+            "pp": 1183.0100000000002,
             "wins": 12,
             "losses": 6,
             "ties": 0,
@@ -5755,8 +5755,8 @@
             "h2h_vp": 7,
             "battle_vp": 2,
             "vp": 9,
-            "pf": 939.4899999999999,
-            "pp": 1131.17,
+            "pf": 944.18,
+            "pp": 1135.8600000000001,
             "wins": 7,
             "losses": 11,
             "ties": 0,
@@ -5780,14 +5780,14 @@
           {
             "id": "0007",
             "name": "Norsemen",
-            "h2h_vp": 6.5,
+            "h2h_vp": 6,
             "battle_vp": 5,
-            "vp": 11.5,
+            "vp": 11,
             "pf": 933.85,
             "pp": 1105.1200000000001,
             "wins": 6,
-            "losses": 11,
-            "ties": 1,
+            "losses": 12,
+            "ties": 0,
             "division": "02"
           },
           {
@@ -5809,8 +5809,8 @@
             "h2h_vp": 4,
             "battle_vp": 3,
             "vp": 7,
-            "pf": 805.5899999999999,
-            "pp": 981.1999999999999,
+            "pf": 805.9499999999999,
+            "pp": 981.56,
             "wins": 4,
             "losses": 14,
             "ties": 0,
