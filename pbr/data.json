@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 2,
         "games_in_progress": 7,
-        "updated": "2026-11-08T21:15:33.956Z"
+        "updated": "2026-11-08T21:25:38.394Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5101,7 +5101,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 61.94,
+            "score": 61.98,
             "vp_earned": 1,
             "ytp": 6,
             "in_game": 0,
@@ -5110,7 +5110,7 @@
           "team2": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 50.01,
+            "score": 56.21,
             "vp_earned": 0,
             "ytp": 3,
             "in_game": 3,
@@ -5130,7 +5130,7 @@
           "team2": {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 94.78,
+            "score": 100.48,
             "vp_earned": 0,
             "ytp": 2,
             "in_game": 1,
@@ -5150,11 +5150,11 @@
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 77.45,
+            "score": 79.29,
             "vp_earned": 1,
             "ytp": 2,
-            "in_game": 5,
-            "done": 3
+            "in_game": 4,
+            "done": 4
           }
         },
         {
@@ -5164,24 +5164,24 @@
             "score": 67.2,
             "vp_earned": 0,
             "ytp": 5,
-            "in_game": 2,
-            "done": 3
+            "in_game": 1,
+            "done": 4
           },
           "team2": {
             "id": "0006",
             "name": "Ted Lasso",
-            "score": 76.26,
+            "score": 76.58,
             "vp_earned": 1,
             "ytp": 3,
-            "in_game": 2,
-            "done": 5
+            "in_game": 1,
+            "done": 6
           }
         },
         {
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 61.94,
+            "score": 61.98,
             "vp_earned": 0,
             "ytp": 6,
             "in_game": 0,
@@ -5190,7 +5190,7 @@
           "team2": {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 67.43,
+            "score": 71.4,
             "vp_earned": 1,
             "ytp": 2,
             "in_game": 3,
@@ -5210,11 +5210,11 @@
           "team2": {
             "id": "0007",
             "name": "Norsemen",
-            "score": 35.18,
+            "score": 35.48,
             "vp_earned": 0,
             "ytp": 5,
-            "in_game": 3,
-            "done": 2
+            "in_game": 2,
+            "done": 3
           }
         },
         {
@@ -5230,11 +5230,11 @@
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 65.76,
+            "score": 73.36,
             "vp_earned": 1,
             "ytp": 2,
-            "in_game": 4,
-            "done": 4
+            "in_game": 3,
+            "done": 5
           }
         },
         {
@@ -5244,24 +5244,24 @@
             "score": 67.2,
             "vp_earned": 1,
             "ytp": 5,
-            "in_game": 2,
-            "done": 3
+            "in_game": 1,
+            "done": 4
           },
           "team2": {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 49.2,
+            "score": 50,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 4,
-            "done": 4
+            "in_game": 3,
+            "done": 5
           }
         },
         {
           "team1": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 50.01,
+            "score": 56.21,
             "vp_earned": 0,
             "ytp": 3,
             "in_game": 3,
@@ -5270,7 +5270,7 @@
           "team2": {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 67.43,
+            "score": 71.4,
             "vp_earned": 1,
             "ytp": 2,
             "in_game": 3,
@@ -5281,7 +5281,7 @@
           "team1": {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 94.78,
+            "score": 100.48,
             "vp_earned": 1,
             "ytp": 2,
             "in_game": 1,
@@ -5290,51 +5290,51 @@
           "team2": {
             "id": "0007",
             "name": "Norsemen",
-            "score": 35.18,
+            "score": 35.48,
             "vp_earned": 0,
             "ytp": 5,
-            "in_game": 3,
-            "done": 2
+            "in_game": 2,
+            "done": 3
           }
         },
         {
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 77.45,
+            "score": 79.29,
             "vp_earned": 1,
             "ytp": 2,
-            "in_game": 5,
-            "done": 3
+            "in_game": 4,
+            "done": 4
           },
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 65.76,
+            "score": 73.36,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 4,
-            "done": 4
+            "in_game": 3,
+            "done": 5
           }
         },
         {
           "team1": {
             "id": "0006",
             "name": "Ted Lasso",
-            "score": 76.26,
+            "score": 76.58,
             "vp_earned": 1,
             "ytp": 3,
-            "in_game": 2,
-            "done": 5
+            "in_game": 1,
+            "done": 6
           },
           "team2": {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 49.2,
+            "score": 50,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 4,
-            "done": 4
+            "in_game": 3,
+            "done": 5
           }
         }
       ],
@@ -5344,7 +5344,7 @@
             "id": "0010",
             "name": "The Meaty Ogres",
             "score": 123.26,
-            "pp": 150.38,
+            "pp": 151.02,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -5361,14 +5361,14 @@
             "battle_vp": 1,
             "total_weekly_vp": 2,
             "ytp": 5,
-            "in_game": 2,
-            "done": 3
+            "in_game": 1,
+            "done": 4
           },
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 61.94,
-            "pp": 69.94,
+            "score": 61.98,
+            "pp": 71.98,
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
@@ -5380,7 +5380,7 @@
             "id": "0001",
             "name": "Orcan Terror",
             "score": 61.73,
-            "pp": 109.97,
+            "pp": 111.52,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
@@ -5393,8 +5393,8 @@
           {
             "id": "0003",
             "name": "Shankly's Ghost",
-            "score": 94.78,
-            "pp": 113.09,
+            "score": 100.48,
+            "pp": 118.79,
             "h2h_vp": 1,
             "battle_vp": 1,
             "total_weekly_vp": 2,
@@ -5405,32 +5405,32 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 77.45,
-            "pp": 104.85,
+            "score": 79.29,
+            "pp": 107.54,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 2,
-            "in_game": 5,
-            "done": 3
+            "in_game": 4,
+            "done": 4
           },
           {
             "id": "0006",
             "name": "Ted Lasso",
-            "score": 76.26,
-            "pp": 98.51,
+            "score": 76.58,
+            "pp": 98.83,
             "h2h_vp": 2,
             "battle_vp": 0,
             "total_weekly_vp": 2,
             "ytp": 3,
-            "in_game": 2,
-            "done": 5
+            "in_game": 1,
+            "done": 6
           },
           {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 50.01,
-            "pp": 50.51,
+            "score": 56.21,
+            "pp": 56.71,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
@@ -5441,10 +5441,22 @@
         ],
         "Lower Division": [
           {
+            "id": "0008",
+            "name": "The Two Tones",
+            "score": 73.36,
+            "pp": 102.51,
+            "h2h_vp": 1,
+            "battle_vp": 1,
+            "total_weekly_vp": 2,
+            "ytp": 2,
+            "in_game": 3,
+            "done": 5
+          },
+          {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 67.43,
-            "pp": 83.53,
+            "score": 71.4,
+            "pp": 87.4,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -5453,40 +5465,28 @@
             "done": 5
           },
           {
-            "id": "0008",
-            "name": "The Two Tones",
-            "score": 65.76,
-            "pp": 96.51,
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "total_weekly_vp": 2,
-            "ytp": 2,
-            "in_game": 4,
-            "done": 4
-          },
-          {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 49.2,
-            "pp": 55.8,
+            "score": 50,
+            "pp": 56.6,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 2,
-            "in_game": 4,
-            "done": 4
+            "in_game": 3,
+            "done": 5
           },
           {
             "id": "0007",
             "name": "Norsemen",
-            "score": 35.18,
-            "pp": 58.48,
+            "score": 35.48,
+            "pp": 58.78,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 5,
-            "in_game": 3,
-            "done": 2
+            "in_game": 2,
+            "done": 3
           }
         ]
       },
@@ -5499,7 +5499,7 @@
             "battle_vp": 1,
             "vp": 3,
             "pf": 123.26,
-            "pp": 150.38,
+            "pp": 151.02,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5524,8 +5524,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "vp": 1,
-            "pf": 61.94,
-            "pp": 69.94,
+            "pf": 61.98,
+            "pp": 71.98,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5538,7 +5538,7 @@
             "battle_vp": 0,
             "vp": 0,
             "pf": 61.73,
-            "pp": 109.97,
+            "pp": 111.52,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5552,8 +5552,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 77.45,
-            "pp": 104.85,
+            "pf": 79.29,
+            "pp": 107.54,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5565,8 +5565,8 @@
             "h2h_vp": 1,
             "battle_vp": 1,
             "vp": 2,
-            "pf": 94.78,
-            "pp": 113.09,
+            "pf": 100.48,
+            "pp": 118.79,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5578,8 +5578,8 @@
             "h2h_vp": 2,
             "battle_vp": 0,
             "vp": 2,
-            "pf": 76.26,
-            "pp": 98.51,
+            "pf": 76.58,
+            "pp": 98.83,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5591,8 +5591,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 50.01,
-            "pp": 50.51,
+            "pf": 56.21,
+            "pp": 56.71,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5606,8 +5606,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 67.43,
-            "pp": 83.53,
+            "pf": 71.4,
+            "pp": 87.4,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5619,8 +5619,8 @@
             "h2h_vp": 1,
             "battle_vp": 1,
             "vp": 2,
-            "pf": 65.76,
-            "pp": 96.51,
+            "pf": 73.36,
+            "pp": 102.51,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5632,8 +5632,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 49.2,
-            "pp": 55.8,
+            "pf": 50,
+            "pp": 56.6,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5645,8 +5645,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 35.18,
-            "pp": 58.48,
+            "pf": 35.48,
+            "pp": 58.78,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5662,8 +5662,8 @@
             "h2h_vp": 13,
             "battle_vp": 8,
             "vp": 21,
-            "pf": 1266.5900000000001,
-            "pp": 1462.2100000000003,
+            "pf": 1266.63,
+            "pp": 1464.2500000000002,
             "wins": 13,
             "losses": 5,
             "ties": 0,
@@ -5676,7 +5676,7 @@
             "battle_vp": 6,
             "vp": 20,
             "pf": 1233.1,
-            "pp": 1381.6400000000003,
+            "pp": 1382.2800000000002,
             "wins": 14,
             "losses": 4,
             "ties": 0,
@@ -5689,7 +5689,7 @@
             "battle_vp": 4,
             "vp": 16,
             "pf": 1141.3000000000002,
-            "pp": 1443.71,
+            "pp": 1445.26,
             "wins": 12,
             "losses": 6,
             "ties": 0,
@@ -5716,8 +5716,8 @@
             "h2h_vp": 11,
             "battle_vp": 5,
             "vp": 16,
-            "pf": 1130.46,
-            "pp": 1313.8799999999999,
+            "pf": 1130.78,
+            "pp": 1314.1999999999998,
             "wins": 11,
             "losses": 7,
             "ties": 0,
@@ -5729,8 +5729,8 @@
             "h2h_vp": 11,
             "battle_vp": 4,
             "vp": 15,
-            "pf": 1133.1299999999999,
-            "pp": 1268.95,
+            "pf": 1138.83,
+            "pp": 1274.65,
             "wins": 11,
             "losses": 7,
             "ties": 0,
@@ -5742,8 +5742,8 @@
             "h2h_vp": 8,
             "battle_vp": 4,
             "vp": 12,
-            "pf": 1103.7800000000002,
-            "pp": 1310.8600000000001,
+            "pf": 1105.6200000000001,
+            "pp": 1313.5500000000002,
             "wins": 8,
             "losses": 10,
             "ties": 0,
@@ -5755,8 +5755,8 @@
             "h2h_vp": 6,
             "battle_vp": 1,
             "vp": 7,
-            "pf": 981.6999999999999,
-            "pp": 1173.88,
+            "pf": 987.9,
+            "pp": 1180.0800000000002,
             "wins": 6,
             "losses": 12,
             "ties": 0,
@@ -5770,8 +5770,8 @@
             "h2h_vp": 10,
             "battle_vp": 5,
             "vp": 15,
-            "pf": 957.5699999999999,
-            "pp": 1173.1499999999999,
+            "pf": 961.5399999999998,
+            "pp": 1177.02,
             "wins": 10,
             "losses": 8,
             "ties": 0,
@@ -5783,8 +5783,8 @@
             "h2h_vp": 6,
             "battle_vp": 5,
             "vp": 11,
-            "pf": 969.03,
-            "pp": 1163.6000000000001,
+            "pf": 969.33,
+            "pp": 1163.9,
             "wins": 6,
             "losses": 12,
             "ties": 0,
@@ -5796,8 +5796,8 @@
             "h2h_vp": 4,
             "battle_vp": 4,
             "vp": 8,
-            "pf": 865.1199999999999,
-            "pp": 1071.48,
+            "pf": 872.7199999999999,
+            "pp": 1077.48,
             "wins": 4,
             "losses": 14,
             "ties": 0,
@@ -5809,8 +5809,8 @@
             "h2h_vp": 3,
             "battle_vp": 2,
             "vp": 5,
-            "pf": 843.54,
-            "pp": 1000.0899999999999,
+            "pf": 844.3399999999999,
+            "pp": 1000.89,
             "wins": 3,
             "losses": 15,
             "ties": 0,
