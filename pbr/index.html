@@ -630,7 +630,7 @@
         container.innerHTML += `
           <div class="bg-slate-900 border ${isT1Focused || isT2Focused ? 'border-sky-400/80 ring-1 ring-sky-400/50' : 'border-slate-800'} rounded-xl p-2.5 shadow-md space-y-1.5">
             <!-- Team 1 -->
-            <div class="flex justify-between items-center text-xs ${isT1Focused ? 'bg-sky-950/70 p-1 rounded border border-sky-500/40' : ''} ${team1Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
+            <div class="flex justify-between items-center text-xs p-1 rounded border ${isT1Focused ? 'bg-sky-950/70 border-sky-500/40' : 'border-transparent'} ${team1Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT1Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team1.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
                 ${live ? liveChip(m.team1) : (team1Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
@@ -640,7 +640,7 @@
             <!-- VS Divider -->
             <div class="border-t border-slate-800 my-0.5"></div>
             <!-- Team 2 -->
-            <div class="flex justify-between items-center text-xs ${isT2Focused ? 'bg-sky-950/70 p-1 rounded border border-sky-500/40' : ''} ${team2Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
+            <div class="flex justify-between items-center text-xs p-1 rounded border ${isT2Focused ? 'bg-sky-950/70 border-sky-500/40' : 'border-transparent'} ${team2Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT2Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team2.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
                 ${live ? liveChip(m.team2) : (team2Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
@@ -679,7 +679,7 @@
           const isFocused = (t.id === focusedTeamId);
 
           rowsHtml += `
-            <div class="flex items-center justify-between py-1.5 px-2 rounded-lg ${isFocused ? 'bg-sky-950/80 border border-sky-400/80 ring-1 ring-sky-400/40' : (isBRWinner ? 'bg-slate-950/90 border border-slate-800' : 'bg-slate-950/40')} text-xs">
+            <div class="flex items-center justify-between py-1.5 px-2 rounded-lg border ${isFocused ? 'bg-sky-950/80 border-sky-400/80 ring-1 ring-sky-400/40' : (isBRWinner ? 'bg-slate-950/90 border-slate-800' : 'bg-slate-950/40 border-transparent')} text-xs">
               <div class="flex items-center gap-1.5 overflow-hidden min-w-0 pr-1">
                 <span class="font-bold text-slate-500 w-3 text-right shrink-0">${idx + 1}.</span>
                 <span class="font-bold ${isFocused ? 'text-sky-300 font-black' : 'text-slate-200'} truncate">${t.name}</span>
