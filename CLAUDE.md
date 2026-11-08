@@ -22,7 +22,8 @@ fantasy-football/ (Repo Root)
 │   ├── pbr_dailyscore.yml        # PBR: daily 2 AM + 10-min game-window score sync (week in progress shows as tentative)
 │   ├── pbr_tokens.yml            # PBR: daily token ledger + monthly KTC values
 │   ├── pbr_sync.yml              # PBR: Tuesday sync + custom Gemmy announcement
-│   └── gemmy_alerts.yml          # PBR: ad-hoc Gemmy Slack announcement
+│   ├── gemmy_alerts.yml          # PBR: ad-hoc Gemmy Slack announcement
+│   └── pages_deploy.yml          # Both: publishes the site to GitHub Pages (see GitHub Pages below)
 ├── common/                       # Shared MFL client + csetup form helper (ES Modules, own package.json)
 ├── ultimate/                     # Ultimate league (ES Modules, own package.json)
 ├── pbr/                          # PBR league (currently CommonJS)
@@ -134,6 +135,15 @@ Rules for shared code:
 * **MFL identifiers:** Franchise IDs MUST always be zero-padded 4-digit strings (e.g., `"0001"`, `"0009"`). Week numbers are integers `1` to `18`.
 * **Git workflow:** Commit directly to `main` (no PR flow). Mark meaningful releases with **tags**. Suggested format: `<league>-<season>-w<week>` (for example `pbr-2026-w8`), or `vYYYY.MM.DD` for repo-wide changes.
 * **Git staging scope:** Stage only the target directory (e.g., `git add ultimate/`) to avoid picking up uncommitted files in sibling league folders like `pbr/`.
+
+---
+
+## GitHub Pages
+
+* Pages source is **GitHub Actions** (`pages_deploy.yml`), switched from "Deploy from a branch" on 2026-11-07. The branch build has a soft limit of 10 builds per hour, and game-day live syncs from both leagues (every 10 minutes each) reach about 12. A custom workflow has no such limit. No Jekyll: files are served as they are, so `.md` files show as plain text.
+* It deploys on people's pushes to `main`, by hand, and via `workflow_run` after each data-committing workflow, only if that run moved `main`. Bot pushes made with `GITHUB_TOKEN` never start workflows themselves.
+* **A new workflow that commits to `main` must be added to the `workflow_run` list** in `pages_deploy.yml`, or its commits won't publish until the next deploy. The names are glob patterns: avoid `* + ? ! [ ]` in workflow names (`PBR Score Sync (daily + live)` never matched until it was renamed `… (daily and live)`).
+* To go back to branch builds: Settings → Pages → Source → "Deploy from a branch" (`main`, `/`).
 
 ---
 
