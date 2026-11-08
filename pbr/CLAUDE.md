@@ -32,6 +32,8 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
   * `quarterSchedule` / `scheduleLine`: the importer sheet's matrix. In quarter week k, Upper #i plays Middle #(i+k) and Lower #(i+k), and Middle #i plays Lower #(i+k), mod 4. Lines are `WW,FFFF,FFFF`.
   * `postseasonBonus`: §6.
 * **`mfl_scores_fetcher.js`**: Reads MFL exports (league, weekly results; no login). Computes per-week H2H VP, in-division VP, PF/PP, quarter and season standings, and P&R after Weeks 4/8/12. Writes `data.json`, including `quarter_slots` and `promotion_relegation`. Starts from `Q1_SLOTS`; later quarters' divisions come from its own P&R. Its old `TYPE=adjustScores` VP push was removed 2026-10-27.
+  * **Week in progress (2026-11-07):** MFL `weeklyResults` has no scores until a week is final, so once the MFL live week's first NFL game kicks off the fetcher reads `liveScoring&DETAILS=1`, `nflSchedule` and `players` and writes that week as `played: false` with a `live` block and tentative scores, VP, PP and standings. Tentative PP is the best legal lineup from every rostered player's points so far (`pbr_rules.js` `optimalLineupPoints`, built from the `league` export's `starters` rules; it matched MFL `opt_pts` for all 12 teams in Week 8). Per team it adds `ytp` / `in_game` / `done` starter counts; a bye starter is YTP until the week's last kickoff.
+  * The live week never feeds the running totals, so later weeks, P&R and every consumer that checks `played` (VP push, Gemmy recap, prizes) see only final weeks. A week with MFL results also stays in progress while any of its NFL games is not final.
 * **`commish_mfl_actions.js`**: The commissioner's MFL steps for week W (RULES.md §10). Reads MFL, compares it with `data.json`, prints a checklist (also to the Actions run summary), writes only what MFL is missing, then re-reads MFL and fails if a written step isn't there. See "MFL commish automation" below. Replaced `mfl_updater.js` (removed 2026-10-27).
 
 ### Recaps ("Gemmy") and Slack
@@ -78,13 +80,13 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 * **Verified 2026-10-27:** all 13 trades valued by hand in the sheet (March-August) reproduce every asset value exactly.
 
 ### Frontend (GitHub Pages)
-* **`index.html` + `pbr.js`**: Standings and weekly results dashboard (reads `data.json`).
+* **`index.html` + `pbr.js`**: Standings and weekly results dashboard (reads `data.json`). Opens on the week in progress if there is one: a blue banner (games final, last update), and in H2H and Battle Royale three numbered starter chips left of the score where "+1 VP" goes once the week is final: blue = yet to play, yellow = playing now, red = done (legend right of the H2H header). Standings that include the live week carry a "Tentative" note. While a week is in progress the page re-reads `data.json` every 2 minutes (and when the tab regains focus) and re-renders only if it changed.
 * **`tokens.html` + `tokens.js`**: Token tracker (reads `tokens_data.json`; the values tab loads `ktc-values/KTC-<month>.json`). Until 2026-10-27 the page loaded `pbr/tokens.js` (a 404), so it never rendered.
 * **`prizes.html`**: Prize tracker. Quarter division winners are 1st place in `weekly_data[4/8/12].quarter_standings`, which the fetcher ranks with the P&R tiebreakers (`pbr_rules.js` `rankStandings`); the quarter high scorer is the top quarter PF (ties share).
 
 ### Data files
 * **`data.json`**: Single source of truth for PBR league state.
-  * `weekly_data["1".."12"]` → `{ week, quarter, played, active_divisions, matchups[], recap }`.
+  * `weekly_data["1".."12"]` → `{ week, quarter, played, live?, active_divisions, matchups[], battle_royale, quarter_standings, season_standings, recap }`. `live` = `{ games_total, games_final, games_in_progress, updated }` only on the week in progress (`updated` changes only when the numbers do).
   * Division codes: `"00"` = Upper, `"01"` = Middle, `"02"` = Lower.
 * **`tokens_data.json`**: Token ledger (`version: 2`): `teams[fid]` balances with `by_period`, `trades` (each side's assets and values), `waivers` (claims of the minimum or more), `promotions`, `adjustments`, `periods`, `warnings`. Generated; edit `token_settings.json` instead.
 
@@ -95,6 +97,7 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 | Workflow | Trigger | What it runs |
 | --- | --- | --- |
 | `pbr_endweek.yml` | `workflow_dispatch` (inputs `week`, `mfl_mode` auto/dry-run/apply/inspect/skip, `recap_mode` auto/draft/publish/skip, `recap_notes`, `post_to_slack`, `force_recap`), `repository_dispatch: pbr-endweek-trigger` (`client_payload.recap_mode`, default auto; MFL step runs in auto) | `mfl_scores_fetcher.js` → `commish_mfl_actions.js` → `generate_post.js`, then commits `data.json` and `gemmy_drafts/`. The recap and the commit run even if the MFL step failed; the job still fails. |
+| `pbr_dailyscore.yml` | `workflow_dispatch`, `repository_dispatch: pbr-dailyscore-trigger` (daily) and `pbr-livescore-trigger` (game windows) | `mfl_scores_fetcher.js` only (read-only on MFL), then commits `data.json` if it changed. Shares the `pbr-data` concurrency group with `pbr_endweek.yml`. |
 | `pbr_tokens.yml` | `workflow_dispatch` (input `refetch_ktc`), `repository_dispatch: pbr-tokens-trigger` | `ktc_fetcher.js` (only if this month's snapshot is missing) → `token_tracker.js`, then commits `tokens_data.json` and `ktc-values/` |
 | `pbr_gemini_check.yml` | `workflow_dispatch` (inputs `models`, `timeout_seconds`) | `gemini_check.js`: read-only model list and timing |
 | `pbr_slack_check.yml` | `workflow_dispatch` | `slack_check.js`: read-only check of the bot token's scopes, its membership in the four PBR channels, and the `PBR_SLACK_OWNERS` @mention map (names each mapped owner if the token has `users:read`) |
@@ -104,6 +107,9 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 External dispatches come from Google Apps Script (same project and `GITHUB_PAT` / `GITHUB_OWNER` / `GITHUB_REPO` properties as Ultimate; see the root `CLAUDE.md`). The code is `apps_script_triggers.gs`:
 * Every Tuesday about 6 AM Pacific it sends `pbr-endweek-trigger` with `recap_mode` from `PBR_RECAP_MODE`.
 * Every day about 9 AM Pacific (`installPbrDailyTokenTrigger`) it sends `pbr-tokens-trigger`.
+* Every day about 2 AM Pacific (`installPbrDailyScoreTrigger`, added 2026-11-07) it sends `pbr-dailyscore-trigger`, so the dashboard shows the previous day's games as tentative results.
+* Every 10 minutes (`installPbrLiveTrigger`, added 2026-11-07) `pbrLiveTick` reads MFL's `nflSchedule` (cached 30 min) and sends `pbr-livescore-trigger` only while a game is between kickoff and kickoff + 4.5 h, like Ultimate's live tick. Every run whose numbers changed commits `data.json`, so a full Sunday is roughly 60-70 commits.
+* Rollback point before live scoring: tag `pbr-2.0.0`; live scoring shipped as `pbr-2.1.0`.
 
 **Reviewing a recap before it posts:** run `pbr_endweek.yml` with `recap_mode = draft`, edit the committed `pbr/gemmy_drafts/week_<N>.md` (or rerun draft with `recap_notes`), then run with `recap_mode = publish`. The second run's MFL step finds nothing missing, so it writes nothing.
 

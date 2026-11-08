@@ -159,6 +159,43 @@ function postseasonBonus(season, divisions) {
 
 const round2 = n => Math.round(n * 100) / 100;
 
+/**
+ * Potential Points: the best legal lineup from a roster's points. Used for the tentative PP of a
+ * week in progress (MFL's opt_pts only appears once the week is final).
+ * players: [{ pos, score }]. rules: MFL league.starters, { count, position: [{ name, limit: "1-2" }] }
+ * (PBR: 10 starters, QB 1-2, RB/WR/TE 1-7, i.e. QB, RB, WR, TE, Superflex, 5 Flex).
+ * Fill each position's minimum with its best players, then the open slots with the best remaining
+ * players while each position stays under its maximum (a partition matroid, so greedy is optimal).
+ */
+function optimalLineupPoints(players, rules) {
+  const limits = {};
+  for (const p of [].concat(rules?.position || [])) {
+    const [min, max] = String(p.limit).split('-').map(Number);
+    limits[p.name] = { min: min || 0, max: Number.isFinite(max) ? max : (min || 0) };
+  }
+  const byPos = {};
+  for (const p of players) {
+    if (!limits[p.pos]) continue;
+    (byPos[p.pos] = byPos[p.pos] || []).push(Number(p.score) || 0);
+  }
+  Object.values(byPos).forEach(list => list.sort((a, b) => b - a));
+
+  let open = Number(rules?.count) || 0;
+  let total = 0;
+  const used = {};
+  for (const [pos, { min }] of Object.entries(limits)) {
+    const take = (byPos[pos] || []).slice(0, Math.min(min, open));
+    used[pos] = take.length;
+    open -= take.length;
+    total += take.reduce((s, v) => s + v, 0);
+  }
+  const rest = Object.entries(byPos)
+    .flatMap(([pos, list]) => list.slice(used[pos], limits[pos].max))
+    .sort((a, b) => b - a);
+  total += rest.slice(0, Math.max(0, open)).reduce((s, v) => s + v, 0);
+  return round2(total);
+}
+
 module.exports = {
   QUARTER_WEEKS,
   inDivisionVPs,
@@ -167,5 +204,6 @@ module.exports = {
   nextQuarterSlots,
   quarterSchedule,
   scheduleLine,
-  postseasonBonus
+  postseasonBonus,
+  optimalLineupPoints
 };

@@ -88,11 +88,26 @@
       <div class="lg:col-span-8 space-y-6">
 
         <!-- 1. Head-to-Head Matchups -->
+        <!-- Week in progress: everything on the page for this week is tentative -->
+        <div id="live-banner"
+          class="hidden bg-blue-950/40 border border-blue-500/30 rounded-xl px-3 py-2 text-xs text-blue-200 flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span class="flex items-center gap-1.5 font-black uppercase tracking-wider text-blue-300">
+            <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-400"></span></span>
+            <span id="live-banner-title">Week in progress</span>
+          </span>
+          <span id="live-banner-text" class="text-slate-300"></span>
+        </div>
+
         <section class="space-y-3">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-3">
             <h2 class="text-base font-black text-slate-100 flex items-center gap-2">
               <span>🏟️</span> Head-to-Head Matchups
             </h2>
+            <div id="live-legend" class="hidden items-center gap-1 text-[10px] text-slate-400 shrink-0" title="Starters per team">
+              <span class="px-1 py-0.5 text-[9px] font-bold rounded border bg-blue-500/20 text-blue-300 border-blue-500/40">YTP</span>
+              <span class="px-1 py-0.5 text-[9px] font-bold rounded border bg-yellow-400/20 text-yellow-300 border-yellow-400/50">Live</span>
+              <span class="px-1 py-0.5 text-[9px] font-bold rounded border bg-red-500/20 text-red-400 border-red-500/40">Done</span>
+            </div>
           </div>
           <div id="matchups-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <!-- Rendered dynamically -->
@@ -139,7 +154,7 @@
             <div class="flex items-center gap-3 min-w-0">
               <span class="text-2xl">👑</span>
               <div class="min-w-0">
-                <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Weekly Prize - League High
+                <div id="cash-king-label" class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Weekly Prize - League High
                   Score</div>
                 <h2 id="cash-king-name" class="text-sm font-black text-slate-100 truncate">---</h2>
               </div>
@@ -280,6 +295,23 @@
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
 
+    // A week in progress (data.json weekly_data[w].live): scores, VP, PP and standings are tentative.
+    const isLiveWeek = wObj => !!(wObj && !wObj.played && wObj.live);
+    const hasScores = wObj => !!(wObj && (wObj.played || isLiveWeek(wObj)));
+    const fmtVP = v => Number.isInteger(v) ? String(v) : (Math.round(v * 100) / 100).toFixed(2);
+
+    // Starter counts for a team in the week in progress: blue = yet to play, yellow = playing now, red = done.
+    const CHIP_COLORS = {
+      ytp: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+      live: 'bg-yellow-400/20 text-yellow-300 border-yellow-400/50',
+      done: 'bg-red-500/20 text-red-400 border-red-500/40'
+    };
+    const countChip = (kind, n, label) =>
+      `<span title="${n} ${label}" class="inline-block min-w-[1.25rem] px-1 py-0.5 text-[9px] text-center font-bold rounded border ${CHIP_COLORS[kind]}">${n}</span>`;
+    function liveChip(t) {
+      return `<span class="inline-flex items-center gap-0.5">${countChip('ytp', t.ytp || 0, 'yet to play')}${countChip('live', t.in_game || 0, 'playing now')}${countChip('done', t.done || 0, 'done')}</span>`;
+    }
+
     function teamNameById(fid) {
       const weeks = (leagueData && leagueData.weekly_data) ? Object.values(leagueData.weekly_data) : [];
       for (const w of weeks) {
@@ -308,13 +340,15 @@
       try {
         const response = await fetch(`data.json?t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        leagueData = await response.json();
+        lastDataText = await response.text();
+        leagueData = JSON.parse(lastDataText);
 
         // Populate Team Focus Dropdown
         populateTeamFocusDropdown();
 
-        // Determine latest played week
-        const latestKey = getLatestPlayedWeekKey();
+        // Open on the week in progress, else the latest played week
+        const liveKey = Object.keys(leagueData.weekly_data || {}).find(k => isLiveWeek(leagueData.weekly_data[k]));
+        const latestKey = liveKey || getLatestPlayedWeekKey();
         const latestWeekObj = (leagueData && leagueData.weekly_data) ? leagueData.weekly_data[latestKey] : null;
         if (latestWeekObj) {
           selectedQuarter = latestWeekObj.quarter || 1;
@@ -325,6 +359,15 @@
         renderWeekChips();
         toggleStandings('current');
         renderWeek(selectedWeek);
+
+        // While a week is in progress, data.json is rebuilt every 10 minutes during games;
+        // pick up new scores without a reload, keeping the viewer's selected week and filters.
+        if (liveKey) {
+          setInterval(refreshLiveData, LIVE_REFRESH_MS);
+          document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') refreshLiveData();
+          });
+        }
       } catch (err) {
         console.error("Failed to load league data:", err);
         const mainEl = document.querySelector('main');
@@ -336,6 +379,24 @@
               <p class="text-xs text-slate-400 mt-2">Please check browser console (F12) for details.</p>
             </div>`;
         }
+      }
+    }
+
+    const LIVE_REFRESH_MS = 2 * 60 * 1000;
+    let lastDataText = null;
+
+    async function refreshLiveData() {
+      try {
+        const res = await fetch(`data.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) return;
+        const text = await res.text();
+        if (text === lastDataText) return;
+        lastDataText = text;
+        leagueData = JSON.parse(text);
+        renderWeekChips();
+        renderWeek(selectedWeek);
+      } catch (e) {
+        console.warn('Live refresh failed', e);
       }
     }
 
@@ -433,7 +494,13 @@
         const isSelected = (wKey === selectedWeek);
         const btn = document.createElement('button');
         btn.onclick = () => selectWeek(wKey);
-        if (isSelected) {
+        if (isLiveWeek(wObj)) {
+          btn.className = isSelected
+            ? "px-2.5 py-1 text-xs font-black rounded-lg bg-amber-500 text-slate-950 shadow-md transition cursor-pointer flex items-center gap-1"
+            : "px-2.5 py-1 text-xs font-bold rounded-lg bg-blue-950 text-blue-200 border border-blue-500/50 hover:bg-blue-900 transition cursor-pointer flex items-center gap-1";
+          btn.title = 'In progress (tentative)';
+          btn.innerHTML = `<span class="inline-flex rounded-full h-1.5 w-1.5 bg-blue-400"></span>Wk ${wKey}`;
+        } else if (isSelected) {
           btn.className = "px-2.5 py-1 text-xs font-black rounded-lg bg-amber-500 text-slate-950 shadow-md transition cursor-pointer";
           btn.textContent = `Wk ${wKey}`;
         } else if (isPlayed) {
@@ -470,10 +537,13 @@
       // Update Recap Button Label ("View Gemmy's Week X Recap")
       updateRecapButtonText();
 
+      const live = isLiveWeek(weekObj);
+      renderLiveBanner(weekObj);
+
       // 1. Identify Weekly High Scorer
       let maxScore = -1;
       let cashKing = null;
-      if (weekObj && weekObj.played && weekObj.battle_royale) {
+      if (hasScores(weekObj) && weekObj.battle_royale) {
         Object.values(weekObj.battle_royale).forEach(teams => {
           teams.forEach(t => {
             if (t.score > maxScore) {
@@ -487,6 +557,7 @@
       const cashKingBanner = document.getElementById('cash-king-banner');
       if (cashKingBanner) {
         if (cashKing && maxScore > 0) {
+          document.getElementById('cash-king-label').textContent = live ? 'Weekly Prize - Current Leader (Tentative)' : 'Weekly Prize - League High Score';
           document.getElementById('cash-king-name').textContent = cashKing.name;
           document.getElementById('cash-king-score').textContent = `${cashKing.score.toFixed(2)} PF`;
           cashKingBanner.classList.remove('hidden');
@@ -511,12 +582,30 @@
       renderStandings();
     }
 
+    function renderLiveBanner(weekObj) {
+      const live = isLiveWeek(weekObj);
+      const banner = document.getElementById('live-banner');
+      const legend = document.getElementById('live-legend');
+      banner?.classList.toggle('hidden', !live);
+      legend?.classList.toggle('hidden', !live);
+      legend?.classList.toggle('flex', live);
+      if (!live) return;
+      const l = weekObj.live;
+      const when = l.updated ? new Date(l.updated).toLocaleString([], { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : '';
+      document.getElementById('live-banner-title').textContent = `Week ${weekObj.week} in progress`;
+      document.getElementById('live-banner-text').textContent =
+        `Tentative results, VP and standings · ${l.games_final} of ${l.games_total} NFL games final` +
+        (l.games_in_progress ? `, ${l.games_in_progress} in progress` : '') +
+        (when ? ` · updated ${when}` : '') + ' · final after Monday Night Football';
+    }
+
     function renderMatchups(weekObj) {
       const container = document.getElementById('matchups-grid');
       if (!container) return;
       container.innerHTML = '';
+      const live = isLiveWeek(weekObj);
 
-      if (!weekObj || !weekObj.played || !weekObj.matchups || weekObj.matchups.length === 0) {
+      if (!hasScores(weekObj) || !weekObj.matchups || weekObj.matchups.length === 0) {
         container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-500 py-6 bg-slate-900/50 border border-slate-800 rounded-xl">Matchups not played yet for Week ${weekObj ? weekObj.week : selectedWeek}.</div>`;
         return;
       }
@@ -544,7 +633,7 @@
             <div class="flex justify-between items-center text-xs ${isT1Focused ? 'bg-sky-950/70 p-1 rounded border border-sky-500/40' : ''} ${team1Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT1Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team1.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
-                ${team1Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : ''}
+                ${live ? liveChip(m.team1) : (team1Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
                 <span class="font-bold text-xs w-14 text-right ${team1Won ? 'text-emerald-400' : 'text-slate-400'}">${m.team1.score.toFixed(2)}</span>
               </div>
             </div>
@@ -554,7 +643,7 @@
             <div class="flex justify-between items-center text-xs ${isT2Focused ? 'bg-sky-950/70 p-1 rounded border border-sky-500/40' : ''} ${team2Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT2Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team2.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
-                ${team2Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : ''}
+                ${live ? liveChip(m.team2) : (team2Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
                 <span class="font-bold text-xs w-14 text-right ${team2Won ? 'text-emerald-400' : 'text-slate-400'}">${m.team2.score.toFixed(2)}</span>
               </div>
             </div>
@@ -567,7 +656,8 @@
       if (!container) return;
       container.innerHTML = '';
 
-      if (!weekObj || !weekObj.played || !weekObj.battle_royale) {
+      const live = isLiveWeek(weekObj);
+      if (!hasScores(weekObj) || !weekObj.battle_royale) {
         container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-500 py-6 bg-slate-900/50 border border-slate-800 rounded-xl">Battle Royale results not played yet for Week ${weekObj ? weekObj.week : selectedWeek}.</div>`;
         return;
       }
@@ -596,7 +686,7 @@
               </div>
               <div class="flex items-center gap-1 shrink-0">
                 ${isCashKing ? `<span class="text-xs" title="Weekly High Score Winner">💰</span>` : ''}
-                ${isBRWinner ? `<span class="px-1 py-0.5 text-[9px] font-bold bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">+1 VP</span>` : ''}
+                ${live ? liveChip(t) : (isBRWinner ? `<span class="px-1 py-0.5 text-[9px] font-bold bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">+1 VP</span>` : '')}
                 <span class="font-bold text-xs w-12 text-right ${isBRWinner ? 'text-amber-400' : 'text-slate-400'}">${t.score.toFixed(2)}</span>
               </div>
             </div>`;
@@ -763,7 +853,7 @@
 
       for (let w = startWeekNum; w <= endWeekNum; w++) {
         const wData = leagueData.weekly_data[w.toString()];
-        if (wData && wData.played && wData.battle_royale) {
+        if (hasScores(wData) && wData.battle_royale) {
           Object.entries(wData.battle_royale).forEach(([divName, teams]) => {
             teams.forEach(t => {
               if (!qStats[divName]) qStats[divName] = {};
@@ -807,6 +897,7 @@
 
       let standingsData = null;
       let seasonAsOf = null;
+      let tentativeWeek = null; // a week in progress counted in the table
       // Final P&R replaces the projection when the table covers the whole, finished quarter.
       let actualPR = null;
       if (standingsMode === 'current') {
@@ -814,13 +905,19 @@
         const endW = Math.min(Number(selectedWeek), selectedQuarter * 4);
         standingsData = computeQuarterStandings(startW, endW);
         if (endW === selectedQuarter * 4) actualPR = getActualPR(selectedQuarter);
+        for (let w = startW; w <= endW; w++) {
+          if (isLiveWeek(leagueData.weekly_data[String(w)])) tentativeWeek = w;
+        }
       } else {
         // Season totals through the selected week, grouped by each team's division in that week.
         // The fetcher writes this as season_standings; summing week by week instead would split a
-        // team that moved across the divisions it played in. An unplayed week falls back to the
-        // latest played one.
+        // team that moved across the divisions it played in. A week with no scores falls back to the
+        // latest played one (or the week in progress, which is later).
         const selectedObj = leagueData?.weekly_data?.[String(selectedWeek)];
-        const latestKey = (selectedObj && selectedObj.played) ? String(selectedWeek) : getLatestPlayedWeekKey();
+        const liveKey = Object.keys(leagueData.weekly_data).find(k => isLiveWeek(leagueData.weekly_data[k]));
+        let latestKey = hasScores(selectedObj) ? String(selectedWeek) : getLatestPlayedWeekKey();
+        if (!hasScores(selectedObj) && liveKey && Number(liveKey) < Number(selectedWeek) && Number(liveKey) > Number(latestKey)) latestKey = liveKey;
+        if (isLiveWeek(leagueData.weekly_data[latestKey])) tentativeWeek = Number(latestKey);
         seasonAsOf = latestKey;
         const seasonStandings = leagueData?.weekly_data?.[latestKey]?.season_standings;
         if (seasonStandings && Object.values(seasonStandings).some(teams => teams.length)) {
@@ -853,6 +950,9 @@
 
       if (seasonAsOf) {
         container.innerHTML += `<p class="text-[10px] text-slate-400">Season totals through Week ${seasonAsOf}, teams grouped by their division that week.</p>`;
+      }
+      if (tentativeWeek) {
+        container.innerHTML += `<p class="text-[10px] text-blue-300 leading-snug"><span class="px-1 py-0.5 mr-1 text-[9px] font-bold rounded border bg-blue-500/20 text-blue-300 border-blue-500/40 uppercase tracking-wider">Tentative</span>Includes Week ${tentativeWeek} so far. VP, PF and PP change until the week is final.</p>`;
       }
 
       Object.entries(standingsData).forEach(([divName, teams]) => {
@@ -894,7 +994,7 @@
               <td class="py-2 px-1 truncate ${isFocused ? 'font-black text-sky-300' : nameClass}" title="${t.name}">
                 ${t.name}${iconMarker}
               </td>
-              <td class="py-2 px-1 font-bold text-amber-400 text-center">${t.vp}</td>
+              <td class="py-2 px-1 font-bold text-amber-400 text-center">${fmtVP(t.vp)}</td>
               <td class="py-2 px-1 font-bold text-slate-300 text-right">${t.pf.toFixed(2)}</td>
               <td class="py-2 px-1 ${ppClass}">${t.pp.toFixed(2)}</td>
             </tr>`;
