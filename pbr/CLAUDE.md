@@ -52,7 +52,7 @@ The `pbr/` scripts are currently **CommonJS** (`require`), not ES Modules. See K
 * **`../notify_slack.js`** (repo root): Posts a markdown file to `SLACK_WEBHOOK_URL`. PBR-only in practice.
 
 ### Tokens (Participation Tokens, KTC trade values; rebuilt 2026-10-27)
-Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScript.txt`: `grabDailyMFLTransactions`, `updateMonthlyTradeValues`) and the earlier half-built scripts (`mfl_tx_fetcher.js`, `process_*.js`, `rebuild_tokens.js`, `merge_ktc_history.js`, `mfl_ktc_mapper.js`, removed).
+Replaces the Token Tracker sheet's Apps Script (`grabDailyMFLTransactions`, `updateMonthlyTradeValues`; its copy in `reference/` was removed 2026-11-08) and the earlier half-built scripts (`mfl_tx_fetcher.js`, `process_*.js`, `rebuild_tokens.js`, `merge_ktc_history.js`, `mfl_ktc_mapper.js`, removed).
 * **`token_tracker.js`** (daily, `pbr_tokens.yml`): Rebuilds `tokens_data.json` from scratch every run, so reruns and settings edits are safe.
   * Reads MFL `transactions` (`TRADE`, `BBID_WAIVER`), `players` and `nflSchedule` (those two only on `api.myfantasyleague.com`), `data.json` P&R, and `token_settings.json`.
   * Writes the balances and anything new to the Actions run summary.
@@ -81,7 +81,7 @@ Replaces the Token Tracker sheet's Apps Script (`reference/tokenTracker_appScrip
 
 ### Frontend (GitHub Pages)
 * **`index.html` + `pbr.js`**: Standings and weekly results dashboard (reads `data.json`). Opens on the week in progress if there is one: a blue banner (games final, last update), and in H2H and Battle Royale three numbered starter chips left of the score where "+1 VP" goes once the week is final: blue = yet to play, yellow = playing now, red = done (legend right of the H2H header). Standings that include the live week carry a "Tentative" note. While a week is in progress the page re-reads `data.json` every 2 minutes (and when the tab regains focus) and re-renders only if it changed.
-* **`tokens.html` + `tokens.js`**: Token tracker (reads `tokens_data.json`; the values tab loads `ktc-values/KTC-<month>.json`). Until 2026-10-27 the page loaded `pbr/tokens.js` (a 404), so it never rendered.
+* **`tokens.html` + `tokens.js`**: Token tracker (reads `tokens_data.json`; the values tab loads `ktc-values/KTC-<month>.json`). The Summary tab is one ledger table (2026-11-08): total, last season's rollover, tokens earned per period (hover for the trades/waivers/promotions/adjustments split) and #1 pick odds. Until 2026-10-27 the page loaded `pbr/tokens.js` (a 404), so it never rendered.
 * **`prizes.html`**: Prize tracker. Quarter division winners are 1st place in `weekly_data[4/8/12].quarter_standings`, which the fetcher ranks with the P&R tiebreakers (`pbr_rules.js` `rankStandings`); the quarter high scorer is the top quarter PF (ties share).
 
 ### Data files

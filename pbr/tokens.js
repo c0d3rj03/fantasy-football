@@ -72,32 +72,26 @@ function renderSummary(container) {
   const teams = Object.values(tokensData.teams || {}).sort((a, b) => b.total - a.total);
   const circulating = teams.reduce((s, t) => s + t.total, 0);
 
+  const rolloverLabel = `${(Number(tokensData.season) || new Date().getFullYear()) - 1} Rollover`;
+  const breakdown = b => `Trades ${b.trades || 0} · Waivers ${b.waivers || 0} · Promotion ${b.promotions || 0} · Adj. ${b.adjustments || 0}`;
+
+  // One row per team: total, last season's rollover, then tokens earned per period (hover for the breakdown).
   const rows = teams.map((t, i) => {
     const odds = circulating ? ((t.total / circulating) * 100).toFixed(1) : '0.0';
+    const periods = PERIOD_IDS.map(p => {
+      const b = t.by_period?.[p] || {};
+      const n = (b.trades || 0) + (b.waivers || 0) + (b.promotions || 0) + (b.adjustments || 0);
+      return `<td class="py-2.5 px-3 text-xs text-right font-mono ${n ? 'text-amber-300 font-bold cursor-help' : 'text-slate-600'}" title="${esc(`${periodLabel(p)}: ${breakdown(b)}`)}">${n ? `+${n}` : '–'}</td>`;
+    }).join('');
     return `
       <tr class="border-t border-slate-800/80 hover:bg-slate-800/30 transition">
-        <td class="py-2.5 px-3 text-xs font-bold text-slate-200"><span class="font-mono text-slate-500 text-[10px] mr-1.5">${i + 1}.</span>${esc(t.name)}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-mono text-slate-400">${t.start}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-mono text-emerald-400">+${t.trades}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-mono text-cyan-400">+${t.waivers}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-mono text-amber-300">+${t.promotions}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-mono text-slate-300">${t.adjustments >= 0 ? '+' : ''}${t.adjustments}</td>
-        <td class="py-2.5 px-3 text-sm text-right font-black text-amber-400 font-mono">${t.total}</td>
-        <td class="py-2.5 px-3 text-xs text-right font-bold text-emerald-300 font-mono">${odds}%</td>
+        <td class="py-2.5 px-3 text-xs font-bold text-slate-200 whitespace-nowrap"><span class="font-mono text-slate-500 text-[10px] mr-1.5">${i + 1}.</span>${esc(t.name)}</td>
+        <td class="py-2.5 px-3 text-sm text-right font-black text-amber-400 font-mono cursor-help" title="${esc(`${rolloverLabel} ${t.start} · ${breakdown(t)}`)}">${t.total}</td>
+        <td class="py-2.5 px-3 text-xs text-right font-mono text-slate-400 border-l border-slate-800">${t.start}</td>
+        ${periods}
+        <td class="py-2.5 px-3 text-xs text-right font-bold text-emerald-300 font-mono border-l border-slate-800">${odds}%</td>
       </tr>`;
   }).join('');
-
-  // Tokens earned per period (trades + waivers + promotions + adjustments).
-  const periodRows = teams.map(t => `
-    <tr class="border-t border-slate-800/80">
-      <td class="py-2 px-3 text-xs font-bold text-slate-200">${esc(t.name)}</td>
-      ${PERIOD_IDS.map(p => {
-        const b = t.by_period?.[p] || {};
-        const n = (b.trades || 0) + (b.waivers || 0) + (b.promotions || 0) + (b.adjustments || 0);
-        const detail = `Trades ${b.trades || 0} · Waivers ${b.waivers || 0} · Promotion ${b.promotions || 0} · Adj. ${b.adjustments || 0}`;
-        return `<td class="py-2 px-3 text-xs text-right font-mono ${n ? 'text-amber-300 font-bold' : 'text-slate-600'}" title="${esc(detail)}">${n || '–'}</td>`;
-      }).join('')}
-    </tr>`).join('');
 
   const promos = tokensData.promotions || [];
   const adjustments = tokensData.adjustments || [];
@@ -131,34 +125,19 @@ function renderSummary(container) {
       <div class="${card} overflow-hidden">
         <div class="px-5 py-3.5 border-b border-slate-800">
           <h2 class="text-sm font-black text-amber-400 uppercase tracking-wide">🎟️ ${esc(tokensData.season)} Franchise Token Ledger</h2>
+          <div class="text-[11px] text-slate-500 mt-0.5">Hover a number for its trades, waivers, promotions and adjustments. Offseason trades are paid with Q1.</div>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left">
             <thead>
               <tr class="text-[10px] font-extrabold text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
-                <th class="py-2 px-3">Franchise</th><th class="py-2 px-3 text-right">Start</th><th class="py-2 px-3 text-right">Trades</th>
-                <th class="py-2 px-3 text-right">Waivers</th><th class="py-2 px-3 text-right">Promotions</th><th class="py-2 px-3 text-right">Adj.</th>
-                <th class="py-2 px-3 text-right">Tokens</th><th class="py-2 px-3 text-right">Draw Odds</th>
+                <th class="py-2 px-3">Franchise</th><th class="py-2 px-3 text-right">Tokens</th>
+                <th class="py-2 px-3 text-right border-l border-slate-800 whitespace-nowrap">${esc(rolloverLabel)}</th>
+                ${PERIOD_IDS.map(p => `<th class="py-2 px-3 text-right" title="${esc(periodLabel(p))}">${esc(p)}</th>`).join('')}
+                <th class="py-2 px-3 text-right border-l border-slate-800 whitespace-nowrap" title="Chance of the first spin, assuming every team commits the same share of its tokens">#1 Pick Odds</th>
               </tr>
             </thead>
             <tbody>${rows}</tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="${card} overflow-hidden">
-        <div class="px-5 py-3.5 border-b border-slate-800">
-          <h2 class="text-sm font-black text-amber-400 uppercase tracking-wide">🗓️ Tokens Earned by Period</h2>
-          <div class="text-[11px] text-slate-500 mt-0.5">Hover a number for the breakdown. Offseason trades are paid with Q1.</div>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left">
-            <thead>
-              <tr class="text-[10px] font-extrabold text-slate-400 uppercase bg-slate-950 border-b border-slate-800">
-                <th class="py-2 px-3">Franchise</th>${PERIOD_IDS.map(p => `<th class="py-2 px-3 text-right">${esc(periodLabel(p))}</th>`).join('')}
-              </tr>
-            </thead>
-            <tbody>${periodRows}</tbody>
           </table>
         </div>
       </div>
