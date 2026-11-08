@@ -10,7 +10,8 @@ name: Deploy GitHub Pages
 #   workflow_run:  after any workflow that commits data (the bot's commits); deploys only if that
 #                  run moved main, so a sync that found nothing new deploys nothing.
 #   workflow_dispatch: by hand.
-# Add any new workflow that pushes to main to the workflow_run list below.
+# Add any new workflow that pushes to main to the workflow_run list below. The names are glob
+# patterns, so a name with * + ? ! [ ] in it never matches unless escaped with \ (avoid them).
 on:
   push:
     branches: [main]
@@ -19,7 +20,7 @@ on:
     workflows:
       - Ultimate Guillotine Live Sync
       - Ultimate Guillotine End-of-Week Commissioner Actions
-      - PBR Score Sync (daily + live)
+      - PBR Score Sync (daily and live)
       - PBR End-of-Week Results & Gemmy Recap
       - PBR Daily Token Tracker
       - PBR Tuesday Commish Automation

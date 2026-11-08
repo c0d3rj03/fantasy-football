@@ -1,4 +1,4 @@
-name: PBR Score Sync (daily + live)
+name: PBR Score Sync (daily and live)
 
 # Started by the Google Apps Script triggers (pbr/apps_script_triggers.gs), or by hand from the Actions tab:
 #   pbr-dailyscore-trigger: every day at about 2 AM Pacific (installPbrDailyScoreTrigger).
