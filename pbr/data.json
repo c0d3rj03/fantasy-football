@@ -5078,9 +5078,9 @@
       "played": false,
       "live": {
         "games_total": 15,
-        "games_final": 9,
-        "games_in_progress": 4,
-        "updated": "2026-11-09T00:25:40.787Z"
+        "games_final": 10,
+        "games_in_progress": 3,
+        "updated": "2026-11-09T00:35:38.078Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5113,8 +5113,8 @@
             "score": 71.51,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           }
         },
         {
@@ -5153,8 +5153,8 @@
             "score": 84.03,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           }
         },
         {
@@ -5164,8 +5164,8 @@
             "score": 128.29,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 4,
-            "done": 5
+            "in_game": 3,
+            "done": 6
           },
           "team2": {
             "id": "0006",
@@ -5193,8 +5193,8 @@
             "score": 129.12,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 3,
-            "done": 7
+            "in_game": 1,
+            "done": 9
           }
         },
         {
@@ -5213,8 +5213,8 @@
             "score": 84.93,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 2,
-            "done": 7
+            "in_game": 1,
+            "done": 8
           }
         },
         {
@@ -5233,8 +5233,8 @@
             "score": 97.16,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5244,8 +5244,8 @@
             "score": 128.29,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 4,
-            "done": 5
+            "in_game": 3,
+            "done": 6
           },
           "team2": {
             "id": "0011",
@@ -5253,8 +5253,8 @@
             "score": 71.29,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5264,8 +5264,8 @@
             "score": 71.51,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           },
           "team2": {
             "id": "0004",
@@ -5273,8 +5273,8 @@
             "score": 129.12,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 3,
-            "done": 7
+            "in_game": 1,
+            "done": 9
           }
         },
         {
@@ -5293,8 +5293,8 @@
             "score": 84.93,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 2,
-            "done": 7
+            "in_game": 1,
+            "done": 8
           }
         },
         {
@@ -5304,8 +5304,8 @@
             "score": 84.03,
             "vp_earned": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           },
           "team2": {
             "id": "0008",
@@ -5313,8 +5313,8 @@
             "score": 97.16,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5333,8 +5333,8 @@
             "score": 71.29,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         }
       ],
@@ -5344,7 +5344,7 @@
             "id": "0010",
             "name": "The Meaty Ogres",
             "score": 150.11,
-            "pp": 173.7,
+            "pp": 176.8,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -5361,8 +5361,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 1,
-            "in_game": 4,
-            "done": 5
+            "in_game": 3,
+            "done": 6
           },
           {
             "id": "0001",
@@ -5380,7 +5380,7 @@
             "id": "0002",
             "name": "BattleBots",
             "score": 96.48,
-            "pp": 116.99,
+            "pp": 123.09,
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
@@ -5394,7 +5394,7 @@
             "id": "0003",
             "name": "Shankly's Ghost",
             "score": 130.08,
-            "pp": 140.36,
+            "pp": 141.06,
             "h2h_vp": 1,
             "battle_vp": 1,
             "total_weekly_vp": 2,
@@ -5423,8 +5423,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           },
           {
             "id": "0005",
@@ -5435,8 +5435,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 2,
-            "in_game": 1,
-            "done": 7
+            "in_game": 0,
+            "done": 8
           }
         ],
         "Lower Division": [
@@ -5449,8 +5449,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 0,
-            "in_game": 3,
-            "done": 7
+            "in_game": 1,
+            "done": 9
           },
           {
             "id": "0008",
@@ -5461,8 +5461,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 2,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0007",
@@ -5473,8 +5473,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 1,
-            "in_game": 2,
-            "done": 7
+            "in_game": 1,
+            "done": 8
           },
           {
             "id": "0011",
@@ -5485,8 +5485,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         ]
       },
@@ -5499,7 +5499,7 @@
             "battle_vp": 1,
             "vp": 3,
             "pf": 150.11,
-            "pp": 173.7,
+            "pp": 176.8,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5538,7 +5538,7 @@
             "battle_vp": 0,
             "vp": 1,
             "pf": 96.48,
-            "pp": 116.99,
+            "pp": 123.09,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5553,7 +5553,7 @@
             "battle_vp": 1,
             "vp": 2,
             "pf": 130.08,
-            "pp": 140.36,
+            "pp": 141.06,
             "wins": 1,
             "losses": 1,
             "ties": 0,
@@ -5663,7 +5663,7 @@
             "battle_vp": 8,
             "vp": 21,
             "pf": 1301.13,
-            "pp": 1509.2600000000002,
+            "pp": 1515.3600000000001,
             "wins": 13,
             "losses": 5,
             "ties": 0,
@@ -5676,7 +5676,7 @@
             "battle_vp": 6,
             "vp": 20,
             "pf": 1259.9499999999998,
-            "pp": 1404.9600000000003,
+            "pp": 1408.0600000000002,
             "wins": 14,
             "losses": 4,
             "ties": 0,
@@ -5730,7 +5730,7 @@
             "battle_vp": 4,
             "vp": 15,
             "pf": 1168.4299999999998,
-            "pp": 1296.2200000000003,
+            "pp": 1296.92,
             "wins": 11,
             "losses": 7,
             "ties": 0,
