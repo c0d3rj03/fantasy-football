@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 13,
         "games_in_progress": 1,
-        "updated": "2026-11-09T03:25:34.711Z"
+        "updated": "2026-11-09T03:35:38.449Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5110,7 +5110,7 @@
           "team2": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 80.71,
+            "score": 83.41,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 2,
@@ -5261,7 +5261,7 @@
           "team1": {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 80.71,
+            "score": 83.41,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 2,
@@ -5429,8 +5429,8 @@
           {
             "id": "0005",
             "name": "Peaky Fookin Blinders",
-            "score": 80.71,
-            "pp": 90.41,
+            "score": 83.41,
+            "pp": 93.11,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
@@ -5591,8 +5591,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 80.71,
-            "pp": 90.41,
+            "pf": 83.41,
+            "pp": 93.11,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5755,8 +5755,8 @@
             "h2h_vp": 6,
             "battle_vp": 1,
             "vp": 7,
-            "pf": 1012.4,
-            "pp": 1213.7800000000002,
+            "pf": 1015.0999999999999,
+            "pp": 1216.48,
             "wins": 6,
             "losses": 12,
             "ties": 0,
