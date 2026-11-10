@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 0,
-        "updated": "2026-11-10T01:55:34.957Z"
+        "updated": "2026-11-10T02:15:39.512Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5141,7 +5141,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 110.99,
+            "score": 111.29,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5150,7 +5150,7 @@
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 91.73,
+            "score": 91.93,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5221,7 +5221,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 110.99,
+            "score": 111.29,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5301,7 +5301,7 @@
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 91.73,
+            "score": 91.93,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5379,7 +5379,7 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 110.99,
+            "score": 111.29,
             "pp": 145.94,
             "h2h_vp": 2,
             "battle_vp": 0,
@@ -5417,7 +5417,7 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 91.73,
+            "score": 91.93,
             "pp": 109.18,
             "h2h_vp": 0,
             "battle_vp": 0,
@@ -5537,7 +5537,7 @@
             "h2h_vp": 2,
             "battle_vp": 0,
             "vp": 2,
-            "pf": 110.99,
+            "pf": 111.29,
             "pp": 145.94,
             "wins": 2,
             "losses": 0,
@@ -5578,7 +5578,7 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 91.73,
+            "pf": 91.93,
             "pp": 109.18,
             "wins": 0,
             "losses": 2,
@@ -5688,7 +5688,7 @@
             "h2h_vp": 14,
             "battle_vp": 4,
             "vp": 18,
-            "pf": 1190.5600000000002,
+            "pf": 1190.8600000000001,
             "pp": 1479.68,
             "wins": 14,
             "losses": 4,
@@ -5742,7 +5742,7 @@
             "h2h_vp": 6,
             "battle_vp": 3,
             "vp": 9,
-            "pf": 1118.0600000000002,
+            "pf": 1118.2600000000002,
             "pp": 1315.1900000000003,
             "wins": 6,
             "losses": 12,
