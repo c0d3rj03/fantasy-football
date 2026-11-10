@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 1,
-        "updated": "2026-11-10T03:05:39.166Z"
+        "updated": "2026-11-10T03:15:35.220Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5150,7 +5150,7 @@
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.73,
+            "score": 94.73,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5301,7 +5301,7 @@
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.73,
+            "score": 94.73,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5417,8 +5417,8 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.73,
-            "pp": 109.18,
+            "score": 94.73,
+            "pp": 109.58,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
@@ -5578,8 +5578,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 93.73,
-            "pp": 109.18,
+            "pf": 94.73,
+            "pp": 109.58,
             "wins": 0,
             "losses": 2,
             "ties": 0,
@@ -5742,8 +5742,8 @@
             "h2h_vp": 6,
             "battle_vp": 3,
             "vp": 9,
-            "pf": 1120.0600000000002,
-            "pp": 1315.1900000000003,
+            "pf": 1121.0600000000002,
+            "pp": 1315.5900000000001,
             "wins": 6,
             "losses": 12,
             "ties": 0,
