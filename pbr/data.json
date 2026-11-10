@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 0,
-        "updated": "2026-11-10T01:15:39.270Z"
+        "updated": "2026-11-10T01:25:38.431Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5103,8 +5103,8 @@
             "name": "BattleBots",
             "score": 127.58,
             "vp_earned": 1,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           },
           "team2": {
@@ -5143,17 +5143,17 @@
             "name": "Orcan Terror",
             "score": 110.39,
             "vp_earned": 1,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           },
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 88.93,
+            "score": 89.13,
             "vp_earned": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         },
@@ -5163,8 +5163,8 @@
             "name": "2 Roops, 1 Silva",
             "score": 128.29,
             "vp_earned": 1,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           "team2": {
@@ -5183,8 +5183,8 @@
             "name": "BattleBots",
             "score": 127.58,
             "vp_earned": 0,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           },
           "team2": {
@@ -5223,8 +5223,8 @@
             "name": "Orcan Terror",
             "score": 110.39,
             "vp_earned": 1,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           },
           "team2": {
@@ -5232,8 +5232,8 @@
             "name": "The Two Tones",
             "score": 97.16,
             "vp_earned": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         },
@@ -5243,8 +5243,8 @@
             "name": "2 Roops, 1 Silva",
             "score": 128.29,
             "vp_earned": 1,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           "team2": {
@@ -5252,8 +5252,8 @@
             "name": "The Wild Cards",
             "score": 71.29,
             "vp_earned": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         },
@@ -5301,10 +5301,10 @@
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 88.93,
+            "score": 89.13,
             "vp_earned": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           "team2": {
@@ -5312,8 +5312,8 @@
             "name": "The Two Tones",
             "score": 97.16,
             "vp_earned": 1,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         },
@@ -5332,8 +5332,8 @@
             "name": "The Wild Cards",
             "score": 71.29,
             "vp_earned": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         }
@@ -5360,8 +5360,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           {
@@ -5372,8 +5372,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           },
           {
@@ -5384,8 +5384,8 @@
             "h2h_vp": 2,
             "battle_vp": 0,
             "total_weekly_vp": 2,
-            "ytp": 2,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 2,
             "done": 8
           }
         ],
@@ -5417,13 +5417,13 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 88.93,
+            "score": 89.13,
             "pp": 109.18,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           {
@@ -5472,8 +5472,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           },
           {
@@ -5484,8 +5484,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 1,
-            "in_game": 0,
+            "ytp": 0,
+            "in_game": 1,
             "done": 9
           }
         ]
@@ -5578,7 +5578,7 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 88.93,
+            "pf": 89.13,
             "pp": 109.18,
             "wins": 0,
             "losses": 2,
@@ -5742,7 +5742,7 @@
             "h2h_vp": 6,
             "battle_vp": 3,
             "vp": 9,
-            "pf": 1115.2600000000002,
+            "pf": 1115.46,
             "pp": 1315.1900000000003,
             "wins": 6,
             "losses": 12,
