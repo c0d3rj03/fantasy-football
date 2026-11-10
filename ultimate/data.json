@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 9,
   "lastCompletedWeek": 8,
-  "lastUpdated": "2026-11-10T01:16:07.038Z",
+  "lastUpdated": "2026-11-10T01:26:06.670Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -335,8 +335,8 @@
     "0001": {
       "doneScore": 107.45,
       "liveScore": 0,
-      "ytp": 1,
-      "inGame": 0,
+      "ytp": 0,
+      "inGame": 1,
       "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
@@ -416,8 +416,8 @@
     "0010": {
       "doneScore": 130.06,
       "liveScore": 0,
-      "ytp": 1,
-      "inGame": 0,
+      "ytp": 0,
+      "inGame": 1,
       "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
@@ -425,17 +425,17 @@
     "0011": {
       "doneScore": 128.55,
       "liveScore": 0,
-      "ytp": 2,
-      "inGame": 0,
+      "ytp": 0,
+      "inGame": 2,
       "finished": 8,
       "byeStarters": 0,
       "emptySlots": 0
     },
     "0012": {
       "doneScore": 109.74,
-      "liveScore": 0,
-      "ytp": 2,
-      "inGame": 0,
+      "liveScore": 3.2,
+      "ytp": 0,
+      "inGame": 2,
       "finished": 8,
       "byeStarters": 0,
       "emptySlots": 0
@@ -469,9 +469,9 @@
     },
     "0016": {
       "doneScore": 140.83,
-      "liveScore": 0,
-      "ytp": 1,
-      "inGame": 0,
+      "liveScore": 0.35,
+      "ytp": 0,
+      "inGame": 1,
       "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
@@ -515,8 +515,8 @@
     "0021": {
       "doneScore": 155.87,
       "liveScore": 0,
-      "ytp": 1,
-      "inGame": 0,
+      "ytp": 0,
+      "inGame": 1,
       "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
@@ -524,8 +524,8 @@
     "0022": {
       "doneScore": 131.61,
       "liveScore": 0,
-      "ytp": 1,
-      "inGame": 0,
+      "ytp": 0,
+      "inGame": 1,
       "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
@@ -541,9 +541,9 @@
     },
     "0024": {
       "doneScore": 124.44,
-      "liveScore": 0,
-      "ytp": 2,
-      "inGame": 0,
+      "liveScore": 0.55,
+      "ytp": 0,
+      "inGame": 2,
       "finished": 8,
       "byeStarters": 0,
       "emptySlots": 0
