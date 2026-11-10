@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 1,
-        "updated": "2026-11-10T02:45:37.993Z"
+        "updated": "2026-11-10T02:55:36.664Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5141,7 +5141,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 111.29,
+            "score": 117.19,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5221,7 +5221,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 111.29,
+            "score": 117.19,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5250,7 +5250,7 @@
           "team2": {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 71.29,
+            "score": 73.49,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5330,7 +5330,7 @@
           "team2": {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 71.29,
+            "score": 73.49,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5379,7 +5379,7 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 111.29,
+            "score": 117.19,
             "pp": 145.94,
             "h2h_vp": 2,
             "battle_vp": 0,
@@ -5479,7 +5479,7 @@
           {
             "id": "0011",
             "name": "The Wild Cards",
-            "score": 71.29,
+            "score": 73.49,
             "pp": 91.39,
             "h2h_vp": 0,
             "battle_vp": 0,
@@ -5537,7 +5537,7 @@
             "h2h_vp": 2,
             "battle_vp": 0,
             "vp": 2,
-            "pf": 111.29,
+            "pf": 117.19,
             "pp": 145.94,
             "wins": 2,
             "losses": 0,
@@ -5645,7 +5645,7 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 71.29,
+            "pf": 73.49,
             "pp": 91.39,
             "wins": 0,
             "losses": 2,
@@ -5688,7 +5688,7 @@
             "h2h_vp": 14,
             "battle_vp": 4,
             "vp": 18,
-            "pf": 1190.8600000000001,
+            "pf": 1196.7600000000002,
             "pp": 1479.68,
             "wins": 14,
             "losses": 4,
@@ -5809,7 +5809,7 @@
             "h2h_vp": 3,
             "battle_vp": 2,
             "vp": 5,
-            "pf": 865.6299999999999,
+            "pf": 867.8299999999999,
             "pp": 1035.68,
             "wins": 3,
             "losses": 15,
