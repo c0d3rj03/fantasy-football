@@ -5079,8 +5079,8 @@
       "live": {
         "games_total": 15,
         "games_final": 14,
-        "games_in_progress": 0,
-        "updated": "2026-11-10T02:35:37.690Z"
+        "games_in_progress": 1,
+        "updated": "2026-11-10T02:45:37.993Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5101,7 +5101,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 132.05,
+            "score": 138.53,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5150,7 +5150,7 @@
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.33,
+            "score": 93.73,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5181,7 +5181,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 132.05,
+            "score": 138.53,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5230,7 +5230,7 @@
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 97.16,
+            "score": 98.66,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5301,7 +5301,7 @@
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.33,
+            "score": 93.73,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5310,7 +5310,7 @@
           "team2": {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 97.16,
+            "score": 98.66,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 1,
@@ -5355,7 +5355,7 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 132.05,
+            "score": 138.53,
             "pp": 149.54,
             "h2h_vp": 2,
             "battle_vp": 1,
@@ -5417,7 +5417,7 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 93.33,
+            "score": 93.73,
             "pp": 109.18,
             "h2h_vp": 0,
             "battle_vp": 0,
@@ -5467,7 +5467,7 @@
           {
             "id": "0008",
             "name": "The Two Tones",
-            "score": 97.16,
+            "score": 98.66,
             "pp": 115.46,
             "h2h_vp": 1,
             "battle_vp": 0,
@@ -5511,7 +5511,7 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 132.05,
+            "pf": 138.53,
             "pp": 149.54,
             "wins": 2,
             "losses": 0,
@@ -5578,7 +5578,7 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 93.33,
+            "pf": 93.73,
             "pp": 109.18,
             "wins": 0,
             "losses": 2,
@@ -5632,7 +5632,7 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "vp": 1,
-            "pf": 97.16,
+            "pf": 98.66,
             "pp": 115.46,
             "wins": 1,
             "losses": 1,
@@ -5662,7 +5662,7 @@
             "h2h_vp": 14,
             "battle_vp": 9,
             "vp": 23,
-            "pf": 1336.7,
+            "pf": 1343.18,
             "pp": 1541.8100000000002,
             "wins": 14,
             "losses": 4,
@@ -5742,7 +5742,7 @@
             "h2h_vp": 6,
             "battle_vp": 3,
             "vp": 9,
-            "pf": 1119.66,
+            "pf": 1120.0600000000002,
             "pp": 1315.1900000000003,
             "wins": 6,
             "losses": 12,
@@ -5796,7 +5796,7 @@
             "h2h_vp": 4,
             "battle_vp": 3,
             "vp": 7,
-            "pf": 896.5199999999999,
+            "pf": 898.0199999999999,
             "pp": 1090.4299999999998,
             "wins": 4,
             "losses": 14,
