@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 9,
   "lastCompletedWeek": 9,
-  "lastUpdated": "2026-11-10T05:36:04.001Z",
+  "lastUpdated": "2026-11-10T10:26:55.053Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -634,6 +634,12 @@
       "rollingScore": 254.92,
       "singleScore": 116.67,
       "franchiseName": "Ichabod Crane"
+    },
+    "0011": {
+      "eliminatedWeek": 9,
+      "rollingScore": 281.64,
+      "singleScore": 142.05,
+      "franchiseName": "Chopping Rod"
     }
   },
   "weeklyWinners": {
@@ -708,8 +714,17 @@
         "type": "cash",
         "amount": 15
       }
+    },
+    "9": {
+      "franchiseId": "0006",
+      "franchiseName": "The Crushers",
+      "score": 190.71,
+      "prize": {
+        "type": "cash",
+        "amount": 30
+      }
     }
   },
-  "fetchMode": "live",
+  "fetchMode": "full",
   "gamesInProgress": 0
 }
