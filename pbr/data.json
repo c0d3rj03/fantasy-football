@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 1,
-        "updated": "2026-11-10T02:55:36.664Z"
+        "updated": "2026-11-10T03:05:39.166Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5101,7 +5101,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 138.53,
+            "score": 138.56,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5181,7 +5181,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 138.53,
+            "score": 138.56,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5355,7 +5355,7 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 138.53,
+            "score": 138.56,
             "pp": 149.54,
             "h2h_vp": 2,
             "battle_vp": 1,
@@ -5511,7 +5511,7 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 138.53,
+            "pf": 138.56,
             "pp": 149.54,
             "wins": 2,
             "losses": 0,
@@ -5662,7 +5662,7 @@
             "h2h_vp": 14,
             "battle_vp": 9,
             "vp": 23,
-            "pf": 1343.18,
+            "pf": 1343.21,
             "pp": 1541.8100000000002,
             "wins": 14,
             "losses": 4,
