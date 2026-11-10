@@ -5,8 +5,10 @@ name: PBR End-of-Week Results & Gemmy Recap
 # (commish_mfl_actions.js), and the Gemmy step skips if this week already has a recap.
 #
 # MFL writes (mfl_mode):
-#   auto     = weekly VP push only if repo variable PBR_MFL_WRITES is 1, otherwise a dry run.
-#              Quarter-change steps (schedule upload, Week 13 bonus) are always dry runs here.
+#   auto     = if repo variable PBR_MFL_WRITES is 1, writes the weekly VP push and the Weeks 5/9
+#              quarter start (W-L-T reset, VP reset, division moves); otherwise a dry run.
+#              The steps after Weeks 4, 8 and 12 (schedule upload, Week 13 bonus) are always
+#              dry runs here; use apply.
 #   dry-run  = log in, load each form and log the exact field changes, post nothing.
 #   apply    = write every automated step (weekly VP and quarter changes), then re-read MFL.
 #   inspect  = print the commissioner forms' field names (emails masked), change nothing.
@@ -23,7 +25,7 @@ on:
         required: false
         default: ''
       mfl_mode:
-        description: 'MFL commish step: auto (PBR_MFL_WRITES decides weekly VP), dry-run, apply (all steps), inspect (form fields), skip'
+        description: 'MFL commish step: auto (PBR_MFL_WRITES: weekly VP + Weeks 5/9 resets), dry-run, apply (all steps), inspect (form fields), skip'
         type: choice
         options: [auto, dry-run, apply, inspect, skip]
         default: auto

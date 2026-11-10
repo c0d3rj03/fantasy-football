@@ -21,8 +21,10 @@ const { QUARTER_WEEKS, quarterSchedule, scheduleLine, postseasonBonus } = requir
  *
  * Writes:
  *   --apply           writes every automated step.
- *   PBR_MFL_WRITES=1  writes only the weekly VP step (for the Tuesday dispatch); the
- *                     quarter-change steps stay dry runs until run with --apply.
+ *   PBR_MFL_WRITES=1  writes the weekly VP step and the Weeks 5 and 9 quarter start
+ *                     (W-L-T reset, VP reset, division moves), for the Tuesday dispatch.
+ *                     The P&R steps after Weeks 4, 8 and 12 (schedule upload, Week 13
+ *                     bonus) stay dry runs until run with --apply.
  * Otherwise it is a dry run: with MFL credentials it still loads each form and logs the
  * exact fields it would change. After writing, it re-reads MFL and fails unless every
  * written step shows as done. A step that only becomes possible after another (the VP
@@ -98,7 +100,7 @@ function slotsText(mfl, slots) {
 
 /**
  * Builds the checklist for week W (pure; no network).
- * Each item: { step, status: 'ok' | 'auto' | 'manual' | 'error', scope: 'weekly' | 'quarter',
+ * Each item: { step, status: 'ok' | 'auto' | 'manual' | 'error', scope: 'weekly' | 'quarterStart' | 'quarter',
  * detail, lines? } plus what an 'auto' item writes (vpChanges, schedule, bonus).
  */
 function planWeekActions(data, mfl, week) {
@@ -145,12 +147,12 @@ function planVictoryPoints(items, weekObj, mfl, week, quarter, firstWeekOfQuarte
       items.push({
         step: 'W-L-T reset',
         status: 'auto',
-        scope: 'quarter',
+        scope: 'quarterStart',
         detail: `MFL still counts Q${quarter - 1} games. Subtract each team's Q${quarter - 1} W-L-T on C=STANDADJ (explanation "Q${quarter} Reset").`,
         lines: wltOff.map(id => `${teamName(mfl, id)} (${id}): W −${prior[id].wins}, L −${prior[id].losses}, T −${prior[id].ties}`),
         wltChanges: { ids: wltOff, prior, explanation: `Q${quarter} Reset` }
       });
-      items.push({ step: 'In-division VP', status: 'error', scope: 'weekly', detail: 'Waits for the W-L-T reset above (with --apply it runs right after it).' });
+      items.push({ step: 'In-division VP', status: 'manual', scope: 'weekly', detail: 'Waits for the W-L-T reset above. When the reset is written, it runs in a second pass of the same run.' });
     } else {
       items.push({
         step: 'In-division VP',
@@ -166,7 +168,7 @@ function planVictoryPoints(items, weekObj, mfl, week, quarter, firstWeekOfQuarte
     return;
   }
   if (firstWeekOfQuarter) {
-    items.push({ step: 'W-L-T reset', status: 'ok', scope: 'quarter', detail: `MFL W-L-T counts only Q${quarter} games.` });
+    items.push({ step: 'W-L-T reset', status: 'ok', scope: 'quarterStart', detail: `MFL W-L-T counts only Q${quarter} games.` });
   }
 
   const delta = Object.fromEntries(ids.map(id => [id, Math.round((expected[id].vp - (mfl.standings[id]?.vp ?? 0)) * 10000) / 10000]));
@@ -206,7 +208,7 @@ function planVictoryPoints(items, weekObj, mfl, week, quarter, firstWeekOfQuarte
 function planDivisionMoves(items, data, mfl, quarter) {
   const slots = data.quarter_slots?.[String(quarter)];
   if (!slots) {
-    items.push({ step: 'Division moves', status: 'error', scope: 'quarter', detail: `data.json has no Q${quarter} slots (was the Week ${QUARTER_WEEKS[quarter][0] - 1} P&R computed?).` });
+    items.push({ step: 'Division moves', status: 'error', scope: 'quarterStart', detail: `data.json has no Q${quarter} slots (was the Week ${QUARTER_WEEKS[quarter][0] - 1} P&R computed?).` });
     return;
   }
   const moves = [];
@@ -219,8 +221,8 @@ function planDivisionMoves(items, data, mfl, quarter) {
     }
   }
   items.push(moves.length === 0
-    ? { step: 'Division moves', status: 'ok', scope: 'quarter', detail: `MFL divisions match Q${quarter}.` }
-    : { step: 'Division moves', status: 'auto', scope: 'quarter', detail: `Move these teams on C=DIVCONF to their Q${quarter} divisions.`, lines: moves, divChanges });
+    ? { step: 'Division moves', status: 'ok', scope: 'quarterStart', detail: `MFL divisions match Q${quarter}.` }
+    : { step: 'Division moves', status: 'auto', scope: 'quarterStart', detail: `Move these teams on C=DIVCONF to their Q${quarter} divisions.`, lines: moves, divChanges });
 }
 
 function planPromotionRelegation(items, data, mfl, quarter) {
@@ -449,7 +451,9 @@ async function runCommishMflActions({ week, apply, weeklyWrites, syncVp }) {
     }
     return plan;
   };
-  const canWrite = item => apply || (weeklyWrites && item.scope === 'weekly');
+  // PBR_MFL_WRITES covers the weekly VP and the Weeks 5/9 quarter start (applied cleanly
+  // at the Q2 and Q3 starts; the user approved automating them 2026-11-10).
+  const canWrite = item => apply || (weeklyWrites && (item.scope === 'weekly' || item.scope === 'quarterStart'));
   const hasCredentials = Boolean(process.env.MFL_USERNAME && process.env.MFL_PASSWORD);
   const modeFor = item => canWrite(item) && hasCredentials ? 'applied'
     : hasCredentials ? 'dry run: not posted'

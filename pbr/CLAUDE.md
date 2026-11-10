@@ -134,7 +134,7 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 
 **Write gates:**
 * `--apply` (workflow `mfl_mode = apply`) writes every automated step.
-* Repo variable `PBR_MFL_WRITES=1` (workflow `mfl_mode = auto`, used by the Tuesday dispatch) writes only the weekly VP step. Quarter-change steps stay dry runs until someone reads the dry run and runs `apply`.
+* Repo variable `PBR_MFL_WRITES=1` (workflow `mfl_mode = auto`, used by the Tuesday dispatch) writes the weekly VP step and the Weeks 5/9 quarter start (W-L-T reset, VP reset, division moves; item scope `quarterStart`). The user approved that on 2026-11-10 after the Q2 and Q3 starts applied cleanly. The steps after Weeks 4, 8 and 12 (schedule upload, Week 13 bonus; scope `quarter`) stay dry runs until someone reads the dry run and runs `apply`. What to automate after Weeks 12 and 13 is still to be decided.
 * Anything else is a dry run.
 
 **Steps by week** (✅ already done on MFL, 🤖 automated, ✋ manual with exact numbers listed, ❌ needs a person):
@@ -142,7 +142,7 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 | Week | Step | How |
 | --- | --- | --- |
 | 1-12 (latest played) | In-division VP 🤖 | Compares MFL `leagueStandings` with the `data.json` quarter standings. W-L-T must match first. Then it adds `data.json VP − MFL VP` per team on `C=STANDADJ&VICTORY_POINTS=1` (`WEEK<fid>`, `ADJUST_VP<fid>`, `EXP<fid>` = "In-Division Top 2 Score"). In a normal week that difference must equal this week's in-division VP, or the step stops (`--sync-vp` pushes it anyway). A rerun finds no difference. Older weeks are skipped, since MFL only shows the current total. |
-| 5, 9 | W-L-T reset 🤖 | Detected when MFL W-L-T is exactly this quarter plus last quarter. Subtracts each team's prior-quarter W-L-T on `C=STANDADJ` (`WEEK<fid>`, `W<fid>`, `L<fid>`, `T<fid>` as negatives, `EXP<fid>` = "Q2 Reset"). With `--apply`, the VP step then runs in a second pass of the same run. |
+| 5, 9 | W-L-T reset 🤖 | Detected when MFL W-L-T is exactly this quarter plus last quarter. Subtracts each team's prior-quarter W-L-T on `C=STANDADJ` (`WEEK<fid>`, `W<fid>`, `L<fid>`, `T<fid>` as negatives, `EXP<fid>` = "Q2 Reset"). When the reset is written, the VP step (✋ until then) runs in a second pass of the same run. |
 | 5, 9 | VP reset 🤖 | Part of the VP step once the W-L-T reset is done: the difference then also removes last quarter's in-division VP (explanation "Q2 Reset + In-Division Top 2 Score"). |
 | 5, 9 | Division moves 🤖 | Compares MFL divisions with `data.json` `quarter_slots` and sets `FRANCHISE_DIVISION<fid>` (`00`/`01`/`02`) on `C=DIVCONF` for the teams that moved; re-reads the `league` export. |
 | 4, 8, 12 | P&R ✅ | From `data.json` `promotion_relegation[q]` and `quarter_slots[q+1]` (`"4"` = postseason). Printed for the announcement. An exact tie is ❌ (coin flip). |
@@ -158,9 +158,8 @@ Without MFL credentials, a dry run still reads the public exports and prints the
 * Live `apply`, Week 7 (2026-10-28): six +1 VP adjustments posted on STANDADJ, MFL re-read matched `data.json` for all 12 teams, and the commissioner checked MFL against the spreadsheet.
 
 **Not yet verified live:**
-* Repo variable `PBR_MFL_WRITES` is not set yet, so the Tuesday dispatch only dry-runs the VP step. Set it to `1` to let it write.
 * Whether STANDADJ accepts fractional VP (a tie for 2nd gives 0.5, a three-way tie 0.6667).
-* The W-L-T reset, DIVCONF and schedule writes (first used after Week 8 and in Week 9). Review their dry run first. DIVCONF has file inputs (division logos), so it may be a multipart form; the client posts multipart when the form says so, and the inspect output now shows `enctype`.
+* The Week 13 Postseason Bonus import. The W-L-T reset, DIVCONF and schedule writes have run live (Week 9 `apply` on 2026-11-10: reset, 4 moves, VP in pass 2, MFL re-read all ✅).
 
 ### Lessons from Ultimate MFL automation
 
