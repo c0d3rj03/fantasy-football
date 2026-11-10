@@ -298,6 +298,12 @@
     // A week in progress (data.json weekly_data[w].live): scores, VP, PP and standings are tentative.
     const isLiveWeek = wObj => !!(wObj && !wObj.played && wObj.live);
     const hasScores = wObj => !!(wObj && (wObj.played || isLiveWeek(wObj)));
+    // The quarter of the first week that isn't final (the live week counts as not final).
+    function currentQuarter() {
+      const weeks = Object.values((leagueData && leagueData.weekly_data) || {}).sort((a, b) => a.week - b.week);
+      const next = weeks.find(w => !w.played);
+      return next ? next.quarter : null;
+    }
     const fmtVP = v => Number.isInteger(v) ? String(v) : (Math.round(v * 100) / 100).toFixed(2);
 
     // Starter counts for a team in the week in progress: blue = yet to play, yellow = playing now, red = done.
@@ -605,10 +611,21 @@
       container.innerHTML = '';
       const live = isLiveWeek(weekObj);
 
-      if (!hasScores(weekObj) || !weekObj.matchups || weekObj.matchups.length === 0) {
+      // An unstarted week in the current quarter shows MFL's schedule. Later quarters' MFL schedule is
+      // only set after P&R, so their matchups stay hidden.
+      const upcoming = !hasScores(weekObj) && !!weekObj && weekObj.quarter === currentQuarter();
+      if ((!hasScores(weekObj) && !upcoming) || !weekObj.matchups || weekObj.matchups.length === 0) {
         container.innerHTML = `<div class="col-span-full text-center text-xs text-slate-500 py-6 bg-slate-900/50 border border-slate-800 rounded-xl">Matchups not played yet for Week ${weekObj ? weekObj.week : selectedWeek}.</div>`;
         return;
       }
+      if (upcoming) {
+        container.innerHTML = `<div class="col-span-full text-[11px] text-slate-500 -mb-1">Week ${weekObj.week} has not started. Scheduled matchups:</div>`;
+      }
+      const divTag = id => {
+        const name = DIV_CODE_NAMES[(weekObj.active_divisions || {})[id]];
+        return name ? `<span class="text-[9px] font-bold text-slate-500 uppercase tracking-wide">${name}</span>` : '';
+      };
+      const scoreText = t => upcoming ? '–' : t.score.toFixed(2);
 
       let matchupsList = [...weekObj.matchups];
       if (focusedTeamId) {
@@ -633,8 +650,8 @@
             <div class="flex justify-between items-center text-xs p-1 rounded border ${isT1Focused ? 'bg-sky-950/70 border-sky-500/40' : 'border-transparent'} ${team1Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT1Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team1.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
-                ${live ? liveChip(m.team1) : (team1Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
-                <span class="font-bold text-xs w-14 text-right ${team1Won ? 'text-emerald-400' : 'text-slate-400'}">${m.team1.score.toFixed(2)}</span>
+                ${upcoming ? divTag(m.team1.id) : live ? liveChip(m.team1) : (team1Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
+                <span class="font-bold text-xs w-14 text-right ${team1Won ? 'text-emerald-400' : 'text-slate-400'}">${scoreText(m.team1)}</span>
               </div>
             </div>
             <!-- VS Divider -->
@@ -643,8 +660,8 @@
             <div class="flex justify-between items-center text-xs p-1 rounded border ${isT2Focused ? 'bg-sky-950/70 border-sky-500/40' : 'border-transparent'} ${team2Won ? 'font-bold text-slate-100' : 'text-slate-400'}">
               <span class="truncate pr-2 font-bold ${isT2Focused ? 'text-sky-300 font-black' : 'text-slate-200'}">${m.team2.name}</span>
               <div class="flex items-center gap-1.5 shrink-0">
-                ${live ? liveChip(m.team2) : (team2Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
-                <span class="font-bold text-xs w-14 text-right ${team2Won ? 'text-emerald-400' : 'text-slate-400'}">${m.team2.score.toFixed(2)}</span>
+                ${upcoming ? divTag(m.team2.id) : live ? liveChip(m.team2) : (team2Won ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-1 py-0.5 rounded font-bold border border-emerald-500/30">+1 VP</span>' : '')}
+                <span class="font-bold text-xs w-14 text-right ${team2Won ? 'text-emerald-400' : 'text-slate-400'}">${scoreText(m.team2)}</span>
               </div>
             </div>
           </div>`;
