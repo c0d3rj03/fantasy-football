@@ -36,10 +36,26 @@ function parseSlackMarkdown(text) {
 
 function updateRecapButtonText() {
   const currentW = (typeof selectedWeek !== 'undefined') ? selectedWeek : (typeof currentWeek !== 'undefined' ? currentWeek : "1");
+  const wObj = (typeof leagueData !== 'undefined') ? leagueData?.weekly_data?.[currentW] : null;
+  const hasRecap = !!(wObj && wObj.recap);
+  const btn = document.getElementById('recap-btn');
   const btnText = document.getElementById('recap-btn-text');
   if (btnText) {
-    btnText.textContent = `View Gemmy's Week ${currentW} Recap`;
+    btnText.textContent = hasRecap ? `View Gemmy's Week ${currentW} Recap`
+      : (wObj && wObj.played) ? `Gemmy's Week ${currentW} Recap: coming soon`
+      : `Gemmy's Week ${currentW} Recap: after the week ends`;
   }
+  // No recap yet (week not final, or final but not posted): dim it, drop the ping, disable it.
+  if (btn) {
+    btn.disabled = !hasRecap;
+    // Inline styles: the Tailwind CDN doesn't reliably build classes added at runtime.
+    btn.style.opacity = hasRecap ? '' : '0.45';
+    btn.style.filter = hasRecap ? '' : 'grayscale(1)';
+    btn.style.cursor = hasRecap ? '' : 'default';
+    btn.style.pointerEvents = hasRecap ? '' : 'none';
+  }
+  const ping = document.getElementById('recap-btn-ping');
+  if (ping) ping.style.display = hasRecap ? '' : 'none';
 }
 
 function openRecapModal() {
