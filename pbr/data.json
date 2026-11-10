@@ -5080,7 +5080,7 @@
         "games_total": 15,
         "games_final": 14,
         "games_in_progress": 1,
-        "updated": "2026-11-10T04:35:36.915Z"
+        "updated": "2026-11-10T04:45:39.602Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5141,7 +5141,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 125.49,
+            "score": 125.57,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 0,
@@ -5221,7 +5221,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 125.49,
+            "score": 125.57,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 0,
@@ -5379,8 +5379,8 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 125.49,
-            "pp": 146.64,
+            "score": 125.57,
+            "pp": 146.72,
             "h2h_vp": 2,
             "battle_vp": 0,
             "total_weekly_vp": 2,
@@ -5537,8 +5537,8 @@
             "h2h_vp": 2,
             "battle_vp": 0,
             "vp": 2,
-            "pf": 125.49,
-            "pp": 146.64,
+            "pf": 125.57,
+            "pp": 146.72,
             "wins": 2,
             "losses": 0,
             "ties": 0,
@@ -5688,8 +5688,8 @@
             "h2h_vp": 14,
             "battle_vp": 4,
             "vp": 18,
-            "pf": 1205.0600000000002,
-            "pp": 1480.38,
+            "pf": 1205.14,
+            "pp": 1480.46,
             "wins": 14,
             "losses": 4,
             "ties": 0,
