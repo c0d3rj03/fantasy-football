@@ -5079,8 +5079,8 @@
       "live": {
         "games_total": 15,
         "games_final": 14,
-        "games_in_progress": 1,
-        "updated": "2026-11-10T02:25:39.551Z"
+        "games_in_progress": 0,
+        "updated": "2026-11-10T02:35:37.690Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5101,7 +5101,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 131.73,
+            "score": 132.05,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5150,7 +5150,7 @@
           "team2": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 92.53,
+            "score": 93.33,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5181,7 +5181,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 131.73,
+            "score": 132.05,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 2,
@@ -5301,7 +5301,7 @@
           "team1": {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 92.53,
+            "score": 93.33,
             "vp_earned": 0,
             "ytp": 0,
             "in_game": 1,
@@ -5355,7 +5355,7 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 131.73,
+            "score": 132.05,
             "pp": 149.54,
             "h2h_vp": 2,
             "battle_vp": 1,
@@ -5417,7 +5417,7 @@
           {
             "id": "0009",
             "name": "Springfield Isotopes",
-            "score": 92.53,
+            "score": 93.33,
             "pp": 109.18,
             "h2h_vp": 0,
             "battle_vp": 0,
@@ -5511,7 +5511,7 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "vp": 3,
-            "pf": 131.73,
+            "pf": 132.05,
             "pp": 149.54,
             "wins": 2,
             "losses": 0,
@@ -5578,7 +5578,7 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "vp": 0,
-            "pf": 92.53,
+            "pf": 93.33,
             "pp": 109.18,
             "wins": 0,
             "losses": 2,
@@ -5662,7 +5662,7 @@
             "h2h_vp": 14,
             "battle_vp": 9,
             "vp": 23,
-            "pf": 1336.38,
+            "pf": 1336.7,
             "pp": 1541.8100000000002,
             "wins": 14,
             "losses": 4,
@@ -5742,7 +5742,7 @@
             "h2h_vp": 6,
             "battle_vp": 3,
             "vp": 9,
-            "pf": 1118.8600000000001,
+            "pf": 1119.66,
             "pp": 1315.1900000000003,
             "wins": 6,
             "losses": 12,
