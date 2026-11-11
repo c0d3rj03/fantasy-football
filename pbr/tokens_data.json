@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-08T17:51:33.063Z",
+  "last_updated": "2026-11-11T17:51:35.785Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -49,10 +49,10 @@
       "name": "Orcan Terror",
       "start": 15,
       "trades": 20,
-      "waivers": 6,
+      "waivers": 7,
       "promotions": 0,
       "adjustments": 0,
-      "total": 41,
+      "total": 42,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -74,7 +74,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 1,
+          "waivers": 2,
           "promotions": 0,
           "adjustments": 0
         },
@@ -89,11 +89,11 @@
     "0002": {
       "name": "BattleBots",
       "start": 84,
-      "trades": 24,
-      "waivers": 5,
+      "trades": 26,
+      "waivers": 6,
       "promotions": 0,
       "adjustments": 0,
-      "total": 113,
+      "total": 116,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -114,8 +114,8 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
-          "waivers": 1,
+          "trades": 2,
+          "waivers": 2,
           "promotions": 0,
           "adjustments": 0
         },
@@ -212,11 +212,11 @@
     "0005": {
       "name": "Peaky Fookin Blinders",
       "start": 0,
-      "trades": 16,
+      "trades": 18,
       "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 18,
+      "total": 20,
       "by_period": {
         "Offseason": {
           "trades": 10,
@@ -237,7 +237,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
+          "trades": 2,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -377,10 +377,10 @@
       "name": "Springfield Isotopes",
       "start": 20,
       "trades": 16,
-      "waivers": 1,
+      "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 37,
+      "total": 38,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -402,7 +402,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 0,
+          "waivers": 1,
           "promotions": 0,
           "adjustments": 0
         },
@@ -418,10 +418,10 @@
       "name": "The Meaty Ogres",
       "start": 13,
       "trades": 22,
-      "waivers": 3,
+      "waivers": 4,
       "promotions": 1,
       "adjustments": 0,
-      "total": 39,
+      "total": 40,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -443,7 +443,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 0,
+          "waivers": 1,
           "promotions": 0,
           "adjustments": 0
         },
@@ -539,6 +539,41 @@
     }
   },
   "trades": [
+    {
+      "id": "1794363995",
+      "date": "2026-11-10",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0002",
+          "name": "BattleBots",
+          "assets": [
+            {
+              "code": "16165",
+              "name": "Tyjae Spears (RB, TEN)",
+              "value": 2280
+            }
+          ],
+          "value": 2280
+        },
+        {
+          "franchise": "0005",
+          "name": "Peaky Fookin Blinders",
+          "assets": [
+            {
+              "code": "14842",
+              "name": "Michael Pittman (WR, PIT)",
+              "value": 2372
+            }
+          ],
+          "value": 2372
+        }
+      ],
+      "total_value": 4652,
+      "tokens_each": 2,
+      "tokens_awarded": 2
+    },
     {
       "id": "1793589402",
       "date": "2026-11-01",
@@ -1595,6 +1630,57 @@
     }
   ],
   "waivers": [
+    {
+      "id": "1794412800|0002|16633",
+      "timestamp": 1794412800,
+      "date": "2026-11-11",
+      "franchise": "0002",
+      "name": "BattleBots",
+      "player_id": "16633",
+      "player": "Jordan Whittington (WR, LAR)",
+      "dropped": "Tyson Bagent (QB, CHI)",
+      "bid": 25,
+      "period": "Q3",
+      "tokens": 1
+    },
+    {
+      "id": "1794412800|0001|12645",
+      "timestamp": 1794412800,
+      "date": "2026-11-11",
+      "franchise": "0001",
+      "name": "Orcan Terror",
+      "player_id": "12645",
+      "player": "Laquon Treadwell (WR, IND)",
+      "bid": 25,
+      "period": "Q3",
+      "tokens": 1
+    },
+    {
+      "id": "1794412800|0010|16678",
+      "timestamp": 1794412800,
+      "date": "2026-11-11",
+      "franchise": "0010",
+      "name": "The Meaty Ogres",
+      "player_id": "16678",
+      "player": "Sione Vaki (RB, DET)",
+      "dropped": "Noah Fant (TE, NOS)",
+      "bid": 26,
+      "period": "Q3",
+      "tokens": 1
+    },
+    {
+      "id": "1794412800|0009|16595",
+      "timestamp": 1794412800,
+      "date": "2026-11-11",
+      "franchise": "0009",
+      "name": "Springfield Isotopes",
+      "player_id": "16595",
+      "player": "Audric Estime (RB, NOS)",
+      "dropped": "Cody White (WR, LVR)",
+      "bid": 143,
+      "period": "Q3",
+      "tokens": 1
+    },
     {
       "id": "1793808000|0001|15263",
       "timestamp": 1793808000,
