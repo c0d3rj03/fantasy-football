@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-11T17:51:35.785Z",
+  "last_updated": "2026-11-12T17:51:39.704Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -952,7 +952,7 @@
           "assets": [
             {
               "code": "16171",
-              "name": "Kendre Miller (RB, FA)",
+              "name": "Kendre Miller (RB, DAL)",
               "value": 1727
             }
           ],
