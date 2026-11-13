@@ -2,11 +2,11 @@
   "leagueId": "25918",
   "seasonYear": "2026",
   "currentWeek": 10,
-  "isLive": false,
-  "phase": "results",
-  "displayWeek": 9,
+  "isLive": true,
+  "phase": "live",
+  "displayWeek": 10,
   "lastCompletedWeek": 9,
-  "lastUpdated": "2026-11-13T01:16:06.913Z",
+  "lastUpdated": "2026-11-13T01:26:08.161Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -348,8 +348,8 @@
     "0001": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 11,
-      "inGame": 0,
+      "ytp": 9,
+      "inGame": 2,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 0
@@ -357,8 +357,8 @@
     "0002": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 10,
-      "inGame": 0,
+      "ytp": 9,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 1
@@ -384,8 +384,8 @@
     "0005": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 10,
-      "inGame": 0,
+      "ytp": 9,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 1
@@ -428,9 +428,9 @@
     },
     "0010": {
       "doneScore": 0,
-      "liveScore": 0,
-      "ytp": 11,
-      "inGame": 0,
+      "liveScore": 4.1,
+      "ytp": 10,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 0
@@ -447,8 +447,8 @@
     "0012": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 11,
-      "inGame": 0,
+      "ytp": 10,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 0
@@ -491,9 +491,9 @@
     },
     "0017": {
       "doneScore": 0,
-      "liveScore": 0,
-      "ytp": 11,
-      "inGame": 0,
+      "liveScore": 0.45,
+      "ytp": 10,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 0
@@ -527,9 +527,9 @@
     },
     "0021": {
       "doneScore": 0,
-      "liveScore": 0,
-      "ytp": 11,
-      "inGame": 0,
+      "liveScore": 5.6,
+      "ytp": 10,
+      "inGame": 1,
       "finished": 0,
       "byeStarters": 0,
       "emptySlots": 0
