@@ -5714,7 +5714,7 @@
         "games_total": 14,
         "games_final": 1,
         "games_in_progress": 0,
-        "updated": "2026-11-13T04:25:38.209Z"
+        "updated": "2026-11-13T04:45:39.856Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5735,7 +5735,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.83,
+            "score": 14.93,
             "vp_earned": 0,
             "ytp": 9,
             "in_game": 0,
@@ -5815,7 +5815,7 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.83,
+            "score": 14.93,
             "vp_earned": 0,
             "ytp": 9,
             "in_game": 0,
@@ -5989,8 +5989,8 @@
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.83,
-            "pp": 14.83,
+            "score": 14.93,
+            "pp": 14.93,
             "h2h_vp": 0,
             "battle_vp": 1,
             "total_weekly_vp": 1,
@@ -6145,8 +6145,8 @@
             "h2h_vp": 2,
             "battle_vp": 2,
             "vp": 4,
-            "pf": 160.07000000000002,
-            "pp": 168.32000000000002,
+            "pf": 160.17000000000002,
+            "pp": 168.42000000000002,
             "wins": 2,
             "losses": 2,
             "ties": 0,
@@ -6296,8 +6296,8 @@
             "h2h_vp": 14,
             "battle_vp": 10,
             "vp": 24,
-            "pf": 1364.72,
-            "pp": 1560.5900000000001,
+            "pf": 1364.8200000000002,
+            "pp": 1560.6900000000003,
             "wins": 14,
             "losses": 6,
             "ties": 0,
