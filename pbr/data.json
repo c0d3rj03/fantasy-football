@@ -5712,9 +5712,9 @@
       "played": false,
       "live": {
         "games_total": 14,
-        "games_final": 0,
-        "games_in_progress": 1,
-        "updated": "2026-11-13T04:15:40.535Z"
+        "games_final": 1,
+        "games_in_progress": 0,
+        "updated": "2026-11-13T04:25:38.209Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5735,11 +5735,11 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.76,
+            "score": 14.83,
             "vp_earned": 0,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0003",
@@ -5747,8 +5747,8 @@
             "score": 26.7,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         },
         {
@@ -5787,8 +5787,8 @@
             "score": 31.3,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         },
         {
@@ -5798,8 +5798,8 @@
             "score": 29.7,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0005",
@@ -5815,20 +5815,20 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.76,
+            "score": 14.83,
             "vp_earned": 0,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0007",
             "name": "Norsemen",
-            "score": 30.79,
+            "score": 28.79,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         },
         {
@@ -5847,8 +5847,8 @@
             "score": 7.4,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           }
         },
         {
@@ -5878,8 +5878,8 @@
             "score": 29.7,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0004",
@@ -5904,11 +5904,11 @@
           "team2": {
             "id": "0007",
             "name": "Norsemen",
-            "score": 30.79,
+            "score": 28.79,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         },
         {
@@ -5918,8 +5918,8 @@
             "score": 26.7,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           "team2": {
             "id": "0008",
@@ -5927,8 +5927,8 @@
             "score": 7.4,
             "vp_earned": 0,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           }
         },
         {
@@ -5958,8 +5958,8 @@
             "score": 31.3,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           "team2": {
             "id": "0004",
@@ -5983,20 +5983,20 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.76,
-            "pp": 14.76,
+            "score": 14.83,
+            "pp": 14.83,
             "h2h_vp": 0,
             "battle_vp": 1,
             "total_weekly_vp": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0010",
@@ -6033,8 +6033,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           {
             "id": "0003",
@@ -6045,8 +6045,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           {
             "id": "0005",
@@ -6077,14 +6077,14 @@
           {
             "id": "0007",
             "name": "Norsemen",
-            "score": 30.79,
-            "pp": 30.79,
+            "score": 28.79,
+            "pp": 28.79,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           {
             "id": "0008",
@@ -6095,8 +6095,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 2,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0004",
@@ -6145,8 +6145,8 @@
             "h2h_vp": 2,
             "battle_vp": 2,
             "vp": 4,
-            "pf": 160,
-            "pp": 168.25,
+            "pf": 160.07000000000002,
+            "pp": 168.32000000000002,
             "wins": 2,
             "losses": 2,
             "ties": 0,
@@ -6240,8 +6240,8 @@
             "h2h_vp": 2,
             "battle_vp": 2,
             "vp": 4,
-            "pf": 141.22,
-            "pp": 164.22,
+            "pf": 139.22,
+            "pp": 162.22,
             "wins": 2,
             "losses": 2,
             "ties": 0,
@@ -6296,8 +6296,8 @@
             "h2h_vp": 14,
             "battle_vp": 10,
             "vp": 24,
-            "pf": 1364.65,
-            "pp": 1560.5200000000002,
+            "pf": 1364.72,
+            "pp": 1560.5900000000001,
             "wins": 14,
             "losses": 6,
             "ties": 0,
@@ -6404,8 +6404,8 @@
             "h2h_vp": 8,
             "battle_vp": 7,
             "vp": 15,
-            "pf": 1075.07,
-            "pp": 1269.3400000000001,
+            "pf": 1073.07,
+            "pp": 1267.3400000000001,
             "wins": 8,
             "losses": 12,
             "ties": 0,
