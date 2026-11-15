@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 10,
   "lastCompletedWeek": 9,
-  "lastUpdated": "2026-11-15T20:26:05.481Z",
+  "lastUpdated": "2026-11-15T20:36:08.706Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -347,7 +347,7 @@
   "liveDetails": {
     "0001": {
       "doneScore": 30.92,
-      "liveScore": 64.39,
+      "liveScore": 62.78,
       "ytp": 3,
       "inGame": 6,
       "finished": 2,
@@ -356,7 +356,7 @@
     },
     "0002": {
       "doneScore": 15.1,
-      "liveScore": 34,
+      "liveScore": 49.25,
       "ytp": 4,
       "inGame": 4,
       "finished": 2,
@@ -383,7 +383,7 @@
     },
     "0005": {
       "doneScore": 16.4,
-      "liveScore": 55.28,
+      "liveScore": 55.61,
       "ytp": 4,
       "inGame": 6,
       "finished": 1,
@@ -392,7 +392,7 @@
     },
     "0006": {
       "doneScore": 48.44,
-      "liveScore": 71.65,
+      "liveScore": 79.7,
       "ytp": 1,
       "inGame": 7,
       "finished": 3,
@@ -428,7 +428,7 @@
     },
     "0010": {
       "doneScore": 31.7,
-      "liveScore": 60.15,
+      "liveScore": 60.3,
       "ytp": 4,
       "inGame": 6,
       "finished": 1,
@@ -482,7 +482,7 @@
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 88.86,
+      "liveScore": 95.72,
       "ytp": 2,
       "inGame": 9,
       "finished": 0,
@@ -491,7 +491,7 @@
     },
     "0017": {
       "doneScore": 13.35,
-      "liveScore": 15.4,
+      "liveScore": 20.6,
       "ytp": 6,
       "inGame": 3,
       "finished": 2,
@@ -527,7 +527,7 @@
     },
     "0021": {
       "doneScore": 57.69,
-      "liveScore": 46.74,
+      "liveScore": 60.04,
       "ytp": 2,
       "inGame": 6,
       "finished": 3,
@@ -536,7 +536,7 @@
     },
     "0022": {
       "doneScore": 0,
-      "liveScore": 132.65,
+      "liveScore": 142.39,
       "ytp": 4,
       "inGame": 7,
       "finished": 0,
@@ -554,7 +554,7 @@
     },
     "0024": {
       "doneScore": 60.7,
-      "liveScore": 63.75,
+      "liveScore": 67.25,
       "ytp": 6,
       "inGame": 3,
       "finished": 2,
