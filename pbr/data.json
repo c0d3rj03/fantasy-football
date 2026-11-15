@@ -5712,9 +5712,9 @@
       "played": false,
       "live": {
         "games_total": 14,
-        "games_final": 1,
-        "games_in_progress": 1,
-        "updated": "2026-11-15T17:45:34.946Z"
+        "games_final": 2,
+        "games_in_progress": 0,
+        "updated": "2026-11-15T18:05:38.887Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5737,8 +5737,8 @@
             "name": "BattleBots",
             "score": 18.43,
             "vp_earned": 0,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           },
           "team2": {
@@ -5757,8 +5757,8 @@
             "name": "The Meaty Ogres",
             "score": 0,
             "vp_earned": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 6,
             "done": 0
           },
           "team2": {
@@ -5766,8 +5766,8 @@
             "name": "Springfield Isotopes",
             "score": 0,
             "vp_earned": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 5,
             "done": 0
           }
         },
@@ -5777,8 +5777,8 @@
             "name": "Orcan Terror",
             "score": 2.75,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           },
           "team2": {
@@ -5786,8 +5786,8 @@
             "name": "Ted Lasso",
             "score": 72.95,
             "vp_earned": 1,
-            "ytp": 7,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 1,
             "done": 3
           }
         },
@@ -5797,8 +5797,8 @@
             "name": "2 Roops, 1 Silva",
             "score": 38.7,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 3,
+            "in_game": 5,
             "done": 2
           },
           "team2": {
@@ -5806,8 +5806,8 @@
             "name": "Peaky Fookin Blinders",
             "score": 5.2,
             "vp_earned": 0,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           }
         },
@@ -5817,8 +5817,8 @@
             "name": "BattleBots",
             "score": 18.43,
             "vp_earned": 0,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           },
           "team2": {
@@ -5826,8 +5826,8 @@
             "name": "Norsemen",
             "score": 28.79,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           }
         },
@@ -5837,8 +5837,8 @@
             "name": "The Meaty Ogres",
             "score": 0,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 6,
             "done": 0
           },
           "team2": {
@@ -5846,8 +5846,8 @@
             "name": "The Two Tones",
             "score": 7.4,
             "vp_earned": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 5,
             "done": 1
           }
         },
@@ -5857,8 +5857,8 @@
             "name": "Orcan Terror",
             "score": 2.75,
             "vp_earned": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           },
           "team2": {
@@ -5866,8 +5866,8 @@
             "name": "The Wild Cards",
             "score": 0,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 3,
             "done": 0
           }
         },
@@ -5877,8 +5877,8 @@
             "name": "2 Roops, 1 Silva",
             "score": 38.7,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 3,
+            "in_game": 5,
             "done": 2
           },
           "team2": {
@@ -5886,8 +5886,8 @@
             "name": "Hamsterdam",
             "score": 5.2,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           }
         },
@@ -5897,8 +5897,8 @@
             "name": "Peaky Fookin Blinders",
             "score": 5.2,
             "vp_earned": 0,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           },
           "team2": {
@@ -5906,8 +5906,8 @@
             "name": "Norsemen",
             "score": 28.79,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           }
         },
@@ -5926,8 +5926,8 @@
             "name": "The Two Tones",
             "score": 7.4,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 5,
             "done": 1
           }
         },
@@ -5937,8 +5937,8 @@
             "name": "Springfield Isotopes",
             "score": 0,
             "vp_earned": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 5,
             "done": 0
           },
           "team2": {
@@ -5946,8 +5946,8 @@
             "name": "The Wild Cards",
             "score": 0,
             "vp_earned": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 3,
             "done": 0
           }
         },
@@ -5957,8 +5957,8 @@
             "name": "Ted Lasso",
             "score": 72.95,
             "vp_earned": 1,
-            "ytp": 7,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 1,
             "done": 3
           },
           "team2": {
@@ -5966,8 +5966,8 @@
             "name": "Hamsterdam",
             "score": 5.2,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           }
         }
@@ -5982,8 +5982,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 3,
+            "in_game": 5,
             "done": 2
           },
           {
@@ -5994,8 +5994,8 @@
             "h2h_vp": 0,
             "battle_vp": 1,
             "total_weekly_vp": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           },
           {
@@ -6006,8 +6006,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           },
           {
@@ -6018,8 +6018,8 @@
             "h2h_vp": 0.5,
             "battle_vp": 0,
             "total_weekly_vp": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 6,
             "done": 0
           }
         ],
@@ -6032,8 +6032,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 7,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 1,
             "done": 3
           },
           {
@@ -6056,8 +6056,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 6,
+            "in_game": 2,
             "done": 2
           },
           {
@@ -6068,8 +6068,8 @@
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 5,
             "done": 0
           }
         ],
@@ -6082,8 +6082,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           },
           {
@@ -6094,8 +6094,8 @@
             "h2h_vp": 1,
             "battle_vp": 1,
             "total_weekly_vp": 2,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 4,
+            "in_game": 5,
             "done": 1
           },
           {
@@ -6106,8 +6106,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 4,
             "done": 1
           },
           {
@@ -6118,8 +6118,8 @@
             "h2h_vp": 0.5,
             "battle_vp": 0,
             "total_weekly_vp": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 3,
             "done": 0
           }
         ]
