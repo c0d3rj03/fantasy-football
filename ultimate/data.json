@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 10,
   "lastCompletedWeek": 9,
-  "lastUpdated": "2026-11-15T19:16:06.372Z",
+  "lastUpdated": "2026-11-15T19:26:05.548Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -347,7 +347,7 @@
   "liveDetails": {
     "0001": {
       "doneScore": 30.92,
-      "liveScore": 26.23,
+      "liveScore": 27.63,
       "ytp": 3,
       "inGame": 6,
       "finished": 2,
@@ -356,7 +356,7 @@
     },
     "0002": {
       "doneScore": 15.1,
-      "liveScore": 14.78,
+      "liveScore": 17.72,
       "ytp": 4,
       "inGame": 4,
       "finished": 2,
@@ -383,7 +383,7 @@
     },
     "0005": {
       "doneScore": 16.4,
-      "liveScore": 24.11,
+      "liveScore": 32.03,
       "ytp": 4,
       "inGame": 6,
       "finished": 1,
@@ -392,7 +392,7 @@
     },
     "0006": {
       "doneScore": 48.44,
-      "liveScore": 44.85,
+      "liveScore": 56.85,
       "ytp": 1,
       "inGame": 7,
       "finished": 3,
@@ -428,7 +428,7 @@
     },
     "0010": {
       "doneScore": 31.7,
-      "liveScore": 21.06,
+      "liveScore": 23.48,
       "ytp": 4,
       "inGame": 6,
       "finished": 1,
@@ -446,7 +446,7 @@
     },
     "0012": {
       "doneScore": 31.7,
-      "liveScore": 22.12,
+      "liveScore": 22.27,
       "ytp": 5,
       "inGame": 4,
       "finished": 2,
@@ -482,7 +482,7 @@
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 56.87,
+      "liveScore": 62.52,
       "ytp": 2,
       "inGame": 9,
       "finished": 0,
@@ -527,7 +527,7 @@
     },
     "0021": {
       "doneScore": 57.69,
-      "liveScore": 22.92,
+      "liveScore": 27.74,
       "ytp": 2,
       "inGame": 6,
       "finished": 3,
@@ -536,7 +536,7 @@
     },
     "0022": {
       "doneScore": 0,
-      "liveScore": 93.31,
+      "liveScore": 99.56,
       "ytp": 4,
       "inGame": 7,
       "finished": 0,
@@ -554,7 +554,7 @@
     },
     "0024": {
       "doneScore": 60.7,
-      "liveScore": 35.55,
+      "liveScore": 38.35,
       "ytp": 6,
       "inGame": 3,
       "finished": 2,
