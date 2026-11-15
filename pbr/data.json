@@ -5714,7 +5714,7 @@
         "games_total": 14,
         "games_final": 1,
         "games_in_progress": 0,
-        "updated": "2026-11-13T04:45:39.856Z"
+        "updated": "2026-11-15T14:45:39.079Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5735,10 +5735,10 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.93,
+            "score": 16.13,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
           },
           "team2": {
@@ -5746,8 +5746,8 @@
             "name": "Shankly's Ghost",
             "score": 26.7,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           }
         },
@@ -5775,10 +5775,10 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 0,
+            "score": 2.75,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 9,
+            "in_game": 1,
             "done": 0
           },
           "team2": {
@@ -5786,8 +5786,8 @@
             "name": "Ted Lasso",
             "score": 31.3,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 1,
             "done": 2
           }
         },
@@ -5797,8 +5797,8 @@
             "name": "2 Roops, 1 Silva",
             "score": 29.7,
             "vp_earned": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
           },
           "team2": {
@@ -5806,8 +5806,8 @@
             "name": "Peaky Fookin Blinders",
             "score": 0,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 2,
             "done": 0
           }
         },
@@ -5815,10 +5815,10 @@
           "team1": {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.93,
+            "score": 16.13,
             "vp_earned": 0,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
           },
           "team2": {
@@ -5855,17 +5855,17 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 0,
-            "vp_earned": 0.5,
-            "ytp": 10,
-            "in_game": 0,
+            "score": 2.75,
+            "vp_earned": 1,
+            "ytp": 9,
+            "in_game": 1,
             "done": 0
           },
           "team2": {
             "id": "0011",
             "name": "The Wild Cards",
             "score": 0,
-            "vp_earned": 0.5,
+            "vp_earned": 0,
             "ytp": 10,
             "in_game": 0,
             "done": 0
@@ -5877,17 +5877,17 @@
             "name": "2 Roops, 1 Silva",
             "score": 29.7,
             "vp_earned": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
           },
           "team2": {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 0,
+            "score": 5.2,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 9,
+            "in_game": 1,
             "done": 0
           }
         },
@@ -5897,8 +5897,8 @@
             "name": "Peaky Fookin Blinders",
             "score": 0,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 2,
             "done": 0
           },
           "team2": {
@@ -5917,8 +5917,8 @@
             "name": "Shankly's Ghost",
             "score": 26.7,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           },
           "team2": {
@@ -5957,17 +5957,17 @@
             "name": "Ted Lasso",
             "score": 31.3,
             "vp_earned": 1,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 1,
             "done": 2
           },
           "team2": {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 0,
+            "score": 5.2,
             "vp_earned": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 9,
+            "in_game": 1,
             "done": 0
           }
         }
@@ -5978,43 +5978,43 @@
             "id": "0012",
             "name": "2 Roops, 1 Silva",
             "score": 29.7,
-            "pp": 29.7,
+            "pp": 30.2,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
           },
           {
             "id": "0002",
             "name": "BattleBots",
-            "score": 14.93,
-            "pp": 14.93,
+            "score": 16.13,
+            "pp": 16.13,
             "h2h_vp": 0,
             "battle_vp": 1,
             "total_weekly_vp": 1,
-            "ytp": 9,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 1,
             "done": 1
+          },
+          {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "score": 2.75,
+            "pp": 11.05,
+            "h2h_vp": 1,
+            "battle_vp": 0,
+            "total_weekly_vp": 1,
+            "ytp": 9,
+            "in_game": 1,
+            "done": 0
           },
           {
             "id": "0010",
             "name": "The Meaty Ogres",
             "score": 0,
             "pp": 0,
-            "h2h_vp": 0.5,
-            "battle_vp": 0,
-            "total_weekly_vp": 0.5,
-            "ytp": 10,
-            "in_game": 0,
-            "done": 0
-          },
-          {
-            "id": "0001",
-            "name": "Orcan Terror",
-            "score": 0,
-            "pp": 4.7,
             "h2h_vp": 0.5,
             "battle_vp": 0,
             "total_weekly_vp": 0.5,
@@ -6032,8 +6032,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 7,
+            "in_game": 1,
             "done": 2
           },
           {
@@ -6044,8 +6044,8 @@
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
-            "ytp": 8,
-            "in_game": 0,
+            "ytp": 5,
+            "in_game": 3,
             "done": 2
           },
           {
@@ -6056,8 +6056,8 @@
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 8,
+            "in_game": 2,
             "done": 0
           },
           {
@@ -6101,13 +6101,13 @@
           {
             "id": "0004",
             "name": "Hamsterdam",
-            "score": 0,
-            "pp": 2.8,
+            "score": 5.2,
+            "pp": 8,
             "h2h_vp": 0,
             "battle_vp": 0,
             "total_weekly_vp": 0,
-            "ytp": 10,
-            "in_game": 0,
+            "ytp": 9,
+            "in_game": 1,
             "done": 0
           },
           {
@@ -6115,9 +6115,9 @@
             "name": "The Wild Cards",
             "score": 0,
             "pp": 0,
-            "h2h_vp": 1,
+            "h2h_vp": 0.5,
             "battle_vp": 0,
-            "total_weekly_vp": 1,
+            "total_weekly_vp": 0.5,
             "ytp": 10,
             "in_game": 0,
             "done": 0
@@ -6133,7 +6133,7 @@
             "battle_vp": 1,
             "vp": 5,
             "pf": 165.29,
-            "pp": 216.69,
+            "pp": 217.19,
             "wins": 4,
             "losses": 0,
             "ties": 0,
@@ -6145,8 +6145,8 @@
             "h2h_vp": 2,
             "battle_vp": 2,
             "vp": 4,
-            "pf": 160.17000000000002,
-            "pp": 168.42000000000002,
+            "pf": 161.37,
+            "pp": 169.62,
             "wins": 2,
             "losses": 2,
             "ties": 0,
@@ -6168,14 +6168,14 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 2.5,
+            "h2h_vp": 3,
             "battle_vp": 0,
-            "vp": 2.5,
-            "pf": 125.57,
-            "pp": 151.42,
-            "wins": 2,
+            "vp": 3,
+            "pf": 128.32,
+            "pp": 157.77,
+            "wins": 3,
             "losses": 1,
-            "ties": 1,
+            "ties": 0,
             "division": "00"
           }
         ],
@@ -6253,8 +6253,8 @@
             "h2h_vp": 1,
             "battle_vp": 1,
             "vp": 2,
-            "pf": 129.12,
-            "pp": 148.14000000000001,
+            "pf": 134.32,
+            "pp": 153.34,
             "wins": 1,
             "losses": 3,
             "ties": 0,
@@ -6276,14 +6276,14 @@
           {
             "id": "0011",
             "name": "The Wild Cards",
-            "h2h_vp": 1,
+            "h2h_vp": 0.5,
             "battle_vp": 0,
-            "vp": 1,
+            "vp": 0.5,
             "pf": 76.09,
             "pp": 91.39,
             "wins": 0,
-            "losses": 2,
-            "ties": 2,
+            "losses": 3,
+            "ties": 1,
             "division": "02"
           }
         ]
@@ -6296,8 +6296,8 @@
             "h2h_vp": 14,
             "battle_vp": 10,
             "vp": 24,
-            "pf": 1364.8200000000002,
-            "pp": 1560.6900000000003,
+            "pf": 1366.0200000000002,
+            "pp": 1561.8900000000003,
             "wins": 14,
             "losses": 6,
             "ties": 0,
@@ -6323,7 +6323,7 @@
             "battle_vp": 6,
             "vp": 19,
             "pf": 1209.56,
-            "pp": 1464.23,
+            "pp": 1464.73,
             "wins": 13,
             "losses": 7,
             "ties": 0,
@@ -6332,14 +6332,14 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "h2h_vp": 14.5,
+            "h2h_vp": 15,
             "battle_vp": 4,
-            "vp": 18.5,
-            "pf": 1205.14,
-            "pp": 1485.16,
-            "wins": 14,
+            "vp": 19,
+            "pf": 1207.89,
+            "pp": 1491.51,
+            "wins": 15,
             "losses": 5,
-            "ties": 1,
+            "ties": 0,
             "division": "00"
           }
         ],
@@ -6417,8 +6417,8 @@
             "h2h_vp": 9,
             "battle_vp": 5,
             "vp": 14,
-            "pf": 1019.2599999999999,
-            "pp": 1237.7599999999998,
+            "pf": 1024.4599999999998,
+            "pp": 1242.9599999999998,
             "wins": 9,
             "losses": 11,
             "ties": 0,
@@ -6440,14 +6440,14 @@
           {
             "id": "0011",
             "name": "The Wild Cards",
-            "h2h_vp": 4,
+            "h2h_vp": 3.5,
             "battle_vp": 2,
-            "vp": 6,
+            "vp": 5.5,
             "pf": 870.43,
             "pp": 1035.68,
             "wins": 3,
-            "losses": 15,
-            "ties": 2,
+            "losses": 16,
+            "ties": 1,
             "division": "02"
           }
         ]
