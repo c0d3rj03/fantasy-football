@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 10,
   "lastCompletedWeek": 9,
-  "lastUpdated": "2026-11-15T17:36:05.996Z",
+  "lastUpdated": "2026-11-15T17:46:03.771Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -355,11 +355,11 @@
       "emptySlots": 0
     },
     "0002": {
-      "doneScore": 13.2,
-      "liveScore": 1.9,
+      "doneScore": 15.1,
+      "liveScore": 0,
       "ytp": 8,
-      "inGame": 1,
-      "finished": 1,
+      "inGame": 0,
+      "finished": 2,
       "byeStarters": 0,
       "emptySlots": 1
     },
@@ -391,11 +391,11 @@
       "emptySlots": 0
     },
     "0006": {
-      "doneScore": 0,
-      "liveScore": 48.44,
+      "doneScore": 48.44,
+      "liveScore": 0,
       "ytp": 8,
-      "inGame": 3,
-      "finished": 0,
+      "inGame": 0,
+      "finished": 3,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -445,11 +445,11 @@
       "emptySlots": 0
     },
     "0012": {
-      "doneScore": 23.3,
-      "liveScore": 8.4,
+      "doneScore": 31.7,
+      "liveScore": 0,
       "ytp": 9,
-      "inGame": 1,
-      "finished": 1,
+      "inGame": 0,
+      "finished": 2,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -490,11 +490,11 @@
       "emptySlots": 0
     },
     "0017": {
-      "doneScore": 8.95,
-      "liveScore": 4.4,
+      "doneScore": 13.35,
+      "liveScore": 0,
       "ytp": 9,
-      "inGame": 1,
-      "finished": 1,
+      "inGame": 0,
+      "finished": 2,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -526,11 +526,11 @@
       "emptySlots": 0
     },
     "0021": {
-      "doneScore": 42.7,
-      "liveScore": 14.99,
+      "doneScore": 57.69,
+      "liveScore": 0,
       "ytp": 8,
-      "inGame": 2,
-      "finished": 1,
+      "inGame": 0,
+      "finished": 3,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -553,11 +553,11 @@
       "emptySlots": 0
     },
     "0024": {
-      "doneScore": 0,
-      "liveScore": 60.7,
+      "doneScore": 60.7,
+      "liveScore": 0,
       "ytp": 9,
-      "inGame": 2,
-      "finished": 0,
+      "inGame": 0,
+      "finished": 2,
       "byeStarters": 0,
       "emptySlots": 0
     }
@@ -726,5 +726,5 @@
     }
   },
   "fetchMode": "live",
-  "gamesInProgress": 1
+  "gamesInProgress": 0
 }
