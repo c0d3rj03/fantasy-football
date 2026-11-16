@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-12T17:51:39.704Z",
+  "last_updated": "2026-11-16T17:51:36.973Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -89,11 +89,11 @@
     "0002": {
       "name": "BattleBots",
       "start": 84,
-      "trades": 26,
+      "trades": 32,
       "waivers": 6,
       "promotions": 0,
       "adjustments": 0,
-      "total": 116,
+      "total": 122,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -114,7 +114,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 2,
+          "trades": 8,
           "waivers": 2,
           "promotions": 0,
           "adjustments": 0
@@ -212,11 +212,11 @@
     "0005": {
       "name": "Peaky Fookin Blinders",
       "start": 0,
-      "trades": 18,
+      "trades": 24,
       "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 20,
+      "total": 26,
       "by_period": {
         "Offseason": {
           "trades": 10,
@@ -237,7 +237,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 2,
+          "trades": 8,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -539,6 +539,91 @@
     }
   },
   "trades": [
+    {
+      "id": "1794838043",
+      "date": "2026-11-16",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0002",
+          "name": "BattleBots",
+          "assets": [
+            {
+              "code": "17078",
+              "name": "Jack Bech (WR, LVR)",
+              "value": 2002
+            },
+            {
+              "code": "FP_0002_2027_3",
+              "name": "2027 3rd Round Pick (BattleBots)",
+              "value": 2575
+            }
+          ],
+          "value": 4577
+        },
+        {
+          "franchise": "0005",
+          "name": "Peaky Fookin Blinders",
+          "assets": [
+            {
+              "code": "FP_0006_2027_3",
+              "name": "2027 3rd Round Pick (Ted Lasso)",
+              "value": 2575
+            },
+            {
+              "code": "FP_0005_2027_5",
+              "name": "2027 5th Round Pick (Peaky Fookin Blinders)",
+              "value": 1367
+            },
+            {
+              "code": "FP_0005_2027_6",
+              "name": "2027 6th Round Pick (Peaky Fookin Blinders)",
+              "value": 996
+            }
+          ],
+          "value": 4938
+        }
+      ],
+      "total_value": 9515,
+      "tokens_each": 4,
+      "tokens_awarded": 4
+    },
+    {
+      "id": "1794836653",
+      "date": "2026-11-16",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0002",
+          "name": "BattleBots",
+          "assets": [
+            {
+              "code": "FP_0006_2027_3",
+              "name": "2027 3rd Round Pick (Ted Lasso)",
+              "value": 2575
+            }
+          ],
+          "value": 2575
+        },
+        {
+          "franchise": "0005",
+          "name": "Peaky Fookin Blinders",
+          "assets": [
+            {
+              "code": "14136",
+              "name": "Deebo Samuel (WR, SFO)",
+              "value": 2523
+            }
+          ],
+          "value": 2523
+        }
+      ],
+      "total_value": 5098,
+      "tokens_each": 2,
+      "tokens_awarded": 2
+    },
     {
       "id": "1794363995",
       "date": "2026-11-10",
