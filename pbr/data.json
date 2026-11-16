@@ -5714,7 +5714,7 @@
         "games_total": 14,
         "games_final": 12,
         "games_in_progress": 1,
-        "updated": "2026-11-16T04:15:39.712Z"
+        "updated": "2026-11-16T04:35:36.437Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5738,8 +5738,8 @@
             "score": 138.8,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0003",
@@ -5747,8 +5747,8 @@
             "score": 195.93,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -5767,8 +5767,8 @@
             "score": 122.34,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5787,8 +5787,8 @@
             "score": 109.7,
             "vp_earned": 0,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -5807,8 +5807,8 @@
             "score": 79.24,
             "vp_earned": 0,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -5818,8 +5818,8 @@
             "score": 138.8,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0007",
@@ -5847,8 +5847,8 @@
             "score": 92.17,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5867,8 +5867,8 @@
             "score": 78.6,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5887,8 +5887,8 @@
             "score": 86.52,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5898,8 +5898,8 @@
             "score": 79.24,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0007",
@@ -5918,8 +5918,8 @@
             "score": 195.93,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0008",
@@ -5927,8 +5927,8 @@
             "score": 92.17,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5938,8 +5938,8 @@
             "score": 122.34,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0011",
@@ -5947,8 +5947,8 @@
             "score": 78.6,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -5958,8 +5958,8 @@
             "score": 109.7,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0004",
@@ -5967,8 +5967,8 @@
             "score": 86.52,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         }
       ],
@@ -6007,8 +6007,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0012",
@@ -6033,8 +6033,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           },
           {
             "id": "0009",
@@ -6045,8 +6045,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 2,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0006",
@@ -6057,8 +6057,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           {
             "id": "0005",
@@ -6069,8 +6069,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           }
         ],
         "Lower Division": [
@@ -6083,8 +6083,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0004",
@@ -6095,8 +6095,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0011",
@@ -6107,8 +6107,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0007",
