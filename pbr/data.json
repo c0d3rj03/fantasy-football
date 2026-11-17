@@ -5714,7 +5714,7 @@
         "games_total": 14,
         "games_final": 13,
         "games_in_progress": 1,
-        "updated": "2026-11-17T03:35:43.963Z"
+        "updated": "2026-11-17T03:45:37.760Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -5775,7 +5775,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 169.83,
+            "score": 176.83,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 1,
@@ -5855,7 +5855,7 @@
           "team1": {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 169.83,
+            "score": 176.83,
             "vp_earned": 1,
             "ytp": 0,
             "in_game": 1,
@@ -5977,8 +5977,8 @@
           {
             "id": "0001",
             "name": "Orcan Terror",
-            "score": 169.83,
-            "pp": 205.13,
+            "score": 176.83,
+            "pp": 206.63,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -6040,7 +6040,7 @@
             "id": "0009",
             "name": "Springfield Isotopes",
             "score": 122.34,
-            "pp": 135.97,
+            "pp": 136.33,
             "h2h_vp": 1,
             "battle_vp": 1,
             "total_weekly_vp": 2,
@@ -6127,6 +6127,19 @@
       "quarter_standings": {
         "Upper Division": [
           {
+            "id": "0001",
+            "name": "Orcan Terror",
+            "h2h_vp": 4,
+            "battle_vp": 1,
+            "vp": 5,
+            "pf": 302.4,
+            "pp": 353.35,
+            "wins": 4,
+            "losses": 0,
+            "ties": 0,
+            "division": "00"
+          },
+          {
             "id": "0010",
             "name": "The Meaty Ogres",
             "h2h_vp": 4,
@@ -6149,19 +6162,6 @@
             "pp": 332.54,
             "wins": 3,
             "losses": 1,
-            "ties": 0,
-            "division": "00"
-          },
-          {
-            "id": "0001",
-            "name": "Orcan Terror",
-            "h2h_vp": 4,
-            "battle_vp": 1,
-            "vp": 5,
-            "pf": 295.4,
-            "pp": 351.85,
-            "wins": 4,
-            "losses": 0,
             "ties": 0,
             "division": "00"
           },
@@ -6200,7 +6200,7 @@
             "battle_vp": 1,
             "vp": 3,
             "pf": 229.07,
-            "pp": 260.1,
+            "pp": 260.46000000000004,
             "wins": 2,
             "losses": 2,
             "ties": 0,
@@ -6322,8 +6322,8 @@
             "h2h_vp": 16,
             "battle_vp": 5,
             "vp": 21,
-            "pf": 1374.97,
-            "pp": 1685.5900000000001,
+            "pf": 1381.97,
+            "pp": 1687.0900000000001,
             "wins": 16,
             "losses": 4,
             "ties": 0,
@@ -6377,7 +6377,7 @@
             "battle_vp": 4,
             "vp": 12,
             "pf": 1255.4,
-            "pp": 1466.1100000000004,
+            "pp": 1466.4700000000003,
             "wins": 8,
             "losses": 12,
             "ties": 0,
