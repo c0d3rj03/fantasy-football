@@ -110,6 +110,10 @@ jobs:
           GEMMY_FORCE: ${{ github.event.inputs.force_recap == 'true' && '1' || '0' }}
           GEMINI_MODEL: ${{ vars.PBR_GEMINI_MODEL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Claude key for Claudine's replies (claudine.js). Unset = Gemmy's solo recap.
+          ANTHROPIC_API_KEY: ${{ secrets.PBR_ANTHROPIC_API_KEY }}
+          # Repo variable PBR_RECAP_STYLE = solo forces the solo recap even with the key.
+          GEMMY_SOLO: ${{ vars.PBR_RECAP_STYLE == 'solo' && '1' || '0' }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}

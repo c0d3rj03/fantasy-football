@@ -4,6 +4,7 @@
   "description": "PBR Fantasy Football Dashboard &amp; Automation",
   "main": "pbr/fetcher.js",
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.9.0",
     "@google/generative-ai": "^0.21.0",
     "@slack/web-api": "^7.8.0"
   }

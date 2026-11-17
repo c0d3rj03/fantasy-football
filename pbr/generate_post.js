@@ -22,6 +22,7 @@ const { modelCandidates } = require('./gemini_models.js');
 const { recentTransactions, nextYearFirstRoundOwners } = require('./recent_transactions.js');
 const { addMentions, withChannelHeader, teamNamesFrom } = require('./slack_mentions.js');
 const { postToOfficialComms } = require('./slack_post.js');
+const { parseTakes, writeClaudineReplies, assembleDuet } = require('./claudine.js');
 
 const dataPath = path.join(__dirname, 'data.json');
 const draftsDir = path.join(__dirname, 'gemmy_drafts');
@@ -32,6 +33,8 @@ const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN;
 const MODE = process.env.GEMMY_MODE || 'auto';
 const POST_TO_SLACK = process.env.GEMMY_SLACK !== '0';
 const FORCE = process.env.GEMMY_FORCE === '1';
+// Gemmy + Claudine back-and-forth when a Claude key is set (claudine.js); GEMMY_SOLO=1 forces Gemmy's full solo recap.
+const DUET = Boolean(process.env.ANTHROPIC_API_KEY) && process.env.GEMMY_SOLO !== '1';
 // Channel ID → the secret it came from, so a log names the channel without printing its ID.
 const BANTER_CHANNELS = new Map(
   ['PBR_SLACK_CHANNEL_OFFICIALCOMMS', 'PBR_SLACK_CHANNEL_GENERAL', 'PBR_SLACK_CHANNEL_RANDOM', 'PBR_SLACK_CHANNEL_TRADE_TALK']
@@ -228,23 +231,22 @@ async function fetchFirstRoundOwners() {
   }
 }
 
-function buildPrompt(summary, banter, extraDirective, transactions = []) {
+// What this week is about, for Gemmy's instructions.
+function weekFocus(summary) {
   const { week, quarter, week_of_quarter } = summary;
-  const isQuarterEnd = week_of_quarter === 4;
-  const finalStretch = isFinalQuarterStretch(quarter, week_of_quarter);
+  if (week_of_quarter === 4) return `This is Week ${week}, the END of Quarter ${quarter}. Promotion & Relegation is the headline: celebrate the promoted division winners and roast the relegated teams (relegation is decided by lowest Potential Points, i.e. the shallowest, thinnest roster).`;
+  if (isFinalQuarterStretch(quarter, week_of_quarter)) return `Week ${week} is in Quarter 3, the LAST quarter before the postseason${week_of_quarter === 1 ? ' (VP reset to 0 this week)' : ''}. The divisions teams finish in after Week 12 are the divisions they play the postseason in, so each division has different stakes. Build each division's part around ITS stakes (see FINAL-QUARTER STAKES), using final_quarter_stakes in the data.`;
+  if (week_of_quarter >= 2) return `Week ${week} is past the halfway mark of Quarter ${quarter}. Turn up the heat on relegation candidates: the lowest Potential Points in the Upper and Middle divisions, and who is chasing promotion in Middle and Lower.`;
+  return `Week ${week} opens Quarter ${quarter}. Everyone's VP was reset to 0, so set the tone for the new quarter's race.`;
+}
 
-  const focus = isQuarterEnd
-    ? `This is Week ${week}, the END of Quarter ${quarter}. Promotion & Relegation is the headline: celebrate the promoted division winners and roast the relegated teams (relegation is decided by lowest Potential Points, i.e. the shallowest, thinnest roster).`
-    : finalStretch
-      ? `Week ${week} is in Quarter 3, the LAST quarter before the postseason${week_of_quarter === 1 ? ' (VP reset to 0 this week)' : ''}. The divisions teams finish in after Week 12 are the divisions they play the postseason in, so each division has different stakes. Write each division's section around ITS stakes (see FINAL-QUARTER STAKES below), using final_quarter_stakes in the data.`
-      : week_of_quarter >= 2
-        ? `Week ${week} is past the halfway mark of Quarter ${quarter}. Turn up the heat on relegation candidates: the lowest Potential Points in the Upper and Middle divisions, and who is chasing promotion in Middle and Lower.`
-        : `Week ${week} opens Quarter ${quarter}. Everyone's VP was reset to 0, so set the tone for the new quarter's race.`;
-
+// League rules, this stretch's stakes, the week's data, transactions and banter. Shared by Gemmy and Claudine.
+function leagueContext(summary, banter, transactions = []) {
+  const { week, quarter, week_of_quarter } = summary;
   // Weeks 9-11: what each division is actually playing for, and what matters most in each.
-  const finalStakes = finalStretch ? [
+  const finalStakes = isFinalQuarterStretch(quarter, week_of_quarter) ? [
     '',
-    'FINAL-QUARTER STAKES (Weeks 9-11; lead each division section with its stakes, in this priority order):',
+    'FINAL-QUARTER STAKES (Weeks 9-11; what each division is playing for, in priority order):',
     '- UPPER DIVISION: the only division that plays for the Season Champion title ($200) in the postseason, so staying up is everything. Headline: relegation. The team in the relegation spot (lowest quarter PP, see upper_relegation_watch) is about to get kicked out of the title race and forfeit next year\'s 3rd-round pick; name how far short of safety it is and who is barely hanging on. Next: this week\'s single-game showings against the division (score_rank_in_division, potential_rank_in_division), praising whoever topped the division and roasting whoever finished last, especially a bottom PP that drags them toward relegation. Points left on the bench rank BELOW all of that: mention them briefly at most, never as an Upper team\'s main story.',
     '- MIDDLE DIVISION: the last chance to climb into the Upper Division (and the title race) before the postseason. Only the VP leader goes up, so wins and VP are the story: the promotion race (middle_promotion_race, vp_behind_leader) and who gained or lost ground this week. Here bench points DO hurt when they cost a win: call out every wins_left_on_bench entry for a Middle team (an H2H loss or a missed top-2 VP the bench would have won) as VP thrown away in a promotion race. The relegation spot (middle_relegation_watch) is a secondary threat: it drops a team to the Lower Division and costs next year\'s 3rd-round pick.',
     '- LOWER DIVISION: these teams can\'t reach the title, so their trophy is the Lower Division postseason, whose winner gets next season\'s 1.01 pick (only worth it if they own their own 1st; see lower_division_next_year_first, and roast anyone fighting for a 1.01 another team owns). The smart play is to get better for the future (trading veterans for future picks and young talent) while staying strong enough to win the Lower postseason. Judge their trades and waiver moves on that: a smart sell-off for picks, or gutting the roster so far they can\'t compete for 1.01. Note that winning the Lower quarter promotes a team to the Middle Division (+5 tokens) but takes it out of the 1.01 race (Middle postseason picks are x.05-x.08). Bench points matter little here.',
@@ -252,8 +254,6 @@ function buildPrompt(summary, banter, extraDirective, transactions = []) {
   ] : [];
 
   return [
-    'You are Gemmy, the official snarky AI mascot of the PBR (Premier Battle Royale) dynasty fantasy football league.',
-    '',
     'LEAGUE RULES:',
     '- 12 teams in 3 divisions of 4 (Upper, Middle, Lower). Superflex, 10 starters.',
     '- Each week a team earns up to 3 Victory Points (VP): 1 per win in its two head-to-head games against teams from the other divisions, plus 1 VP if it has a top-2 score in its own division (the "Battle Royale").',
@@ -261,19 +261,6 @@ function buildPrompt(summary, banter, extraDirective, transactions = []) {
     '- After Weeks 4, 8 and 12: the 1st-place (most VP) team in Middle and Lower is promoted; the lowest Potential Points team in Upper and Middle is relegated.',
     '- Potential Points (PP) is what the best possible lineup from the whole roster would have scored. Low PP means a shallow roster with no depth (injuries and bye weeks drag it down too). It has NOTHING to do with how well a manager set the lineup, so never blame low PP or relegation on bad lineup decisions. Lineup blunders are bench_points_left (potential minus actual score), a separate thing.',
     '- Weekly high score wins $10.',
-    '',
-    'WRITE a hilarious, ruthless weekly recap for Slack:',
-    `- ${focus}`,
-    finalStretch
-      ? '- Cover only the noteworthy stuff: blowouts, nail-biters, the high and low scores, the relegation and promotion races. Skip filler.'
-      : '- Cover only the noteworthy stuff: blowouts, nail-biters, the high and low scores, big points left on the bench, the standings race. Skip filler.',
-    '- Weave in the Slack banter below and roast managers by name for their trash talk and excuses.',
-    '- Use the recent transactions below for observations: who won or got fleeced in a trade, desperate or overpriced waiver bids, panic drops, a team hoarding QBs, a roster turning into an injury ward. Tie moves to this week\'s results or the standings race where they fit (a contender buying, a relegation candidate selling, a player cut right before he went off). Pick the 2-4 juiciest moves; skip routine ones.',
-    '- Use only the numbers, players and moves given. Do not invent scores, players or trades.',
-    '- Slack formatting: *bold* with single asterisks, _italics_, short paragraphs and bullet lines starting with •. No # headings, no tables. Keep it under 2,500 characters.',
-    `- Layout: open with a title line like "🎙️ *GEMMY'S WEEKLY DISPATCH: WEEK ${week} RECAP* 🎙️". Each section header is a bold line with a fitting emoji at each end (e.g. "👑 *UPPER DIVISION: ...* 🔪"). Drop a funny emoji on most punchlines (🤑 🗑️ 🪦 🍿 👻 🍼), not just at the end.`,
-    '- Write emojis as Unicode characters, not :shortcodes:.',
-    extraDirective ? `- Extra instruction from the commissioner: ${extraDirective}` : null,
     ...finalStakes,
     '',
     `WEEK ${week} DATA: ${JSON.stringify(summary)}`,
@@ -283,6 +270,47 @@ function buildPrompt(summary, banter, extraDirective, transactions = []) {
     '',
     `SLACK BANTER (last ${BANTER_DAYS} days, newest first):`,
     banter.length ? banter.join('\n') : '(quiet week, nobody said anything)'
+  ].join('\n');
+}
+
+/**
+ * Gemmy's prompt. duet: Gemmy writes 5 short takes for Claudine to answer (claudine.js), not a full recap.
+ */
+function buildPrompt(summary, banter, extraDirective, transactions = [], { duet = false } = {}) {
+  const { week, quarter, week_of_quarter } = summary;
+  const finalStretch = isFinalQuarterStretch(quarter, week_of_quarter);
+  const common = [
+    `- ${weekFocus(summary)}`,
+    '- Weave in the Slack banter below and roast managers by name for their trash talk and excuses.',
+    '- Use the recent transactions below for observations: who won or got fleeced in a trade, desperate or overpriced waiver bids, panic drops, a team hoarding QBs, a roster turning into an injury ward. Tie moves to this week\'s results or the standings race where they fit (a contender buying, a relegation candidate selling, a player cut right before he went off).',
+    '- Use only the numbers, players and moves given. Do not invent scores, players or trades.',
+    '- Slack formatting: *bold* with single asterisks, _italics_. No # headings, no tables. Write emojis as Unicode characters, not :shortcodes:.'
+  ];
+
+  const writing = duet ? [
+    'WRITE YOUR HALF of a two-voice weekly recap for Slack. You co-host with Claudine, the commissioner\'s AI (a dry numbers nerd built on Claude). She will reply to each of your takes, agreeing or arguing, so be bold and opinionated: give her something to react to.',
+    ...common,
+    '- Write exactly 5 takes, in this order: (1) the week\'s headline: the high and low scores; (2) Upper Division; (3) Middle Division; (4) Lower Division; (5) the juiciest transaction or banter roast.',
+    '- Each take: 1-2 punchy sentences, under 260 characters, with a funny emoji on the punchline.',
+    '- Output ONLY the takes, each on its own line in the form "TAKE: <emoji> <SHORT TOPIC> | <take>", e.g. "TAKE: 👑 UPPER | ...". No title, intro or sign-off.'
+  ] : [
+    'WRITE a hilarious, ruthless weekly recap for Slack:',
+    ...common,
+    finalStretch
+      ? '- Cover only the noteworthy stuff: blowouts, nail-biters, the high and low scores, the relegation and promotion races. Skip filler.'
+      : '- Cover only the noteworthy stuff: blowouts, nail-biters, the high and low scores, big points left on the bench, the standings race. Skip filler.',
+    '- Pick the 2-4 juiciest transactions; skip routine ones.',
+    '- Short paragraphs and bullet lines starting with •. Keep it under 2,500 characters.',
+    `- Layout: open with a title line like "🎙️ *GEMMY'S WEEKLY DISPATCH: WEEK ${week} RECAP* 🎙️". Each section header is a bold line with a fitting emoji at each end (e.g. "👑 *UPPER DIVISION: ...* 🔪"). Drop a funny emoji on most punchlines (🤑 🗑️ 🪦 🍿 👻 🍼), not just at the end.`
+  ];
+
+  return [
+    'You are Gemmy, the official snarky AI mascot of the PBR (Premier Battle Royale) dynasty fantasy football league.',
+    '',
+    ...writing,
+    extraDirective ? `- Extra instruction from the commissioner: ${extraDirective}` : null,
+    '',
+    leagueContext(summary, banter, transactions)
   ].filter(line => line !== null).join('\n');
 }
 
@@ -306,6 +334,19 @@ async function generateWithGemini(prompt) {
     }
   }
   throw new Error(`No Gemini model produced a recap (tried ${models.join(', ')})`);
+}
+
+// Gemmy's 5 takes, Claudine's reply to each, one post. If Claude fails, Gemmy's takes go out alone.
+async function generateDuet(summary, banter, notes, transactions) {
+  const takes = parseTakes(await generateWithGemini(buildPrompt(summary, banter, notes, transactions, { duet: true })));
+  if (!takes.length) throw new Error('Gemmy wrote no takes');
+  let claudine = null;
+  try {
+    claudine = await writeClaudineReplies(takes, leagueContext(summary, banter, transactions));
+  } catch (err) {
+    console.warn(`⚠️ Claudine failed (${err.message}); posting Gemmy's takes alone.`);
+  }
+  return assembleDuet(summary.week, takes, claudine);
 }
 
 async function publish(pbrData, weekObj, weekNum, recap) {
@@ -352,8 +393,11 @@ async function generatePost() {
   const transactions = await fetchTransactions();
   const firstRoundOwners = isFinalQuarterStretch(weekObj.quarter, ((weekNum - 1) % 4) + 1) ? await fetchFirstRoundOwners() : null;
   console.log(`Week ${weekNum}: ${banter.length} Slack banter messages, ${transactions.length} MFL transactions.`);
-  const prompt = buildPrompt(buildWeekSummary(pbrData, weekNum, firstRoundOwners), banter, rest.join(' ') || process.env.GEMMY_NOTES || '', transactions);
-  const recap = await generateWithGemini(prompt);
+  const summary = buildWeekSummary(pbrData, weekNum, firstRoundOwners);
+  const notes = rest.join(' ') || process.env.GEMMY_NOTES || '';
+  const recap = DUET
+    ? await generateDuet(summary, banter, notes, transactions)
+    : await generateWithGemini(buildPrompt(summary, banter, notes, transactions));
   console.log(`\n${recap}\n`);
 
   if (MODE === 'draft') {
@@ -372,4 +416,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildWeekSummary, buildPrompt, latestPlayedWeek };
+module.exports = { buildWeekSummary, buildPrompt, leagueContext, latestPlayedWeek };

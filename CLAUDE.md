@@ -72,6 +72,7 @@ node pbr/mfl_scores_fetcher.js
 | `SLACK_PBR_BOT_TOKEN` | PBR | Slack bot token for the PBR workspace: post messages, read channel history for banter and recaps |
 | `SLACK_WEBHOOK_URL` | PBR | Incoming webhook, a fallback way to post to Slack without the bot token |
 | `PBR_SLACK_CHANNEL_OFFICIALCOMMS` | PBR | Channel ID for `#officialcomms`, where weekly recaps and official announcements go |
+| `PBR_ANTHROPIC_API_KEY` | PBR | Claude API, writes Claudine's replies in the weekly Gemmy vs Claudine recap (`pbr/claudine.js`); unset = Gemmy solo |
 | `PBR_SLACK_CHANNEL_GENERAL` | PBR | Channel ID for `#general`, read for banter context |
 | `PBR_SLACK_CHANNEL_RANDOM` | PBR | Channel ID for `#random`, read for banter context |
 | `PBR_SLACK_CHANNEL_TRADE_TALK` | PBR | Channel ID for `#trade-talk`, read for banter context |
