@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>PBR 2026 - Postseason Guillotine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    /* Bar segments, one per week (validated on the slate-900 card: lightness band, CVD, contrast) */
+    :root {
+      --seg-bonus: #d97706; --seg-13: #2563eb; --seg-14: #0d9488;
+      --seg-15: #9333ea; --seg-16: #db2777; --seg-17: #4d7c0f;
+    }
+    .bar-track { display: flex; gap: 2px; height: 20px; width: 100%; background: #020617; border-radius: 4px; overflow: hidden; }
+    .seg { height: 100%; flex-shrink: 0; display: flex; align-items: center; padding: 0 5px; font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; cursor: default; }
+    .seg:last-child { border-radius: 0 4px 4px 0; }
+    .seg.live { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.28) 0 4px, transparent 4px 8px); }
+    .chop-line { display: flex; align-items: center; gap: 8px; color: #f87171; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .chop-line::before, .chop-line::after { content: ''; flex: 1; border-top: 1px dashed #ef4444; }
+    #tip { position: fixed; z-index: 60; pointer-events: none; display: none; }
+    table.num td.n, table.num th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-12">
+
+  <header class="border-b border-slate-800 bg-slate-900/90 md:sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 md:py-4 flex flex-col md:flex-row justify-between items-center gap-3 md:gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🪓</span>
+        <div>
+          <h1 class="text-xl font-black tracking-wider text-amber-400">PREMIER BATTLE ROYALE</h1>
+          <p class="text-xs text-slate-400 font-semibold">2026 Postseason Guillotine · Weeks 13-17</p>
+        </div>
+      </div>
+      <nav class="flex flex-wrap justify-center gap-2">
+        <a href="index.html" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5"><span>🏈</span> Results</a>
+        <a href="postseason.html" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-amber-500 text-slate-950 transition flex items-center gap-1.5 shadow-lg shadow-amber-500/20"><span>🪓</span> Postseason</a>
+        <a href="prizes.html" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5"><span>💰</span> Prizes</a>
+        <a href="tokens.html" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5"><span>🎟️</span> Tokens</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 mt-6 space-y-6">
+
+    <div id="status-banner" class="rounded-xl px-4 py-3 text-sm border"></div>
+
+    <!-- 1. Postseason bonus -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-slate-800 pb-3">
+        <h2 class="text-base font-black text-amber-400 flex items-center gap-2"><span>🧮</span> Postseason Bonus</h2>
+        <span id="bonus-tag" class="text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded"></span>
+      </div>
+
+      <p class="text-sm text-slate-300 leading-relaxed">
+        Every team plays inside its post-Q3 division. There are no head-to-head games: weekly scores add up across Weeks 13-17,
+        and the lowest running total is cut. Each team starts with a head start, added to its Week 13 score on MFL as the
+        <span class="font-bold text-slate-100">"Postseason Bonus"</span>, based on its full regular season (Weeks 1-12).
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 space-y-1.5">
+          <div class="text-xs font-black uppercase tracking-wider text-amber-300">Upper Division · rewards the best teams</div>
+          <div class="font-mono text-[12px] text-slate-200 leading-relaxed">
+            avg = Season PF ÷ 12<br>
+            midpoint = average of the 4 teams' avg<br>
+            bonus = 5 × (avg − midpoint), only if above the midpoint
+          </div>
+        </div>
+        <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3 space-y-1.5">
+          <div class="text-xs font-black uppercase tracking-wider text-sky-300">Middle &amp; Lower · helps the thinner rosters</div>
+          <div class="font-mono text-[12px] text-slate-200 leading-relaxed">
+            avg = Season Potential Points ÷ 12<br>
+            top = the division's best avg<br>
+            bonus = 5 × (top − avg), 0 for the top team
+          </div>
+        </div>
+      </div>
+
+      <div id="projected-moves" class="hidden text-xs text-slate-300 bg-indigo-950/30 border border-indigo-500/30 rounded-xl px-3 py-2"></div>
+
+      <div id="bonus-tables" class="grid grid-cols-1 lg:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- 2. Guillotine bars -->
+    <section class="space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-base font-black text-slate-100 flex items-center gap-2"><span>🪓</span> Cumulative Totals</h2>
+        <div id="legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold text-slate-400"></div>
+      </div>
+
+      <div id="timeline" class="grid grid-cols-5 gap-1.5 text-center"></div>
+
+      <div id="divisions" class="space-y-4"></div>
+    </section>
+
+    <p class="text-center text-[11px] text-slate-500">MFL League 63213 · Scores update daily at 2:00 AM PT, and every 10 minutes while games are on · <span id="updated"></span></p>
+  </main>
+
+  <div id="tip" class="bg-slate-800 border border-slate-600 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 shadow-xl"></div>
+
+  <script>
+    const WEEKS = [13, 14, 15, 16, 17];
+    const CUTS = { 14: '4th', 15: '3rd', 17: '2nd' };
+    const DIV_ORDER = ['00', '01', '02'];
+    const DIV_SHORT = { '00': 'Upper', '01': 'Middle', '02': 'Lower' };
+    // RULES.md §6: next season's pick by finish (every round, non-snake).
+    const DRAFT_SLOT = { '00': ['12', '11', '10', '09'], '01': ['05', '06', '07', '08'], '02': ['01', '02', '03', '04'] };
+    const STAKES = { '00': '🏆 Winner is the Season Champion', '01': 'Playing for picks x.05-x.08', '02': 'Playing for picks x.01-x.04' };
+
+    let data = null;
+    let lastText = null;
+
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const f2 = n => (Number(n) || 0).toFixed(2);
+    const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n).toFixed(2);
+    const ordinal = n => n + (['th', 'st', 'nd', 'rd'][(n % 100 - 20) % 10] || ['th', 'st', 'nd', 'rd'][n % 100] || 'th');
+    const segColor = w => `var(--seg-${w})`;
+
+    async function load() {
+      try {
+        const res = await fetch(`data.json?t=${Date.now()}`, { cache: 'no-store' });
+        const text = await res.text();
+        if (text === lastText) return;
+        lastText = text;
+        data = JSON.parse(text);
+        render();
+      } catch (e) {
+        document.getElementById('status-banner').textContent = 'Could not load data.json: ' + e.message;
+      }
+    }
+
+    function render() {
+      const ps = data.postseason;
+      const banner = document.getElementById('status-banner');
+      if (!ps) {
+        banner.className = 'rounded-xl px-4 py-3 text-sm border border-slate-700 bg-slate-900 text-slate-300';
+        banner.textContent = 'The postseason projection appears once the next score sync runs.';
+        return;
+      }
+      renderBanner(ps);
+      renderBonus(ps);
+      renderLegend(ps);
+      renderTimeline(ps);
+      renderDivisions(ps);
+      const live = data.weekly_data?.[ps.as_of_week]?.live?.updated;
+      document.getElementById('updated').textContent = live ? 'Last update ' + new Date(live).toLocaleString() : '';
+    }
+
+    function renderBanner(ps) {
+      const banner = document.getElementById('status-banner');
+      const tag = document.getElementById('bonus-tag');
+      if (ps.live_week) {
+        banner.className = 'rounded-xl px-4 py-3 text-sm border border-blue-500/30 bg-blue-950/40 text-blue-100';
+        banner.innerHTML = `<span class="font-black uppercase tracking-wider text-blue-300">Week ${ps.live_week} in progress</span>
+          <span class="text-slate-300"> · ${ps.live.games_final}/${ps.live.games_total} NFL games final${ps.live.games_in_progress ? `, ${ps.live.games_in_progress} playing now` : ''}.
+          Week ${ps.live_week} points (striped) and any cut are tentative.</span>`;
+      } else if (ps.status === 'projected') {
+        banner.className = 'rounded-xl px-4 py-3 text-sm border border-amber-500/40 bg-amber-950/30 text-amber-100';
+        banner.innerHTML = `<span class="font-black uppercase tracking-wider text-amber-300">Projected</span>
+          <span class="text-slate-300"> · Divisions assume the Week 12 promotion &amp; relegation goes as the Q3 standings sit now, and bonuses use
+          per-week averages through Week ${ps.as_of_week}${ps.as_of_live ? ' (in progress)' : ''}. Everything locks when Week 12 is final.</span>`;
+      } else {
+        const last = ps.final_weeks[ps.final_weeks.length - 1];
+        banner.className = 'rounded-xl px-4 py-3 text-sm border border-emerald-500/30 bg-emerald-950/30 text-emerald-100';
+        banner.innerHTML = `<span class="font-black uppercase tracking-wider text-emerald-300">${last === 17 ? 'Final' : 'Official'}</span>
+          <span class="text-slate-300"> · ${last ? `Results through Week ${last}.` : 'Divisions and bonuses are locked from the 12-week regular season. Week 13 is next.'}</span>`;
+      }
+      if (ps.status === 'projected') {
+        tag.className = 'text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/40';
+        tag.textContent = `Projected · through Week ${ps.as_of_week}`;
+      } else {
+        tag.className = 'text-[11px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/40';
+        tag.textContent = 'Final · 12-week totals';
+      }
+    }
+
+    function nameOf(id) {
+      for (const d of Object.values(data.postseason.divisions)) {
+        const t = d.teams.find(x => x.id === id);
+        if (t) return t.name;
+      }
+      return id;
+    }
+
+    function renderBonus(ps) {
+      const moves = document.getElementById('projected-moves');
+      const m = ps.projected_moves;
+      if (ps.status === 'projected' && m) {
+        const parts = [];
+        if (m.promoted['01']) parts.push(`⬆️ <b>${esc(nameOf(m.promoted['01']))}</b> to Upper`);
+        if (m.relegated['00']) parts.push(`⬇️ <b>${esc(nameOf(m.relegated['00']))}</b> to Middle`);
+        if (m.promoted['02']) parts.push(`⬆️ <b>${esc(nameOf(m.promoted['02']))}</b> to Middle`);
+        if (m.relegated['01']) parts.push(`⬇️ <b>${esc(nameOf(m.relegated['01']))}</b> to Lower`);
+        moves.innerHTML = `<span class="font-black uppercase tracking-wider text-indigo-300">If the season ended now:</span> ${parts.join(' · ')}`
+          + (m.coin_flips?.length ? ` <span class="text-amber-300">(coin flip: ${esc(m.coin_flips.join('; '))})</span>` : '');
+        moves.classList.remove('hidden');
+      } else {
+        moves.classList.add('hidden');
+      }
+
+      const weeks = ps.weeks_counted;
+      document.getElementById('bonus-tables').innerHTML = DIV_ORDER.map(div => {
+        const d = ps.divisions[div];
+        if (!d) return '';
+        const isUpper = div === '00';
+        const statLabel = d.stat === 'pf' ? 'PF' : 'PP';
+        const refLabel = isUpper ? 'Midpoint' : 'Top';
+        const rows = [...d.teams].sort((a, b) => b.bonus - a.bonus || b.avg - a.avg).map(t => {
+          const moved = t.came_from ? (t.came_from > div ? '<span title="Promoted" class="text-amber-400">⬆️</span>' : '<span title="Relegated" class="text-red-400">⬇️</span>') : '';
+          const applied = t.mfl_bonus != null && Math.abs(t.mfl_bonus - t.bonus) > 0.005
+            ? `<div class="text-[10px] text-amber-300">MFL: ${f2(t.mfl_bonus)}</div>` : '';
+          return `<tr class="border-t border-slate-800/70">
+            <td class="py-1.5 pr-2"><div class="flex items-center gap-1 min-w-0">${moved}<span class="font-bold text-slate-100 truncate">${esc(t.name)}</span></div></td>
+            <td class="n py-1.5 px-1 text-slate-300" title="Season ${statLabel} ${f2(t.season_total)} over ${weeks} weeks">${f2(t.avg)}</td>
+            <td class="n py-1.5 px-1 text-slate-400">${signed(t.diff)}</td>
+            <td class="n py-1.5 pl-1 font-black ${t.bonus > 0 ? 'text-amber-300' : 'text-slate-500'}">${f2(t.bonus)}${applied}</td>
+          </tr>`;
+        }).join('');
+        return `<div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+          <div class="flex items-baseline justify-between mb-1">
+            <h3 class="text-sm font-black text-slate-100">${esc(d.name)}</h3>
+            <span class="text-[11px] text-slate-400">${refLabel} <b class="text-slate-200">${f2(d.reference)}</b> ${statLabel}/wk</span>
+          </div>
+          <table class="num w-full text-xs">
+            <thead><tr class="text-[10px] uppercase tracking-wider text-slate-500">
+              <th class="text-left font-bold py-1">Team</th><th class="n font-bold px-1">${statLabel}/wk</th><th class="n font-bold px-1">vs ${refLabel}</th><th class="n font-bold">Bonus</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>`;
+      }).join('');
+    }
+
+    function renderLegend(ps) {
+      const items = [['bonus', 'Bonus'], ...WEEKS.map(w => [w, `Wk ${w}`])];
+      document.getElementById('legend').innerHTML = items.map(([k, label]) =>
+        `<span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm" style="background:${segColor(k)}"></span>${label}</span>`
+      ).join('') + (ps.live_week ? '<span class="flex items-center gap-1"><span class="inline-block w-2.5 h-2.5 rounded-sm seg live" style="background-color:#64748b;padding:0"></span>In progress</span>' : '');
+    }
+
+    function renderTimeline(ps) {
+      const finals = new Set(ps.final_weeks);
+      document.getElementById('timeline').innerHTML = WEEKS.map(w => {
+        const state = finals.has(w) ? 'done' : ps.live_week === w ? 'live' : 'next';
+        const cls = state === 'done' ? 'border-slate-700 bg-slate-900 text-slate-400'
+          : state === 'live' ? 'border-blue-500/60 bg-blue-950/50 text-blue-100' : 'border-slate-800 bg-slate-950 text-slate-300';
+        const action = w === 17 ? 'Final: 1st &amp; 2nd' : CUTS[w] ? `Cut → ${CUTS[w]}` : 'No cut';
+        return `<div class="rounded-lg border ${cls} px-1 py-1.5">
+          <div class="flex items-center justify-center gap-1 text-[11px] font-black"><span class="inline-block w-2 h-2 rounded-sm" style="background:${segColor(w)}"></span>Wk ${w}${state === 'done' ? ' ✓' : ''}</div>
+          <div class="text-[10px] font-semibold ${CUTS[w] ? 'text-red-300' : ''}">${action}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderDivisions(ps) {
+      const finals = new Set(ps.final_weeks);
+      document.getElementById('divisions').innerHTML = DIV_ORDER.map(div => {
+        const d = ps.divisions[div];
+        if (!d) return '';
+        const max = Math.max(1, ...d.teams.map(t => t.total || 0));
+        let rows = '';
+        let rank = 0;
+        d.teams.forEach(t => {
+          const out = t.place != null && t.place !== 1;
+          if (t.on_block) rows += `<div class="chop-line my-0.5">Chop line · Week ${ps.live_week}</div>`;
+          rank++;
+          const segs = [{ key: 'bonus', label: 'Postseason Bonus', pts: t.mfl_bonus ?? t.bonus, cum: t.mfl_bonus ?? t.bonus }]
+            .concat(WEEKS.filter(w => t.scores?.[w] != null && t.cumulative?.[w] != null)
+              .map(w => ({ key: w, label: `Week ${w}`, pts: t.scores[w], cum: t.cumulative[w], live: !finals.has(w) })));
+          const segHtml = segs.filter(s => s.pts > 0).map(s => {
+            const pct = (s.pts / max) * 100;
+            const tip = `${s.label}${s.live ? ' (in progress)' : ''}: <b>${f2(s.pts)}</b><br>Running total: <b>${f2(s.cum)}</b>`;
+            const label = pct > 12 ? f2(s.pts) : '';
+            return `<div class="seg${s.live ? ' live' : ''}" style="width:calc(${pct}% - 2px);background-color:${segColor(s.key)}" data-tip="${esc(tip)}">${label}</div>`;
+          }).join('');
+          let badge = '';
+          if (t.place === 1) badge = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-500 text-slate-950">${div === '00' ? '🏆 CHAMP' : '1ST'}</span>`;
+          else if (out) badge = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-red-600 text-white" title="Cut after Week ${t.out_after}">${ordinal(t.place).toUpperCase()} · WK ${t.out_after}</span>`;
+          else if (t.on_block) badge = '<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/40">ON THE BLOCK</span>';
+          const moved = t.came_from ? (t.came_from > div ? ' <span title="Promoted into this division">⬆️</span>' : ' <span title="Relegated into this division">⬇️</span>') : '';
+          const liveChips = t.live ? `<span class="flex shrink-0 gap-0.5 text-[9px] font-bold">
+              <span class="px-1 rounded border bg-blue-500/20 text-blue-300 border-blue-500/40" title="Yet to play">${t.live.ytp}</span>
+              <span class="px-1 rounded border bg-yellow-400/20 text-yellow-300 border-yellow-400/50" title="Playing now">${t.live.in_game}</span>
+              <span class="px-1 rounded border bg-red-500/20 text-red-400 border-red-500/40" title="Done">${t.live.done}</span></span>` : '';
+          const place = t.place ?? rank;
+          const pick = DRAFT_SLOT[div][place - 1];
+          rows += `<div class="flex flex-wrap sm:flex-nowrap items-center gap-x-2 gap-y-1 rounded-lg border px-2 py-1.5 ${out ? 'border-red-900/60 bg-red-950/20 opacity-70' : t.on_block ? 'border-red-800/60 bg-red-950/10' : 'border-slate-800 bg-slate-900'}">
+            <div class="w-5 text-right text-xs font-black text-slate-500 shrink-0">${place}</div>
+            <div class="flex-1 sm:flex-none sm:w-44 min-w-0">
+              <div class="text-[13px] font-bold text-slate-100 truncate" title="${esc(t.name)}">${esc(t.name)}${moved}</div>
+              <div class="flex items-center gap-1 mt-0.5">${badge}<span class="text-[10px] text-slate-500" title="Next season's pick in every round at this finish">${t.place != null || ps.final_weeks.length ? `x.${pick}` : ''}</span></div>
+            </div>
+            <div class="basis-full order-last sm:order-none sm:basis-auto sm:flex-1 min-w-0"><div class="bar-track">${segHtml}</div></div>
+            ${liveChips}
+            <div class="w-16 shrink-0 text-right text-sm font-black tabular-nums ${out ? 'text-slate-400' : 'text-slate-100'}">${f2(t.total)}</div>
+          </div>`;
+        });
+
+        const tableRows = d.teams.map(t => `<tr class="border-t border-slate-800/70">
+            <td class="py-1 pr-2 text-slate-200">${esc(t.name)}</td>
+            <td class="n px-1">${f2(t.mfl_bonus ?? t.bonus)}</td>
+            ${WEEKS.map(w => `<td class="n px-1">${t.scores?.[w] != null && t.cumulative?.[w] != null ? f2(t.scores[w]) : '–'}</td>`).join('')}
+            <td class="n pl-1 font-black text-slate-100">${f2(t.total)}</td>
+          </tr>`).join('');
+
+        return `<div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-3 sm:p-4 space-y-2">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 class="text-sm font-black ${div === '00' ? 'text-amber-400' : 'text-slate-100'}">${esc(d.name)}</h3>
+            <span class="text-[11px] text-slate-400">${STAKES[div]}</span>
+          </div>
+          <div class="space-y-1">${rows}</div>
+          ${d.ties?.length ? `<div class="text-[11px] text-amber-300">⚠️ ${esc(d.ties.join('; '))}</div>` : ''}
+          <details class="text-xs text-slate-400">
+            <summary class="cursor-pointer select-none hover:text-slate-200">Week-by-week table</summary>
+            <div class="overflow-x-auto mt-2"><table class="num w-full">
+              <thead><tr class="text-[10px] uppercase tracking-wider text-slate-500">
+                <th class="text-left font-bold">Team</th><th class="n font-bold px-1">Bonus</th>${WEEKS.map(w => `<th class="n font-bold px-1">Wk ${w}</th>`).join('')}<th class="n font-bold">Total</th>
+              </tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table></div>
+          </details>
+        </div>`;
+      }).join('');
+    }
+
+    // Hover / tap tooltip for bar segments.
+    const tip = document.getElementById('tip');
+    function showTip(e) {
+      const seg = e.target.closest('[data-tip]');
+      if (!seg) { tip.style.display = 'none'; return; }
+      tip.innerHTML = seg.dataset.tip;
+      tip.style.display = 'block';
+      const x = Math.min(e.clientX + 12, window.innerWidth - tip.offsetWidth - 8);
+      const y = e.clientY - tip.offsetHeight - 10;
+      tip.style.left = Math.max(8, x) + 'px';
+      tip.style.top = (y < 8 ? e.clientY + 16 : y) + 'px';
+    }
+    document.addEventListener('pointermove', showTip);
+    document.addEventListener('click', showTip);
+    document.addEventListener('scroll', () => { tip.style.display = 'none'; }, { passive: true });
+
+    load();
+    // Re-read data.json every 2 minutes (and when the tab regains focus); re-render only if it changed.
+    setInterval(load, 2 * 60 * 1000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+  </script>
+</body>
+
+</html>

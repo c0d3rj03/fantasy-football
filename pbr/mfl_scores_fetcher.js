@@ -3,7 +3,7 @@ const https = require('https');
 const path = require('path');
 
 const { LEAGUE_ID, YEAR, MFL_HOST, DIVISION_NAMES: divisionNames, Q1_SLOTS } = require('./config.js');
-const { inDivisionVPs, rankStandings, promotionRelegation, nextQuarterSlots, optimalLineupPoints } = require('./pbr_rules.js');
+const { inDivisionVPs, rankStandings, promotionRelegation, nextQuarterSlots, optimalLineupPoints, postseasonBonusDetail, postseasonGuillotine, POSTSEASON_WEEKS } = require('./pbr_rules.js');
 const BASE_URL = `https://${MFL_HOST}/${YEAR}/export`;
 // League-independent exports (nflSchedule, players) are only on MFL's api host.
 const API_URL = `https://api.myfantasyleague.com/${YEAR}/export`;
@@ -71,7 +71,9 @@ async function fetchLiveWeek(starterRules) {
   }
   const week = parseInt(live?.week, 10);
   const rawMatchups = asArray(live?.matchup);
-  if (!week || rawMatchups.length === 0) return null;
+  // Postseason weeks have no H2H games: MFL lists each franchise on its own.
+  const loneFranchises = asArray(live?.franchise).filter(f => f?.id);
+  if (!week || (rawMatchups.length === 0 && loneFranchises.length === 0)) return null;
 
   let schedule;
   try {
@@ -99,6 +101,7 @@ async function fetchLiveWeek(starterRules) {
     matchups.push([fr[0].id, fr[1].id]);
     fr.forEach(f => { if (!rosters[f.id]) rosters[f.id] = f; });
   });
+  loneFranchises.forEach(f => { if (!rosters[f.id]) rosters[f.id] = f; });
 
   // Positions (for PP) and NFL teams (for byes) of every rostered player.
   const playerIds = [...new Set(Object.values(rosters).flatMap(f => asArray(f.players?.player).map(p => p.id)))];
@@ -128,7 +131,9 @@ async function fetchLiveWeek(starterRules) {
     const pp = Object.keys(info).length && starterRules
       ? optimalLineupPoints(players.map(p => ({ pos: info[p.id]?.position, score: p.score })), starterRules)
       : score;
-    teams[fid] = { score, pp: Math.max(pp, score), ytp, in_game: inGame, done };
+    // Starters' points alone, without any MFL score adjustment (the Week 13 Postseason Bonus).
+    const starterPoints = Math.round(starters.reduce((s, p) => s + (parseFloat(p.score) || 0), 0) * 100) / 100;
+    teams[fid] = { score, starter_points: starterPoints, pp: Math.max(pp, score), ytp, in_game: inGame, done };
   });
 
   return { week, allFinal: games.final === games.total, games, teams, matchups };
@@ -399,6 +404,13 @@ async function main() {
     }
   }
 
+  try {
+    leagueData.postseason = await buildPostseason(leagueData, franchises, liveWeek);
+  } catch (e) {
+    console.warn('⚠️ Could not build the postseason block:', e.message);
+    if (oldData?.postseason) leagueData.postseason = oldData.postseason;
+  }
+
   // Keep the old live 'updated' time when nothing else about that week changed, so a quiet day commits nothing.
   Object.entries(leagueData.weekly_data).forEach(([w, obj]) => {
     const old = oldData?.weekly_data?.[w];
@@ -410,6 +422,113 @@ async function main() {
   fs.writeFileSync(dataPath, JSON.stringify(leagueData, null, 2));
   console.log(`Successfully generated complete data.json at ${dataPath}`);
   // MFL writes (VP push, quarter changes) are in commish_mfl_actions.js.
+}
+
+/**
+ * data.json `postseason` (RULES.md §6): the Week 13 bonus with its working, and each division's
+ * Weeks 13-17 guillotine.
+ * Until Week 12 is final it is a projection: divisions from P&R applied to the current Q3 standings,
+ * and the bonus from per-week averages of the season so far (a week in progress counts, tentatively).
+ * Week scores are MFL's minus any score adjustment (adj_score), so the bonus is never counted twice.
+ */
+async function buildPostseason(leagueData, franchises, liveWeek) {
+  const weeks = leagueData.weekly_data;
+  const keys = Object.keys(weeks).map(Number).sort((a, b) => a - b);
+  const scoredKeys = keys.filter(k => weeks[k].played || weeks[k].live);
+  if (scoredKeys.length === 0) return null;
+  const official = !!weeks[12]?.played && !!leagueData.quarter_slots['4'];
+  const baseWeek = official ? 12 : scoredKeys[scoredKeys.length - 1];
+  const base = weeks[baseWeek];
+
+  const flat = obj => Object.values(obj || {}).flat();
+  const season = Object.fromEntries(flat(base.season_standings).map(t => [t.id, t]));
+
+  let divisions;
+  let projectedMoves = null;
+  if (official) {
+    divisions = leagueData.quarter_slots['4'];
+  } else if (base.quarter === 3) {
+    const byCode = {};
+    flat(base.quarter_standings).forEach(t => { (byCode[t.division] = byCode[t.division] || []).push(t); });
+    const pr = promotionRelegation(byCode, season);
+    divisions = nextQuarterSlots(pr);
+    projectedMoves = { promoted: pr.promoted, relegated: pr.relegated, coin_flips: pr.coinFlips };
+  } else {
+    divisions = {};
+    Object.entries(base.active_divisions).forEach(([id, div]) => { (divisions[div] = divisions[div] || []).push(id); });
+  }
+
+  const detail = postseasonBonusDetail(season, divisions, baseWeek);
+
+  // Weeks 13-17 from MFL. Postseason weeks have no matchups, so franchises may be listed on their own.
+  const weekScores = {};
+  const finalWeeks = [];
+  let live = null;
+  for (const week of POSTSEASON_WEEKS) {
+    const thisLive = liveWeek && liveWeek.week === week ? liveWeek : null;
+    let res = null;
+    try { res = (await fetchAPI('weeklyResults', { W: String(week) })).weeklyResults; } catch (e) { /* not played yet */ }
+    const entries = [...asArray(res?.matchup).flatMap(m => asArray(m.franchise)), ...asArray(res?.franchise)].filter(f => f?.id);
+    const scores = {};
+    const adjustments = {};
+    entries.forEach(f => {
+      if (f.score == null || f.score === '') return;
+      const adj = parseFloat(f.adj_score) || 0;
+      scores[f.id] = Math.round((parseFloat(f.score) - adj) * 100) / 100;
+      if (adj) adjustments[f.id] = adj;
+    });
+    const hasFinal = Object.values(scores).some(v => v > 0) && !(thisLive && !thisLive.allFinal);
+    if (hasFinal) {
+      weekScores[week] = scores;
+      finalWeeks.push(week);
+      if (week === 13) weekScores.adjustments = adjustments;
+    } else if (thisLive) {
+      weekScores[week] = Object.fromEntries(Object.entries(thisLive.teams).map(([id, t]) => [id, t.starter_points]));
+      live = { week, games_total: thisLive.games.total, games_final: thisLive.games.final, games_in_progress: thisLive.games.inProgress, teams: thisLive.teams };
+      break;
+    } else {
+      break;
+    }
+  }
+
+  const name = id => franchises[id]?.name || season[id]?.name || id;
+  const out = {
+    status: official ? 'official' : 'projected',
+    as_of_week: baseWeek,
+    as_of_live: !!base.live,
+    weeks_counted: baseWeek,
+    projected_moves: projectedMoves,
+    final_weeks: finalWeeks,
+    live_week: live ? live.week : null,
+    live: live ? { games_total: live.games_total, games_final: live.games_final, games_in_progress: live.games_in_progress } : undefined,
+    divisions: {}
+  };
+  for (const [div, d] of Object.entries(detail)) {
+    const mflBonus = weekScores.adjustments || {};
+    const teams = d.teams.map(t => ({
+      ...t,
+      name: name(t.id),
+      came_from: season[t.id]?.division !== div ? season[t.id]?.division : undefined,
+      mfl_bonus: mflBonus[t.id],
+      scores: Object.fromEntries(POSTSEASON_WEEKS.filter(w => weekScores[w]?.[t.id] != null).map(w => [w, weekScores[w][t.id]]))
+    }));
+    // The bonus that counts is the one on MFL once it is there.
+    const g = postseasonGuillotine(teams.map(t => ({ id: t.id, bonus: t.mfl_bonus ?? t.bonus, scores: t.scores })), finalWeeks.concat([]));
+    g.ties.forEach(text => console.warn(`⚠️ Postseason ${div}: ${text}`));
+    const byId = Object.fromEntries(teams.map(t => [t.id, t]));
+    out.divisions[div] = {
+      name: divisionNames[div],
+      stat: d.stat,
+      reference: d.reference,
+      ties: g.ties,
+      teams: g.teams.map(r => {
+        const lt = live?.teams[r.id];
+        return { ...byId[r.id], ...r, live: lt ? { ytp: lt.ytp, in_game: lt.in_game, done: lt.done } : undefined };
+      })
+    };
+  }
+  console.log(`Postseason: ${out.status} through Week ${baseWeek}${base.live ? ' (in progress)' : ''}; final postseason weeks: ${finalWeeks.join(', ') || 'none'}${live ? `; Week ${live.week} live` : ''}.`);
+  return out;
 }
 
 main().catch(console.error);

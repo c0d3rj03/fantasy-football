@@ -142,19 +142,72 @@ const scheduleLine = g => `${String(g.week).padStart(2, '0')},${g.home},${g.away
  */
 function postseasonBonus(season, divisions) {
   const bonus = {};
-  for (const div of DIVISION_ORDER) {
-    const ids = divisions[div] || [];
-    if (div === '00') {
-      const avg = Object.fromEntries(ids.map(id => [id, (season[id]?.pf || 0) / 12]));
-      const midpoint = ids.reduce((sum, id) => sum + avg[id], 0) / (ids.length || 1);
-      for (const id of ids) bonus[id] = avg[id] > midpoint ? round2(5 * (avg[id] - midpoint)) : 0;
-    } else {
-      const avg = Object.fromEntries(ids.map(id => [id, (season[id]?.pp || 0) / 12]));
-      const ref = Math.max(...ids.map(id => avg[id]));
-      for (const id of ids) bonus[id] = round2(5 * (ref - avg[id]));
-    }
+  for (const detail of Object.values(postseasonBonusDetail(season, divisions))) {
+    for (const t of detail.teams) bonus[t.id] = t.bonus;
   }
   return bonus;
+}
+
+/**
+ * The same bonus with its working, for the dashboard. weeks = regular-season weeks the totals cover:
+ * 12 once Week 12 is final; fewer for a projection from the season so far (per-week averages).
+ * Returns { divCode: { stat: 'pf'|'pp', reference: midpoint (Upper) or top average (Middle/Lower),
+ *   teams: [{ id, season_total, avg, diff, bonus }] } }. diff = avg − reference.
+ */
+function postseasonBonusDetail(season, divisions, weeks = 12) {
+  const out = {};
+  for (const div of DIVISION_ORDER) {
+    const ids = divisions[div] || [];
+    const stat = div === '00' ? 'pf' : 'pp';
+    const avg = Object.fromEntries(ids.map(id => [id, (season[id]?.[stat] || 0) / weeks]));
+    const reference = div === '00'
+      ? ids.reduce((sum, id) => sum + avg[id], 0) / (ids.length || 1)
+      : Math.max(...ids.map(id => avg[id]));
+    const teams = ids.map(id => {
+      const diff = avg[id] - reference;
+      const bonus = div === '00' ? (diff > 0 ? round2(5 * diff) : 0) : (round2(-5 * diff) || 0);
+      return { id, season_total: round2(season[id]?.[stat] || 0), avg: round2(avg[id]), diff: round2(diff), bonus };
+    });
+    out[div] = { stat, reference: round2(reference), teams };
+  }
+  return out;
+}
+
+const POSTSEASON_WEEKS = [13, 14, 15, 16, 17];
+// RULES.md §6: the lowest cumulative total is out after Weeks 14 and 15; Week 17 decides 1st/2nd.
+const POSTSEASON_CUTS = { 14: 4, 15: 3, 17: 2 };
+
+/**
+ * One division's postseason guillotine (RULES.md §6).
+ * teams: [{ id, bonus, scores: { week: points } }] (scores without the bonus).
+ * finalWeeks: weeks whose scores are final. A scored week that is not final is in progress:
+ * its cut is shown as tentative (on_block) and decides nothing.
+ * Returns { teams: [{ id, total, cumulative: {week: total}, place, out_after, on_block }], ties: [text] }
+ * sorted best first (alive by total, then the eliminated by place).
+ */
+function postseasonGuillotine(teams, finalWeeks) {
+  const finals = new Set(finalWeeks.map(Number));
+  const rows = teams.map(t => ({ id: t.id, bonus: t.bonus || 0, scores: t.scores || {}, total: t.bonus || 0, cumulative: {}, place: null, out_after: null, on_block: false }));
+  const ties = [];
+  for (const week of POSTSEASON_WEEKS) {
+    const alive = rows.filter(r => r.out_after == null);
+    const scored = alive.some(r => r.scores[week] != null);
+    if (!scored) break;
+    alive.forEach(r => { r.total = round2(r.total + (r.scores[week] || 0)); r.cumulative[week] = r.total; });
+    const place = POSTSEASON_CUTS[week];
+    if (!place) continue;
+    const order = [...alive].sort((a, b) => a.total - b.total);
+    if (order.length > 1 && order[0].total === order[1].total) {
+      ties.push(`Week ${week}: ${order[0].id} and ${order[1].id} tied at ${order[0].total} for the cut (no tiebreaker in the rules)`);
+    }
+    if (!finals.has(week)) { order[0].on_block = true; break; }
+    order[0].place = place;
+    order[0].out_after = week;
+    if (week === 17 && order[1]) order[1].place = 1;
+  }
+  const alive = rows.filter(r => r.place == null).sort((a, b) => b.total - a.total);
+  const out = rows.filter(r => r.place != null).sort((a, b) => a.place - b.place);
+  return { teams: [...out.filter(r => r.place === 1), ...alive, ...out.filter(r => r.place !== 1)].map(({ scores, bonus, ...r }) => r), ties };
 }
 
 const round2 = n => Math.round(n * 100) / 100;
@@ -205,5 +258,8 @@ module.exports = {
   quarterSchedule,
   scheduleLine,
   postseasonBonus,
+  postseasonBonusDetail,
+  postseasonGuillotine,
+  POSTSEASON_WEEKS,
   optimalLineupPoints
 };
