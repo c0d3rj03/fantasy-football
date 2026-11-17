@@ -7695,5 +7695,222 @@
       },
       "coin_flips": []
     }
+  },
+  "postseason": {
+    "status": "projected",
+    "as_of_week": 10,
+    "as_of_live": false,
+    "weeks_counted": 10,
+    "projected_moves": {
+      "promoted": {
+        "01": "0003",
+        "02": "0004"
+      },
+      "relegated": {
+        "00": "0012",
+        "01": "0005"
+      },
+      "coin_flips": []
+    },
+    "final_weeks": [],
+    "live_week": null,
+    "divisions": {
+      "00": {
+        "name": "Upper Division",
+        "stat": "pf",
+        "reference": 141.46,
+        "ties": [],
+        "teams": [
+          {
+            "id": "0002",
+            "season_total": 1502.29,
+            "avg": 150.23,
+            "diff": 8.77,
+            "bonus": 43.84,
+            "name": "BattleBots",
+            "scores": {},
+            "total": 43.84,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0001",
+            "season_total": 1382.47,
+            "avg": 138.25,
+            "diff": -3.21,
+            "bonus": 0,
+            "name": "Orcan Terror",
+            "scores": {},
+            "total": 0,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0010",
+            "season_total": 1409.32,
+            "avg": 140.93,
+            "diff": -0.53,
+            "bonus": 0,
+            "name": "The Meaty Ogres",
+            "scores": {},
+            "total": 0,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0003",
+            "season_total": 1364.36,
+            "avg": 136.44,
+            "diff": -5.03,
+            "bonus": 0,
+            "name": "Shankly's Ghost",
+            "came_from": "01",
+            "scores": {},
+            "total": 0,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          }
+        ]
+      },
+      "01": {
+        "name": "Middle Division",
+        "stat": "pp",
+        "reference": 156.38,
+        "ties": [],
+        "teams": [
+          {
+            "id": "0004",
+            "season_total": 1343.43,
+            "avg": 134.34,
+            "diff": -22.04,
+            "bonus": 110.18,
+            "name": "Hamsterdam",
+            "came_from": "02",
+            "scores": {},
+            "total": 110.18,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0006",
+            "season_total": 1467.54,
+            "avg": 146.75,
+            "diff": -9.63,
+            "bonus": 48.13,
+            "name": "Ted Lasso",
+            "scores": {},
+            "total": 48.13,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0009",
+            "season_total": 1469.51,
+            "avg": 146.95,
+            "diff": -9.43,
+            "bonus": 47.14,
+            "name": "Springfield Isotopes",
+            "scores": {},
+            "total": 47.14,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0012",
+            "season_total": 1563.79,
+            "avg": 156.38,
+            "diff": 0,
+            "bonus": 0,
+            "name": "2 Roops, 1 Silva",
+            "came_from": "00",
+            "scores": {},
+            "total": 0,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          }
+        ]
+      },
+      "02": {
+        "name": "Lower Division",
+        "stat": "pp",
+        "reference": 134.17,
+        "ties": [],
+        "teams": [
+          {
+            "id": "0011",
+            "season_total": 1138.94,
+            "avg": 113.89,
+            "diff": -20.28,
+            "bonus": 101.4,
+            "name": "The Wild Cards",
+            "scores": {},
+            "total": 101.4,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0008",
+            "season_total": 1195.1,
+            "avg": 119.51,
+            "diff": -14.66,
+            "bonus": 73.32,
+            "name": "The Two Tones",
+            "scores": {},
+            "total": 73.32,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0005",
+            "season_total": 1324.52,
+            "avg": 132.45,
+            "diff": -1.72,
+            "bonus": 8.61,
+            "name": "Peaky Fookin Blinders",
+            "came_from": "01",
+            "scores": {},
+            "total": 8.61,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          },
+          {
+            "id": "0007",
+            "season_total": 1341.73,
+            "avg": 134.17,
+            "diff": 0,
+            "bonus": 0,
+            "name": "Norsemen",
+            "scores": {},
+            "total": 0,
+            "cumulative": {},
+            "place": null,
+            "out_after": null,
+            "on_block": false
+          }
+        ]
+      }
+    }
   }
 }
