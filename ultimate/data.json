@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 10,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-17T05:36:05.407Z",
+  "lastUpdated": "2026-11-17T10:26:56.210Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -652,6 +652,12 @@
       "rollingScore": 281.64,
       "singleScore": 142.05,
       "franchiseName": "Chopping Rod"
+    },
+    "0021": {
+      "eliminatedWeek": 10,
+      "rollingScore": 311.15,
+      "singleScore": 144.98,
+      "franchiseName": "Chico's Bail Bonds"
     }
   },
   "weeklyWinners": {
@@ -735,8 +741,17 @@
         "type": "cash",
         "amount": 30
       }
+    },
+    "10": {
+      "franchiseId": "0024",
+      "franchiseName": "Slayden",
+      "score": 265.09,
+      "prize": {
+        "type": "cash",
+        "amount": 30
+      }
     }
   },
-  "fetchMode": "live",
+  "fetchMode": "full",
   "gamesInProgress": 0
 }
