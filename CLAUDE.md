@@ -6,6 +6,7 @@ This repo houses automation and GitHub Pages dashboards for more than one fantas
 
 - `ultimate/`: Ultimate Guillotine League 2026, 24 teams, MFL league `25918` (see `ultimate/CLAUDE.md`)
 - `pbr/`: Premier Battle Royale, 12-team Superflex dynasty, MFL league `63213` (see `pbr/CLAUDE.md`)
+- `bad/`: Become a Dynasty, 10-team dynasty, MFL league `57713` (see `bad/CLAUDE.md`). Only the Week 11 projected-matchup tool so far.
 
 **Always confirm which league a task applies to before changing code.** League rules differ, and a fix for one league must not break the other.
 
@@ -23,6 +24,7 @@ fantasy-football/ (Repo Root)
 │   ├── pbr_tokens.yml            # PBR: daily token ledger + monthly KTC values
 │   ├── pbr_sync.yml              # PBR: Tuesday sync + custom Gemmy announcement
 │   ├── gemmy_alerts.yml          # PBR: ad-hoc Gemmy Slack announcement
+│   ├── bad_matchups.yml          # BaD: Week 11 projected matchups (preview / dry-run / apply WEEKSCHED)
 │   └── pages_deploy.yml          # Both: publishes the site to GitHub Pages (see GitHub Pages below)
 ├── common/                       # Shared MFL client + csetup form helper (ES Modules, own package.json)
 ├── ultimate/                     # Ultimate league (ES Modules, own package.json)
