@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 10,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-17T04:26:06.339Z",
+  "lastUpdated": "2026-11-17T04:36:12.993Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -427,7 +427,7 @@
       "emptySlots": 0
     },
     "0010": {
-      "doneScore": 175.21,
+      "doneScore": 174.9,
       "liveScore": 0,
       "ytp": 0,
       "inGame": 0,
