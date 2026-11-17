@@ -1,0 +1,54 @@
+name: BaD Week 11 Projected Matchups
+
+# Become a Dynasty, Week 11 "Ten Kissing Sisters": pairs teams by best projected
+# lineup on MFL (1st vs 2nd, 3rd vs 4th, ...). Run it Thursday at 3pm ET.
+#
+# mode:
+#   preview  = print the Slack post and every team's best lineup (no login, no writes).
+#   inspect  = log in and print the WEEKSCHED form's fields (emails masked), change nothing.
+on:
+  workflow_dispatch:
+    inputs:
+      week:
+        description: 'Week'
+        required: false
+        default: '11'
+      mode:
+        description: 'preview (Slack post + lineups) or inspect (WEEKSCHED form fields)'
+        type: choice
+        options: [preview, inspect]
+        default: preview
+  repository_dispatch:
+    types: [bad-matchups-trigger]
+
+concurrency:
+  group: bad-mfl
+  cancel-in-progress: false
+
+jobs:
+  matchups:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: bad
+    env:
+      WEEK: ${{ github.event.inputs.week || github.event.client_payload.week || '11' }}
+      MODE: ${{ github.event.inputs.mode || github.event.client_payload.mode || 'preview' }}
+      SEASON_YEAR: '2026'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run
+        env:
+          MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
+          MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+        run: |
+          if [ "$MODE" = "inspect" ]; then
+            node kissing_sisters.js --week "$WEEK" --inspect
+          else
+            node kissing_sisters.js --week "$WEEK"
+          fi
