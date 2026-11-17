@@ -41,4 +41,27 @@ function stripMentions(text) {
   return (text || '').replace(/ ?\(<@[UW][A-Z0-9]+(\|[^>]*)?>\)/g, '').replace(/<@[UW][A-Z0-9]+(\|[^>]*)?>/g, '');
 }
 
-module.exports = { loadOwners, addMentions, stripMentions };
+const DASHBOARD_URL = 'https://c0d3rj03.github.io/fantasy-football/pbr/';
+
+// Posts to #officialcomms open with @channel (so everyone gets notified) and a dashboard link line.
+function withChannelHeader(text, linkLabel = 'Results & standings on the PBR dashboard') {
+  return `<!channel>\n<${DASHBOARD_URL}|📊 ${linkLabel}>\n\n${text}`;
+}
+
+// Removes that header again (for text pulled back from Slack into data.json).
+function stripChannelHeader(text) {
+  return (text || '')
+    .replace(/^\s*<!channel>\s*\n?/, '')
+    .replace(/^\s*<https:\/\/c0d3rj03\.github\.io\/fantasy-football\/pbr\/?[^>]*>\s*\n*/, '');
+}
+
+// { fid: team name } from data.json's weekly matchups.
+function teamNamesFrom(pbrData) {
+  const names = {};
+  for (const w of Object.values(pbrData.weekly_data || {})) {
+    for (const m of w.matchups || []) for (const t of [m.team1, m.team2]) if (t?.id && t.name) names[t.id] = t.name;
+  }
+  return names;
+}
+
+module.exports = { loadOwners, addMentions, stripMentions, withChannelHeader, stripChannelHeader, teamNamesFrom, DASHBOARD_URL };

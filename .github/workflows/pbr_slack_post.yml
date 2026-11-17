@@ -1,0 +1,55 @@
+name: PBR Slack Post (verbatim)
+
+# Posts a committed text file to #officialcomms exactly as written (no Gemini rewrite),
+# with the @channel + dashboard-link header and owner @mentions. pbr/slack_post.js.
+on:
+  workflow_dispatch:
+    inputs:
+      file:
+        description: 'File to post, relative to pbr/ (e.g. posts/claudine_week_10.md)'
+        required: true
+      post_as:
+        description: 'Display name (needs the chat:write.customize scope; otherwise the bot name is used)'
+        required: false
+        default: ''
+      icon:
+        description: 'Icon emoji, e.g. :sparkles: (same scope as post_as)'
+        required: false
+        default: ''
+      link_label:
+        description: 'Text of the dashboard link line'
+        required: false
+        default: 'Results & standings on the PBR dashboard'
+      dry_run:
+        description: 'Print the final Slack text without posting'
+        type: boolean
+        default: true
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Post to #officialcomms
+        working-directory: pbr
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
+          PBR_SLACK_OWNERS: ${{ vars.PBR_SLACK_OWNERS }}
+          POST_FILE: ${{ github.event.inputs.file }}
+          POST_AS: ${{ github.event.inputs.post_as }}
+          POST_ICON: ${{ github.event.inputs.icon }}
+          LINK_LABEL: ${{ github.event.inputs.link_label }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          args=("$POST_FILE" --link-label "$LINK_LABEL")
+          [ -n "$POST_AS" ] && args+=(--as "$POST_AS")
+          [ -n "$POST_ICON" ] && args+=(--icon "$POST_ICON")
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          node slack_post.js "${args[@]}"

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { WebClient } = require('@slack/web-api');
-const { stripMentions } = require('./slack_mentions.js');
+const { stripMentions, stripChannelHeader } = require('./slack_mentions.js');
 
 // ---------------------------------------------------------------------------
 // FETCH RECAPS FROM SLACK #officialcomms AND UPDATE LOCAL DATA/MARKDOWN
@@ -43,12 +43,14 @@ async function syncRecapsFromSlack() {
       // Look for Week indicators in Gemmy's posts
       const weekMatch = text.match(/Week\s+([1-9]|1[0-7])/i) || text.match(/PBR\s+Week\s+([1-9]|1[0-7])/i);
       
-      if (weekMatch && (text.includes("Gemmy") || text.includes("PBR") || text.includes("Battle Royale") || text.includes("Victory Points"))) {
+      // Claudine's extra posts (slack_post.js) aren't the weekly recap.
+      if (weekMatch && !/Claudine here/i.test(text) && (text.includes("Gemmy") || text.includes("PBR") || text.includes("Battle Royale") || text.includes("Victory Points"))) {
         const weekNum = weekMatch[1];
         if (!recapsFound[weekNum]) {
           // Clean up formatting: fix double asterisks (**bold** -> *bold* or HTML style)
           // Owner @mentions belong only in Slack, not the dashboard (slack_mentions.js).
-          let cleanedText = stripMentions(text)
+          // So do the @channel line and the dashboard link (slack_post.js).
+          let cleanedText = stripMentions(stripChannelHeader(text))
             // Replace double asterisks with single asterisks for Slack standard bold
             .replace(/\*\*(.*?)\*\*/g, '*$1*')
             // Fix double space/newlines

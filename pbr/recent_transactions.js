@@ -105,7 +105,23 @@ async function recentTransactions(days) {
     .slice(0, MAX_LINES);
 }
 
-module.exports = { recentTransactions };
+/**
+ * Who owns each team's next-year 1st-round pick: { originalFid: ownerFid }.
+ * Lower Division postseason winner gets x.01, so Gemmy needs to know whose 1.01 it really is.
+ */
+async function nextYearFirstRoundOwners() {
+  const draftYear = String(Number(YEAR) + 1);
+  const data = await leagueExport('futureDraftPicks');
+  const owners = {};
+  asArray(data.futureDraftPicks?.franchise).forEach(f => {
+    asArray(f.futureDraftPick)
+      .filter(p => p.year === draftYear && Number(p.round) === 1)
+      .forEach(p => { owners[p.originalPickFor] = f.id; });
+  });
+  return owners;
+}
+
+module.exports = { recentTransactions, nextYearFirstRoundOwners };
 
 if (require.main === module) {
   recentTransactions(Number(process.argv[2] || 7))
