@@ -6,11 +6,13 @@
  * ranked by that total; 1st plays 2nd, 3rd plays 4th, and so on. The
  * commissioner sets these on Thursday at 3pm ET (RULES, Schedule, Week 11).
  *
- * Usage: node kissing_sisters.js [--week 11] [--inspect | --dry-run | --apply]
+ * Usage: node kissing_sisters.js [--week 11] [--inspect | --dry-run | --apply [--force]]
  *   (no flag)  print the lineups and matchups from public exports; no login.
  *   --inspect  log in and print the WEEKSCHED form's fields (emails masked).
- *
- * Writes to MFL are not built yet: the WEEKSCHED field names come from --inspect.
+ *   --dry-run  log in and log the exact WEEKSCHED field changes; post nothing.
+ *   --apply    save the matchups on MFL, then re-read the schedule export.
+ *   --force    replace matchups MFL already has for the week (otherwise refused,
+ *              so a late rerun can't reshuffle games with newer projections).
  */
 import fs from 'fs';
 import { LEAGUE_ID, SEASON_YEAR, MFL_HOST, LINEUP, FLEX } from './config.js';
@@ -122,16 +124,67 @@ async function inspect(week) {
   console.log(`\n===== csetup C=WEEKSCHED&W=${week} (title "${title}", ${html.length} chars) =====\n${describeForms(html)}`);
 }
 
+// Matchups MFL has for the week, as sorted "a-b" pairs.
+async function mflPairs(week) {
+  const { schedule } = await exportJson('schedule', { W: String(week) });
+  const weekly = asArray(schedule?.weeklySchedule).find(w => Number(w.week) === week) || {};
+  return asArray(weekly.matchup)
+    .map(m => asArray(m.franchise).map(f => f.id).sort().join('-'))
+    .filter(p => !p.includes('BYE'))
+    .sort();
+}
+
+// WEEKSCHED form (csetup C=WEEKSCHED&W=<week>, --inspect 2026-11-17): rows
+// AWAY_<n> / HOME_<n> (selects of franchise IDs or BYE), DEL_<n>, SUBMIT.
+// The higher-projected team of each pair is home.
+async function setSchedule(result, { apply, force }) {
+  const week = result.week;
+  const want = result.matchups.map(([a, b]) => [a.id, b.id].sort().join('-')).sort();
+  const have = await mflPairs(week);
+  if (have.join() === want.join()) {
+    console.log(`\n✅ MFL already has these Week ${week} matchups. Nothing to do.`);
+    return;
+  }
+  if (have.length > 0 && !force) {
+    throw new Error(`MFL already has different Week ${week} matchups (${have.join(', ')}). Rerun with force to replace them.`);
+  }
+
+  const { MflCommishClient } = await import('../common/mfl_commish_client.js');
+  const client = new MflCommishClient(SEASON_YEAR, LEAGUE_ID, MFL_HOST, { userAgent: USER_AGENT });
+  await client.login();
+  const changes = {};
+  result.matchups.forEach(([home, away], n) => {
+    changes[`HOME_${n}`] = home.id;
+    changes[`AWAY_${n}`] = away.id;
+  });
+  const changed = await client.submitCsetupForm('WEEKSCHED', changes, {
+    dryRun: !apply, params: { W: String(week) }, requireExisting: true, submit: 'SUBMIT'
+  });
+  console.log(`\n${apply ? '✍️ Saved' : '🧪 Dry run, would save'} WEEKSCHED W=${week}:\n  ${changed.join('\n  ') || '(no field changes)'}`);
+  if (!apply) return;
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await new Promise(r => setTimeout(r, 5000));
+    const now = await mflPairs(week);
+    if (now.join() === want.join()) {
+      console.log(`✅ Confirmed on MFL: ${now.join(', ')}`);
+      return;
+    }
+    console.log(`  check ${attempt}: MFL shows ${now.join(', ') || 'no matchups'}`);
+  }
+  throw new Error(`MFL does not show the Week ${week} matchups after saving. Check csetup?L=${LEAGUE_ID}&C=WEEKSCHED&W=${week}.`);
+}
+
 async function main() {
   if (args.includes('--inspect')) return inspect(WEEK);
-  if (args.includes('--apply') || args.includes('--dry-run')) {
-    throw new Error('Setting the schedule is not built yet: run --inspect first so the WEEKSCHED field names are known.');
-  }
   const result = await computeMatchups(WEEK);
   const post = slackPost(result);
   console.log(`${post}\n\n----- Best lineups -----\n${lineupDetail(result)}`);
   if (process.env.GITHUB_STEP_SUMMARY) {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Slack post\n\n\`\`\`\`text\n${post}\n\`\`\`\`\n\n### Best lineups\n\n\`\`\`text\n${lineupDetail(result)}\n\`\`\`\n`);
+  }
+  if (args.includes('--apply') || args.includes('--dry-run')) {
+    await setSchedule(result, { apply: args.includes('--apply'), force: args.includes('--force') });
   }
 }
 

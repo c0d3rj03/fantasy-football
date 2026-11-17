@@ -6,6 +6,9 @@ name: BaD Week 11 Projected Matchups
 # mode:
 #   preview  = print the Slack post and every team's best lineup (no login, no writes).
 #   inspect  = log in and print the WEEKSCHED form's fields (emails masked), change nothing.
+#   dry-run  = preview, then log in and log the exact WEEKSCHED field changes, post nothing.
+#   apply    = preview, then save the matchups on MFL and confirm them from the schedule export.
+#              Refuses if MFL already has different matchups for the week, unless force is on.
 on:
   workflow_dispatch:
     inputs:
@@ -14,10 +17,14 @@ on:
         required: false
         default: '11'
       mode:
-        description: 'preview (Slack post + lineups) or inspect (WEEKSCHED form fields)'
+        description: 'preview (Slack post + lineups), inspect (form fields), dry-run, apply (save on MFL)'
         type: choice
-        options: [preview, inspect]
+        options: [preview, inspect, dry-run, apply]
         default: preview
+      force:
+        description: 'apply: replace matchups MFL already has for the week'
+        type: boolean
+        default: false
   repository_dispatch:
     types: [bad-matchups-trigger]
 
@@ -46,9 +53,11 @@ jobs:
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+          FORCE: ${{ github.event.inputs.force || github.event.client_payload.force || 'false' }}
         run: |
-          if [ "$MODE" = "inspect" ]; then
-            node kissing_sisters.js --week "$WEEK" --inspect
-          else
-            node kissing_sisters.js --week "$WEEK"
-          fi
+          case "$MODE" in
+            inspect) node kissing_sisters.js --week "$WEEK" --inspect ;;
+            dry-run) node kissing_sisters.js --week "$WEEK" --dry-run ;;
+            apply)   node kissing_sisters.js --week "$WEEK" --apply $([ "$FORCE" = "true" ] && echo --force) ;;
+            *)       node kissing_sisters.js --week "$WEEK" ;;
+          esac
