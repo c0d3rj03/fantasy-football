@@ -26,6 +26,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_PBR_BOT_TOKEN }}
           PBR_SLACK_CHANNEL_OFFICIALCOMMS: ${{ secrets.PBR_SLACK_CHANNEL_OFFICIALCOMMS }}
+          PBR_SLACK_OWNERS: ${{ vars.PBR_SLACK_OWNERS }}
         run: |
           cd pbr
           node gemmy_custom_post.js "${{ github.event.inputs.prompt }}"
