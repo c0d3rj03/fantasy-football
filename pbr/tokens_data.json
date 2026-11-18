@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-16T17:51:36.973Z",
+  "last_updated": "2026-11-18T17:51:39.065Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -418,10 +418,10 @@
       "name": "The Meaty Ogres",
       "start": 13,
       "trades": 22,
-      "waivers": 4,
+      "waivers": 6,
       "promotions": 1,
       "adjustments": 0,
-      "total": 40,
+      "total": 42,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -443,7 +443,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 1,
+          "waivers": 3,
           "promotions": 0,
           "adjustments": 0
         },
@@ -1715,6 +1715,32 @@
     }
   ],
   "waivers": [
+    {
+      "id": "1795017600|0010|14315",
+      "timestamp": 1795017600,
+      "date": "2026-11-18",
+      "franchise": "0010",
+      "name": "The Meaty Ogres",
+      "player_id": "14315",
+      "player": "Ashton Dulin (WR, IND)",
+      "dropped": "George Holani (RB, SEA)",
+      "bid": 31,
+      "period": "Q3",
+      "tokens": 1
+    },
+    {
+      "id": "1795017600|0010|17360",
+      "timestamp": 1795017600,
+      "date": "2026-11-18",
+      "franchise": "0010",
+      "name": "The Meaty Ogres",
+      "player_id": "17360",
+      "player": "Myles Price (WR, MIN)",
+      "dropped": "KeAndre Lambert-Smith (WR, LAC)",
+      "bid": 89,
+      "period": "Q3",
+      "tokens": 1
+    },
     {
       "id": "1794412800|0002|16633",
       "timestamp": 1794412800,
