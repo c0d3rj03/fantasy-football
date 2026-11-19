@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-18T17:51:39.065Z",
+  "last_updated": "2026-11-19T17:51:37.446Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -253,11 +253,11 @@
     "0006": {
       "name": "Ted Lasso",
       "start": 3,
-      "trades": 4,
+      "trades": 6,
       "waivers": 0,
       "promotions": 3,
       "adjustments": 0,
-      "total": 10,
+      "total": 12,
       "by_period": {
         "Offseason": {
           "trades": 2,
@@ -278,7 +278,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
+          "trades": 2,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -376,11 +376,11 @@
     "0009": {
       "name": "Springfield Isotopes",
       "start": 20,
-      "trades": 16,
+      "trades": 22,
       "waivers": 2,
       "promotions": 0,
       "adjustments": 0,
-      "total": 38,
+      "total": 44,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -401,7 +401,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
+          "trades": 6,
           "waivers": 1,
           "promotions": 0,
           "adjustments": 0
@@ -417,11 +417,11 @@
     "0010": {
       "name": "The Meaty Ogres",
       "start": 13,
-      "trades": 22,
+      "trades": 26,
       "waivers": 6,
       "promotions": 1,
       "adjustments": 0,
-      "total": 42,
+      "total": 46,
       "by_period": {
         "Offseason": {
           "trades": 14,
@@ -442,7 +442,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
+          "trades": 4,
           "waivers": 3,
           "promotions": 0,
           "adjustments": 0
@@ -499,11 +499,11 @@
     "0012": {
       "name": "2 Roops, 1 Silva",
       "start": 9,
-      "trades": 24,
+      "trades": 28,
       "waivers": 3,
       "promotions": 2,
       "adjustments": 0,
-      "total": 38,
+      "total": 42,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -524,7 +524,7 @@
           "adjustments": 0
         },
         "Q3": {
-          "trades": 0,
+          "trades": 4,
           "waivers": 0,
           "promotions": 0,
           "adjustments": 0
@@ -539,6 +539,126 @@
     }
   },
   "trades": [
+    {
+      "id": "1795049267",
+      "date": "2026-11-18",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0009",
+          "name": "Springfield Isotopes",
+          "assets": [
+            {
+              "code": "12616",
+              "name": "Jacoby Brissett (QB, BAL)",
+              "value": 2518
+            }
+          ],
+          "value": 2518
+        },
+        {
+          "franchise": "0010",
+          "name": "The Meaty Ogres",
+          "assets": [
+            {
+              "code": "16080",
+              "name": "Rashid Shaheed (WR, SEA)",
+              "value": 2410
+            }
+          ],
+          "value": 2410
+        }
+      ],
+      "total_value": 4928,
+      "tokens_each": 2,
+      "tokens_awarded": 2
+    },
+    {
+      "id": "1795043078",
+      "date": "2026-11-18",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0012",
+          "name": "2 Roops, 1 Silva",
+          "assets": [
+            {
+              "code": "15761",
+              "name": "Khalil Shakir (WR, BUF)",
+              "value": 2801
+            },
+            {
+              "code": "FP_0012_2028_3",
+              "name": "2028 3rd Round Pick (2 Roops, 1 Silva)",
+              "value": 2291
+            },
+            {
+              "code": "15259",
+              "name": "Rhamondre Stevenson (RB, NEP)",
+              "value": 3273
+            }
+          ],
+          "value": 8365
+        },
+        {
+          "franchise": "0009",
+          "name": "Springfield Isotopes",
+          "assets": [
+            {
+              "code": "16187",
+              "name": "Josh Downs (WR, KCC)",
+              "value": 3245
+            },
+            {
+              "code": "16201",
+              "name": "Xavier Hutchinson (WR, HOU)",
+              "value": 2002
+            }
+          ],
+          "value": 5247
+        }
+      ],
+      "total_value": 13612,
+      "tokens_each": 4,
+      "tokens_awarded": 4
+    },
+    {
+      "id": "1795036903",
+      "date": "2026-11-18",
+      "period": "Q3",
+      "ktc_month": "2026-11",
+      "sides": [
+        {
+          "franchise": "0006",
+          "name": "Ted Lasso",
+          "assets": [
+            {
+              "code": "FP_0002_2027_4",
+              "name": "2027 4th Round Pick (BattleBots)",
+              "value": 1876
+            }
+          ],
+          "value": 1876
+        },
+        {
+          "franchise": "0010",
+          "name": "The Meaty Ogres",
+          "assets": [
+            {
+              "code": "16678",
+              "name": "Sione Vaki (RB, DET)",
+              "value": 1279
+            }
+          ],
+          "value": 1279
+        }
+      ],
+      "total_value": 3155,
+      "tokens_each": 2,
+      "tokens_awarded": 2
+    },
     {
       "id": "1794838043",
       "date": "2026-11-16",
