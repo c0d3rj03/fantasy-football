@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 10,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-19T10:26:55.321Z",
+  "lastUpdated": "2026-11-20T01:16:07.924Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -363,7 +363,7 @@
       "ytp": 11,
       "inGame": 0,
       "finished": 0,
-      "byeStarters": 3,
+      "byeStarters": 1,
       "emptySlots": 0
     },
     "0002": {
@@ -408,7 +408,7 @@
       "ytp": 11,
       "inGame": 0,
       "finished": 0,
-      "byeStarters": 4,
+      "byeStarters": 0,
       "emptySlots": 0
     },
     "0007": {
@@ -504,11 +504,11 @@
     "0017": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 11,
       "inGame": 0,
       "finished": 0,
       "byeStarters": 0,
-      "emptySlots": 1
+      "emptySlots": 0
     },
     "0018": {
       "doneScore": 0,
@@ -552,7 +552,7 @@
       "ytp": 11,
       "inGame": 0,
       "finished": 0,
-      "byeStarters": 2,
+      "byeStarters": 0,
       "emptySlots": 0
     },
     "0023": {
@@ -567,11 +567,11 @@
     "0024": {
       "doneScore": 0,
       "liveScore": 0,
-      "ytp": 10,
+      "ytp": 11,
       "inGame": 0,
       "finished": 0,
-      "byeStarters": 1,
-      "emptySlots": 1
+      "byeStarters": 0,
+      "emptySlots": 0
     }
   },
   "eliminatedTeams": {
@@ -752,6 +752,6 @@
       }
     }
   },
-  "fetchMode": "full",
+  "fetchMode": "live",
   "gamesInProgress": 0
 }
