@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 11,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-20T05:36:14.507Z",
+  "lastUpdated": "2026-11-20T10:26:56.236Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -752,6 +752,6 @@
       }
     }
   },
-  "fetchMode": "live",
+  "fetchMode": "full",
   "gamesInProgress": 0
 }
