@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 11,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-22T21:16:07.848Z",
+  "lastUpdated": "2026-11-22T21:26:06.432Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -394,20 +394,20 @@
       "emptySlots": 0
     },
     "0005": {
-      "doneScore": 49.43,
-      "liveScore": 13.62,
+      "doneScore": 63.35,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 2,
-      "finished": 6,
+      "inGame": 1,
+      "finished": 7,
       "byeStarters": 0,
       "emptySlots": 0
     },
     "0006": {
-      "doneScore": 120.72,
-      "liveScore": 9.83,
+      "doneScore": 129.92,
+      "liveScore": 0.63,
       "ytp": 0,
-      "inGame": 3,
-      "finished": 8,
+      "inGame": 2,
+      "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -439,11 +439,11 @@
       "emptySlots": 0
     },
     "0010": {
-      "doneScore": 75.56,
-      "liveScore": 44.8,
+      "doneScore": 120.01,
+      "liveScore": 2.6,
       "ytp": 3,
-      "inGame": 4,
-      "finished": 4,
+      "inGame": 2,
+      "finished": 6,
       "byeStarters": 1,
       "emptySlots": 0
     },
@@ -493,20 +493,20 @@
       "emptySlots": 0
     },
     "0016": {
-      "doneScore": 84.6,
-      "liveScore": 11.5,
+      "doneScore": 95.3,
+      "liveScore": 0.8,
       "ytp": 4,
-      "inGame": 2,
-      "finished": 5,
+      "inGame": 1,
+      "finished": 6,
       "byeStarters": 0,
       "emptySlots": 0
     },
     "0017": {
-      "doneScore": 91.61,
-      "liveScore": 16.2,
+      "doneScore": 107.81,
+      "liveScore": 0,
       "ytp": 3,
-      "inGame": 1,
-      "finished": 7,
+      "inGame": 0,
+      "finished": 8,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -547,11 +547,11 @@
       "emptySlots": 0
     },
     "0022": {
-      "doneScore": 100.49,
-      "liveScore": 53.4,
+      "doneScore": 153.89,
+      "liveScore": 0,
       "ytp": 2,
-      "inGame": 2,
-      "finished": 7,
+      "inGame": 0,
+      "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
     },
@@ -565,11 +565,11 @@
       "emptySlots": 0
     },
     "0024": {
-      "doneScore": 139.9,
-      "liveScore": 9.6,
+      "doneScore": 149.5,
+      "liveScore": 1.26,
       "ytp": 1,
-      "inGame": 2,
-      "finished": 8,
+      "inGame": 1,
+      "finished": 9,
       "byeStarters": 0,
       "emptySlots": 0
     }
