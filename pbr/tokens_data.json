@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-19T17:51:37.446Z",
+  "last_updated": "2026-11-22T17:51:36.219Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -1957,7 +1957,7 @@
       "name": "Orcan Terror",
       "player_id": "14086",
       "player": "Justice Hill (RB, BAL)",
-      "dropped": "Brandin Cooks (WR, SFO)",
+      "dropped": "Brandin Cooks (WR, FA)",
       "bid": 27,
       "period": "Q2",
       "tokens": 1
@@ -1982,7 +1982,7 @@
       "franchise": "0001",
       "name": "Orcan Terror",
       "player_id": "11674",
-      "player": "Brandin Cooks (WR, SFO)",
+      "player": "Brandin Cooks (WR, FA)",
       "dropped": "Darius Cooper (WR, PHI)",
       "bid": 25,
       "period": "Q2",
