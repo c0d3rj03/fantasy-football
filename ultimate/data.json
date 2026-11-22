@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 11,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-22T19:56:07.974Z",
+  "lastUpdated": "2026-11-22T20:06:07.938Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -359,7 +359,7 @@
   "liveDetails": {
     "0001": {
       "doneScore": 21.9,
-      "liveScore": 31.49,
+      "liveScore": 36.19,
       "ytp": 6,
       "inGame": 4,
       "finished": 1,
@@ -368,7 +368,7 @@
     },
     "0002": {
       "doneScore": 0,
-      "liveScore": 54.4,
+      "liveScore": 58.7,
       "ytp": 8,
       "inGame": 3,
       "finished": 0,
@@ -395,7 +395,7 @@
     },
     "0005": {
       "doneScore": 19.65,
-      "liveScore": 31.41,
+      "liveScore": 31.86,
       "ytp": 4,
       "inGame": 5,
       "finished": 2,
@@ -404,7 +404,7 @@
     },
     "0006": {
       "doneScore": 4.3,
-      "liveScore": 78.29,
+      "liveScore": 86.04,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
@@ -440,11 +440,11 @@
     },
     "0010": {
       "doneScore": 0,
-      "liveScore": 66.47,
+      "liveScore": 79.99,
       "ytp": 5,
       "inGame": 6,
       "finished": 0,
-      "byeStarters": 0,
+      "byeStarters": 1,
       "emptySlots": 0
     },
     "0011": {
@@ -458,7 +458,7 @@
     },
     "0012": {
       "doneScore": 0,
-      "liveScore": 64.98,
+      "liveScore": 70.75,
       "ytp": 8,
       "inGame": 3,
       "finished": 0,
@@ -494,7 +494,7 @@
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 49.05,
+      "liveScore": 53.7,
       "ytp": 5,
       "inGame": 6,
       "finished": 0,
@@ -503,7 +503,7 @@
     },
     "0017": {
       "doneScore": 6.4,
-      "liveScore": 72.65,
+      "liveScore": 73.89,
       "ytp": 3,
       "inGame": 7,
       "finished": 1,
@@ -548,7 +548,7 @@
     },
     "0022": {
       "doneScore": 20.02,
-      "liveScore": 89.29,
+      "liveScore": 101.71,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
@@ -566,7 +566,7 @@
     },
     "0024": {
       "doneScore": 16.3,
-      "liveScore": 82,
+      "liveScore": 82.45,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
