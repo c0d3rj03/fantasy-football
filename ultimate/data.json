@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 11,
   "lastCompletedWeek": 10,
-  "lastUpdated": "2026-11-22T18:36:07.650Z",
+  "lastUpdated": "2026-11-22T18:46:07.163Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -359,7 +359,7 @@
   "liveDetails": {
     "0001": {
       "doneScore": 21.9,
-      "liveScore": 6.56,
+      "liveScore": 13.8,
       "ytp": 6,
       "inGame": 4,
       "finished": 1,
@@ -368,7 +368,7 @@
     },
     "0002": {
       "doneScore": 0,
-      "liveScore": 15,
+      "liveScore": 21.9,
       "ytp": 8,
       "inGame": 3,
       "finished": 0,
@@ -395,7 +395,7 @@
     },
     "0005": {
       "doneScore": 19.65,
-      "liveScore": 6.6,
+      "liveScore": 13.18,
       "ytp": 4,
       "inGame": 5,
       "finished": 2,
@@ -404,7 +404,7 @@
     },
     "0006": {
       "doneScore": 4.3,
-      "liveScore": 24.38,
+      "liveScore": 42.53,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
@@ -440,7 +440,7 @@
     },
     "0010": {
       "doneScore": 0,
-      "liveScore": 20.28,
+      "liveScore": 25.14,
       "ytp": 5,
       "inGame": 6,
       "finished": 0,
@@ -458,7 +458,7 @@
     },
     "0012": {
       "doneScore": 0,
-      "liveScore": 37.3,
+      "liveScore": 37.27,
       "ytp": 8,
       "inGame": 3,
       "finished": 0,
@@ -494,7 +494,7 @@
     },
     "0016": {
       "doneScore": 0,
-      "liveScore": 11.05,
+      "liveScore": 28.55,
       "ytp": 5,
       "inGame": 6,
       "finished": 0,
@@ -503,7 +503,7 @@
     },
     "0017": {
       "doneScore": 6.4,
-      "liveScore": 21.89,
+      "liveScore": 23.68,
       "ytp": 3,
       "inGame": 7,
       "finished": 1,
@@ -548,7 +548,7 @@
     },
     "0022": {
       "doneScore": 20.02,
-      "liveScore": 28.92,
+      "liveScore": 34.92,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
@@ -566,7 +566,7 @@
     },
     "0024": {
       "doneScore": 16.3,
-      "liveScore": 17.25,
+      "liveScore": 30.45,
       "ytp": 2,
       "inGame": 8,
       "finished": 1,
@@ -753,5 +753,5 @@
     }
   },
   "fetchMode": "live",
-  "gamesInProgress": 0
+  "gamesInProgress": 7
 }
