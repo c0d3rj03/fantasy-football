@@ -9,6 +9,7 @@
   <meta http-equiv="Expires" content="0" />
   <title>PBR 2026 - Postseason Guillotine</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="theme.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -17,12 +18,12 @@
       --seg-bonus: #d97706; --seg-13: #2563eb; --seg-14: #0d9488;
       --seg-15: #9333ea; --seg-16: #db2777; --seg-17: #4d7c0f;
     }
-    .bar-track { display: flex; gap: 2px; height: 20px; width: 100%; background: #020617; border-radius: 4px; overflow: hidden; }
+    .bar-track { display: flex; gap: 2px; height: 20px; width: 100%; background: rgb(var(--c-slate-950)); border-radius: 4px; overflow: hidden; }
     .seg { height: 100%; flex-shrink: 0; display: flex; align-items: center; padding: 0 5px; font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; cursor: default; }
     .seg:last-child { border-radius: 0 4px 4px 0; }
     .seg.live { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.28) 0 4px, transparent 4px 8px); }
-    .chop-line { display: flex; align-items: center; gap: 8px; color: #f87171; font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-    .chop-line::before, .chop-line::after { content: ''; flex: 1; border-top: 1px dashed #ef4444; }
+    .chop-line { display: flex; align-items: center; gap: 8px; color: rgb(var(--c-red-400)); font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    .chop-line::before, .chop-line::after { content: ''; flex: 1; border-top: 1px dashed rgb(var(--c-red-500)); }
     #tip { position: fixed; z-index: 60; pointer-events: none; display: none; }
     table.num td.n, table.num th.n { text-align: right; font-variant-numeric: tabular-nums; }
   </style>
@@ -283,7 +284,7 @@
           }).join('');
           let badge = '';
           if (t.place === 1) badge = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-amber-500 text-slate-950">${div === '00' ? '🏆 CHAMP' : '1ST'}</span>`;
-          else if (out) badge = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-red-600 text-white" title="Cut after Week ${t.out_after}">${ordinal(t.place).toUpperCase()} · WK ${t.out_after}</span>`;
+          else if (out) badge = `<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-red-600 text-[#fff]" title="Cut after Week ${t.out_after}">${ordinal(t.place).toUpperCase()} · WK ${t.out_after}</span>`;
           else if (t.on_block) badge = '<span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/40">ON THE BLOCK</span>';
           const moved = t.came_from ? (t.came_from > div ? ' <span title="Promoted into this division">⬆️</span>' : ' <span title="Relegated into this division">⬇️</span>') : '';
           const liveChips = t.live ? `<span class="flex shrink-0 gap-0.5 text-[9px] font-bold">
