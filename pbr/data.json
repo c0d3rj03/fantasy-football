@@ -6346,9 +6346,9 @@
       "played": false,
       "live": {
         "games_total": 13,
-        "games_final": 9,
-        "games_in_progress": 2,
-        "updated": "2026-11-23T00:55:38.769Z"
+        "games_final": 11,
+        "games_in_progress": 0,
+        "updated": "2026-11-23T01:05:41.517Z"
       },
       "active_divisions": {
         "0002": "00",
