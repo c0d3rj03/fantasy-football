@@ -145,7 +145,8 @@
     @media (max-width: 600px) {
       .team-meta { width: 120px; }
       .team-name { font-size: 0.75rem; }
-      .team-score { width: 48px; font-size: 0.78rem; }
+      .team-rank { width: 16px; font-size: 0.72rem; }
+      .team-score { width: 42px; font-size: 0.72rem; }
       .stat-badge { width: 22px; font-size: 0.62rem; }
       .hdr-badge { width: 22px; }
       .bar-seg { font-size: 0.6rem; }
@@ -587,7 +588,7 @@
 
         row.innerHTML = `
           <div class="team-meta">
-            <span class="team-rank">#${idx + 1}</span>
+            <span class="team-rank">${idx + 1}.</span>
             <span class="team-name" title="${team.name}">${team.name}</span>
             ${choppedBadge}
           </div>
