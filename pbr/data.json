@@ -6348,7 +6348,7 @@
         "games_total": 13,
         "games_final": 11,
         "games_in_progress": 1,
-        "updated": "2026-11-23T04:15:36.112Z"
+        "updated": "2026-11-23T04:25:40.971Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -6372,8 +6372,8 @@
             "score": 102.41,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0009",
@@ -6381,8 +6381,8 @@
             "score": 120.33,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -6412,8 +6412,8 @@
             "score": 135.76,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 3,
-            "done": 6
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0005",
@@ -6432,8 +6432,8 @@
             "score": 84.86,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0003",
@@ -6441,8 +6441,8 @@
             "score": 75.18,
             "vp_earned": 0,
             "ytp": 4,
-            "in_game": 2,
-            "done": 4
+            "in_game": 0,
+            "done": 6
           }
         },
         {
@@ -6452,8 +6452,8 @@
             "score": 102.41,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0008",
@@ -6461,8 +6461,8 @@
             "score": 60.51,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -6481,8 +6481,8 @@
             "score": 90.77,
             "vp_earned": 0,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -6492,8 +6492,8 @@
             "score": 135.76,
             "vp_earned": 1,
             "ytp": 1,
-            "in_game": 3,
-            "done": 6
+            "in_game": 0,
+            "done": 9
           },
           "team2": {
             "id": "0004",
@@ -6512,8 +6512,8 @@
             "score": 84.86,
             "vp_earned": 0,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0007",
@@ -6541,8 +6541,8 @@
             "score": 60.51,
             "vp_earned": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         },
         {
@@ -6552,8 +6552,8 @@
             "score": 75.18,
             "vp_earned": 0,
             "ytp": 4,
-            "in_game": 2,
-            "done": 4
+            "in_game": 0,
+            "done": 6
           },
           "team2": {
             "id": "0011",
@@ -6561,8 +6561,8 @@
             "score": 90.77,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           }
         },
         {
@@ -6572,8 +6572,8 @@
             "score": 120.33,
             "vp_earned": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           "team2": {
             "id": "0004",
@@ -6629,8 +6629,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 1,
-            "in_game": 3,
-            "done": 6
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0002",
@@ -6641,8 +6641,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           },
           {
             "id": "0012",
@@ -6653,8 +6653,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           }
         ],
         "Middle Division": [
@@ -6667,8 +6667,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 0,
-            "in_game": 1,
-            "done": 9
+            "in_game": 0,
+            "done": 10
           },
           {
             "id": "0006",
@@ -6686,7 +6686,7 @@
             "id": "0005",
             "name": "Peaky Fookin Blinders",
             "score": 89.1,
-            "pp": 91.63,
+            "pp": 91.83,
             "h2h_vp": 1,
             "battle_vp": 0,
             "total_weekly_vp": 1,
@@ -6703,8 +6703,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 4,
-            "in_game": 2,
-            "done": 4
+            "in_game": 0,
+            "done": 6
           }
         ],
         "Lower Division": [
@@ -6712,7 +6712,7 @@
             "id": "0007",
             "name": "Norsemen",
             "score": 130.39,
-            "pp": 153.07,
+            "pp": 156.47,
             "h2h_vp": 2,
             "battle_vp": 1,
             "total_weekly_vp": 3,
@@ -6741,8 +6741,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 1,
             "ytp": 0,
-            "in_game": 2,
-            "done": 8
+            "in_game": 0,
+            "done": 10
           },
           {
             "id": "0008",
@@ -6753,8 +6753,8 @@
             "battle_vp": 0,
             "total_weekly_vp": 0,
             "ytp": 1,
-            "in_game": 1,
-            "done": 8
+            "in_game": 0,
+            "done": 9
           }
         ]
       },
@@ -6860,7 +6860,7 @@
             "battle_vp": 0,
             "vp": 2,
             "pf": 252.65,
-            "pp": 292.78,
+            "pp": 292.98,
             "wins": 2,
             "losses": 4,
             "ties": 0,
@@ -6888,7 +6888,7 @@
             "battle_vp": 2,
             "vp": 4,
             "pf": 312.68,
-            "pp": 389.68,
+            "pp": 393.08000000000004,
             "wins": 2,
             "losses": 4,
             "ties": 0,
@@ -7024,7 +7024,7 @@
             "battle_vp": 1,
             "vp": 9,
             "pf": 1184.34,
-            "pp": 1416.15,
+            "pp": 1416.3500000000001,
             "wins": 8,
             "losses": 14,
             "ties": 0,
@@ -7052,7 +7052,7 @@
             "battle_vp": 7,
             "vp": 15,
             "pf": 1246.5299999999997,
-            "pp": 1494.8000000000002,
+            "pp": 1498.2000000000003,
             "wins": 8,
             "losses": 14,
             "ties": 0,
@@ -7963,18 +7963,18 @@
       "02": {
         "name": "Lower Division",
         "stat": "pp",
-        "reference": 135.89,
+        "reference": 136.2,
         "ties": [],
         "teams": [
           {
             "id": "0011",
             "season_total": 1244.46,
             "avg": 113.13,
-            "diff": -22.76,
-            "bonus": 113.79,
+            "diff": -23.07,
+            "bonus": 115.34,
             "name": "The Wild Cards",
             "scores": {},
-            "total": 113.79,
+            "total": 115.34,
             "cumulative": {},
             "place": null,
             "out_after": null,
@@ -7984,11 +7984,11 @@
             "id": "0008",
             "season_total": 1261.71,
             "avg": 114.7,
-            "diff": -21.19,
-            "bonus": 105.95,
+            "diff": -21.5,
+            "bonus": 107.5,
             "name": "The Two Tones",
             "scores": {},
-            "total": 105.95,
+            "total": 107.5,
             "cumulative": {},
             "place": null,
             "out_after": null,
@@ -7996,14 +7996,14 @@
           },
           {
             "id": "0005",
-            "season_total": 1416.15,
-            "avg": 128.74,
-            "diff": -7.15,
-            "bonus": 35.75,
+            "season_total": 1416.35,
+            "avg": 128.76,
+            "diff": -7.44,
+            "bonus": 37.2,
             "name": "Peaky Fookin Blinders",
             "came_from": "01",
             "scores": {},
-            "total": 35.75,
+            "total": 37.2,
             "cumulative": {},
             "place": null,
             "out_after": null,
@@ -8011,8 +8011,8 @@
           },
           {
             "id": "0007",
-            "season_total": 1494.8,
-            "avg": 135.89,
+            "season_total": 1498.2,
+            "avg": 136.2,
             "diff": 0,
             "bonus": 0,
             "name": "Norsemen",
