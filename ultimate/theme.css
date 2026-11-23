@@ -1,0 +1,64 @@
+/* Ultimate light/dark theme. Follows the viewer's device setting (prefers-color-scheme).
+ *
+ * Each page keeps its dark styles in its own <style> block. This file loads right after
+ * that block and, in light mode, redefines the shared variables and the few rules that
+ * use fixed colors. Same selectors, later in the page, so these win.
+ * Colored bar segments and red/purple badges keep white text in both modes.
+ */
+:root { color-scheme: dark; }
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+    --bg-main: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-bar-track: #e2e8f0;
+    --bg-bar-prior: #64748b;
+    --bg-bar-done: #dc2626;
+    --bg-bar-live: #7c3aed;
+    --border-color: #dbe2ea;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --accent-red: #dc2626;
+    --accent-gold: #b45309;
+    --accent-silver: #64748b;
+    --accent-bronze: #9a5b1e;
+    --chopped-bg: rgba(220, 38, 38, 0.07);
+    --chopped-border: #fca5a5;
+    --active-week-bg: rgba(239, 68, 68, 0.08);
+    --active-week-border: #dc2626;
+  }
+
+  /* Header */
+  .logo-title { color: #0f172a; text-shadow: none; }
+  .mfl-link:hover { color: #b91c1c; }
+  .header-right, .metric-val, .page-title { color: #0f172a; }
+  .week-indicator { background: #f1f5f9; }
+
+  /* Controls (index) */
+  select { background: #ffffff; color: #0f172a; }
+  .week-btn { background: #f1f5f9; }
+  .week-btn:hover { color: #0f172a; }
+  .week-btn.active, .week-btn.active:hover { color: #ffffff; }
+
+  /* Callouts and team rows (index) */
+  .callout-value, .team-name, .team-score { color: #0f172a; }
+  .bar-track { border-color: rgba(15, 23, 42, 0.06); }
+  .stat-ytp { color: #475569; }
+  .stat-live { background: rgba(124, 58, 237, 0.12); color: #6d28d9; border-color: rgba(124, 58, 237, 0.35); }
+  .live-label { color: #6d28d9; }
+  .stat-done { background: rgba(220, 38, 38, 0.1); color: #b91c1c; border-color: rgba(220, 38, 38, 0.3); }
+  .team-row.danger { background: rgba(220, 38, 38, 0.06); border-color: #fca5a5; }
+  .chop-line { color: #dc2626; }
+
+  /* Tables (prizes, schedule) */
+  th { background: #f8fafc; }
+  .badge-prize { background: rgba(245, 158, 11, 0.14); }
+  .badge-silver { background: rgba(100, 116, 139, 0.14); color: #475569; }
+  .badge-gold { background: rgba(245, 158, 11, 0.2); color: #b45309; }
+  .badge-cut-2 { color: #b91c1c; }
+  .badge-cut-1 { color: #b45309; }
+  .badge-change { background: rgba(15, 23, 42, 0.06); color: #0f172a; }
+  .badge-increase, .slot-new { background: rgba(34, 197, 94, 0.14); color: #15803d; }
+}

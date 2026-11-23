@@ -160,6 +160,8 @@ Stays in `ultimate/`: `config.js`, rolling-score math, the cut schedule, prize t
 
 Heavy metal / blood-red guillotine styling, dark metallic progress bars, split 2-part scoring bars (prior week + current week), and "axed/slashed" graveyard callouts for eliminated teams.
 
+**Light/dark (`theme.css`, 2026-11-23):** each page links `theme.css` right after its own `<style>` block. Dark is the default; when the device is in light mode it redefines the shared `:root` variables and the rules that use fixed colors (`#fff` text, `#1e293b` buttons, badge text). When a page gets a new rule with a fixed color, add its light value there, or use the variables.
+
 ---
 
 ## Next Steps
