@@ -15,26 +15,35 @@ name: BaD Themed Matchups
 #              Refuses if MFL already has different matchups for the week, unless force is on.
 #              With post_to_slack, posts the Slack text to the league's #general
 #              (secret BAD_SLACK_WEBHOOK_URL) only after MFL confirms this run's save.
+#   standings  = standings post after the week given (11-14): clinched / eliminated,
+#              next week's scenarios, the Week 13/14 pick order, and after Week 14 the
+#              playoff field (bad/standings_post.js). Posts to #general only with
+#              post_to_slack. No MFL login, no MFL writes.
 #   slack-test = post a one-line test message to #general, nothing else.
+# Run names show mode, week and "+ Slack", so a posted run is easy to spot.
+run-name: >-
+  BaD ${{ github.event.inputs.mode || github.event.client_payload.mode || 'preview' }}
+  week ${{ github.event.inputs.week || github.event.client_payload.week }}${{
+  (github.event.inputs.post_to_slack == 'true' || github.event.client_payload.post_to_slack == 'true' || github.event.client_payload.post_to_slack == true) && ' + Slack' || '' }}
 on:
   workflow_dispatch:
     inputs:
       week:
-        description: 'Week'
+        description: 'Week (matchup modes: the week to set; standings: the week just finished)'
         type: choice
-        options: ['12', '11', '10']
+        options: ['12', '13', '14', '11', '10']
         default: '12'
       mode:
         description: 'preview (Slack post + detail), inspect (form fields), dry-run, apply (save on MFL)'
         type: choice
-        options: [preview, inspect, dry-run, apply, slack-test]
+        options: [preview, inspect, dry-run, apply, standings, slack-test]
         default: preview
       force:
         description: 'apply: replace matchups MFL already has for the week'
         type: boolean
         default: false
       post_to_slack:
-        description: 'apply: post the matchups to #general once MFL confirms them'
+        description: 'apply / standings: post to #general (apply: only once MFL confirms the save)'
         type: boolean
         default: false
   repository_dispatch:
@@ -74,6 +83,8 @@ jobs:
             dry-run)    node themed_matchups.js --week "$WEEK" --dry-run ;;
             apply)      node themed_matchups.js --week "$WEEK" --apply \
                           $([ "$FORCE" = "true" ] && echo --force) \
+                          $([ "$POST_TO_SLACK" = "true" ] && echo --post-slack) ;;
+            standings)  node standings_post.js --after "$WEEK" \
                           $([ "$POST_TO_SLACK" = "true" ] && echo --post-slack) ;;
             slack-test) node themed_matchups.js --slack-test ;;
             *)          node themed_matchups.js --week "$WEEK" ;;

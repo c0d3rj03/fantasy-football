@@ -42,7 +42,7 @@ const THEMES = {
 const asArray = v => (v == null ? [] : Array.isArray(v) ? v : [v]);
 const decode = s => String(s).replace(/&amp;/g, '&').replace(/&apos;|&#39;/g, "'").replace(/&quot;/g, '"');
 
-async function exportJson(type, params = {}, host = MFL_HOST) {
+export async function exportJson(type, params = {}, host = MFL_HOST) {
   const query = new URLSearchParams({ TYPE: type, L: LEAGUE_ID, JSON: '1', ...params });
   const res = await fetch(`https://${host}/${SEASON_YEAR}/export?${query}`, { headers: { 'User-Agent': USER_AGENT } });
   if (!res.ok) throw new Error(`MFL export ${type}: ${res.status} ${res.statusText}`);
@@ -51,7 +51,7 @@ async function exportJson(type, params = {}, host = MFL_HOST) {
   return json;
 }
 
-async function franchiseNames() {
+export async function franchiseNames() {
   const { league } = await exportJson('league');
   return Object.fromEntries(asArray(league.franchises.franchise).map(f => [f.id, decode(f.name)]));
 }
@@ -111,7 +111,7 @@ async function projectedMatchups(week) {
 
 // Final results for Weeks 1..throughWeek from the schedule export. MFL fills in
 // scores and W/L only once a week is final (until then: score 0, result T).
-async function finalResults(throughWeek) {
+export async function finalResults(throughWeek) {
   const { schedule } = await exportJson('schedule');
   const weeks = asArray(schedule.weeklySchedule).filter(w => Number(w.week) <= throughWeek);
   const games = [];
@@ -302,7 +302,7 @@ async function inspect(week) {
 }
 
 // Matchups MFL has for the week, as sorted "a-b" pairs.
-async function mflPairs(week) {
+export async function mflPairs(week) {
   const { schedule } = await exportJson('schedule', { W: String(week) });
   const weekly = asArray(schedule?.weeklySchedule).find(w => Number(w.week) === week) || {};
   return asArray(weekly.matchup)
@@ -355,7 +355,7 @@ async function setSchedule(result, { apply, force }) {
 // ---------- Slack (league #general, incoming webhook) ----------
 
 // Posts text to BAD_SLACK_WEBHOOK_URL. The URL is a secret: never log it.
-async function postToSlack(text) {
+export async function postToSlack(text) {
   const url = process.env.BAD_SLACK_WEBHOOK_URL;
   if (!url) throw new Error('BAD_SLACK_WEBHOOK_URL is not set, so nothing was posted to Slack.');
   const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
