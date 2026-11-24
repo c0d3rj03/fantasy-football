@@ -13,6 +13,9 @@ name: BaD Themed Matchups
 #   dry-run  = preview, then log in and log the exact WEEKSCHED field changes, post nothing.
 #   apply    = preview, then save the matchups on MFL and confirm them from the schedule export.
 #              Refuses if MFL already has different matchups for the week, unless force is on.
+#              With post_to_slack, posts the Slack text to the league's #general
+#              (secret BAD_SLACK_WEBHOOK_URL) only after MFL confirms this run's save.
+#   slack-test = post a one-line test message to #general, nothing else.
 on:
   workflow_dispatch:
     inputs:
@@ -24,10 +27,14 @@ on:
       mode:
         description: 'preview (Slack post + detail), inspect (form fields), dry-run, apply (save on MFL)'
         type: choice
-        options: [preview, inspect, dry-run, apply]
+        options: [preview, inspect, dry-run, apply, slack-test]
         default: preview
       force:
         description: 'apply: replace matchups MFL already has for the week'
+        type: boolean
+        default: false
+      post_to_slack:
+        description: 'apply: post the matchups to #general once MFL confirms them'
         type: boolean
         default: false
   repository_dispatch:
@@ -58,11 +65,16 @@ jobs:
         env:
           MFL_USERNAME: ${{ secrets.MFL_USERNAME }}
           MFL_PASSWORD: ${{ secrets.MFL_PASSWORD }}
+          BAD_SLACK_WEBHOOK_URL: ${{ secrets.BAD_SLACK_WEBHOOK_URL }}
           FORCE: ${{ github.event.inputs.force || github.event.client_payload.force || 'false' }}
+          POST_TO_SLACK: ${{ github.event.inputs.post_to_slack || github.event.client_payload.post_to_slack || 'false' }}
         run: |
           case "$MODE" in
-            inspect) node themed_matchups.js --week "$WEEK" --inspect ;;
-            dry-run) node themed_matchups.js --week "$WEEK" --dry-run ;;
-            apply)   node themed_matchups.js --week "$WEEK" --apply $([ "$FORCE" = "true" ] && echo --force) ;;
-            *)       node themed_matchups.js --week "$WEEK" ;;
+            inspect)    node themed_matchups.js --week "$WEEK" --inspect ;;
+            dry-run)    node themed_matchups.js --week "$WEEK" --dry-run ;;
+            apply)      node themed_matchups.js --week "$WEEK" --apply \
+                          $([ "$FORCE" = "true" ] && echo --force) \
+                          $([ "$POST_TO_SLACK" = "true" ] && echo --post-slack) ;;
+            slack-test) node themed_matchups.js --slack-test ;;
+            *)          node themed_matchups.js --week "$WEEK" ;;
           esac

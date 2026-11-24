@@ -21,6 +21,9 @@
  *   --apply    save the matchups on MFL, then re-read the schedule export.
  *   --force    replace matchups MFL already has for the week (otherwise refused,
  *              so a late rerun can't reshuffle games).
+ *   --post-slack  with --apply: post the Slack text to the league's #general
+ *              (BAD_SLACK_WEBHOOK_URL) once MFL confirms the save.
+ * node themed_matchups.js --slack-test  posts a one-line test message.
  */
 import fs from 'fs';
 import { LEAGUE_ID, SEASON_YEAR, MFL_HOST, LINEUP, FLEX } from './config.js';
@@ -317,7 +320,7 @@ async function setSchedule(result, { apply, force }) {
   const have = await mflPairs(week);
   if (have.join() === want.join()) {
     console.log(`\n✅ MFL already has these Week ${week} matchups. Nothing to do.`);
-    return;
+    return 'unchanged';
   }
   if (have.length > 0 && !force) {
     throw new Error(`MFL already has different Week ${week} matchups (${have.join(', ')}). Rerun with force to replace them.`);
@@ -335,22 +338,37 @@ async function setSchedule(result, { apply, force }) {
     dryRun: !apply, params: { W: String(week) }, requireExisting: true, submit: 'SUBMIT'
   });
   console.log(`\n${apply ? '✍️ Saved' : '🧪 Dry run, would save'} WEEKSCHED W=${week}:\n  ${changed.join('\n  ') || '(no field changes)'}`);
-  if (!apply) return;
+  if (!apply) return 'dry-run';
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     await new Promise(r => setTimeout(r, 5000));
     const now = await mflPairs(week);
     if (now.join() === want.join()) {
       console.log(`✅ Confirmed on MFL: ${now.join(', ')}`);
-      return;
+      return 'saved';
     }
     console.log(`  check ${attempt}: MFL shows ${now.join(', ') || 'no matchups'}`);
   }
   throw new Error(`MFL does not show the Week ${week} matchups after saving. Check csetup?L=${LEAGUE_ID}&C=WEEKSCHED&W=${week}.`);
 }
 
+// ---------- Slack (league #general, incoming webhook) ----------
+
+// Posts text to BAD_SLACK_WEBHOOK_URL. The URL is a secret: never log it.
+async function postToSlack(text) {
+  const url = process.env.BAD_SLACK_WEBHOOK_URL;
+  if (!url) throw new Error('BAD_SLACK_WEBHOOK_URL is not set, so nothing was posted to Slack.');
+  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+  const body = await res.text();
+  if (!res.ok || body.trim() !== 'ok') throw new Error(`Slack webhook answered ${res.status}: ${body.slice(0, 200)}`);
+  console.log('📣 Posted to Slack.');
+}
+
 async function main() {
   const args = process.argv.slice(2);
+  if (args.includes('--slack-test')) {
+    return postToSlack(':wave: Test from the BaD commissioner tools: themed-week matchups will post here once they are set on MFL.');
+  }
   const weekArg = args.indexOf('--week');
   const week = Number(weekArg >= 0 ? args[weekArg + 1] : process.env.WEEK);
   if (!week) throw new Error('Pass --week N (or set WEEK).');
@@ -364,7 +382,13 @@ async function main() {
     fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `### Slack post\n\n\`\`\`\`text\n${post}\n\`\`\`\`\n\n### Detail\n\n\`\`\`text\n${more}\n\`\`\`\n`);
   }
   if (args.includes('--apply') || args.includes('--dry-run')) {
-    await setSchedule(result, { apply: args.includes('--apply'), force: args.includes('--force') });
+    const status = await setSchedule(result, { apply: args.includes('--apply'), force: args.includes('--force') });
+    // Post only when this run saved the matchups (and MFL confirmed them), so a
+    // rerun or a dry run never posts twice.
+    if (args.includes('--post-slack')) {
+      if (status === 'saved') await postToSlack(post);
+      else console.log(`(Slack: not posted, ${status === 'unchanged' ? 'the matchups were already set' : 'dry run'}.)`);
+    }
   }
 }
 

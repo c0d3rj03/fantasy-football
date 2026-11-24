@@ -16,13 +16,16 @@ Bylaws (Google Doc, published): https://docs.google.com/document/d/e/2PACX-1vQYv
 
 ## Scripts
 * `config.js`: league ID, host, season, lineup shape. ES Modules (`bad/package.json`).
-* `themed_matchups.js --week N`: prints a Slack post (code-block table) and the detail behind it. `--inspect | --dry-run | --apply [--force]`; apply refuses to replace existing matchups unless forced.
+* `themed_matchups.js --week N`: prints a Slack post (code-block table) and the detail behind it. `--inspect | --dry-run | --apply [--force] [--post-slack]`; apply refuses to replace existing matchups unless forced. `--post-slack` posts the Slack text only when this run saved and MFL confirmed (never on a dry run or an "already set" rerun). `--slack-test` posts a one-line test.
   * Week 11: best lineup per team from `export?TYPE=projectedScores&W=N&PLAYERS=...` (blank score = no projection = 0).
   * Weeks 10/12: standings computed from the `schedule` export (scores and W/L appear only once a week is final; until then score 0, result T). Refuses until the previous week is final and MFL's `leagueStandings` include it, and fails if computed VP differs from MFL's (standings adjustments). Checked 2026-11-23: replaying Week 10 gave MFL's actual Week 10 games, and VP/PF after Week 10 matched MFL for all 10 teams.
-* Workflow `.github/workflows/bad_matchups.yml` "BaD Themed Matchups" (`workflow_dispatch`, or `repository_dispatch` type `bad-matchups-trigger` with `client_payload.week`/`mode`): `week` 10/11/12, `mode` preview / inspect / dry-run / apply. It commits nothing.
+* Workflow `.github/workflows/bad_matchups.yml` "BaD Themed Matchups" (`workflow_dispatch`, or `repository_dispatch` type `bad-matchups-trigger` with `client_payload.week`/`mode`): `week` 10/11/12, `mode` preview / inspect / dry-run / apply / slack-test, `post_to_slack` (apply). It commits nothing.
 
 ## MFL: WEEKSCHED form
 `csetup?L=57713&C=WEEKSCHED&W=<week>` (inspect 2026-11-17): selects `AWAY_<n>` / `HOME_<n>` for rows 0-5 (franchise IDs or `BYE`), checkbox `DEL_<n>`, select `ADD_GAMES`, submit `SUBMIT` ("Save Matchups"). Confirm by `export?TYPE=schedule&W=<week>`.
 
+## Slack
+Posts go to the league workspace's #general through an incoming webhook (repo secret `BAD_SLACK_WEBHOOK_URL`, added 2026-11-24; no bot token, no channel ID). The URL is a secret: never log it.
+
 ## Not built
-No Slack posting (the commissioner posts by hand), no dashboard, no scores sync. Weeks 13/14 (owners pick opponents) are manual.
+No dashboard, no scores sync. Weeks 13/14 (owners pick opponents) are manual.

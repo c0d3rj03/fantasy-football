@@ -73,11 +73,12 @@ node pbr/mfl_scores_fetcher.js
 | `SLACK_WEBHOOK_URL` | PBR | Incoming webhook, a fallback way to post to Slack without the bot token |
 | `PBR_SLACK_CHANNEL_OFFICIALCOMMS` | PBR | Channel ID for `#officialcomms`, where weekly recaps and official announcements go |
 | `PBR_ANTHROPIC_API_KEY` | PBR | Claude API, writes Claudine's replies in the weekly Gemmy vs Claudine recap (`pbr/claudine.js`); unset = Gemmy solo |
+| `BAD_SLACK_WEBHOOK_URL` | BaD | Incoming webhook to the BaD league's #general, for themed-week matchup posts |
 | `PBR_SLACK_CHANNEL_GENERAL` | PBR | Channel ID for `#general`, read for banter context |
 | `PBR_SLACK_CHANNEL_RANDOM` | PBR | Channel ID for `#random`, read for banter context |
 | `PBR_SLACK_CHANNEL_TRADE_TALK` | PBR | Channel ID for `#trade-talk`, read for banter context |
 
-* **Slack and Gemini are PBR-only.** Ultimate does not use Slack. A GroupMe bot for Ultimate is a possible future enhancement and would get its own secret (for example `ULTIMATE_GROUPME_BOT_ID`).
+* **Gemini is PBR-only; Slack is PBR plus a BaD webhook** (posting only). Ultimate does not use Slack. A GroupMe bot for Ultimate is a possible future enhancement and would get its own secret (for example `ULTIMATE_GROUPME_BOT_ID`).
 * New secrets for a single league should carry the league prefix (`PBR_…`, `ULTIMATE_…`).
 * `GITHUB_TOKEN` is the built-in Actions token, used to push the automated `data.json` commits.
 
