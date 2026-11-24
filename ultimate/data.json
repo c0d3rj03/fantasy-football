@@ -6,7 +6,7 @@
   "phase": "results",
   "displayWeek": 11,
   "lastCompletedWeek": 11,
-  "lastUpdated": "2026-11-24T05:36:11.216Z",
+  "lastUpdated": "2026-11-24T10:26:56.924Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -669,6 +669,12 @@
       "rollingScore": 311.15,
       "singleScore": 144.98,
       "franchiseName": "Chico's Bail Bonds"
+    },
+    "0017": {
+      "eliminatedWeek": 11,
+      "rollingScore": 292.62,
+      "singleScore": 152.26,
+      "franchiseName": "The Headless Horsemen"
     }
   },
   "weeklyWinners": {
@@ -761,8 +767,17 @@
         "type": "cash",
         "amount": 30
       }
+    },
+    "11": {
+      "franchiseId": "0002",
+      "franchiseName": "What smells?",
+      "score": 216.85,
+      "prize": {
+        "type": "cash",
+        "amount": 30
+      }
     }
   },
-  "fetchMode": "live",
+  "fetchMode": "full",
   "gamesInProgress": 0
 }
