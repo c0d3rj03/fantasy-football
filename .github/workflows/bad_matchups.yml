@@ -1,10 +1,14 @@
-name: BaD Week 11 Projected Matchups
+name: BaD Themed Matchups
 
-# Become a Dynasty, Week 11 "Ten Kissing Sisters": pairs teams by best projected
-# lineup on MFL (1st vs 2nd, 3rd vs 4th, ...). Run it Thursday at 3pm ET.
+# Become a Dynasty themed weeks (bad/themed_matchups.js):
+#   10 "I've Earned This"   standings after Week 9: 1v10, 2v9, ... (Tuesday)
+#   11 "Ten Kissing Sisters" best projected lineup: 1v2, 3v4, ... (Thursday 3pm ET)
+#   12 "Wheat from the Chaff" standings after Week 11: 1v6, 2v7, ... (Tuesday)
+# Standings weeks refuse to run until the previous week is final on MFL and the
+# computed VP matches MFL's standings.
 #
 # mode:
-#   preview  = print the Slack post and every team's best lineup (no login, no writes).
+#   preview  = print the Slack post and the detail behind it (no login, no writes).
 #   inspect  = log in and print the WEEKSCHED form's fields (emails masked), change nothing.
 #   dry-run  = preview, then log in and log the exact WEEKSCHED field changes, post nothing.
 #   apply    = preview, then save the matchups on MFL and confirm them from the schedule export.
@@ -14,10 +18,11 @@ on:
     inputs:
       week:
         description: 'Week'
-        required: false
-        default: '11'
+        type: choice
+        options: ['12', '11', '10']
+        default: '12'
       mode:
-        description: 'preview (Slack post + lineups), inspect (form fields), dry-run, apply (save on MFL)'
+        description: 'preview (Slack post + detail), inspect (form fields), dry-run, apply (save on MFL)'
         type: choice
         options: [preview, inspect, dry-run, apply]
         default: preview
@@ -41,7 +46,7 @@ jobs:
       run:
         working-directory: bad
     env:
-      WEEK: ${{ github.event.inputs.week || github.event.client_payload.week || '11' }}
+      WEEK: ${{ github.event.inputs.week || github.event.client_payload.week }}
       MODE: ${{ github.event.inputs.mode || github.event.client_payload.mode || 'preview' }}
       SEASON_YEAR: '2026'
     steps:
@@ -56,8 +61,8 @@ jobs:
           FORCE: ${{ github.event.inputs.force || github.event.client_payload.force || 'false' }}
         run: |
           case "$MODE" in
-            inspect) node kissing_sisters.js --week "$WEEK" --inspect ;;
-            dry-run) node kissing_sisters.js --week "$WEEK" --dry-run ;;
-            apply)   node kissing_sisters.js --week "$WEEK" --apply $([ "$FORCE" = "true" ] && echo --force) ;;
-            *)       node kissing_sisters.js --week "$WEEK" ;;
+            inspect) node themed_matchups.js --week "$WEEK" --inspect ;;
+            dry-run) node themed_matchups.js --week "$WEEK" --dry-run ;;
+            apply)   node themed_matchups.js --week "$WEEK" --apply $([ "$FORCE" = "true" ] && echo --force) ;;
+            *)       node themed_matchups.js --week "$WEEK" ;;
           esac
