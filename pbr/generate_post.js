@@ -166,6 +166,11 @@ function buildWeekSummary(pbrData, weekNum, firstRoundOwners = null) {
 
   if (isFinalQuarterStretch(w.quarter, weekOfQuarter)) {
     const byDiv = code => Object.values(w.quarter_standings).find(teams => teams[0]?.division === code) || [];
+    const weeksLeft = 12 - weekNum;
+    // Each team's PP in every played week of this quarter, so "how far short" can be judged against real weekly swings.
+    const quarterWeeks = [];
+    for (let k = (w.quarter - 1) * 4 + 1; k <= weekNum; k++) quarterWeeks.push(k);
+    const weeklyPp = id => quarterWeeks.map(k => round(Object.values(pbrData.weekly_data[String(k)]?.battle_royale || {}).flat().find(t => t.id === id)?.pp));
     // Relegation after Week 12 = lowest quarter PP in Upper and Middle (the Middle leader is being promoted, so is exempt).
     const relegationWatch = code => {
       const teams = byDiv(code);
@@ -174,15 +179,27 @@ function buildWeekSummary(pbrData, weekNum, firstRoundOwners = null) {
       return sorted.map((t, i) => ({
         team: t.name,
         quarter_pp: round(t.pp),
+        weekly_pp_this_quarter: weeklyPp(t.id),
         ...(i === 0 ? { status: 'IN THE RELEGATION SPOT', pp_short_of_safety: round(sorted[1] ? sorted[1].pp - t.pp : 0) } : { pp_cushion_over_relegation_spot: round(t.pp - sorted[0].pp) })
       }));
     };
+    // Promotion = most quarter VP; ties go to the higher quarter PF. Up to 3 VP per remaining week.
     const promotionRace = code => {
       const teams = [...byDiv(code)].sort((a, b) => b.vp - a.vp || b.pf - a.pf);
-      return teams.map(t => ({ team: t.name, vp: t.vp, vp_behind_leader: teams[0].vp - t.vp }));
+      const leader = teams[0];
+      return teams.map((t, i) => ({
+        team: t.name,
+        vp: t.vp,
+        vp_behind_leader: leader.vp - t.vp,
+        quarter_pf: round(t.pf),
+        status: i === 0 ? 'LEADS (tiebreak: higher quarter PF)' : t.vp + 3 * weeksLeft < leader.vp ? 'ELIMINATED' : 'STILL ALIVE',
+        // Positive = more quarter PF than the leader, so this team wins a VP tie with it.
+        ...(i > 0 ? { quarter_pf_vs_leader: round(t.pf - leader.pf) } : {})
+      }));
     };
     summary.final_quarter_stakes = {
-      weeks_left_before_postseason_divisions_lock: 12 - weekNum,
+      weeks_left_before_postseason_divisions_lock: weeksLeft,
+      ...(weeksLeft === 1 ? { note: 'Week 12 is the LAST regular-season week. Up to 3 VP each (2 H2H wins + top-2 in division). P&R is decided after it.' } : {}),
       upper_relegation_watch: relegationWatch('00'),
       middle_promotion_race: promotionRace('01'),
       middle_relegation_watch: relegationWatch('01'),
@@ -250,7 +267,10 @@ function leagueContext(summary, banter, transactions = []) {
     '- UPPER DIVISION: the only division that plays for the Season Champion title ($200) in the postseason, so staying up is everything. Headline: relegation. The team in the relegation spot (lowest quarter PP, see upper_relegation_watch) is about to get kicked out of the title race and forfeit next year\'s 3rd-round pick; name how far short of safety it is and who is barely hanging on. Next: this week\'s single-game showings against the division (score_rank_in_division, potential_rank_in_division), praising whoever topped the division and roasting whoever finished last, especially a bottom PP that drags them toward relegation. Points left on the bench rank BELOW all of that: mention them briefly at most, never as an Upper team\'s main story.',
     '- MIDDLE DIVISION: the last chance to climb into the Upper Division (and the title race) before the postseason. Only the VP leader goes up, so wins and VP are the story: the promotion race (middle_promotion_race, vp_behind_leader) and who gained or lost ground this week. Here bench points DO hurt when they cost a win: call out every wins_left_on_bench entry for a Middle team (an H2H loss or a missed top-2 VP the bench would have won) as VP thrown away in a promotion race. The relegation spot (middle_relegation_watch) is a secondary threat: it drops a team to the Lower Division and costs next year\'s 3rd-round pick.',
     '- LOWER DIVISION: these teams can\'t reach the title, so their trophy is the Lower Division postseason, whose winner gets next season\'s 1.01 pick (only worth it if they own their own 1st; see lower_division_next_year_first, and roast anyone fighting for a 1.01 another team owns). The smart play is to get better for the future (trading veterans for future picks and young talent) while staying strong enough to win the Lower postseason. Judge their trades and waiver moves on that: a smart sell-off for picks, or gutting the roster so far they can\'t compete for 1.01. Note that winning the Lower quarter promotes a team to the Middle Division (+5 tokens) but takes it out of the 1.01 race (Middle postseason picks are x.05-x.08). Bench points matter little here.',
-    '- Week 12 decides it all, so frame this week as building toward that.'
+    '- PROMOTION ALSO STARTS THE 2027 CLIMB: final divisions after Week 12 are next season\'s Q1 divisions, so a team promoted now opens 2027 one division higher (Lower to Middle, Middle to Upper).',
+    week_of_quarter === 3
+      ? '- ONE WEEK LEFT: Week 12 is the last regular-season week. For each race, spell out exactly what each team needs in Week 12: the PP a relegation-spot team must make up (compare to weekly_pp_this_quarter to say whether that has ever happened), the VP each STILL ALIVE team needs and who wins a VP tie (higher quarter PF), and who is ELIMINATED. Name who controls their own destiny.'
+      : '- Week 12 decides it all, so frame this week as building toward that.'
   ] : [];
 
   return [
