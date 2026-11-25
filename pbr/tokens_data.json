@@ -1,7 +1,7 @@
 {
   "version": 2,
   "season": "2026",
-  "last_updated": "2026-11-22T17:51:36.219Z",
+  "last_updated": "2026-11-25T17:51:35.489Z",
   "rules": {
     "waiver_min_bid": 25,
     "waiver_quarter_cap": 5,
@@ -49,10 +49,10 @@
       "name": "Orcan Terror",
       "start": 15,
       "trades": 20,
-      "waivers": 7,
+      "waivers": 8,
       "promotions": 0,
       "adjustments": 0,
-      "total": 42,
+      "total": 43,
       "by_period": {
         "Offseason": {
           "trades": 12,
@@ -74,7 +74,7 @@
         },
         "Q3": {
           "trades": 0,
-          "waivers": 2,
+          "waivers": 3,
           "promotions": 0,
           "adjustments": 0
         },
@@ -1835,6 +1835,19 @@
     }
   ],
   "waivers": [
+    {
+      "id": "1795622400|0001|14143",
+      "timestamp": 1795622400,
+      "date": "2026-11-25",
+      "franchise": "0001",
+      "name": "Orcan Terror",
+      "player_id": "14143",
+      "player": "Dawson Knox (TE, BUF)",
+      "dropped": "Demarcus Robinson (WR, SFO)",
+      "bid": 25,
+      "period": "Q3",
+      "tokens": 1
+    },
     {
       "id": "1795017600|0010|14315",
       "timestamp": 1795017600,
