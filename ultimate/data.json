@@ -6,7 +6,7 @@
   "phase": "live",
   "displayWeek": 12,
   "lastCompletedWeek": 11,
-  "lastUpdated": "2026-11-26T02:06:08.842Z",
+  "lastUpdated": "2026-11-26T02:16:10.357Z",
   "franchises": {
     "0001": {
       "id": "0001",
@@ -469,7 +469,7 @@
     },
     "0012": {
       "doneScore": 0,
-      "liveScore": 5.51,
+      "liveScore": 6.38,
       "ytp": 10,
       "inGame": 2,
       "finished": 0,
