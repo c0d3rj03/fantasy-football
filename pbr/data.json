@@ -6982,7 +6982,7 @@
         "games_total": 16,
         "games_final": 0,
         "games_in_progress": 1,
-        "updated": "2026-11-26T04:25:38.625Z"
+        "updated": "2026-11-26T04:35:40.600Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -7026,8 +7026,8 @@
             "score": 6.49,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0005",
@@ -7066,8 +7066,8 @@
             "score": 14.5,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0009",
@@ -7106,8 +7106,8 @@
             "score": 6.49,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0004",
@@ -7135,8 +7135,8 @@
             "score": 4.9,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           }
         },
         {
@@ -7146,8 +7146,8 @@
             "score": 14.5,
             "vp_earned": 0,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           "team2": {
             "id": "0008",
@@ -7155,8 +7155,8 @@
             "score": 32.1,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         },
         {
@@ -7215,8 +7215,8 @@
             "score": 4.9,
             "vp_earned": 1,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           }
         },
         {
@@ -7235,8 +7235,8 @@
             "score": 32.1,
             "vp_earned": 1,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           }
         }
       ],
@@ -7251,8 +7251,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 2,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0010",
@@ -7263,8 +7263,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0002",
@@ -7308,7 +7308,7 @@
             "id": "0003",
             "name": "Shankly's Ghost",
             "score": 0,
-            "pp": 4.25,
+            "pp": 4.75,
             "h2h_vp": 1,
             "battle_vp": 0.5,
             "total_weekly_vp": 1.5,
@@ -7332,7 +7332,7 @@
             "id": "0006",
             "name": "Ted Lasso",
             "score": 0,
-            "pp": 25.2,
+            "pp": 25.3,
             "h2h_vp": 0.5,
             "battle_vp": 0.5,
             "total_weekly_vp": 1,
@@ -7351,8 +7351,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 8,
-            "in_game": 2,
-            "done": 0
+            "in_game": 0,
+            "done": 2
           },
           {
             "id": "0007",
@@ -7363,8 +7363,8 @@
             "battle_vp": 1,
             "total_weekly_vp": 3,
             "ytp": 9,
-            "in_game": 1,
-            "done": 0
+            "in_game": 0,
+            "done": 1
           },
           {
             "id": "0004",
@@ -7455,7 +7455,7 @@
             "battle_vp": 3.5,
             "vp": 9.5,
             "pf": 438.34,
-            "pp": 477.09999999999997,
+            "pp": 477.59999999999997,
             "wins": 5,
             "losses": 1,
             "ties": 2,
@@ -7481,7 +7481,7 @@
             "battle_vp": 1.5,
             "vp": 4,
             "pf": 324.39,
-            "pp": 385.1,
+            "pp": 385.20000000000005,
             "wins": 2,
             "losses": 5,
             "ties": 1,
@@ -7619,7 +7619,7 @@
             "battle_vp": 6.5,
             "vp": 22.5,
             "pf": 1476.6899999999998,
-            "pp": 1632.96,
+            "pp": 1633.46,
             "wins": 15,
             "losses": 7,
             "ties": 2,
@@ -7632,7 +7632,7 @@
             "battle_vp": 6.5,
             "vp": 18,
             "pf": 1378.5900000000001,
-            "pp": 1600.4699999999998,
+            "pp": 1600.5699999999997,
             "wins": 11,
             "losses": 12,
             "ties": 1,
@@ -7917,13 +7917,13 @@
           },
           {
             "id": "0006",
-            "season_total": 1600.47,
-            "avg": 133.37,
+            "season_total": 1600.57,
+            "avg": 133.38,
             "diff": -6.97,
-            "bonus": 34.87,
+            "bonus": 34.83,
             "name": "Ted Lasso",
             "scores": {},
-            "total": 34.87,
+            "total": 34.83,
             "cumulative": {},
             "place": null,
             "out_after": null,
