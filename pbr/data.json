@@ -6982,7 +6982,7 @@
         "games_total": 16,
         "games_final": 1,
         "games_in_progress": 1,
-        "updated": "2026-11-26T19:35:39.170Z"
+        "updated": "2026-11-26T19:55:40.660Z"
       },
       "active_divisions": {
         "0002": "00",
@@ -7012,7 +7012,7 @@
           "team2": {
             "id": "0006",
             "name": "Ted Lasso",
-            "score": 24.98,
+            "score": 22.98,
             "vp_earned": 1,
             "ytp": 7,
             "in_game": 3,
@@ -7223,7 +7223,7 @@
           "team1": {
             "id": "0006",
             "name": "Ted Lasso",
-            "score": 24.98,
+            "score": 22.98,
             "vp_earned": 0,
             "ytp": 7,
             "in_game": 3,
@@ -7293,18 +7293,6 @@
         ],
         "Middle Division": [
           {
-            "id": "0006",
-            "name": "Ted Lasso",
-            "score": 24.98,
-            "pp": 52.88,
-            "h2h_vp": 1,
-            "battle_vp": 1,
-            "total_weekly_vp": 2,
-            "ytp": 7,
-            "in_game": 3,
-            "done": 0
-          },
-          {
             "id": "0003",
             "name": "Shankly's Ghost",
             "score": 24.09,
@@ -7314,6 +7302,18 @@
             "total_weekly_vp": 3,
             "ytp": 8,
             "in_game": 2,
+            "done": 0
+          },
+          {
+            "id": "0006",
+            "name": "Ted Lasso",
+            "score": 22.98,
+            "pp": 50.88,
+            "h2h_vp": 1,
+            "battle_vp": 1,
+            "total_weekly_vp": 2,
+            "ytp": 7,
+            "in_game": 3,
             "done": 0
           },
           {
@@ -7480,8 +7480,8 @@
             "h2h_vp": 3,
             "battle_vp": 2,
             "vp": 5,
-            "pf": 349.37,
-            "pp": 412.78000000000003,
+            "pf": 347.37,
+            "pp": 410.78000000000003,
             "wins": 3,
             "losses": 5,
             "ties": 0,
@@ -7631,8 +7631,8 @@
             "h2h_vp": 12,
             "battle_vp": 7,
             "vp": 19,
-            "pf": 1403.5700000000002,
-            "pp": 1628.1499999999999,
+            "pf": 1401.5700000000002,
+            "pp": 1626.1499999999999,
             "wins": 12,
             "losses": 12,
             "ties": 0,
@@ -7931,13 +7931,13 @@
           },
           {
             "id": "0006",
-            "season_total": 1628.15,
-            "avg": 135.68,
-            "diff": -5.49,
-            "bonus": 27.46,
+            "season_total": 1626.15,
+            "avg": 135.51,
+            "diff": -5.66,
+            "bonus": 28.29,
             "name": "Ted Lasso",
             "scores": {},
-            "total": 27.46,
+            "total": 28.29,
             "cumulative": {},
             "place": null,
             "out_after": null,
